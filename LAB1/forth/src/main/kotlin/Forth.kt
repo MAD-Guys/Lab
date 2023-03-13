@@ -27,7 +27,6 @@ class Forth {
                     }
                 }
             }
-            println(commands)
         }
 
         val splitArgs: List<String> = commands.split(' ')
