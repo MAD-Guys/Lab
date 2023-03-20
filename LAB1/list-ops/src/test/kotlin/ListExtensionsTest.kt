@@ -11,7 +11,13 @@ class ListExtensionsTest {
             emptyList<Int>().customAppend(emptyList())
         )
 
-    @Ignore
+    @Test
+    fun `append - empty lists2`() =
+        assertEquals(
+            emptyList(),
+            emptyList<Int>().customAppend2(emptyList())
+        )
+
     @Test
     fun `append - list to empty list`() =
         assertEquals(
@@ -19,7 +25,13 @@ class ListExtensionsTest {
             emptyList<Char>().customAppend(listOf('1', '2', '3', '4'))
         )
 
-    @Ignore
+    @Test
+    fun `append - list to empty list2`() =
+        assertEquals(
+            listOf('1', '2', '3', '4'),
+            emptyList<Char>().customAppend2(listOf('1', '2', '3', '4'))
+        )
+
     @Test
     fun `append - non-empty lists`() =
         assertEquals(
@@ -27,7 +39,13 @@ class ListExtensionsTest {
             listOf("1", "2").customAppend(listOf("2", "3", "4", "5"))
         )
 
-    @Ignore
+    @Test
+    fun `append - non-empty lists2`() =
+        assertEquals(
+            listOf("1", "2", "2", "3", "4", "5"),
+            listOf("1", "2").customAppend2(listOf("2", "3", "4", "5"))
+        )
+
     @Test
     fun `concatenate - empty list`() =
         assertEquals(
@@ -35,7 +53,6 @@ class ListExtensionsTest {
             emptyList<Any>().customConcat()
         )
 
-    @Ignore
     @Test
     fun `concatenate - list of lists`() =
         assertEquals(
@@ -48,7 +65,6 @@ class ListExtensionsTest {
             ).customConcat()
         )
 
-    @Ignore
     @Test
     fun `concatenate - list of nested lists`() =
         assertEquals(
@@ -70,44 +86,66 @@ class ListExtensionsTest {
             ).customConcat()
         )
 
-    @Ignore
     @Test
     fun `filter - empty list`() =
         assertEquals(
             emptyList(),
             emptyList<Int>().customFilter { it % 2 == 1 })
 
+    @Test
+    fun `filter - empty list2`() =
+        assertEquals(
+            emptyList(),
+            emptyList<Int>().customFilter2 { it % 2 == 1 })
 
-    @Ignore
     @Test
     fun `filter - non-empty list`() =
         assertEquals(
             listOf(1, 3, 5),
             listOf(1, 2, 3, 5).customFilter { it % 2 == 1 })
 
-    @Ignore
+    @Test
+    fun `filter - non-empty list2`() =
+        assertEquals(
+            listOf(1, 3, 5),
+            listOf(1, 2, 3, 5).customFilter2 { it % 2 == 1 })
+
     @Test
     fun `size - empty list`() = assertEquals(0, emptyList<Int>().customSize)
 
-    @Ignore
+    @Test
+    fun `size - empty list2`() = assertEquals(0, emptyList<Int>().customSize2)
+
     @Test
     fun `size - non-empty list`() = assertEquals(4, listOf("one", "two", "three", "four").customSize)
 
-    @Ignore
+    @Test
+    fun `size - non-empty list2`() = assertEquals(4, listOf("one", "two", "three", "four").customSize2)
+
     @Test
     fun `map - empty list`() =
         assertEquals(
             emptyList(),
             emptyList<Int>().customMap { it -> it + 1 })
 
-    @Ignore
+    @Test
+    fun `map - empty list2`() =
+        assertEquals(
+            emptyList(),
+            emptyList<Int>().customMap2 { it -> it + 1 })
+
     @Test
     fun `map - non-empty list`() =
         assertEquals(
             listOf(2, 4, 6, 8),
             listOf(1, 3, 5, 7).customMap { it -> it + 1 })
 
-    @Ignore
+    @Test
+    fun `map - non-empty list2`() =
+        assertEquals(
+            listOf(2, 4, 6, 8),
+            listOf(1, 3, 5, 7).customMap2 { it -> it + 1 })
+
     @Test
     fun `fold left - empty list`() =
         assertEquals(
@@ -115,7 +153,6 @@ class ListExtensionsTest {
             emptyList<Int>().customFoldLeft(2.0, Double::times)
         )
 
-    @Ignore
     @Test
     fun `fold left - direction independent function`() =
         assertEquals(
@@ -123,7 +160,6 @@ class ListExtensionsTest {
             listOf(1, 2, 3, 4).customFoldLeft(5, Int::plus)
         )
 
-    @Ignore
     @Test
     fun `fold left - direction dependent function`() =
         assertEquals(
@@ -131,7 +167,6 @@ class ListExtensionsTest {
             listOf(2, 5).customFoldLeft(5, Int::div)
         )
 
-    @Ignore
     @Test
     fun `fold right - empty list`() =
         assertEquals(
@@ -139,7 +174,6 @@ class ListExtensionsTest {
             emptyList<Double>().customFoldRight(2.0, Double::times)
         )
 
-    @Ignore
     @Test
     fun `fold right - direction independent function`() =
         assertEquals(
@@ -147,7 +181,6 @@ class ListExtensionsTest {
             listOf(1, 2, 3, 4).customFoldRight(5, Int::plus)
         )
 
-    @Ignore
     @Test
     fun `fold right - direction dependent function`() =
         assertEquals(
@@ -155,7 +188,6 @@ class ListExtensionsTest {
             listOf(2, 5).customFoldRight(5, Int::div)
         )
 
-    @Ignore
     @Test
     fun `reverse - empty list`() =
         assertEquals(
@@ -163,7 +195,13 @@ class ListExtensionsTest {
             emptyList<Int>().customReverse()
         )
 
-    @Ignore
+    @Test
+    fun `reverse - empty list2`() =
+        assertEquals(
+            emptyList(),
+            emptyList<Int>().customReverse2()
+        )
+
     @Test
     fun `reverse - non-empty list`() =
         assertEquals(
@@ -171,7 +209,13 @@ class ListExtensionsTest {
             listOf('1', '3', '5', '7').customReverse()
         )
 
-    @Ignore
+    @Test
+    fun `reverse - non-empty list2`() =
+        assertEquals(
+            listOf('7', '5', '3', '1'),
+            listOf('1', '3', '5', '7').customReverse2()
+        )
+
     @Test
     fun `reverse - list of lists`() =
         assertEquals(
@@ -187,6 +231,23 @@ class ListExtensionsTest {
                 emptyList<Char>(),
                 listOf('4', '5', '6')
             ).customReverse()
+        )
+
+    @Test
+    fun `reverse - list of lists2`() =
+        assertEquals(
+            listOf(
+                listOf('4', '5', '6'),
+                emptyList<Char>(),
+                '3',
+                listOf('1', '2')
+            ),
+            listOf(
+                listOf('1', '2'),
+                '3',
+                emptyList<Char>(),
+                listOf('4', '5', '6')
+            ).customReverse2()
         )
 
 }
