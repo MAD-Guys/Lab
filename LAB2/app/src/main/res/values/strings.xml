@@ -7,4 +7,5 @@
     <string name="sex">Male,</string>
     <string name="age">23</string>
     <string name="location">Lives in Turin (TO)</string>
+    <string name="bio">I’m a Computer Engineering student from Latina. I love playing basketball and tennis with my friends, especially on the weekend.</string>
 </resources>
