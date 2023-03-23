@@ -2,4 +2,9 @@
     <string name="app_name">MAD GUYS</string>
     <string name="edit_button">Edit button</string>
     <string name="profile_picture">Profile picture</string>
+    <string name="first_name">John Doe</string>
+    <string name="nickname">\@johndoe</string>
+    <string name="sex">Male,</string>
+    <string name="age">23</string>
+    <string name="location">Lives in Turin (TO)</string>
 </resources>
