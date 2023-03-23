@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/edit"
-        android:icon="@drawable/pencil_icon"
-        android:title="edit_profile"
-        app:showAsAction="always" />
+        android:id="@+id/edit_button"
+        android:title="@string/edit_button"
+        android:icon="@drawable/baseline_edit_24"
+        app:showAsAction="always"/>
 </menu>

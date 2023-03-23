@@ -20,7 +20,7 @@ class ShowProfileActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        if (item.itemId == R.id.edit) {
+        if (item.itemId == R.id.edit_button) {
             println("PENCIL CLICKED!!!")
         }
 

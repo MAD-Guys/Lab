@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MAD GUYS</string>
+    <string name="edit_button">Edit button</string>
+    <string name="profile_picture">Profile picture</string>
 </resources>
