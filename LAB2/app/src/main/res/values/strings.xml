@@ -10,6 +10,9 @@
     <string name="age">23</string>
     <string name="location">Lives in Turin (TO)</string>
     <string name="sports_title">Sports</string>
+    <string name="sport1">Basket</string>
+    <string name="sport2">Soccer</string>
+    <string name="sport3">Tennis</string>
     <string name="bio_title">Bio</string>
     <string name="bio">I’m a Computer Engineering student from Latina. I love playing basketball and tennis with my friends, especially on the weekend.</string>
 </resources>

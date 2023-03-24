@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context=".ShowProfileActivity">
+    tools:context=".ShowProfileActivity"
+    android:baselineAligned="false" >
 
     <!-- LinearLayout for the profile picture (1/3 of screen) -->
     <LinearLayout
@@ -34,7 +35,10 @@
         android:background="@color/background_orange"
         android:orientation="vertical"
         android:paddingHorizontal="16dp"
-        android:paddingTop="16dp">
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="6dp"
+        android:paddingBottom="0dp">
 
         <!-- Section 1: General information -->
         <LinearLayout
