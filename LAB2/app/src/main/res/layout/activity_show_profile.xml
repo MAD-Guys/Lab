@@ -232,29 +232,28 @@
                             android:layoutDirection="rtl"
                             android:text="@string/sport1"
                             app:chipBackgroundColor="@color/pale_orange"
-                            app:chipIcon="@drawable/baseline_hexagon_24" />
+                            app:chipIcon="@drawable/level_badge_beginner" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chipSport2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
                             android:text="@string/sport2"
-                            android:fontFamily="@font/poppins_medium"
                             app:chipBackgroundColor="@color/pale_green"
-                            app:chipIcon="@drawable/baseline_hexagon_24"
-                            />
+                            app:chipIcon="@drawable/level_badge_intermediate" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chipSport3"
+                            style="@style/Widget.MaterialComponents.Chip.Action"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
                             android:text="@string/sport3"
-                            android:fontFamily="@font/poppins_medium"
                             app:chipBackgroundColor="@color/pale_blue"
-                            app:chipIcon="@drawable/baseline_hexagon_24"
-                            />
+                            app:chipIcon="@drawable/level_badge_pro" />
                     </com.google.android.material.chip.ChipGroup>
                 </LinearLayout>
             </HorizontalScrollView>
