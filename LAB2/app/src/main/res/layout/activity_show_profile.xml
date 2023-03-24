@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context=".ShowProfileActivity">
 
-    <!-- LinearLayout for the profile picture -->
+    <!-- LinearLayout for the profile picture (1/3 of screen) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -26,7 +26,7 @@
 
     </LinearLayout>
 
-    <!-- LinearLayout for the profile information -->
+    <!-- LinearLayout for the profile information (2/3 of screen) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -36,6 +36,7 @@
         android:paddingHorizontal="16dp"
         android:paddingTop="16dp">
 
+        <!-- Section 1: General information -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,6 +50,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/fullName"
                     android:layout_width="wrap_content"
                     android:layout_height="42dp"
                     android:fontFamily="@font/poppins_semibold"
@@ -58,6 +60,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/nickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
@@ -90,6 +93,7 @@
                         app:srcCompat="@drawable/baseline_person_24" />
 
                     <TextView
+                        android:id="@+id/sex"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
@@ -99,6 +103,7 @@
                         android:textSize="18sp" />
 
                     <TextView
+                        android:id="@+id/age"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
@@ -121,9 +126,10 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
-                        app:srcCompat="@drawable/baseline_person_add_24" />
+                        app:srcCompat="@drawable/baseline_location_on_24" />
 
                     <TextView
+                        android:id="@+id/location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
@@ -187,6 +193,8 @@
             android:layout_marginVertical="2dp"
             android:background="?android:attr/listDivider" />
 
+
+        <!-- Section 2: Sports -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -194,6 +202,7 @@
             android:layout_marginBottom="10dp"
             android:orientation="vertical">
 
+            <!-- title -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -202,6 +211,9 @@
                 android:textColor="@color/black"
 
                 android:textSize="24sp" />
+
+
+            <!-- Here will be the chips of sports -->
 
         </LinearLayout>
 
@@ -212,6 +224,8 @@
             android:layout_marginVertical="2dp"
             android:background="?android:attr/listDivider" />
 
+
+        <!-- Section 3: Bio -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -219,6 +233,8 @@
             android:layout_marginBottom="10dp"
             android:orientation="vertical">
 
+
+            <!-- title -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -228,7 +244,10 @@
 
                 android:textSize="24sp" />
 
+
+            <!-- bio -->
             <TextView
+                android:id="@+id/bio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_medium"
