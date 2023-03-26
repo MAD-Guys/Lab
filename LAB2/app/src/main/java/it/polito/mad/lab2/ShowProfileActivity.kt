@@ -8,12 +8,16 @@ import android.view.MenuItem
 import android.widget.Button
 
 class ShowProfileActivity : AppCompatActivity() {
+
+    private lateinit var addFriendButton: Button
+    private lateinit var messageButton: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
 
-        val addFriendButton: Button = findViewById(R.id.button_add_friend)
-        val messageButton: Button = findViewById(R.id.button_message)
+        addFriendButton = findViewById(R.id.button_add_friend)
+        messageButton = findViewById(R.id.button_message)
 
         addFriendButton.setOnClickListener() {
             println("ADD FRIEND BUTTON CLICKED!!!")
