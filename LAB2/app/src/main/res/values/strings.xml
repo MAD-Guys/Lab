@@ -1,9 +1,13 @@
 <resources>
     <string name="app_name">MAD GUYS</string>
+
+    <!-- ShowProfileActivity -->
     <string name="edit_button">Edit button</string>
     <string name="add_friend_button">Add Friend</string>
     <string name="message_button">Message</string>
     <string name="profile_picture">Profile picture</string>
+    <string name="image_person_content_description">imagePerson</string>
+    <string name="image_location_content_description">imageLocation</string>
     <string name="first_name">John Doe</string>
     <string name="nickname">\@johndoe</string>
     <string name="sex">Male,</string>
@@ -15,4 +19,5 @@
     <string name="sport3">Tennis</string>
     <string name="bio_title">Bio</string>
     <string name="bio">I’m a Computer Engineering student from Latina. I love playing basketball and tennis with my friends, especially on the weekend.</string>
+
 </resources>

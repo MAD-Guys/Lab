@@ -77,7 +77,6 @@
                 android:orientation="vertical"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp">
-                >
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -86,10 +85,11 @@
 
                     <ImageView
                         android:id="@+id/imagePerson"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
+                        android:contentDescription="@string/image_person_content_description"
                         app:srcCompat="@drawable/baseline_person_24" />
 
                     <TextView
@@ -111,7 +111,6 @@
                         android:text="@string/age"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
-                    />
 
                 </LinearLayout>
 
@@ -122,10 +121,11 @@
 
                     <ImageView
                         android:id="@+id/imageLocation"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
+                        android:contentDescription="@string/image_location_content_description"
                         app:srcCompat="@drawable/baseline_location_on_24" />
 
                     <TextView
@@ -163,8 +163,6 @@
                     app:icon="@drawable/baseline_person_add_24"
                     app:iconGravity="textStart"
                     app:iconTint="#000000" />
-                />
-                />
 
                 <Button
                     android:id="@+id/button_message"
@@ -218,7 +216,7 @@
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent" >
+                    android:layout_height="match_parent">
 
                     <com.google.android.material.chip.ChipGroup
                         android:layout_width="wrap_content"
@@ -254,8 +252,11 @@
                             android:text="@string/sport3"
                             app:chipBackgroundColor="@color/pale_blue"
                             app:chipIcon="@drawable/level_badge_pro" />
+
                     </com.google.android.material.chip.ChipGroup>
+
                 </LinearLayout>
+
             </HorizontalScrollView>
 
 
@@ -268,7 +269,6 @@
             android:layout_marginVertical="2dp"
             android:background="?android:attr/listDivider" />
 
-
         <!-- Section 3: Bio -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -276,7 +276,6 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:orientation="vertical">
-
 
             <!-- title -->
             <TextView
@@ -287,7 +286,6 @@
                 android:textColor="@color/black"
 
                 android:textSize="24sp" />
-
 
             <!-- bio -->
             <TextView
