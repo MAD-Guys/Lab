@@ -13,12 +13,17 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var fullName: String
     private lateinit var nickname: String
     private lateinit var sex: String
-    private var age: Int = 0
+    private var age: Int = 23
     private lateinit var bio: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
+
+        fullName = "John Doe"
+        nickname = "@johndoe"
+        sex = "Male"
+        bio = "I’m a Computer Engineering student from Latina. I love playing basketball and tennis with my friends, especially on the weekend."
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
