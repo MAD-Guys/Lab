@@ -20,4 +20,7 @@
     <string name="bio_title">Bio</string>
     <string name="bio">I’m a Computer Engineering student from Latina. I love playing basketball and tennis with my friends, especially on the weekend.</string>
 
+    <!-- EditProfileActivity -->
+    <string name="confirm_button">Confirm button</string>
+
 </resources>
