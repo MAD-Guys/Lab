@@ -36,5 +36,6 @@
 
     <!-- EditProfileActivity -->
     <string name="confirm_button">Confirm button</string>
+    <string name="profile_image_button_description">Profile image button</string>
 
 </resources>

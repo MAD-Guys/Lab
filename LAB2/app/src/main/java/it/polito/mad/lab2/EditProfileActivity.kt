@@ -1,10 +1,16 @@
 package it.polito.mad.lab2
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -12,11 +18,14 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-
+import java.io.FileDescriptor
+import java.io.IOException
 
 class EditProfileActivity : AppCompatActivity() {
 
@@ -27,6 +36,7 @@ class EditProfileActivity : AppCompatActivity() {
     private var bio =
         "I’m a Computer Engineering student from Latina. I love playing basketball and tennis with my friends, especially on the weekend."
 
+    private lateinit var imageView: ImageView
     private var galleryUri: Uri? = null
     private var cameraUri: Uri? = null
 
@@ -37,8 +47,7 @@ class EditProfileActivity : AppCompatActivity() {
             if (it.resultCode == Activity.RESULT_OK) {
                 val data: Intent? = it.data
                 galleryUri = data?.data
-                val toast: Toast = Toast.makeText(this, "Image URI: $galleryUri", Toast.LENGTH_LONG)
-                toast.show()
+                imageView.setImageURI(galleryUri)
             }
         }
 
@@ -47,8 +56,9 @@ class EditProfileActivity : AppCompatActivity() {
             ActivityResultContracts.StartActivityForResult()
         ) {
             if (it.resultCode == Activity.RESULT_OK) {
-                val toast: Toast = Toast.makeText(this, "Image URI: $cameraUri", Toast.LENGTH_LONG)
-                toast.show()
+                val inputImage: Bitmap? = cameraUri?.let { it1 -> uriToBitmap(it1) }
+                val rotated: Bitmap? = inputImage?.let { it1 -> rotateBitmap(it1) }
+                imageView.setImageBitmap(rotated)
             }
         }
 
@@ -56,21 +66,28 @@ class EditProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
+        imageView = findViewById(R.id.profile_picture)
+
+        val profileImageButton: ImageButton = findViewById(R.id.profile_image_button)
+        profileImageButton.setOnClickListener() {
+            println("PROFILE IMAGE BUTTON CLICKED")
+        }
+
         //This code tries to retrieve photos from the gallery
         val galleryButton: Button = findViewById(R.id.button_message)
-        galleryButton.setOnClickListener() {
-            val galleryIntent: Intent =
+        galleryButton.setOnClickListener {
+            val galleryIntent =
                 Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             galleryActivityResultLauncher.launch(galleryIntent)
         }
 
         //This code tries to retrieve photos from the camera
         val cameraButton: Button = findViewById(R.id.button_add_friend)
-        cameraButton.setOnClickListener() {
+        cameraButton.setOnClickListener {
             if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
                 checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
             ) {
-                val permission = arrayOf<String>(
+                val permission = arrayOf(
                     Manifest.permission.CAMERA,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
                 )
@@ -82,7 +99,9 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    //Function that handles the result of the permission request
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
@@ -93,6 +112,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     }
 
+    //Function that opens the camera
     private fun openCamera() {
         val values = ContentValues()
         values.put(MediaStore.Images.Media.TITLE, "New Picture")
@@ -105,6 +125,43 @@ class EditProfileActivity : AppCompatActivity() {
         cameraActivityResultLauncher.launch(cameraIntent)
     }
 
+    //This function takes URI of the image and returns a bitmap
+    private fun uriToBitmap(selectedFileUri: Uri): Bitmap? {
+        try {
+            val parcelFileDescriptor = contentResolver.openFileDescriptor(selectedFileUri, "r")
+            val fileDescriptor: FileDescriptor = parcelFileDescriptor!!.fileDescriptor
+            val image = BitmapFactory.decodeFileDescriptor(fileDescriptor)
+            parcelFileDescriptor.close()
+            return image
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    //rotate image if image captured on samsung devices
+    //Most phone cameras are landscape, meaning if you take the photo in portrait, the resulting photos will be rotated 90 degrees.
+    @SuppressLint("Range")
+    fun rotateBitmap(input: Bitmap): Bitmap? {
+        val orientationColumn = arrayOf(MediaStore.Images.Media.ORIENTATION)
+
+        val cur: Cursor? =
+            cameraUri?.let { contentResolver.query(it, orientationColumn, null, null, null) }
+        var orientation: Float = -1f
+
+        if (cur != null && cur.moveToFirst()) {
+            orientation = cur.getInt(cur.getColumnIndex(orientationColumn[0])).toFloat()
+        }
+
+        val rotationMatrix = Matrix()
+        rotationMatrix.setRotate(orientation)
+
+        cur?.close()
+
+        return Bitmap.createBitmap(input, 0, 0, input.width, input.height, rotationMatrix, true)
+    }
+
+    //The two functions below are used to inflate the menu
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.edit_profile_menu, menu)
@@ -117,11 +174,13 @@ class EditProfileActivity : AppCompatActivity() {
             this.finish()
             val toast: Toast = Toast.makeText(this, "Now you are in SHOW mode!", Toast.LENGTH_SHORT)
             toast.show()
+            return true
         }
 
         return super.onOptionsItemSelected(item)
     }
 
+    //The two functions below are used to save and restore the state of the activity
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
