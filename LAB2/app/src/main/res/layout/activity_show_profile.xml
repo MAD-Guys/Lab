@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:fillViewport="true">
 
     <LinearLayout
@@ -48,7 +48,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
                 <!-- LinearLayout for the name and nickname -->
@@ -245,6 +245,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport1"
                             android:visibility="visible"
                             app:chipBackgroundColor="@color/pale_orange"
@@ -256,6 +257,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport2"
                             app:chipBackgroundColor="@color/pale_green"
                             app:chipIcon="@drawable/level_badge_intermediate" />
@@ -267,6 +269,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport3"
                             app:chipBackgroundColor="@color/pale_blue"
                             app:chipIcon="@drawable/level_badge_pro" />
@@ -278,6 +281,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport4"
                             app:chipBackgroundColor="@color/pale_ametista"
                             app:chipIcon="@drawable/level_badge_intermediate" />
@@ -289,6 +293,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport5"
                             app:chipBackgroundColor="@color/pale_lighter_blue"
                             app:chipIcon="@drawable/level_badge_beginner" />
@@ -300,6 +305,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport6"
                             app:chipBackgroundColor="@color/pale_lighter_green"
                             app:chipIcon="@drawable/level_badge_intermediate" />
@@ -311,6 +317,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport7"
                             app:chipBackgroundColor="@color/pale_lighter_yellow"
                             app:chipIcon="@drawable/level_badge_beginner" />
@@ -322,6 +329,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport8"
                             app:chipBackgroundColor="@color/pale_lighter_grey"
                             app:chipIcon="@drawable/level_badge_intermediate" />
@@ -333,6 +341,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport9"
                             app:chipBackgroundColor="@color/pale_lighter_orange"
                             app:chipIcon="@drawable/level_badge_pro" />
@@ -344,6 +353,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport10"
                             app:chipBackgroundColor="@color/pale_lighter_red"
                             app:chipIcon="@drawable/level_badge_beginner" />
@@ -366,7 +376,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
                 android:orientation="vertical">
 
                 <!-- title -->
@@ -376,7 +385,6 @@
                     android:fontFamily="@font/poppins_semibold"
                     android:text="@string/bio_title"
                     android:textColor="@color/black"
-
                     android:textSize="24sp" />
 
                 <!-- bio -->
@@ -387,7 +395,6 @@
                     android:fontFamily="@font/poppins_medium"
                     android:text="@string/bio"
                     android:textColor="@color/black"
-
                     android:textSize="18sp" />
 
             </LinearLayout>
