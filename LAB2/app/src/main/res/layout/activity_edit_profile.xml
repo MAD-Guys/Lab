@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:scrollbars="none"
     android:fillViewport="true">
 
     <LinearLayout
@@ -13,7 +14,6 @@
         android:orientation="vertical"
         tools:context=".ShowProfileActivity">
 
-        <!-- LinearLayout for the profile picture (3/10 of the screen) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,8 +24,8 @@
 
             <ImageView
                 android:id="@+id/profile_picture"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:contentDescription="@string/profile_picture"
                 app:srcCompat="@drawable/user_profile_icon" />
@@ -37,11 +37,10 @@
                 android:layout_gravity="end"
                 android:backgroundTint="@color/background_blue"
                 android:contentDescription="@string/profile_image_button_description"
-                app:srcCompat="@drawable/baseline_add_a_photo_24" />
+                app:srcCompat="@drawable/baseline_add_a_photo_24"/>
 
         </LinearLayout>
 
-        <!-- LinearLayout for the profile information (7/10 of the screen) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -206,7 +205,6 @@
                                 android:textSize="18sp" />
                         </RadioGroup>
 
-
                     </LinearLayout>
 
                     <LinearLayout
@@ -262,54 +260,6 @@
 
                     </LinearLayout>
 
-                    <!-- LinearLayout for the buttons -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <Button
-                            android:id="@+id/button_add_friend"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="start"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/poppins_bold"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:paddingTop="8dp"
-                            android:paddingBottom="6dp"
-                            android:text="@string/add_friend_button"
-                            android:textAlignment="gravity"
-                            android:textAllCaps="false"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                            android:textColor="@color/black"
-                            android:textSize="18sp"
-                            app:icon="@drawable/baseline_person_add_24"
-                            app:iconGravity="textStart"
-                            app:iconTint="#000000" />
-
-                        <Button
-                            android:id="@+id/button_message"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:layout_marginStart="16dp"
-                            android:layout_weight="1"
-                            android:backgroundTint="@color/blue_200"
-                            android:fontFamily="@font/poppins_bold"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:paddingTop="8dp"
-                            android:paddingBottom="6dp"
-                            android:text="@string/message_button"
-                            android:textAlignment="gravity"
-                            android:textAllCaps="false"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                            android:textColor="@color/black"
-                            android:textSize="18sp"
-                            app:icon="@drawable/baseline_forum_24"
-                            app:iconGravity="textStart"
-                            app:iconTint="#000000" />
-                    </LinearLayout>
-
                 </LinearLayout>
 
             </LinearLayout>
@@ -352,9 +302,9 @@
                             android:id="@+id/chipSport1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport1"
                             android:visibility="visible"
                             app:chipBackgroundColor="@color/pale_orange"
@@ -364,9 +314,9 @@
                             android:id="@+id/chipSport2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport2"
                             app:chipBackgroundColor="@color/pale_green"
                             app:chipIcon="@drawable/level_badge_intermediate" />
@@ -376,9 +326,9 @@
                             style="@style/Widget.MaterialComponents.Chip.Action"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport3"
                             app:chipBackgroundColor="@color/pale_blue"
                             app:chipIcon="@drawable/level_badge_pro" />
@@ -388,9 +338,9 @@
                             style="@style/Widget.MaterialComponents.Chip.Action"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport4"
                             app:chipBackgroundColor="@color/pale_ametista"
                             app:chipIcon="@drawable/level_badge_intermediate" />
@@ -400,9 +350,9 @@
                             style="@style/Widget.MaterialComponents.Chip.Action"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport5"
                             app:chipBackgroundColor="@color/pale_lighter_blue"
                             app:chipIcon="@drawable/level_badge_beginner" />
@@ -412,9 +362,9 @@
                             style="@style/Widget.MaterialComponents.Chip.Action"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport6"
                             app:chipBackgroundColor="@color/pale_lighter_green"
                             app:chipIcon="@drawable/level_badge_intermediate" />
@@ -424,9 +374,9 @@
                             style="@style/Widget.MaterialComponents.Chip.Action"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport7"
                             app:chipBackgroundColor="@color/pale_lighter_yellow"
                             app:chipIcon="@drawable/level_badge_beginner" />
@@ -436,9 +386,9 @@
                             style="@style/Widget.MaterialComponents.Chip.Action"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport8"
                             app:chipBackgroundColor="@color/pale_lighter_grey"
                             app:chipIcon="@drawable/level_badge_intermediate" />
@@ -448,9 +398,9 @@
                             style="@style/Widget.MaterialComponents.Chip.Action"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport9"
                             app:chipBackgroundColor="@color/pale_lighter_orange"
                             app:chipIcon="@drawable/level_badge_pro" />
@@ -460,9 +410,9 @@
                             style="@style/Widget.MaterialComponents.Chip.Action"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
+                            android:clickable="false"
                             android:text="@string/sport10"
                             app:chipBackgroundColor="@color/pale_lighter_red"
                             app:chipIcon="@drawable/level_badge_beginner" />

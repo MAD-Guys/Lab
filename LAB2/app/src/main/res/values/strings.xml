@@ -37,5 +37,7 @@
     <!-- EditProfileActivity -->
     <string name="confirm_button">Confirm button</string>
     <string name="profile_image_button_description">Profile image button</string>
+    <string name="camera">Use the camera to take a picture</string>
+    <string name="gallery">Select an image from the phone gallery</string>
 
 </resources>

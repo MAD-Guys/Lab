@@ -14,13 +14,8 @@ import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.Toast
+import android.view.*
+import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -29,7 +24,8 @@ import java.io.IOException
 
 class EditProfileActivity : AppCompatActivity() {
 
-    private var fullName = "John Doe"
+    private var firstName = "John"
+    private var lastName = "Doe"
     private var nickname = "@johndoe"
     private var sex = "Male"
     private var age: Int = 23
@@ -69,45 +65,30 @@ class EditProfileActivity : AppCompatActivity() {
         imageView = findViewById(R.id.profile_picture)
 
         val profileImageButton: ImageButton = findViewById(R.id.profile_image_button)
+        registerForContextMenu(profileImageButton)
+
         profileImageButton.setOnClickListener() {
-            println("PROFILE IMAGE BUTTON CLICKED")
+
+            //open the related context menu
+            openContextMenu(profileImageButton)
         }
 
-        //This code tries to retrieve photos from the gallery
-        val galleryButton: Button = findViewById(R.id.button_message)
-        galleryButton.setOnClickListener {
-            val galleryIntent =
-                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            galleryActivityResultLauncher.launch(galleryIntent)
-        }
-
-        //This code tries to retrieve photos from the camera
-        val cameraButton: Button = findViewById(R.id.button_add_friend)
-        cameraButton.setOnClickListener {
-            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
-                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
-            ) {
-                val permission = arrayOf(
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-                requestPermissions(permission, 112)
-                onRequestPermissionsResult(112, permission, intArrayOf(0, 0))
-            } else {
-                openCamera()
-            }
-        }
     }
 
     //Function that handles the result of the permission request
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+        if (requestCode == 112 && checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
             checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
         ) {
             openCamera()
+        } else if (requestCode == 113 && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            val galleryIntent =
+                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            galleryActivityResultLauncher.launch(galleryIntent)
         }
 
     }
@@ -165,26 +146,88 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.edit_profile_menu, menu)
+
+        supportActionBar?.title = "Edit Profile"
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    override fun onCreateContextMenu(
+        menu: ContextMenu,
+        v: View,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        val inflater: MenuInflater = menuInflater
 
-        if (item.itemId == R.id.confirm_button) {
+        when (v.id) {
+            R.id.profile_image_button -> {
+                inflater.inflate(R.menu.profile_picture_context_menu, menu)
+            }
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+
+        //detect when the user clicks on the "confirm" button
+        R.id.confirm_button -> {
             this.finish()
             val toast: Toast = Toast.makeText(this, "Now you are in SHOW mode!", Toast.LENGTH_SHORT)
             toast.show()
-            return true
+            true
         }
+        else -> {
+            super.onOptionsItemSelected(item)
+        }
+    }
 
-        return super.onOptionsItemSelected(item)
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.camera -> {
+
+                //Check if the permissions are granted
+                if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
+                    checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
+                ) {
+                    val permission = arrayOf(
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                    requestPermissions(permission, 112)
+                    onRequestPermissionsResult(112, permission, intArrayOf(0, 0))
+                } else {
+                    openCamera()
+                }
+
+                true
+            }
+            R.id.gallery -> {
+
+                //Check if the permissions are granted
+                if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
+                ) {
+                    val permission = arrayOf(
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    )
+                    requestPermissions(permission, 113)
+                    onRequestPermissionsResult(113, permission, intArrayOf(0, 0))
+                } else {
+                    val galleryIntent =
+                        Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                    galleryActivityResultLauncher.launch(galleryIntent)
+                }
+
+                true
+            }
+            else -> super.onContextItemSelected(item)
+        }
     }
 
     //The two functions below are used to save and restore the state of the activity
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        outState.putString("fullName", fullName)
+        outState.putString("fullName", firstName)
+        outState.putString("lastName", lastName)
         outState.putString("nickName", nickname)
         outState.putString("sex", sex)
         outState.putInt("age", age)
@@ -194,7 +237,8 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
 
-        fullName = savedInstanceState.getString("fullName").toString()
+        firstName = savedInstanceState.getString("fullName").toString()
+        lastName = savedInstanceState.getString("lastName").toString()
         nickname = savedInstanceState.getString("nickName").toString()
         sex = savedInstanceState.getString("sex").toString()
         age = savedInstanceState.getInt("age")
