@@ -3,22 +3,24 @@ package it.polito.mad.lab2
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.Toast
+//import com.google.android.material.chip.Chip
 
 class ShowProfileActivity : AppCompatActivity() {
 
     private lateinit var addFriendButton: Button
     private lateinit var messageButton: Button
+    //private lateinit var chip: Chip
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
-
+        //chip = findViewById(R.id.chipSport1)
+        //chip.visibility = Chip.GONE
         addFriendButton = findViewById(R.id.button_add_friend)
         messageButton = findViewById(R.id.button_message)
 
