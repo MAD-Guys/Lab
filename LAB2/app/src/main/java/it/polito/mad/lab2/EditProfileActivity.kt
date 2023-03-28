@@ -151,6 +151,7 @@ class EditProfileActivity : AppCompatActivity() {
         return true
     }
 
+    //The three functions below are used to inflate and manage the context menu
     override fun onCreateContextMenu(
         menu: ContextMenu,
         v: View,
@@ -180,6 +181,7 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
+    //NOTE: the request code is used to identify the request in the callback function but it is completely random
     override fun onContextItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.camera -> {
