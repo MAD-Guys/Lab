@@ -11,8 +11,13 @@
     <string name="first_name">John Doe</string>
     <string name="nickname">\@johndoe</string>
     <string name="sex">Male,</string>
+    <string name="sexMale">Male</string>
+    <string name="sexFemale">Female</string>
+    <string name="sexOther">Other</string>
     <string name="age">23</string>
-    <string name="location">Lives in Turin (TO)</string>
+    <string name="age_label">Age: </string>
+    <string name="location">Turin (TO)</string>
+    <string name="lives_in">Lives in: </string>
     <string name="sports_title">Sports</string>
     <string name="sport1">Basket</string>
     <string name="sport2">11-a-side Football</string>
