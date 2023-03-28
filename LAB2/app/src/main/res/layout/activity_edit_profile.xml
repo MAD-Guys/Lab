@@ -12,9 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:context=".ShowProfileActivity">
+        tools:context=".EditProfileActivity">
 
-        <LinearLayout
+        <!-- RelativeLayout for the profile picture -->
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
@@ -26,7 +27,7 @@
                 android:id="@+id/profile_picture"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
+                android:layout_centerInParent="true"
                 android:contentDescription="@string/profile_picture"
                 app:srcCompat="@drawable/user_profile_icon" />
 
@@ -34,12 +35,13 @@
                 android:id="@+id/profile_image_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
                 android:backgroundTint="@color/background_blue"
                 android:contentDescription="@string/profile_image_button_description"
-                app:srcCompat="@drawable/baseline_add_a_photo_24"/>
+                app:srcCompat="@drawable/baseline_add_a_photo_24" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -57,7 +59,7 @@
                 android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
-                <!-- LinearLayout for the name and nickname -->
+                <!-- LinearLayout for the first name, the last name and the nickname -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -142,7 +142,7 @@ class EditProfileActivity : AppCompatActivity() {
         return Bitmap.createBitmap(input, 0, 0, input.width, input.height, rotationMatrix, true)
     }
 
-    //The two functions below are used to inflate the menu
+    //The function below is used to inflate the menu
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.edit_profile_menu, menu)
@@ -172,7 +172,14 @@ class EditProfileActivity : AppCompatActivity() {
         //detect when the user clicks on the "confirm" button
         R.id.confirm_button -> {
             this.finish()
-            val toast: Toast = Toast.makeText(this, "Now you are in SHOW mode!", Toast.LENGTH_SHORT)
+            val toast: Toast = Toast.makeText(this, "Save button clicked!!!", Toast.LENGTH_SHORT)
+            toast.show()
+            true
+        }
+        //detect when the user clicks on the "back" button
+        R.id.back_button -> {
+            this.finish()
+            val toast: Toast = Toast.makeText(this, "Back button clicked!!!", Toast.LENGTH_SHORT)
             toast.show()
             true
         }

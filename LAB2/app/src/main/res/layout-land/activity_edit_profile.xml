@@ -7,10 +7,10 @@
     android:layout_height="wrap_content"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    tools:context=".ShowProfileActivity">
+    tools:context=".EditProfileActivity">
 
-    <!-- LinearLayout for the profile picture -->
-    <LinearLayout
+    <!-- RelativeLayout for the profile picture -->
+    <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -19,9 +19,9 @@
 
         <ImageView
             android:id="@+id/profile_picture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|center_horizontal"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
             android:contentDescription="@string/profile_picture"
             app:srcCompat="@drawable/user_profile_icon" />
 
@@ -29,12 +29,13 @@
             android:id="@+id/profile_image_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
             android:backgroundTint="@color/background_blue"
             android:contentDescription="@string/profile_image_button_description"
             app:srcCompat="@drawable/baseline_add_a_photo_24" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -63,46 +64,106 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:paddingTop="8dp">
 
-                    <!-- LinearLayout for the name and nickname -->
+                    <!-- LinearLayout for the first name, the last name and the nickname -->
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/fullName"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_semibold"
-                            android:text="@string/first_name"
-                            android:textColor="@color/black"
-                            android:textSize="32sp"
-                            android:textStyle="bold" />
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/nickname"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins_bold"
+                                android:text="First Name: "
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+
+                            <EditText
+                                android:id="@+id/first_name_edit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins_medium"
+                                android:text="@string/first_name"
+                                android:textColor="@color/black"
+                                android:textSize="32sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins_bold"
+                                android:text="Last Name: "
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+
+                            <EditText
+                                android:id="@+id/last_name_edit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins_medium"
+                                android:text="@string/first_name"
+                                android:textColor="@color/black"
+                                android:textSize="32sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
-                            android:text="@string/nickname"
-                            android:textColor="@color/light_grey"
-                            android:textSize="20sp" />
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins_bold"
+                                android:text="Nickname: "
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:text="\@"
+                                    android:textColor="@color/light_grey"
+                                    android:textSize="20sp"
+                                    tools:ignore="HardcodedText" />
+
+
+                                <EditText
+                                    android:id="@+id/nickname"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:text="@string/editNickname"
+                                    android:textColor="@color/light_grey"
+                                    android:textSize="20sp" />
+                            </LinearLayout>
+                        </LinearLayout>
 
                     </LinearLayout>
 
-                    <!-- LinearLayout for the remaining informations -->
+                    <!-- LinearLayout for the remaining information -->
                     <LinearLayout
-                        android:layout_width="36dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
                         android:orientation="vertical"
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp">
@@ -110,58 +171,97 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
 
-                            <ImageView
-                                android:id="@+id/imagePerson"
+                            <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:contentDescription="@string/image_person_content_description"
-                                app:srcCompat="@drawable/baseline_person_24" />
-
-                            <TextView
-                                android:id="@+id/sex"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_gravity="center_vertical"
-
-                                android:layout_marginStart="4dp"
-                                android:fontFamily="@font/poppins_medium"
-                                android:text="@string/sex"
+                                android:fontFamily="@font/poppins_bold"
+                                android:text="Sex: "
                                 android:textColor="@color/black"
                                 android:textSize="18sp" />
 
-                            <TextView
-                                android:id="@+id/ageEdit"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginStart="4dp"
-                                android:fontFamily="@font/poppins_medium"
-                                android:text="@string/age"
-                                android:textColor="@color/black"
-                                android:textSize="18sp" />
+                            <RadioGroup
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <RadioButton
+                                    android:id="@+id/radioButton"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:text="@string/sexMale"
+                                    android:textSize="18sp" />
+
+                                <RadioButton
+                                    android:id="@+id/radioButton2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:text="@string/sexFemale"
+                                    android:textSize="18sp" />
+
+                                <RadioButton
+                                    android:id="@+id/radioButton3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:text="@string/sexOther"
+                                    android:textSize="18sp" />
+                            </RadioGroup>
 
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
 
-                            <ImageView
-                                android:id="@+id/imageLocation"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:fontFamily="@font/poppins_bold"
+                                android:gravity="center_vertical"
+                                android:text="@string/age_label"
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+
+                            <EditText
+                                android:id="@+id/ageEdit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins_medium"
+                                android:gravity="start"
+                                android:inputType="numberDecimal"
+                                android:text="@string/age"
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:contentDescription="@string/image_location_content_description"
-                                app:srcCompat="@drawable/baseline_location_on_24" />
+                                android:fontFamily="@font/poppins_bold"
+                                android:text="@string/lives_in"
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
 
-                            <TextView
+                            <EditText
                                 android:id="@+id/location"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="4dp"
                                 android:layout_marginTop="4dp"
                                 android:fontFamily="@font/poppins_medium"
                                 android:text="@string/location"
@@ -170,42 +270,6 @@
 
                         </LinearLayout>
 
-                    </LinearLayout>
-
-                    <!-- LinearLayout for the buttons -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:paddingHorizontal="4dp">
-
-                        <Button
-                            android:id="@+id/button_add_friend"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/poppins_bold"
-                            android:gravity="center_vertical|center_horizontal"
-                            app:icon="@drawable/baseline_person_add_24"
-                            app:iconGravity="textStart"
-                            app:iconPadding="0dp"
-                            app:iconTint="#000000" />
-
-                        <Button
-                            android:id="@+id/button_message"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="16dp"
-                            android:layout_weight="1"
-                            android:backgroundTint="@color/blue_200"
-                            android:fontFamily="@font/poppins_bold"
-                            android:foregroundGravity="center"
-                            app:icon="@drawable/baseline_forum_24"
-                            app:iconGravity="textStart"
-                            app:iconPadding="0dp"
-                            app:iconTint="#000000" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -240,16 +304,17 @@
                         android:orientation="vertical">
 
                         <com.google.android.material.chip.ChipGroup
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="visible">
 
                             <com.google.android.material.chip.Chip
                                 android:id="@+id/chipSport1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:clickable="false"
                                 android:fontFamily="@font/poppins_medium"
                                 android:layoutDirection="rtl"
-                                android:clickable="false"
                                 android:text="@string/sport1"
                                 android:visibility="visible"
                                 app:chipBackgroundColor="@color/pale_orange"
@@ -259,9 +324,9 @@
                                 android:id="@+id/chipSport2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:clickable="false"
                                 android:fontFamily="@font/poppins_medium"
                                 android:layoutDirection="rtl"
-                                android:clickable="false"
                                 android:text="@string/sport2"
                                 app:chipBackgroundColor="@color/pale_green"
                                 app:chipIcon="@drawable/level_badge_intermediate" />
@@ -271,9 +336,9 @@
                                 style="@style/Widget.MaterialComponents.Chip.Action"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:clickable="false"
                                 android:fontFamily="@font/poppins_medium"
                                 android:layoutDirection="rtl"
-                                android:clickable="false"
                                 android:text="@string/sport3"
                                 app:chipBackgroundColor="@color/pale_blue"
                                 app:chipIcon="@drawable/level_badge_pro" />
@@ -283,9 +348,9 @@
                                 style="@style/Widget.MaterialComponents.Chip.Action"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:clickable="false"
                                 android:fontFamily="@font/poppins_medium"
                                 android:layoutDirection="rtl"
-                                android:clickable="false"
                                 android:text="@string/sport4"
                                 app:chipBackgroundColor="@color/pale_ametista"
                                 app:chipIcon="@drawable/level_badge_intermediate" />
@@ -295,9 +360,9 @@
                                 style="@style/Widget.MaterialComponents.Chip.Action"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:clickable="false"
                                 android:fontFamily="@font/poppins_medium"
                                 android:layoutDirection="rtl"
-                                android:clickable="false"
                                 android:text="@string/sport5"
                                 app:chipBackgroundColor="@color/pale_lighter_blue"
                                 app:chipIcon="@drawable/level_badge_beginner" />
@@ -307,9 +372,9 @@
                                 style="@style/Widget.MaterialComponents.Chip.Action"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:clickable="false"
                                 android:fontFamily="@font/poppins_medium"
                                 android:layoutDirection="rtl"
-                                android:clickable="false"
                                 android:text="@string/sport6"
                                 app:chipBackgroundColor="@color/pale_lighter_green"
                                 app:chipIcon="@drawable/level_badge_intermediate" />
@@ -319,9 +384,9 @@
                                 style="@style/Widget.MaterialComponents.Chip.Action"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:clickable="false"
                                 android:fontFamily="@font/poppins_medium"
                                 android:layoutDirection="rtl"
-                                android:clickable="false"
                                 android:text="@string/sport7"
                                 app:chipBackgroundColor="@color/pale_lighter_yellow"
                                 app:chipIcon="@drawable/level_badge_beginner" />
@@ -331,9 +396,9 @@
                                 style="@style/Widget.MaterialComponents.Chip.Action"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:clickable="false"
                                 android:fontFamily="@font/poppins_medium"
                                 android:layoutDirection="rtl"
-                                android:clickable="false"
                                 android:text="@string/sport8"
                                 app:chipBackgroundColor="@color/pale_lighter_grey"
                                 app:chipIcon="@drawable/level_badge_intermediate" />
@@ -343,9 +408,9 @@
                                 style="@style/Widget.MaterialComponents.Chip.Action"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:clickable="false"
                                 android:fontFamily="@font/poppins_medium"
                                 android:layoutDirection="rtl"
-                                android:clickable="false"
                                 android:text="@string/sport9"
                                 app:chipBackgroundColor="@color/pale_lighter_orange"
                                 app:chipIcon="@drawable/level_badge_pro" />
@@ -355,9 +420,9 @@
                                 style="@style/Widget.MaterialComponents.Chip.Action"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:clickable="false"
                                 android:fontFamily="@font/poppins_medium"
                                 android:layoutDirection="rtl"
-                                android:clickable="false"
                                 android:text="@string/sport10"
                                 app:chipBackgroundColor="@color/pale_lighter_red"
                                 app:chipIcon="@drawable/level_badge_beginner" />
@@ -380,7 +445,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
                     android:orientation="vertical">
 
                     <!-- title -->
@@ -393,7 +457,7 @@
                         android:textSize="24sp" />
 
                     <!-- bio -->
-                    <TextView
+                    <EditText
                         android:id="@+id/bio"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

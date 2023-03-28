@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/back_button"
+        android:title="@string/confirm_button"
+        android:icon="@drawable/baseline_keyboard_return_24"
+        app:showAsAction="ifRoom"/>
+
     <item
         android:id="@+id/confirm_button"
         android:title="@string/confirm_button"
         android:icon="@drawable/baseline_check_24"
         app:showAsAction="always"/>
+
 </menu>
