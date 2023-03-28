@@ -37,8 +37,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="7"
             android:layout_gravity="top"
+            android:layout_weight="7"
             android:background="@color/background_orange"
             android:orientation="vertical"
             android:paddingHorizontal="16dp"
@@ -229,55 +229,126 @@
 
                     android:textSize="24sp" />
 
-                <HorizontalScrollView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent">
+                    <com.google.android.material.chip.ChipGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                        <com.google.android.material.chip.ChipGroup
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipSport1"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:layoutDirection="rtl"
+                            android:text="@string/sport1"
+                            app:chipBackgroundColor="@color/pale_orange"
+                            app:chipIcon="@drawable/level_badge_beginner" />
 
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport1"
-                                app:chipBackgroundColor="@color/pale_orange"
-                                app:chipIcon="@drawable/level_badge_beginner" />
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipSport2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:layoutDirection="rtl"
+                            android:text="@string/sport2"
+                            app:chipBackgroundColor="@color/pale_green"
+                            app:chipIcon="@drawable/level_badge_intermediate" />
 
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport2"
-                                app:chipBackgroundColor="@color/pale_green"
-                                app:chipIcon="@drawable/level_badge_intermediate" />
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipSport3"
+                            style="@style/Widget.MaterialComponents.Chip.Action"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:layoutDirection="rtl"
+                            android:text="@string/sport3"
+                            app:chipBackgroundColor="@color/pale_blue"
+                            app:chipIcon="@drawable/level_badge_pro" />
 
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport3"
-                                style="@style/Widget.MaterialComponents.Chip.Action"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport3"
-                                app:chipBackgroundColor="@color/pale_blue"
-                                app:chipIcon="@drawable/level_badge_pro" />
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipSport4"
+                            style="@style/Widget.MaterialComponents.Chip.Action"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:layoutDirection="rtl"
+                            android:text="@string/sport4"
+                            app:chipBackgroundColor="@color/pale_ametista"
+                            app:chipIcon="@drawable/level_badge_intermediate" />
 
-                        </com.google.android.material.chip.ChipGroup>
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipSport5"
+                            style="@style/Widget.MaterialComponents.Chip.Action"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:layoutDirection="rtl"
+                            android:text="@string/sport5"
+                            app:chipBackgroundColor="@color/pale_lighter_blue"
+                            app:chipIcon="@drawable/level_badge_beginner" />
 
-                    </LinearLayout>
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipSport6"
+                            style="@style/Widget.MaterialComponents.Chip.Action"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:layoutDirection="rtl"
+                            android:text="@string/sport6"
+                            app:chipBackgroundColor="@color/pale_lighter_violet"
+                            app:chipIcon="@drawable/level_badge_intermediate" />
 
-                </HorizontalScrollView>
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipSport7"
+                            style="@style/Widget.MaterialComponents.Chip.Action"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:layoutDirection="rtl"
+                            android:text="@string/sport7"
+                            app:chipBackgroundColor="@color/pale_blue"
+                            app:chipIcon="@drawable/level_badge_beginner" />
 
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipSport8"
+                            style="@style/Widget.MaterialComponents.Chip.Action"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:layoutDirection="rtl"
+                            android:text="@string/sport8"
+                            app:chipBackgroundColor="@color/pale_blue"
+                            app:chipIcon="@drawable/level_badge_intermediate" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipSport9"
+                            style="@style/Widget.MaterialComponents.Chip.Action"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:layoutDirection="rtl"
+                            android:text="@string/sport9"
+                            app:chipBackgroundColor="@color/pale_blue"
+                            app:chipIcon="@drawable/level_badge_pro" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipSport10"
+                            style="@style/Widget.MaterialComponents.Chip.Action"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:layoutDirection="rtl"
+                            android:text="@string/sport10"
+                            app:chipBackgroundColor="@color/pale_blue"
+                            app:chipIcon="@drawable/level_badge_beginner" />
+
+                    </com.google.android.material.chip.ChipGroup>
+
+                </LinearLayout>
 
             </LinearLayout>
 

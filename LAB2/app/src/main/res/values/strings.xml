@@ -15,8 +15,16 @@
     <string name="location">Lives in Turin (TO)</string>
     <string name="sports_title">Sports</string>
     <string name="sport1">Basket</string>
-    <string name="sport2">Soccer</string>
-    <string name="sport3">Tennis</string>
+    <string name="sport2">11-a-side Football</string>
+    <string name="sport3">5-a-side Football</string>
+    <string name="sport4">8-a-side Football</string>
+    <string name="sport5">Tennis</string>
+    <string name="sport6">Volleyball</string>
+    <string name="sport7">Table Tennis</string>
+    <string name="sport8">Beach Volley</string>
+    <string name="sport9">Padel</string>
+    <string name="sport10">Mini Golf</string>
+    <string name="sport11">Swimming</string>
     <string name="bio_title">Bio</string>
     <string name="bio">I’m a Computer Engineering student from Latina. I love playing basketball and tennis with my friends, especially on the weekend.</string>
 
