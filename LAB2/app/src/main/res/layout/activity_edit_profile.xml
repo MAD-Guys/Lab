@@ -23,13 +23,13 @@
             android:orientation="vertical"
             android:scrollIndicators="none">
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/profile_picture"
                 android:layout_width="200dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:contentDescription="@string/profile_picture"
-                app:srcCompat="@drawable/user_profile_icon" />
+                android:foreground="@drawable/user_profile_icon" />
 
         </LinearLayout>
 
@@ -57,24 +57,91 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/fullName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="42dp"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:text="@string/first_name"
-                        android:textColor="@color/black"
-                        android:textSize="32sp"
-                        android:textStyle="bold" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/nickname"
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_bold"
+                            android:text="First Name: "
+                            android:textColor="@color/black"
+                            android:textSize="18sp"></TextView>
+
+                        <EditText
+                            android:id="@+id/fullName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:text="@string/first_name"
+                            android:textColor="@color/black"
+                            android:textSize="32sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_bold"
+                            android:text="Last Name: "
+                            android:textColor="@color/black"
+                            android:textSize="18sp"></TextView>
+
+                        <EditText
+                            android:id="@+id/fullName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:text="@string/first_name"
+                            android:textColor="@color/black"
+                            android:textSize="32sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_medium"
-                        android:text="@string/nickname"
-                        android:textColor="@color/light_grey"
-                        android:textSize="20sp" />
+                        android:orientation="vertical"
+                        >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_bold"
+                            android:text="Nickname: "
+                            android:textColor="@color/black"
+                            android:textSize="18sp"></TextView>
+
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins_medium"
+                                android:text="\@"
+                                android:textColor="@color/light_grey"
+                                android:textSize="20sp"></TextView>
+
+
+                            <EditText
+                                android:id="@+id/nickname"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins_medium"
+                                android:text="@string/editNickname"
+                                android:textColor="@color/light_grey"
+                                android:textSize="20sp" />
+                        </LinearLayout>
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -82,6 +149,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="top"
                     android:orientation="vertical"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp">
@@ -89,60 +157,99 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
 
-                        <ImageView
-                            android:id="@+id/imagePerson"
-                            android:layout_width="0dp"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
                             android:contentDescription="@string/image_person_content_description"
-                            app:srcCompat="@drawable/baseline_person_24" />
-
-                        <TextView
-                            android:id="@+id/sex"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginTop="4dp"
-                            android:fontFamily="@font/poppins_medium"
-                            android:text="@string/sex"
+                            android:fontFamily="@font/poppins_bold"
+                            android:text="Sex: "
                             android:textColor="@color/black"
                             android:textSize="18sp" />
 
-                        <TextView
-                            android:id="@+id/age"
+                        <RadioGroup
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginTop="4dp"
-                            android:fontFamily="@font/poppins_medium"
-                            android:text="@string/age"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/radioButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins_medium"
+                                android:text="@string/sexMale"
+                                android:textSize="18sp" />
+
+                            <RadioButton
+                                android:id="@+id/radioButton2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:fontFamily="@font/poppins_medium"
+                                android:text="@string/sexFemale"
+                                android:textSize="18sp" />
+
+                            <RadioButton
+                                android:id="@+id/radioButton3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:fontFamily="@font/poppins_medium"
+                                android:text="@string/sexOther"
+                                android:textSize="18sp" />
+                        </RadioGroup>
+
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:id="@+id/imageLocation"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:contentDescription="@string/image_location_content_description"
-                            app:srcCompat="@drawable/baseline_location_on_24" />
+                        android:orientation="vertical"
+                        >
 
                         <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/poppins_bold"
+                            android:gravity="center_vertical"
+                            android:text="@string/age_label"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <EditText
+                            android:id="@+id/ageEdit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:gravity="start"
+                            android:inputType="numberDecimal"
+                            android:text="@string/age"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:contentDescription="@string/image_location_content_description"
+                            android:fontFamily="@font/poppins_bold"
+                            android:text="@string/lives_in"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <EditText
                             android:id="@+id/location"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
                             android:layout_marginTop="4dp"
                             android:fontFamily="@font/poppins_medium"
                             android:text="@string/location"
@@ -154,52 +261,6 @@
                 </LinearLayout>
 
                 <!-- LinearLayout for the buttons -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <Button
-                        android:id="@+id/button_add_friend"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/poppins_bold"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="6dp"
-                        android:text="@string/add_friend_button"
-                        android:textAlignment="gravity"
-                        android:textAllCaps="false"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                        android:textColor="@color/black"
-                        android:textSize="18sp"
-                        app:icon="@drawable/baseline_person_add_24"
-                        app:iconGravity="textStart"
-                        app:iconTint="#000000" />
-
-                    <Button
-                        android:id="@+id/button_message"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:layout_marginStart="16dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/blue_200"
-                        android:fontFamily="@font/poppins_bold"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="6dp"
-                        android:text="@string/message_button"
-                        android:textAlignment="gravity"
-                        android:textAllCaps="false"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                        android:textColor="@color/black"
-                        android:textSize="18sp"
-                        app:icon="@drawable/baseline_forum_24"
-                        app:iconGravity="textStart"
-                        app:iconTint="#000000" />
-                </LinearLayout>
 
             </LinearLayout>
 
@@ -388,7 +449,7 @@
                     android:textSize="24sp" />
 
                 <!-- bio -->
-                <TextView
+                <EditText
                     android:id="@+id/bio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

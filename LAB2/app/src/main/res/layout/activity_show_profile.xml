@@ -139,6 +139,15 @@
                             app:srcCompat="@drawable/baseline_location_on_24" />
 
                         <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginTop="4dp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:text="@string/lives_in"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+                        <TextView
                             android:id="@+id/location"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
