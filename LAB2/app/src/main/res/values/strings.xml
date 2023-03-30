@@ -11,9 +11,9 @@
     <string name="first_name">John</string>
     <string name="last_name">Doe</string>
     <string name="fullname">John Doe</string>
-    <string name="nickname">\@johndoe</string>
+    <string name="nickname">johndoe</string>
     <string name="editNickname">johndoe</string>
-    <string name="sex">Male,</string>
+    <string name="sex">Male</string>
     <string name="sexMale">Male</string>
     <string name="sexFemale">Female</string>
     <string name="sexOther">Other</string>

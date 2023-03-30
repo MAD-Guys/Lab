@@ -14,21 +14,25 @@ import android.widget.Toast
 //import com.google.android.material.chip.Chip
 
 class ShowProfileActivity : AppCompatActivity() {
-    private lateinit var addFriendButton: Button
-    private lateinit var messageButton: Button
-    private lateinit var fullname: TextView
-    private lateinit var nickname: TextView
+
+    //General info variables
+    private lateinit var fullName: TextView
+    private lateinit var nickName: TextView
     private lateinit var sex: TextView
     private lateinit var age: TextView
-    private lateinit var bio: TextView
     private lateinit var location: TextView
-    // private lateinit var chip: Chip
+    private lateinit var bio: TextView
+
+    //Button variables
+    private lateinit var addFriendButton: Button
+    private lateinit var messageButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
 
-        // manage sports chips
+        //Sport chips variables
+        // private lateinit var chip: Chip
         // chip = findViewById(R.id.chipSport1)
         // chip.visibility = Chip.GONE
 
@@ -36,12 +40,12 @@ class ShowProfileActivity : AppCompatActivity() {
         addFriendButton = findViewById(R.id.button_add_friend)
         messageButton = findViewById(R.id.button_message)
 
-        fullname = findViewById(R.id.fullName)
-        nickname = findViewById(R.id.nickname)
+        fullName = findViewById(R.id.fullName)
+        nickName = findViewById(R.id.nickname)
         sex = findViewById(R.id.sex)
         age = findViewById(R.id.age)
-        bio = findViewById(R.id.bio)
         location = findViewById(R.id.location)
+        bio = findViewById(R.id.bio)
 
         addFriendButton.setOnClickListener() {
             val toast = Toast.makeText(this, "Add friend button clicked!!!", Toast.LENGTH_SHORT)
@@ -56,22 +60,23 @@ class ShowProfileActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
         // retrieve data from SharedPreferences
         val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
-        val _firstName = sh.getString("firstName", getString(R.string.first_name))
-        val _lastName = sh.getString("lastName", getString(R.string.last_name))
-        val _sex = sh.getString("sex", getString(R.string.sex))
-        val _age = sh.getString("age", getString(R.string.age))
-        val _nickname = sh.getString("nickname", getString(R.string.nickname))
-        val _bio = sh.getString("bio", getString(R.string.bio))
-        val _location = sh.getString("location",getString(R.string.location))
+        val firstNameResume = sh.getString("firstName", getString(R.string.first_name))
+        val lastNameResume = sh.getString("lastName", getString(R.string.last_name))
+        val sexResume = sh.getString("sex", getString(R.string.sex))
+        val ageResume = sh.getString("age", getString(R.string.age))
+        val nicknameResume = sh.getString("nickname", getString(R.string.nickname))
+        val bioResume = sh.getString("bio", getString(R.string.bio))
+        val locationResume = sh.getString("location", getString(R.string.location))
 
-        fullname.text = "$_firstName $_lastName"
-        nickname.text = _nickname
-        age.text = _age
-        sex.text = _sex
-        bio.text = _bio
-        location.text = _location
+        fullName.text = "$firstNameResume $lastNameResume"
+        nickName.text = "@$nicknameResume"
+        age.text = ageResume
+        sex.text = sexResume
+        bio.text = bioResume
+        location.text = locationResume
 
     }
 

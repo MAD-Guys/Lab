@@ -28,17 +28,20 @@ import java.io.IOException
 
 class EditProfileActivity : AppCompatActivity() {
 
+    //General info variables
     private lateinit var firstName: EditText
     private lateinit var lastName: EditText
     private lateinit var nickname: EditText
     private lateinit var age: EditText
-    private lateinit var bio: EditText
     private lateinit var location: EditText
+    private lateinit var bio: EditText
+
+    //Radio group variables
     private lateinit var radioGroup: RadioGroup
-    private lateinit var radioMale: RadioButton
-    private lateinit var radioFemale: RadioButton
-    private lateinit var radioOther: RadioButton
+
+    //Profile picture variables
     private lateinit var imageView: ImageView
+
     private var galleryUri: Uri? = null
     private var cameraUri: Uri? = null
 
@@ -64,9 +67,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
         }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
@@ -77,9 +78,6 @@ class EditProfileActivity : AppCompatActivity() {
         age = findViewById(R.id.edit_age)
         bio = findViewById(R.id.edit_bio)
         location = findViewById(R.id.edit_location)
-        radioMale = findViewById(R.id.radioMale)
-        radioFemale = findViewById(R.id.radioFemale)
-        radioOther = findViewById(R.id.radioOther)
         imageView = findViewById(R.id.profile_picture)
 
         firstName.addTextChangedListener(textListenersInit("firstName", firstName))
@@ -93,15 +91,21 @@ class EditProfileActivity : AppCompatActivity() {
             val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
             val editor = sh.edit()
             editor.putInt("radioChecked", checkedId)
+
+            //Managing the Sex field in order to display it into the ShowActivityProfile activity
+            when (checkedId) {
+                R.id.radioFemale -> editor.putString("sex", "Female")
+                R.id.radioOther -> editor.putString("sex", "Other")
+                else -> editor.putString("sex", "Male")
+            }
+
             editor.apply()
         }
-
 
         val profileImageButton: ImageButton = findViewById(R.id.profile_image_button)
         registerForContextMenu(profileImageButton)
 
         profileImageButton.setOnClickListener() {
-
             //open the related context menu
             openContextMenu(profileImageButton)
         }
@@ -110,28 +114,29 @@ class EditProfileActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
         // retrieve data from SharedPreferences
         val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
-        val _firstName = sh.getString("firstName", getString(R.string.first_name))
-        val _lastName = sh.getString("lastName", getString(R.string.last_name))
-        val _age = sh.getString("age", getString(R.string.age))
-        val _radioChecked = sh.getInt("radioChecked", R.id.radioMale)
-        val _nickname = sh.getString("nickname", getString(R.string.nickname))
-        val _bio = sh.getString("bio", getString(R.string.bio))
-        val _location = sh.getString("location", getString(R.string.location))
+        val firstNameResume = sh.getString("firstName", getString(R.string.first_name))
+        val lastNameResume = sh.getString("lastName", getString(R.string.last_name))
+        val ageResume = sh.getString("age", getString(R.string.age))
+        val radioCheckedResume = sh.getInt("radioChecked", R.id.radioMale)
+        val nicknameResume = sh.getString("nickname", getString(R.string.nickname))
+        val bioResume = sh.getString("bio", getString(R.string.bio))
+        val locationResume = sh.getString("location", getString(R.string.location))
 
-        firstName.setText(_firstName)
-        lastName.setText(_lastName)
-        nickname.setText(_nickname)
-        age.setText(_age)
-        bio.setText(_bio)
-        location.setText(_location)
-        radioGroup.check(_radioChecked)
-
+        firstName.setText(firstNameResume)
+        lastName.setText(lastNameResume)
+        nickname.setText(nicknameResume)
+        age.setText(ageResume)
+        bio.setText(bioResume)
+        location.setText(locationResume)
+        radioGroup.check(radioCheckedResume)
 
     }
 
     private fun textListenersInit(id: String, et: EditText): TextWatcher {
+
         return object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
@@ -149,8 +154,6 @@ class EditProfileActivity : AppCompatActivity() {
                 editor.apply()
             }
         }
-
-
     }
 
     //Function that handles the result of the permission request
@@ -308,6 +311,5 @@ class EditProfileActivity : AppCompatActivity() {
             else -> super.onContextItemSelected(item)
         }
     }
-
 
 }

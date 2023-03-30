@@ -116,10 +116,19 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center_vertical"
-
                                 android:layout_marginStart="4dp"
                                 android:fontFamily="@font/poppins_medium"
                                 android:text="@string/sex"
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+
+                            <TextView
+                                android:id="@+id/comma"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical"
+                                android:fontFamily="@font/poppins_medium"
+                                android:text=","
                                 android:textColor="@color/black"
                                 android:textSize="18sp" />
 
@@ -235,7 +244,7 @@
                             android:layout_height="wrap_content">
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport1"
+                                android:id="@+id/basketChip"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:clickable="false"
@@ -247,7 +256,7 @@
                                 app:chipIcon="@drawable/level_badge_beginner" />
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport2"
+                                android:id="@+id/football11Chip"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:clickable="false"
@@ -258,7 +267,7 @@
                                 app:chipIcon="@drawable/level_badge_intermediate" />
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport3"
+                                android:id="@+id/football5Chip"
                                 style="@style/Widget.MaterialComponents.Chip.Action"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -270,7 +279,7 @@
                                 app:chipIcon="@drawable/level_badge_pro" />
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport4"
+                                android:id="@+id/football8Chip"
                                 style="@style/Widget.MaterialComponents.Chip.Action"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -282,7 +291,7 @@
                                 app:chipIcon="@drawable/level_badge_intermediate" />
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport5"
+                                android:id="@+id/tennisChip"
                                 style="@style/Widget.MaterialComponents.Chip.Action"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -294,7 +303,7 @@
                                 app:chipIcon="@drawable/level_badge_beginner" />
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport6"
+                                android:id="@+id/volleyballChip"
                                 style="@style/Widget.MaterialComponents.Chip.Action"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -306,7 +315,7 @@
                                 app:chipIcon="@drawable/level_badge_intermediate" />
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport7"
+                                android:id="@+id/tableTennisChip"
                                 style="@style/Widget.MaterialComponents.Chip.Action"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -318,7 +327,7 @@
                                 app:chipIcon="@drawable/level_badge_beginner" />
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport8"
+                                android:id="@+id/beachVolleyChip"
                                 style="@style/Widget.MaterialComponents.Chip.Action"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -330,7 +339,7 @@
                                 app:chipIcon="@drawable/level_badge_intermediate" />
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport9"
+                                android:id="@+id/padelChip"
                                 style="@style/Widget.MaterialComponents.Chip.Action"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -342,7 +351,7 @@
                                 app:chipIcon="@drawable/level_badge_pro" />
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport10"
+                                android:id="@+id/miniGolfChip"
                                 style="@style/Widget.MaterialComponents.Chip.Action"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -360,7 +369,7 @@
                 </LinearLayout>
 
                 <View
-                    android:id="@+id/Bio_divider"
+                    android:id="@+id/bio_divider"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginVertical="2dp"

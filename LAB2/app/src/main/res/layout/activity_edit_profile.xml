@@ -106,9 +106,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
-                            android:text="@string/first_name"
+                            android:text="@string/last_name"
                             android:textColor="@color/black"
                             android:textSize="32sp" />
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -124,7 +125,6 @@
                             android:textColor="@color/black"
                             android:textSize="18sp" />
 
-
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
@@ -136,7 +136,6 @@
                                 android:text="\@"
                                 android:textColor="@color/light_grey"
                                 android:textSize="20sp" />
-
 
                             <EditText
                                 android:id="@+id/edit_nickname"
