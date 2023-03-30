@@ -1,16 +1,14 @@
 package it.polito.mad.lab2
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -22,7 +20,9 @@ import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.FileDescriptor
 import java.io.IOException
 
@@ -76,8 +76,8 @@ class EditProfileActivity : AppCompatActivity() {
                 profilePicture.setImageBitmap(rotated)
 
                 //Saving picture into shared preferences
-                if (inputImage != null) {
-                    savePictureOnSharedPreferences(inputImage)
+                if (rotated != null) {
+                    savePictureOnSharedPreferences(rotated)
                 }
             }
         }
@@ -200,11 +200,22 @@ class EditProfileActivity : AppCompatActivity() {
 
     //Function that opens the camera
     private fun openCamera() {
-        val values = ContentValues()
+
+        //Uncomment these lines if you want to save images inside the phone gallery
+        /*val values = ContentValues()
         values.put(MediaStore.Images.Media.TITLE, "New Picture")
         values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
+        cameraUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)*/
 
-        cameraUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        //Creating a file object for the temporal image
+        val imageFile = File.createTempFile("temp_image", ".jpeg", cacheDir)
+
+        //Creating through a FileProvider the URI
+        cameraUri = FileProvider.getUriForFile(
+            this,
+            "it.polito.mad.lab2.fileprovider", imageFile
+        )
+
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraUri)
 
@@ -242,22 +253,19 @@ class EditProfileActivity : AppCompatActivity() {
 
     //rotate image if image captured on samsung devices
     //Most phone cameras are landscape, meaning if you take the photo in portrait, the resulting photos will be rotated 90 degrees.
-    @SuppressLint("Range")
-    fun rotateBitmap(input: Bitmap): Bitmap? {
-        val orientationColumn = arrayOf(MediaStore.Images.Media.ORIENTATION)
-
-        val cur: Cursor? =
-            cameraUri?.let { contentResolver.query(it, orientationColumn, null, null, null) }
-        var orientation: Float = -1f
-
-        if (cur != null && cur.moveToFirst()) {
-            orientation = cur.getInt(cur.getColumnIndex(orientationColumn[0])).toFloat()
-        }
-
+    private fun rotateBitmap(bitmap: Bitmap): Bitmap? {
+        val input = MediaStore.Images.Media.getBitmap(contentResolver, cameraUri)
+        val exif = ExifInterface(cameraUri?.let { contentResolver.openInputStream(it) }!!)
+        val orientation =
+            exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
         val rotationMatrix = Matrix()
-        rotationMatrix.setRotate(orientation)
 
-        cur?.close()
+        when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> rotationMatrix.setRotate(90f)
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotationMatrix.setRotate(180f)
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotationMatrix.setRotate(270f)
+            else -> return bitmap
+        }
 
         return Bitmap.createBitmap(input, 0, 0, input.width, input.height, rotationMatrix, true)
     }
