@@ -29,7 +29,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:contentDescription="@string/profile_picture"
-                app:srcCompat="@drawable/user_profile_icon" />
+                app:srcCompat="@drawable/user_profile_picture" />
 
         </LinearLayout>
 

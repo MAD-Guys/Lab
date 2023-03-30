@@ -11,18 +11,18 @@ import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Base64
 import android.view.*
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
+import java.io.ByteArrayOutputStream
 import java.io.FileDescriptor
 import java.io.IOException
 
@@ -39,8 +39,8 @@ class EditProfileActivity : AppCompatActivity() {
     //Radio group variables
     private lateinit var radioGroup: RadioGroup
 
-    //Profile picture variables
-    private lateinit var imageView: ImageView
+    //Profile picture variable
+    private lateinit var profilePicture: ImageView
 
     private var galleryUri: Uri? = null
     private var cameraUri: Uri? = null
@@ -52,7 +52,15 @@ class EditProfileActivity : AppCompatActivity() {
             if (it.resultCode == Activity.RESULT_OK) {
                 val data: Intent? = it.data
                 galleryUri = data?.data
-                imageView.setImageURI(galleryUri)
+                val inputImage: Bitmap? = galleryUri?.let { it1 -> uriToBitmap(it1) }
+
+                //Setting picture into the imageView
+                profilePicture.setImageBitmap(inputImage)
+
+                //Saving picture into shared preferences
+                if (inputImage != null) {
+                    savePictureOnSharedPreferences(inputImage)
+                }
             }
         }
 
@@ -63,7 +71,14 @@ class EditProfileActivity : AppCompatActivity() {
             if (it.resultCode == Activity.RESULT_OK) {
                 val inputImage: Bitmap? = cameraUri?.let { it1 -> uriToBitmap(it1) }
                 val rotated: Bitmap? = inputImage?.let { it1 -> rotateBitmap(it1) }
-                imageView.setImageBitmap(rotated)
+
+                //Setting picture into the imageView
+                profilePicture.setImageBitmap(rotated)
+
+                //Saving picture into shared preferences
+                if (inputImage != null) {
+                    savePictureOnSharedPreferences(inputImage)
+                }
             }
         }
 
@@ -76,23 +91,23 @@ class EditProfileActivity : AppCompatActivity() {
         nickname = findViewById(R.id.edit_nickname)
         radioGroup = findViewById(R.id.radioSexGroup)
         age = findViewById(R.id.edit_age)
-        bio = findViewById(R.id.edit_bio)
         location = findViewById(R.id.edit_location)
-        imageView = findViewById(R.id.profile_picture)
+        bio = findViewById(R.id.edit_bio)
+        profilePicture = findViewById(R.id.profile_picture)
 
         firstName.addTextChangedListener(textListenersInit("firstName", firstName))
         lastName.addTextChangedListener(textListenersInit("lastName", lastName))
         nickname.addTextChangedListener(textListenersInit("nickname", nickname))
         age.addTextChangedListener(textListenersInit("age", age))
-        bio.addTextChangedListener(textListenersInit("bio", bio))
         location.addTextChangedListener(textListenersInit("location", location))
+        bio.addTextChangedListener(textListenersInit("bio", bio))
 
         radioGroup.setOnCheckedChangeListener { _, checkedId ->
             val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
             val editor = sh.edit()
             editor.putInt("radioChecked", checkedId)
 
-            //Managing the Sex field in order to display it into the ShowActivityProfile activity
+            //Managing the Sex field in order to display it correctly into the ShowActivityProfile activity
             when (checkedId) {
                 R.id.radioFemale -> editor.putString("sex", "Female")
                 R.id.radioOther -> editor.putString("sex", "Other")
@@ -117,21 +132,30 @@ class EditProfileActivity : AppCompatActivity() {
 
         // retrieve data from SharedPreferences
         val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
+
         val firstNameResume = sh.getString("firstName", getString(R.string.first_name))
         val lastNameResume = sh.getString("lastName", getString(R.string.last_name))
-        val ageResume = sh.getString("age", getString(R.string.age))
-        val radioCheckedResume = sh.getInt("radioChecked", R.id.radioMale)
         val nicknameResume = sh.getString("nickname", getString(R.string.nickname))
-        val bioResume = sh.getString("bio", getString(R.string.bio))
+        val radioCheckedResume = sh.getInt("radioChecked", R.id.radioMale)
+        val ageResume = sh.getString("age", getString(R.string.age))
         val locationResume = sh.getString("location", getString(R.string.location))
+        val bioResume = sh.getString("bio", getString(R.string.bio))
+
+        val profilePictureResume = sh.getString("profilePicture", null)
 
         firstName.setText(firstNameResume)
         lastName.setText(lastNameResume)
         nickname.setText(nicknameResume)
-        age.setText(ageResume)
-        bio.setText(bioResume)
-        location.setText(locationResume)
         radioGroup.check(radioCheckedResume)
+        age.setText(ageResume)
+        location.setText(locationResume)
+        bio.setText(bioResume)
+
+        if (profilePictureResume != null && !profilePictureResume.equals("", ignoreCase = true)) {
+            val b: ByteArray = Base64.decode(profilePictureResume, Base64.DEFAULT)
+            val bitmap = BitmapFactory.decodeByteArray(b, 0, b.size)
+            profilePicture.setImageBitmap(bitmap)
+        }
 
     }
 
@@ -199,6 +223,21 @@ class EditProfileActivity : AppCompatActivity() {
             e.printStackTrace()
         }
         return null
+    }
+
+    private fun savePictureOnSharedPreferences(picture: Bitmap) {
+        val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
+        val editor = sh.edit()
+
+        //Encoding bitmap into Base64 string
+        val baos = ByteArrayOutputStream()
+        picture.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val b: ByteArray = baos.toByteArray()
+        val encodedImage: String = Base64.encodeToString(b, Base64.DEFAULT)
+
+        //Saving Base64 string into shared preferences
+        editor.putString("profilePicture", encodedImage)
+        editor.apply()
     }
 
     //rotate image if image captured on samsung devices

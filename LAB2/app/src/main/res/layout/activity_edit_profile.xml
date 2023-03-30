@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:scrollbars="none"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 android:contentDescription="@string/profile_picture"
-                app:srcCompat="@drawable/user_profile_icon" />
+                app:srcCompat="@drawable/user_profile_picture" />
 
             <ImageButton
                 android:id="@+id/profile_image_button"
@@ -305,9 +305,9 @@
                             android:id="@+id/chipSport1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
-                            android:clickable="false"
                             android:text="@string/sport1"
                             android:visibility="visible"
                             app:chipBackgroundColor="@color/pale_orange"
@@ -317,9 +317,9 @@
                             android:id="@+id/chipSport2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
-                            android:clickable="false"
                             android:text="@string/sport2"
                             app:chipBackgroundColor="@color/pale_green"
                             app:chipIcon="@drawable/level_badge_intermediate" />
@@ -329,9 +329,9 @@
                             style="@style/Widget.MaterialComponents.Chip.Action"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
-                            android:clickable="false"
                             android:text="@string/sport3"
                             app:chipBackgroundColor="@color/pale_blue"
                             app:chipIcon="@drawable/level_badge_pro" />
@@ -341,9 +341,9 @@
                             style="@style/Widget.MaterialComponents.Chip.Action"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
-                            android:clickable="false"
                             android:text="@string/sport4"
                             app:chipBackgroundColor="@color/pale_ametista"
                             app:chipIcon="@drawable/level_badge_intermediate" />
@@ -353,9 +353,9 @@
                             style="@style/Widget.MaterialComponents.Chip.Action"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
-                            android:clickable="false"
                             android:text="@string/sport5"
                             app:chipBackgroundColor="@color/pale_lighter_blue"
                             app:chipIcon="@drawable/level_badge_beginner" />
@@ -365,9 +365,9 @@
                             style="@style/Widget.MaterialComponents.Chip.Action"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
-                            android:clickable="false"
                             android:text="@string/sport6"
                             app:chipBackgroundColor="@color/pale_lighter_green"
                             app:chipIcon="@drawable/level_badge_intermediate" />
@@ -377,9 +377,9 @@
                             style="@style/Widget.MaterialComponents.Chip.Action"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
-                            android:clickable="false"
                             android:text="@string/sport7"
                             app:chipBackgroundColor="@color/pale_lighter_yellow"
                             app:chipIcon="@drawable/level_badge_beginner" />
@@ -389,9 +389,9 @@
                             style="@style/Widget.MaterialComponents.Chip.Action"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
-                            android:clickable="false"
                             android:text="@string/sport8"
                             app:chipBackgroundColor="@color/pale_lighter_grey"
                             app:chipIcon="@drawable/level_badge_intermediate" />
@@ -401,9 +401,9 @@
                             style="@style/Widget.MaterialComponents.Chip.Action"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
-                            android:clickable="false"
                             android:text="@string/sport9"
                             app:chipBackgroundColor="@color/pale_lighter_orange"
                             app:chipIcon="@drawable/level_badge_pro" />
@@ -413,9 +413,9 @@
                             style="@style/Widget.MaterialComponents.Chip.Action"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:clickable="false"
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
-                            android:clickable="false"
                             android:text="@string/sport10"
                             app:chipBackgroundColor="@color/pale_lighter_red"
                             app:chipIcon="@drawable/level_badge_beginner" />

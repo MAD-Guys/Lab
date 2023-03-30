@@ -2,12 +2,15 @@ package it.polito.mad.lab2
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Base64
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 
@@ -23,6 +26,9 @@ class ShowProfileActivity : AppCompatActivity() {
     private lateinit var location: TextView
     private lateinit var bio: TextView
 
+    //Profile picture variables
+    private lateinit var profilePicture: ImageView
+
     //Button variables
     private lateinit var addFriendButton: Button
     private lateinit var messageButton: Button
@@ -36,16 +42,19 @@ class ShowProfileActivity : AppCompatActivity() {
         // chip = findViewById(R.id.chipSport1)
         // chip.visibility = Chip.GONE
 
-        // retrieve buttons, set callbacks and text
-        addFriendButton = findViewById(R.id.button_add_friend)
-        messageButton = findViewById(R.id.button_message)
-
         fullName = findViewById(R.id.fullName)
         nickName = findViewById(R.id.nickname)
         sex = findViewById(R.id.sex)
         age = findViewById(R.id.age)
         location = findViewById(R.id.location)
         bio = findViewById(R.id.bio)
+
+        //Managing the profile picture
+        profilePicture = findViewById(R.id.profile_picture)
+
+        // retrieve buttons, set callbacks and text
+        addFriendButton = findViewById(R.id.button_add_friend)
+        messageButton = findViewById(R.id.button_message)
 
         addFriendButton.setOnClickListener() {
             val toast = Toast.makeText(this, "Add friend button clicked!!!", Toast.LENGTH_SHORT)
@@ -63,20 +72,29 @@ class ShowProfileActivity : AppCompatActivity() {
 
         // retrieve data from SharedPreferences
         val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
+
         val firstNameResume = sh.getString("firstName", getString(R.string.first_name))
         val lastNameResume = sh.getString("lastName", getString(R.string.last_name))
+        val nicknameResume = sh.getString("nickname", getString(R.string.nickname))
         val sexResume = sh.getString("sex", getString(R.string.sex))
         val ageResume = sh.getString("age", getString(R.string.age))
-        val nicknameResume = sh.getString("nickname", getString(R.string.nickname))
-        val bioResume = sh.getString("bio", getString(R.string.bio))
         val locationResume = sh.getString("location", getString(R.string.location))
+        val bioResume = sh.getString("bio", getString(R.string.bio))
+
+        val profilePictureResume = sh.getString("profilePicture", null)
 
         fullName.text = "$firstNameResume $lastNameResume"
         nickName.text = "@$nicknameResume"
-        age.text = ageResume
         sex.text = sexResume
-        bio.text = bioResume
+        age.text = ageResume
         location.text = locationResume
+        bio.text = bioResume
+
+        if (profilePictureResume != null && !profilePictureResume.equals("", ignoreCase = true)) {
+            val b: ByteArray = Base64.decode(profilePictureResume, Base64.DEFAULT)
+            val bitmap = BitmapFactory.decodeByteArray(b, 0, b.size)
+            profilePicture.setImageBitmap(bitmap)
+        }
 
     }
 
