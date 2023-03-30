@@ -79,7 +79,7 @@
                             android:textSize="18sp" />
 
                         <EditText
-                            android:id="@+id/first_name_edit"
+                            android:id="@+id/edit_first_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
@@ -102,7 +102,7 @@
                             android:textSize="18sp" />
 
                         <EditText
-                            android:id="@+id/last_name_edit"
+                            android:id="@+id/edit_last_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
@@ -139,7 +139,7 @@
 
 
                             <EditText
-                                android:id="@+id/nickname"
+                                android:id="@+id/edit_nickname"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/poppins_medium"
@@ -176,12 +176,14 @@
                             android:textSize="18sp" />
 
                         <RadioGroup
+                            android:id="@+id/radioSexGroup"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
+
                             <RadioButton
-                                android:id="@+id/radioButton"
+                                android:id="@+id/radioMale"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/poppins_medium"
@@ -189,7 +191,7 @@
                                 android:textSize="18sp" />
 
                             <RadioButton
-                                android:id="@+id/radioButton2"
+                                android:id="@+id/radioFemale"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="8dp"
@@ -198,7 +200,7 @@
                                 android:textSize="18sp" />
 
                             <RadioButton
-                                android:id="@+id/radioButton3"
+                                android:id="@+id/radioOther"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="8dp"
@@ -224,7 +226,7 @@
                             android:textSize="18sp" />
 
                         <EditText
-                            android:id="@+id/ageEdit"
+                            android:id="@+id/edit_age"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
@@ -251,7 +253,7 @@
                             android:textSize="18sp" />
 
                         <EditText
-                            android:id="@+id/location"
+                            android:id="@+id/edit_location"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -450,7 +452,7 @@
 
                 <!-- bio -->
                 <EditText
-                    android:id="@+id/bio"
+                    android:id="@+id/edit_bio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"

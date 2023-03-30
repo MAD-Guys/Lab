@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
@@ -14,24 +15,29 @@ import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.*
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import java.io.FileDescriptor
 import java.io.IOException
 
 class EditProfileActivity : AppCompatActivity() {
 
-    private var firstName = "John"
-    private var lastName = "Doe"
-    private var nickname = "@johndoe"
-    private var sex = "Male"
-    private var age: Int = 23
-    private var bio =
-        "I’m a Computer Engineering student from Latina. I love playing basketball and tennis with my friends, especially on the weekend."
-
+    private lateinit var firstName: EditText
+    private lateinit var lastName: EditText
+    private lateinit var nickname: EditText
+    private lateinit var age: EditText
+    private lateinit var bio: EditText
+    private lateinit var location: EditText
+    private lateinit var radioGroup: RadioGroup
+    private lateinit var radioMale: RadioButton
+    private lateinit var radioFemale: RadioButton
+    private lateinit var radioOther: RadioButton
     private lateinit var imageView: ImageView
     private var galleryUri: Uri? = null
     private var cameraUri: Uri? = null
@@ -58,11 +64,38 @@ class EditProfileActivity : AppCompatActivity() {
             }
         }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
+        firstName = findViewById(R.id.edit_first_name)
+        lastName = findViewById(R.id.edit_last_name)
+        nickname = findViewById(R.id.edit_nickname)
+        radioGroup = findViewById(R.id.radioSexGroup)
+        age = findViewById(R.id.edit_age)
+        bio = findViewById(R.id.edit_bio)
+        location = findViewById(R.id.edit_location)
+        radioMale = findViewById(R.id.radioMale)
+        radioFemale = findViewById(R.id.radioFemale)
+        radioOther = findViewById(R.id.radioOther)
         imageView = findViewById(R.id.profile_picture)
+
+        firstName.addTextChangedListener(textListenersInit("firstName", firstName))
+        lastName.addTextChangedListener(textListenersInit("lastName", lastName))
+        nickname.addTextChangedListener(textListenersInit("nickname", nickname))
+        age.addTextChangedListener(textListenersInit("age", age))
+        bio.addTextChangedListener(textListenersInit("bio", bio))
+        location.addTextChangedListener(textListenersInit("location", location))
+
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
+            val editor = sh.edit()
+            editor.putInt("radioChecked", checkedId)
+            editor.apply()
+        }
+
 
         val profileImageButton: ImageButton = findViewById(R.id.profile_image_button)
         registerForContextMenu(profileImageButton)
@@ -72,6 +105,51 @@ class EditProfileActivity : AppCompatActivity() {
             //open the related context menu
             openContextMenu(profileImageButton)
         }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // retrieve data from SharedPreferences
+        val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
+        val _firstName = sh.getString("firstName", getString(R.string.first_name))
+        val _lastName = sh.getString("lastName", getString(R.string.last_name))
+        val _age = sh.getString("age", getString(R.string.age))
+        val _radioChecked = sh.getInt("radioChecked", R.id.radioMale)
+        val _nickname = sh.getString("nickname", getString(R.string.nickname))
+        val _bio = sh.getString("bio", getString(R.string.bio))
+        val _location = sh.getString("location", getString(R.string.location))
+
+        firstName.setText(_firstName)
+        lastName.setText(_lastName)
+        nickname.setText(_nickname)
+        age.setText(_age)
+        bio.setText(_bio)
+        location.setText(_location)
+        radioGroup.check(_radioChecked)
+
+
+    }
+
+    private fun textListenersInit(id: String, et: EditText): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
+                val editor = sh.edit()
+                editor.putString(id, et.text.toString())
+                editor.apply()
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
+                val editor = sh.edit()
+                editor.putString(id, et.text.toString())
+                editor.apply()
+            }
+        }
+
 
     }
 
@@ -231,27 +309,5 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    //The two functions below are used to save and restore the state of the activity
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
-        outState.putString("fullName", firstName)
-        outState.putString("lastName", lastName)
-        outState.putString("nickName", nickname)
-        outState.putString("sex", sex)
-        outState.putInt("age", age)
-        outState.putString("bio", bio)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-
-        firstName = savedInstanceState.getString("fullName").toString()
-        lastName = savedInstanceState.getString("lastName").toString()
-        nickname = savedInstanceState.getString("nickName").toString()
-        sex = savedInstanceState.getString("sex").toString()
-        age = savedInstanceState.getInt("age")
-        bio = savedInstanceState.getString("bio").toString()
-    }
 
 }
