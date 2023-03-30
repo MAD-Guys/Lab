@@ -70,7 +70,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_semibold"
-                            android:text="@string/first_name"
+                            android:text="@string/fullname"
                             android:textColor="@color/black"
                             android:textSize="32sp"
                             android:textStyle="bold" />
@@ -124,8 +124,8 @@
                                 android:textSize="18sp" />
 
                             <TextView
-                                android:id="@+id/ageEdit"
-                                android:layout_width="match_parent"
+                                android:id="@+id/age"
+                                android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:layout_marginStart="4dp"
                                 android:fontFamily="@font/poppins_medium"
