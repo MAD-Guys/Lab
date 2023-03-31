@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,389 +14,453 @@
         android:orientation="vertical"
         tools:context=".ShowProfileActivity">
 
-        <!-- LinearLayout for the profile picture (3/10 of the screen) -->
-        <LinearLayout
+        <!-- profile picture box -->
+        <RelativeLayout
+            android:id="@+id/profile_picture_container"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="top"
-            android:layout_weight="3"
-            android:background="@color/background_blue"
-            android:orientation="vertical"
-            android:scrollIndicators="none">
+            android:layout_height="240dp"
+            android:background="@color/background_blue">
 
             <ImageView
                 android:id="@+id/profile_picture"
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
+                android:layout_centerInParent="true"
                 android:contentDescription="@string/profile_picture"
                 app:srcCompat="@drawable/user_profile_picture" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
-        <!-- LinearLayout for the profile information (7/10 of the screen) -->
+        <!-- Profile information -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="top"
-            android:layout_weight="7"
+            android:layout_height="wrap_content"
             android:background="@color/background_orange"
             android:orientation="vertical"
-            android:paddingHorizontal="16dp"
-            android:paddingTop="16dp">
+            android:padding="16dp">
 
             <!-- Section 1: General information -->
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:orientation="vertical">
+                android:layout_height="wrap_content">
 
-                <!-- LinearLayout for the name and nickname -->
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <!-- first name -->
+                <TextView
+                    android:id="@+id/first_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42sp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="@string/first_name"
+                    android:textColor="@color/black"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    android:includeFontPadding="false"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <!-- last name -->
+                <TextView
+                    android:id="@+id/last_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42sp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="@string/last_name"
+                    android:textColor="@color/black"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    android:includeFontPadding="false"
+                    app:layout_constraintStart_toEndOf="@+id/first_name"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginStart="5sp"/>
+                <!-- @username -->
+                <TextView
+                    android:id="@+id/at"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="\@"
+                    android:textColor="@color/light_grey"
+                    android:textSize="18sp"
+                    android:includeFontPadding="false"
+                    app:layout_constraintTop_toBottomOf="@+id/first_name"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:ignore="HardcodedText" />
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="@string/username"
+                    android:textColor="@color/light_grey"
+                    android:textSize="18sp"
+                    android:includeFontPadding="false"
+                    app:layout_constraintTop_toBottomOf="@+id/first_name"
+                    app:layout_constraintStart_toEndOf="@id/at"/>
 
-                    <TextView
-                        android:id="@+id/fullName"
+                <!-- User sex and age information -->
+                <LinearLayout
+                    android:id="@+id/user_sex_and_age_wrapper"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@+id/username"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="10sp"
+                    android:layout_marginBottom="4sp">
+
+                    <!-- icon -->
+                    <ImageView
+                        android:id="@+id/person_icon"
                         android:layout_width="wrap_content"
-                        android:layout_height="42dp"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:text="@string/first_name"
-                        android:textColor="@color/black"
-                        android:textSize="32sp"
-                        android:textStyle="bold" />
-
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:contentDescription="@string/image_person_content_description"
+                        app:srcCompat="@drawable/baseline_person_24" />
+                    <!-- user sex -->
                     <TextView
-                        android:id="@+id/nickname"
+                        android:id="@+id/user_gender"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="4sp"
+                        android:layout_gravity="center_vertical"
                         android:fontFamily="@font/poppins_medium"
-                        android:text="@string/nickname"
-                        android:textColor="@color/light_grey"
-                        android:textSize="20sp" />
+                        android:text="@string/user_gender"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:includeFontPadding="false"/>
+                    <!-- comma -->
+                    <TextView
+                        android:id="@+id/comma"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text=", "
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        tools:ignore="HardcodedText"
+                        android:includeFontPadding="false"/>
+                    <!-- user age -->
+                    <TextView
+                        android:id="@+id/user_age"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="@string/user_age"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:includeFontPadding="false"/>
 
                 </LinearLayout>
 
-                <!-- LinearLayout for the remaining informations -->
+                <!-- User location -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:id="@+id/user_location_wrapper"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp">
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@+id/user_sex_and_age_wrapper"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="4sp">
 
-                    <LinearLayout
+                    <!-- icon -->
+                    <ImageView
+                        android:id="@+id/location_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:contentDescription="@string/image_location_content_description"
+                        app:srcCompat="@drawable/baseline_location_on_24" />
+                    <!-- (Lives in) -->
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:id="@+id/imagePerson"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:contentDescription="@string/image_person_content_description"
-                            app:srcCompat="@drawable/baseline_person_24" />
-
-                        <TextView
-                            android:id="@+id/sex"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginTop="4dp"
-                            android:fontFamily="@font/poppins_medium"
-                            android:text="@string/sex"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
-
-                        <TextView
-                            android:id="@+id/comma"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:fontFamily="@font/poppins_medium"
-                            android:text=","
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
-
-                        <TextView
-                            android:id="@+id/age"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginTop="4dp"
-                            android:fontFamily="@font/poppins_medium"
-                            android:text="@string/age"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
+                        android:layout_marginStart="4dp"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="Lives in "
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:includeFontPadding="false"
+                        tools:ignore="HardcodedText" />
+                    <!-- User location -->
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:id="@+id/imageLocation"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:contentDescription="@string/image_location_content_description"
-                            app:srcCompat="@drawable/baseline_location_on_24" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginTop="4dp"
-                            android:fontFamily="@font/poppins_medium"
-                            android:text="@string/lives_in"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
-                        <TextView
-                            android:id="@+id/location"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginTop="4dp"
-                            android:fontFamily="@font/poppins_medium"
-                            android:text="@string/location"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
-
-                    </LinearLayout>
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="@string/location"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:includeFontPadding="false"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
-                <!-- LinearLayout for the buttons -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                <!-- Buttons -->
 
-                    <Button
-                        android:id="@+id/button_add_friend"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/poppins_bold"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="6dp"
-                        android:text="@string/add_friend_button"
-                        android:textAlignment="gravity"
-                        android:textAllCaps="false"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                        android:textColor="@color/black"
-                        android:textSize="18sp"
-                        app:icon="@drawable/baseline_person_add_24"
-                        app:iconGravity="textStart"
-                        app:iconTint="#000000" />
+                <!-- Add Friend Button -->
+                <Button
+                    android:id="@+id/button_add_friend"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10sp"
+                    android:layout_marginEnd="8sp"
+                    app:layout_constraintTop_toBottomOf="@id/user_location_wrapper"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/button_message"
+                    android:fontFamily="@font/poppins_bold"
+                    android:paddingTop="10.5dp"
+                    android:paddingBottom="10.5dp"
+                    android:text="@string/add_friend_button"
+                    android:textAllCaps="false"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:includeFontPadding="false"
+                    android:textAlignment="center"
+                    app:icon="@drawable/baseline_person_add_24"
+                    app:iconGravity="textStart"
+                    app:iconTint="#000000" />
+                <!-- Message Button -->
+                <Button
+                    android:id="@+id/button_message"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8sp"
+                    android:layout_marginVertical="10sp"
+                    android:backgroundTint="@color/blue_200"
+                    android:fontFamily="@font/poppins_bold"
+                    android:includeFontPadding="false"
+                    android:paddingTop="10.5dp"
+                    android:paddingBottom="10.5dp"
+                    android:text="@string/message_button"
+                    android:textAllCaps="false"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textAlignment="center"
+                    app:icon="@drawable/baseline_forum_24"
+                    app:iconGravity="textStart"
+                    app:iconTint="#000000"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/user_location_wrapper"
+                    app:layout_constraintStart_toEndOf="@id/button_add_friend"
+                    />
 
-                    <Button
-                        android:id="@+id/button_message"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:layout_marginStart="16dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/blue_200"
-                        android:fontFamily="@font/poppins_bold"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="6dp"
-                        android:text="@string/message_button"
-                        android:textAlignment="gravity"
-                        android:textAllCaps="false"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                        android:textColor="@color/black"
-                        android:textSize="18sp"
-                        app:icon="@drawable/baseline_forum_24"
-                        app:iconGravity="textStart"
-                        app:iconTint="#000000" />
-                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </LinearLayout>
-
+            <!-- line divider -->
             <View
                 android:id="@+id/sport_divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginVertical="2dp"
+                android:layout_marginVertical="8dp"
                 android:background="?android:attr/listDivider" />
-
 
             <!-- Section 2: Sports -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
                 android:orientation="vertical">
 
-                <!-- title -->
+                <!-- Sport title -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_semibold"
                     android:text="@string/sports_title"
                     android:textColor="@color/black"
+                    android:textSize="24sp"
+                    android:includeFontPadding="false"
+                    android:layout_marginBottom="8sp"/>
 
-                    android:textSize="24sp" />
-
-                <LinearLayout
+                <!-- Sports Pills -->
+                <com.google.android.material.chip.ChipGroup
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:visibility="visible">
+                    <!-- Basket -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/basketChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52sp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="48sp"
+                        android:textSize="16sp"
+                        app:textStartPadding="10sp"
+                        app:textEndPadding="13sp"
+                        android:text="@string/sport1"
+                        app:chipBackgroundColor="@color/pale_orange"
+                        app:chipIcon="@drawable/beginner_level_badge" />
+                    <!-- 11-a-side-Football -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/football11Chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52sp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="48sp"
+                        android:textSize="16sp"
+                        app:textStartPadding="10sp"
+                        app:textEndPadding="13sp"
+                        android:text="@string/sport2"
+                        app:chipBackgroundColor="@color/pale_green"
+                        app:chipIcon="@drawable/intermediate_level_badge" />
+                    <!-- 5-a-side-Football -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/football5Chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52sp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="48sp"
+                        android:textSize="16sp"
+                        app:textStartPadding="10sp"
+                        app:textEndPadding="13sp"
+                        android:text="@string/sport3"
+                        app:chipBackgroundColor="@color/pale_blue"
+                        app:chipIcon="@drawable/pro_level_badge" />
+                    <!-- 8-a-side-Football -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/football8Chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52sp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="48sp"
+                        android:textSize="16sp"
+                        app:textStartPadding="10sp"
+                        app:textEndPadding="13sp"
+                        android:text="@string/sport4"
+                        app:chipBackgroundColor="@color/pale_ametista"
+                        app:chipIcon="@drawable/intermediate_level_badge" />
+                    <!-- Tennis -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/tennisChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52sp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="48sp"
+                        android:textSize="16sp"
+                        app:textStartPadding="10sp"
+                        app:textEndPadding="13sp"
+                        android:text="@string/sport5"
+                        app:chipBackgroundColor="@color/pale_lighter_blue"
+                        app:chipIcon="@drawable/expert_level_badge" />
+                    <!-- Volleyball -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/volleyballChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52sp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="48sp"
+                        android:textSize="16sp"
+                        app:textStartPadding="10sp"
+                        app:textEndPadding="13sp"
+                        android:text="@string/sport6"
+                        app:chipBackgroundColor="@color/pale_lighter_green"
+                        app:chipIcon="@drawable/intermediate_level_badge" />
+                    <!-- Table Tennis -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/tableTennisChip"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52sp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="48sp"
+                        android:textSize="16sp"
+                        app:textStartPadding="10sp"
+                        app:textEndPadding="13sp"
+                        android:text="@string/sport7"
+                        app:chipBackgroundColor="@color/pale_lighter_yellow"
+                        app:chipIcon="@drawable/beginner_level_badge" />
+                    <!-- Beach Volley -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/beachVolleyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52sp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="48sp"
+                        android:textSize="16sp"
+                        app:textStartPadding="10sp"
+                        app:textEndPadding="13sp"
+                        android:text="@string/sport8"
+                        app:chipBackgroundColor="@color/pale_lighter_grey"
+                        app:chipIcon="@drawable/intermediate_level_badge" />
+                    <!-- Padel -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/padelChip"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52sp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="48sp"
+                        android:textSize="16sp"
+                        app:textStartPadding="10sp"
+                        app:textEndPadding="13sp"
+                        android:text="@string/sport9"
+                        app:chipBackgroundColor="@color/pale_lighter_orange"
+                        app:chipIcon="@drawable/pro_level_badge" />
+                    <!-- Mini Golf -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/miniGolfChip"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52sp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="48sp"
+                        android:textSize="16sp"
+                        app:textStartPadding="10sp"
+                        app:textEndPadding="13sp"
+                        android:text="@string/sport10"
+                        app:chipBackgroundColor="@color/pale_lighter_red"
+                        app:chipIcon="@drawable/expert_level_badge" />
 
-                    <com.google.android.material.chip.ChipGroup
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="visible">
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/basketChip"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
-                            android:layoutDirection="rtl"
-                            android:clickable="false"
-                            android:text="@string/sport1"
-                            android:visibility="visible"
-                            app:chipBackgroundColor="@color/pale_orange"
-                            app:chipIcon="@drawable/level_badge_beginner" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/football11Chip"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
-                            android:layoutDirection="rtl"
-                            android:clickable="false"
-                            android:text="@string/sport2"
-                            app:chipBackgroundColor="@color/pale_green"
-                            app:chipIcon="@drawable/level_badge_intermediate" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/football5Chip"
-                            style="@style/Widget.MaterialComponents.Chip.Action"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
-                            android:layoutDirection="rtl"
-                            android:clickable="false"
-                            android:text="@string/sport3"
-                            app:chipBackgroundColor="@color/pale_blue"
-                            app:chipIcon="@drawable/level_badge_pro" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/football8Chip"
-                            style="@style/Widget.MaterialComponents.Chip.Action"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
-                            android:layoutDirection="rtl"
-                            android:clickable="false"
-                            android:text="@string/sport4"
-                            app:chipBackgroundColor="@color/pale_ametista"
-                            app:chipIcon="@drawable/level_badge_intermediate" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/tennisChip"
-                            style="@style/Widget.MaterialComponents.Chip.Action"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
-                            android:layoutDirection="rtl"
-                            android:clickable="false"
-                            android:text="@string/sport5"
-                            app:chipBackgroundColor="@color/pale_lighter_blue"
-                            app:chipIcon="@drawable/level_badge_beginner" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/volleyballChip"
-                            style="@style/Widget.MaterialComponents.Chip.Action"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
-                            android:layoutDirection="rtl"
-                            android:clickable="false"
-                            android:text="@string/sport6"
-                            app:chipBackgroundColor="@color/pale_lighter_green"
-                            app:chipIcon="@drawable/level_badge_intermediate" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/tableTennisChip"
-                            style="@style/Widget.MaterialComponents.Chip.Action"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
-                            android:layoutDirection="rtl"
-                            android:clickable="false"
-                            android:text="@string/sport7"
-                            app:chipBackgroundColor="@color/pale_lighter_yellow"
-                            app:chipIcon="@drawable/level_badge_beginner" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/beachVolleyChip"
-                            style="@style/Widget.MaterialComponents.Chip.Action"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
-                            android:layoutDirection="rtl"
-                            android:clickable="false"
-                            android:text="@string/sport8"
-                            app:chipBackgroundColor="@color/pale_lighter_grey"
-                            app:chipIcon="@drawable/level_badge_intermediate" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/padelChip"
-                            style="@style/Widget.MaterialComponents.Chip.Action"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
-                            android:layoutDirection="rtl"
-                            android:clickable="false"
-                            android:text="@string/sport9"
-                            app:chipBackgroundColor="@color/pale_lighter_orange"
-                            app:chipIcon="@drawable/level_badge_pro" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/miniGolfChip"
-                            style="@style/Widget.MaterialComponents.Chip.Action"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
-                            android:layoutDirection="rtl"
-                            android:clickable="false"
-                            android:text="@string/sport10"
-                            app:chipBackgroundColor="@color/pale_lighter_red"
-                            app:chipIcon="@drawable/level_badge_beginner" />
-
-                    </com.google.android.material.chip.ChipGroup>
-
-                </LinearLayout>
-
+                </com.google.android.material.chip.ChipGroup>
             </LinearLayout>
 
+            <!-- line divider -->
             <View
                 android:id="@+id/bio_divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginVertical="2dp"
+                android:layout_marginVertical="8dp"
                 android:background="?android:attr/listDivider" />
 
             <!-- Section 3: Bio -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingBottom="20sp">
 
                 <!-- title -->
                 <TextView
@@ -404,7 +469,9 @@
                     android:fontFamily="@font/poppins_semibold"
                     android:text="@string/bio_title"
                     android:textColor="@color/black"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    android:includeFontPadding="false"
+                    android:layout_marginBottom="8sp"/>
 
                 <!-- bio -->
                 <TextView
@@ -414,7 +481,8 @@
                     android:fontFamily="@font/poppins_medium"
                     android:text="@string/bio"
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:includeFontPadding="false"/>
 
             </LinearLayout>
 

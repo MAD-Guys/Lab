@@ -1,31 +1,44 @@
 <resources>
     <string name="app_name">MAD GUYS</string>
 
-    <!-- ShowProfileActivity -->
-    <string name="edit_button">Edit button</string>
-    <string name="add_friend_button">Add Friend</string>
-    <string name="message_button">Message</string>
+    <!--
+    ShowProfileActivity
+    -->
+
+    <!-- images -->
     <string name="profile_picture">Profile picture</string>
     <string name="image_person_content_description">imagePerson</string>
     <string name="image_location_content_description">imageLocation</string>
+
+    <!-- user names -->
     <string name="first_name">John</string>
     <string name="last_name">Doe</string>
-    <string name="fullname">John Doe</string>
-    <string name="nickname">johndoe</string>
+    <string name="full_name">John Doe</string>
+    <string name="username">johndoe</string>
     <string name="editNickname">johndoe</string>
-    <string name="sex">Male</string>
+
+    <!-- user  age, location, gender -->
+    <string name="user_gender">Male</string>
     <string name="sexMale">Male</string>
     <string name="sexFemale">Female</string>
     <string name="sexOther">Other</string>
-    <string name="age">23</string>
+    <string name="user_age">23</string>
     <string name="age_label">Age: </string>
+
     <string name="location">Turin </string>
     <string name="lives_in">Lives in: </string>
+
+    <!-- buttons -->
+    <string name="edit_button">Edit button</string>
+    <string name="add_friend_button">Add Friend</string>
+    <string name="message_button">Message</string>
+
+    <!-- sports -->
     <string name="sports_title">Sports</string>
     <string name="sport1">Basket</string>
-    <string name="sport2">11-a-side Football</string>
-    <string name="sport3">5-a-side Football</string>
-    <string name="sport4">8-a-side Football</string>
+    <string name="sport2">11-a-side Soccer</string>
+    <string name="sport3">5-a-side Soccer</string>
+    <string name="sport4">8-a-side Soccer</string>
     <string name="sport5">Tennis</string>
     <string name="sport6">Volleyball</string>
     <string name="sport7">Table Tennis</string>
@@ -33,14 +46,24 @@
     <string name="sport9">Padel</string>
     <string name="sport10">Mini Golf</string>
     <string name="sport11">Swimming</string>
+
+    <!-- user bio -->
     <string name="bio_title">Bio</string>
     <string name="bio">I’m a Computer Engineering student from Latina. I love playing basketball and tennis with my friends, especially on the weekend.</string>
 
-    <!-- EditProfileActivity -->
-    <string name="confirm_button">Confirm button</string>
-    <string name="back_button">Back button</string>
+    <!--
+    EditProfileActivity
+    -->
+
+    <!-- images -->
     <string name="profile_image_button_description">Profile image button</string>
+
+    <!-- select picture menu selections -->
     <string name="camera">Use the camera to take a picture</string>
     <string name="gallery">Select an image from the phone gallery</string>
+
+    <!-- buttons -->
+    <string name="confirm_button">Confirm button</string>
+    <string name="back_button">Back button</string>
 
 </resources>
