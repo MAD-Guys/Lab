@@ -15,12 +15,15 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Base64
+import android.util.DisplayMetrics
 import android.view.*
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileDescriptor
@@ -29,6 +32,9 @@ import java.io.IOException
 class EditProfileActivity : AppCompatActivity() {
 
     //General info variables
+    val metrics = DisplayMetrics()
+    val displayHeight = metrics.heightPixels
+    val displayWidth = metrics.widthPixels
     private lateinit var firstName: EditText
     private lateinit var lastName: EditText
     private lateinit var nickname: EditText
@@ -49,13 +55,14 @@ class EditProfileActivity : AppCompatActivity() {
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) {
-            if (it.resultCode == Activity.RESULT_OK) {
+            if (it.resultCode == RESULT_OK) {
                 val data: Intent? = it.data
                 galleryUri = data?.data
                 val inputImage: Bitmap? = galleryUri?.let { it1 -> uriToBitmap(it1) }
+                Glide.with(this).load(inputImage).override(displayWidth, 300).centerCrop().into(profilePicture)
 
                 //Setting picture into the imageView
-                profilePicture.setImageBitmap(inputImage)
+                //profilePicture.setImageBitmap(inputImage)
 
                 //Saving picture into shared preferences
                 if (inputImage != null) {
