@@ -1,6 +1,7 @@
 package it.polito.mad.lab2
 
 import android.Manifest
+import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -10,6 +11,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
@@ -20,6 +22,7 @@ import android.view.*
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
@@ -32,9 +35,7 @@ import java.io.IOException
 class EditProfileActivity : AppCompatActivity() {
 
     //General info variables
-    val metrics = DisplayMetrics()
-    val displayHeight = metrics.heightPixels
-    val displayWidth = metrics.widthPixels
+
     private lateinit var firstName: EditText
     private lateinit var lastName: EditText
     private lateinit var nickname: EditText
@@ -59,10 +60,10 @@ class EditProfileActivity : AppCompatActivity() {
                 val data: Intent? = it.data
                 galleryUri = data?.data
                 val inputImage: Bitmap? = galleryUri?.let { it1 -> uriToBitmap(it1) }
-                Glide.with(this).load(inputImage).override(displayWidth, 300).centerCrop().into(profilePicture)
+                //Glide.with(this).load(inputImage).override(displayWidth, 300).centerCrop().into(profilePicture)
 
                 //Setting picture into the imageView
-                //profilePicture.setImageBitmap(inputImage)
+                profilePicture.setImageBitmap(inputImage)
 
                 //Saving picture into shared preferences
                 if (inputImage != null) {
@@ -89,10 +90,37 @@ class EditProfileActivity : AppCompatActivity() {
             }
         }
 
+
+
+    private fun getDisplayMetrics() : Pair<Int,Int> {
+       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+           val metrics: WindowMetrics = windowManager.currentWindowMetrics
+           val displayHeight = metrics.bounds.height()
+           val displayWidth = metrics.bounds.width()
+           return Pair(displayWidth, displayHeight)
+       } else {
+           val metrics = DisplayMetrics()
+           windowManager.defaultDisplay.getMetrics(metrics)
+           val displayHeight = metrics.heightPixels
+           val displayWidth = metrics.widthPixels
+           return Pair(displayWidth, displayHeight)
+       }
+
+    }
+
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
+        val metrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(metrics)
+        val displayHeight = metrics.heightPixels
+        val displayWidth = metrics.widthPixels
 
+        Toast.makeText(this, displayHeight.toString(), Toast.LENGTH_SHORT).show()
         firstName = findViewById(R.id.edit_first_name)
         lastName = findViewById(R.id.edit_last_name)
         nickname = findViewById(R.id.edit_nickname)
