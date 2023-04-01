@@ -4,412 +4,517 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/background_orange"
     android:baselineAligned="false"
-    android:orientation="horizontal"
     tools:context=".ShowProfileActivity">
 
-    <!-- LinearLayout for the profile picture -->
-    <LinearLayout
+    <!-- Profile picture box -->
+    <RelativeLayout
+        android:id="@+id/profile_picture_container"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@color/background_blue"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:background="@color/background_blue">
 
         <ImageView
             android:id="@+id/profile_picture"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="top|center_horizontal"
+            android:layout_centerInParent="true"
             android:contentDescription="@string/profile_picture"
-            app:srcCompat="@drawable/user_profile_picture" />
+            app:srcCompat="@drawable/user_profile_picture"
+            tools:ignore="ImageContrastCheck"
+            android:layout_marginHorizontal="16dp"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
-    <LinearLayout
+    <!-- Profile information -->
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="match_parent"
         android:layout_weight="2"
-        android:background="@color/background_orange"
-        android:orientation="vertical"
+        android:layout_height="wrap_content"
         android:paddingHorizontal="16dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="6dp"
-        android:paddingBottom="0dp">
+        android:scrollbars="none">
 
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="none"
-            tools:ignore="UselessParent">
+            android:orientation="vertical"
+            android:paddingVertical="16dp">
 
+            <!-- Section 1: General information -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
+
+                <!-- full name and username wrapper -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="5"
+                    android:layout_gravity="top">
+                    <!-- full name wrapper -->
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:flexWrap="wrap"
+                        app:alignItems="stretch"
+                        app:alignContent="stretch">
+                        <!-- first name -->
+                        <TextView
+                            android:id="@+id/first_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:includeFontPadding="false"
+                            android:text="@string/first_name"
+                            android:textColor="@color/black"
+                            android:textSize="30sp"
+                            android:textStyle="bold"
+
+                            android:layout_marginEnd="5sp"/>
+                        <!-- last name -->
+                        <TextView
+                            android:id="@+id/last_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:includeFontPadding="false"
+                            android:text="@string/last_name"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:textSize="30sp"
+                            />
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <!-- username wrapper -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <!-- @ -->
+                        <TextView
+                            android:id="@+id/at"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
+                            android:text="\@"
+                            android:textColor="@color/light_grey"
+                            android:textSize="16sp"
+                            tools:ignore="HardcodedText" />
+                        <!-- username -->
+                        <TextView
+                            android:id="@+id/username"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
+                            android:text="@string/username"
+                            android:textColor="@color/light_grey"
+                            android:textSize="18sp"
+                            android:autoSizeTextType="uniform"
+                            tools:ignore="UnusedAttribute" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:orientation="vertical">
+                    <!-- gender, age, location info wrapper -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_marginStart="5sp">
+                        <!-- User sex and age information -->
+                        <LinearLayout
+                            android:id="@+id/user_sex_and_age_wrapper"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <!-- icon -->
+                            <ImageView
+                                android:id="@+id/person_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical"
+                                android:contentDescription="@string/image_person_content_description"
+                                app:srcCompat="@drawable/baseline_person_24" />
+                            <!-- user sex -->
+                            <TextView
+                                android:id="@+id/user_gender"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginStart="4sp"
+                                android:fontFamily="@font/poppins_medium"
+                                android:includeFontPadding="false"
+                                android:text="@string/user_gender"
+                                android:textColor="@color/black"
+                                android:textSize="17sp" />
+                            <!-- comma -->
+                            <TextView
+                                android:id="@+id/comma"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:fontFamily="@font/poppins_medium"
+                                android:includeFontPadding="false"
+                                android:text=", "
+                                android:textColor="@color/black"
+                                android:textSize="17sp"
+                                tools:ignore="HardcodedText" />
+                            <!-- user age -->
+                            <TextView
+                                android:id="@+id/user_age"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:fontFamily="@font/poppins_medium"
+                                android:includeFontPadding="false"
+                                android:text="@string/user_age"
+                                android:textColor="@color/black"
+                                android:textSize="17sp" />
+
+                        </LinearLayout>
+
+                        <!-- User location -->
+                        <LinearLayout
+                            android:id="@+id/user_location_wrapper"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            tools:ignore="UseCompoundDrawables">
+
+                            <!-- icon -->
+                            <ImageView
+                                android:id="@+id/location_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="top"
+                                android:contentDescription="@string/image_location_content_description"
+                                app:srcCompat="@drawable/baseline_location_on_24" />
+
+                            <!-- User location -->
+                            <TextView
+                                android:id="@+id/user_location"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="top"
+                                android:layout_marginStart="4sp"
+                                android:fontFamily="@font/poppins_medium"
+                                android:includeFontPadding="false"
+                                android:text="@string/user_location"
+                                android:textColor="@color/black"
+                                android:textSize="17sp" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- buttons wrapper -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5sp">
+                        <!-- Add Friend Button -->
+                        <Button
+                            android:id="@+id/button_add_friend"
+                            android:layout_width="0dp"
+                            android:layout_height="60sp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="12sp"
+                            android:contentDescription="@string/add_friend_button_description"
+                            android:paddingTop="10.5sp"
+                            android:paddingBottom="10.5sp"
+                            app:icon="@drawable/baseline_person_add_24"
+                            app:iconGravity="textStart"
+                            app:iconPadding="0sp"
+                            app:iconSize="30sp"
+                            app:iconTint="#000000"
+                            tools:ignore="ButtonStyle,VisualLintButtonSize" />
+                        <!-- Message Button -->
+                        <Button
+                            android:id="@+id/button_message"
+                            android:layout_width="0sp"
+                            android:layout_height="60sp"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/blue_200"
+                            android:contentDescription="@string/message_button_description"
+                            android:fontFamily="@font/poppins_bold"
+                            android:includeFontPadding="false"
+                            android:paddingTop="10.5sp"
+                            android:paddingBottom="10.5sp"
+                            app:icon="@drawable/baseline_forum_24"
+                            app:iconGravity="textStart"
+                            app:iconPadding="0sp"
+                            app:iconSize="28sp"
+                            app:iconTint="#000000"
+                            tools:ignore="ButtonStyle,VisualLintButtonSize" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- line divider -->
+            <View
+                android:id="@+id/sport_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="8dp"
+                android:background="?android:attr/listDivider" />
+
+            <!-- Section 2: Sports -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Section 1: General information -->
-                <LinearLayout
+                <!-- Sports title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="@string/sports_title"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    android:includeFontPadding="false"
+                    android:layout_marginBottom="8sp"/>
+
+                <!-- Sports Pills -->
+                <com.google.android.material.chip.ChipGroup
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal"
-                    android:paddingTop="8dp">
-
-                    <!-- LinearLayout for the name and nickname -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/fullName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_semibold"
-                            android:text="@string/fullname"
-                            android:textColor="@color/black"
-                            android:textSize="32sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/nickname"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
-                            android:text="@string/nickname"
-                            android:textColor="@color/light_grey"
-                            android:textSize="20sp" />
-
-                    </LinearLayout>
-
-                    <!-- LinearLayout for the remaining informations -->
-                    <LinearLayout
-                        android:layout_width="36dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:orientation="vertical"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="8dp">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:id="@+id/imagePerson"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:contentDescription="@string/image_person_content_description"
-                                app:srcCompat="@drawable/baseline_person_24" />
-
-                            <TextView
-                                android:id="@+id/sex"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginStart="4dp"
-                                android:fontFamily="@font/poppins_medium"
-                                android:text="@string/sex"
-                                android:textColor="@color/black"
-                                android:textSize="18sp" />
-
-                            <TextView
-                                android:id="@+id/comma"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_gravity="center_vertical"
-                                android:fontFamily="@font/poppins_medium"
-                                android:text=","
-                                android:textColor="@color/black"
-                                android:textSize="18sp" />
-
-                            <TextView
-                                android:id="@+id/age"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_marginStart="4dp"
-                                android:fontFamily="@font/poppins_medium"
-                                android:text="@string/age"
-                                android:textColor="@color/black"
-                                android:textSize="18sp" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:id="@+id/imageLocation"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:contentDescription="@string/image_location_content_description"
-                                app:srcCompat="@drawable/baseline_location_on_24" />
-
-                            <TextView
-                                android:id="@+id/location"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="4dp"
-                                android:layout_marginTop="4dp"
-                                android:fontFamily="@font/poppins_medium"
-                                android:text="@string/location"
-                                android:textColor="@color/black"
-                                android:textSize="18sp" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <!-- LinearLayout for the buttons -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:paddingHorizontal="4dp">
-
-                        <Button
-                            android:id="@+id/button_add_friend"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/poppins_bold"
-                            android:gravity="center_vertical|center_horizontal"
-                            app:icon="@drawable/baseline_person_add_24"
-                            app:iconGravity="textStart"
-                            app:iconPadding="0dp"
-                            app:iconTint="#000000" />
-
-                        <Button
-                            android:id="@+id/button_message"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="16dp"
-                            android:layout_weight="1"
-                            android:backgroundTint="@color/blue_200"
-                            android:fontFamily="@font/poppins_bold"
-                            android:foregroundGravity="center"
-                            app:icon="@drawable/baseline_forum_24"
-                            app:iconGravity="textStart"
-                            app:iconPadding="0dp"
-                            app:iconTint="#000000" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/sport_divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginVertical="2dp"
-                    android:background="?android:attr/listDivider" />
-
-                <!-- Section 2: Sports -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:orientation="vertical">
-
-                    <!-- title -->
-                    <TextView
+                    android:visibility="visible">
+                    <!-- Basket -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/basketChip"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:text="@string/sports_title"
-                        android:textColor="@color/black"
-                        android:textSize="24sp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <com.google.android.material.chip.ChipGroup
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/basketChip"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport1"
-                                android:visibility="visible"
-                                app:chipBackgroundColor="@color/pale_orange"
-                                app:chipIcon="@drawable/level_badge_beginner" />
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/football11Chip"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport2"
-                                app:chipBackgroundColor="@color/pale_green"
-                                app:chipIcon="@drawable/level_badge_intermediate" />
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/football5Chip"
-                                style="@style/Widget.MaterialComponents.Chip.Action"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport3"
-                                app:chipBackgroundColor="@color/pale_blue"
-                                app:chipIcon="@drawable/level_badge_pro" />
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/football8Chip"
-                                style="@style/Widget.MaterialComponents.Chip.Action"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport4"
-                                app:chipBackgroundColor="@color/pale_ametista"
-                                app:chipIcon="@drawable/level_badge_intermediate" />
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/tennisChip"
-                                style="@style/Widget.MaterialComponents.Chip.Action"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport5"
-                                app:chipBackgroundColor="@color/pale_lighter_blue"
-                                app:chipIcon="@drawable/level_badge_beginner" />
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/volleyballChip"
-                                style="@style/Widget.MaterialComponents.Chip.Action"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport6"
-                                app:chipBackgroundColor="@color/pale_lighter_green"
-                                app:chipIcon="@drawable/level_badge_intermediate" />
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/tableTennisChip"
-                                style="@style/Widget.MaterialComponents.Chip.Action"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport7"
-                                app:chipBackgroundColor="@color/pale_lighter_yellow"
-                                app:chipIcon="@drawable/level_badge_beginner" />
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/beachVolleyChip"
-                                style="@style/Widget.MaterialComponents.Chip.Action"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport8"
-                                app:chipBackgroundColor="@color/pale_lighter_grey"
-                                app:chipIcon="@drawable/level_badge_intermediate" />
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/padelChip"
-                                style="@style/Widget.MaterialComponents.Chip.Action"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport9"
-                                app:chipBackgroundColor="@color/pale_lighter_orange"
-                                app:chipIcon="@drawable/level_badge_pro" />
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/miniGolfChip"
-                                style="@style/Widget.MaterialComponents.Chip.Action"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport10"
-                                app:chipBackgroundColor="@color/pale_lighter_red"
-                                app:chipIcon="@drawable/level_badge_beginner" />
-
-                        </com.google.android.material.chip.ChipGroup>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/bio_divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginVertical="2dp"
-                    android:background="?android:attr/listDivider" />
-
-                <!-- Section 3: Bio -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:orientation="vertical">
-
-                    <!-- title -->
-                    <TextView
+                        android:layout_height="52sp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="48sp"
+                        android:textSize="16sp"
+                        app:textStartPadding="10sp"
+                        app:textEndPadding="13sp"
+                        android:layout_marginEnd="4sp"
+                        android:text="@string/sport1"
+                        app:chipBackgroundColor="@color/pale_orange"
+                        app:chipIcon="@drawable/beginner_level_badge" />
+                    <!-- 11-a-side-Football -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/football11Chip"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:text="@string/bio_title"
-                        android:textColor="@color/black"
-                        android:textSize="24sp" />
-
-                    <!-- bio -->
-                    <TextView
-                        android:id="@+id/bio"
+                        android:layout_height="52sp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="48sp"
+                        android:textSize="16sp"
+                        app:textStartPadding="10sp"
+                        app:textEndPadding="13sp"
+                        android:layout_marginEnd="4sp"
+                        android:text="@string/sport2"
+                        app:chipBackgroundColor="@color/pale_green"
+                        app:chipIcon="@drawable/intermediate_level_badge" />
+                    <!-- 5-a-side-Football -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/football5Chip"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_medium"
-                        android:text="@string/bio"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:layout_height="52sp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="48sp"
+                        android:textSize="16sp"
+                        app:textStartPadding="10sp"
+                        app:textEndPadding="13sp"
+                        android:layout_marginEnd="4sp"
+                        android:text="@string/sport3"
+                        app:chipBackgroundColor="@color/pale_blue"
+                        app:chipIcon="@drawable/pro_level_badge" />
+                    <!-- 8-a-side-Football -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/football8Chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52sp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="48sp"
+                        android:textSize="16sp"
+                        app:textStartPadding="10sp"
+                        app:textEndPadding="13sp"
+                        android:layout_marginEnd="4sp"
+                        android:text="@string/sport4"
+                        app:chipBackgroundColor="@color/pale_ametista"
+                        app:chipIcon="@drawable/intermediate_level_badge" />
+                    <!-- Tennis -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/tennisChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52sp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="48sp"
+                        android:textSize="16sp"
+                        app:textStartPadding="10sp"
+                        app:textEndPadding="13sp"
+                        android:layout_marginEnd="4sp"
+                        android:text="@string/sport5"
+                        app:chipBackgroundColor="@color/pale_lighter_blue"
+                        app:chipIcon="@drawable/expert_level_badge" />
+                    <!-- Volleyball -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/volleyballChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52sp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="48sp"
+                        android:textSize="16sp"
+                        app:textStartPadding="10sp"
+                        app:textEndPadding="13sp"
+                        android:layout_marginEnd="4sp"
+                        android:text="@string/sport6"
+                        app:chipBackgroundColor="@color/pale_lighter_green"
+                        app:chipIcon="@drawable/intermediate_level_badge" />
+                    <!-- Table Tennis -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/tableTennisChip"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52sp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="48sp"
+                        android:textSize="16sp"
+                        app:textStartPadding="10sp"
+                        app:textEndPadding="13sp"
+                        android:layout_marginEnd="4sp"
+                        android:text="@string/sport7"
+                        app:chipBackgroundColor="@color/pale_lighter_yellow"
+                        app:chipIcon="@drawable/beginner_level_badge" />
+                    <!-- Beach Volley -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/beachVolleyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52sp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="48sp"
+                        android:textSize="16sp"
+                        app:textStartPadding="10sp"
+                        app:textEndPadding="13sp"
+                        android:layout_marginEnd="4sp"
+                        android:text="@string/sport8"
+                        app:chipBackgroundColor="@color/pale_lighter_grey"
+                        app:chipIcon="@drawable/intermediate_level_badge" />
+                    <!-- Padel -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/padelChip"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52sp"
+                        android:layout_marginEnd="4sp"
+                        android:clickable="false"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:text="@string/sport9"
+                        android:textSize="16sp"
+                        android:visibility="visible"
+                        app:chipBackgroundColor="@color/pale_gold_brown"
+                        app:chipIcon="@drawable/pro_level_badge"
+                        app:chipIconSize="48sp"
+                        app:textEndPadding="13sp"
+                        app:textStartPadding="10sp"
+                        tools:ignore="TextContrastCheck" />
+                    <!-- Mini Golf -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/miniGolfChip"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52sp"
+                        android:layout_marginEnd="4sp"
+                        android:clickable="false"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:text="@string/sport10"
+                        android:textSize="16sp"
+                        android:visibility="visible"
+                        app:chipBackgroundColor="@color/pale_lighter_red"
+                        app:chipIcon="@drawable/expert_level_badge"
+                        app:chipIconSize="48sp"
+                        app:textEndPadding="13sp"
+                        app:textStartPadding="10sp"
+                        tools:ignore="TextContrastCheck" />
 
-                </LinearLayout>
+                </com.google.android.material.chip.ChipGroup>
 
             </LinearLayout>
 
+            <View
+                android:id="@+id/bio_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="8dp"
+                android:background="?android:attr/listDivider" />
 
-        </ScrollView>
+            <!-- Section 3: Bio -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="20sp">
 
-    </LinearLayout>
+                <!-- title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="@string/bio_title"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    android:includeFontPadding="false"
+                    android:layout_marginBottom="8sp"/>
+
+                <!-- bio -->
+                <TextView
+                    android:id="@+id/user_bio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="@string/user_bio"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:includeFontPadding="false"
+                    tools:ignore="VisualLintLongText" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
 
 </LinearLayout>

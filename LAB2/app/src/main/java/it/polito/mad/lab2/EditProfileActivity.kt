@@ -3,6 +3,7 @@ package it.polito.mad.lab2
 import android.Manifest
 import android.annotation.TargetApi
 import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -90,27 +91,6 @@ class EditProfileActivity : AppCompatActivity() {
             }
         }
 
-
-
-    private fun getDisplayMetrics() : Pair<Int,Int> {
-       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-           val metrics: WindowMetrics = windowManager.currentWindowMetrics
-           val displayHeight = metrics.bounds.height()
-           val displayWidth = metrics.bounds.width()
-           return Pair(displayWidth, displayHeight)
-       } else {
-           val metrics = DisplayMetrics()
-           windowManager.defaultDisplay.getMetrics(metrics)
-           val displayHeight = metrics.heightPixels
-           val displayWidth = metrics.widthPixels
-           return Pair(displayWidth, displayHeight)
-       }
-
-    }
-
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -170,11 +150,11 @@ class EditProfileActivity : AppCompatActivity() {
 
         val firstNameResume = sh.getString("firstName", getString(R.string.first_name))
         val lastNameResume = sh.getString("lastName", getString(R.string.last_name))
-        val nicknameResume = sh.getString("nickname", getString(R.string.nickname))
+        val nicknameResume = sh.getString("nickname", getString(R.string.username))
         val radioCheckedResume = sh.getInt("radioChecked", R.id.radioMale)
-        val ageResume = sh.getString("age", getString(R.string.age))
-        val locationResume = sh.getString("location", getString(R.string.location))
-        val bioResume = sh.getString("bio", getString(R.string.bio))
+        val ageResume = sh.getString("age", getString(R.string.user_age))
+        val locationResume = sh.getString("location", getString(R.string.user_location))
+        val bioResume = sh.getString("bio", getString(R.string.user_bio))
 
         val profilePictureResume = sh.getString("profilePicture", null)
 

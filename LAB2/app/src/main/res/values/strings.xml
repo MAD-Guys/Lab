@@ -13,25 +13,21 @@
     <!-- user names -->
     <string name="first_name">John</string>
     <string name="last_name">Doe</string>
-    <string name="full_name">John Doe</string>
     <string name="username">johndoe</string>
-    <string name="editNickname">johndoe</string>
 
-    <!-- user  age, location, gender -->
+    <!-- user age, location, gender -->
     <string name="user_gender">Male</string>
-    <string name="sexMale">Male</string>
-    <string name="sexFemale">Female</string>
-    <string name="sexOther">Other</string>
     <string name="user_age">23</string>
     <string name="age_label">Age: </string>
 
-    <string name="location">Turin </string>
-    <string name="lives_in">Lives in: </string>
+    <string name="user_location">Rome</string>
 
     <!-- buttons -->
     <string name="edit_button">Edit button</string>
     <string name="add_friend_button">Add Friend</string>
     <string name="message_button">Message</string>
+    <string name="add_friend_button_description">add friend</string>
+    <string name="message_button_description">message</string>
 
     <!-- sports -->
     <string name="sports_title">Sports</string>
@@ -49,7 +45,7 @@
 
     <!-- user bio -->
     <string name="bio_title">Bio</string>
-    <string name="bio">I’m a Computer Engineering student from Latina. I love playing basketball and tennis with my friends, especially on the weekend.</string>
+    <string name="user_bio">I’m a Computer Engineering student from Latina. I love playing basketball and tennis with my friends, especially on the weekend.</string>
 
     <!--
     EditProfileActivity
@@ -61,6 +57,12 @@
     <!-- select picture menu selections -->
     <string name="camera">Use the camera to take a picture</string>
     <string name="gallery">Select an image from the phone gallery</string>
+
+    <!-- user info -->
+    <string name="editNickname">johndoe</string>
+    <string name="sexMale">Male</string>
+    <string name="sexFemale">Female</string>
+    <string name="sexOther">Other</string>
 
     <!-- buttons -->
     <string name="confirm_button">Confirm button</string>

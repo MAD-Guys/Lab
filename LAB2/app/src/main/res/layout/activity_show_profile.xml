@@ -9,12 +9,15 @@
     android:scrollbars="none">
 
     <LinearLayout
+        android:id="@+id/main_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="@color/background_orange"
         tools:context=".ShowProfileActivity">
 
-        <!-- profile picture box -->
+        <!-- Profile picture box
+        (put a default height, 240dp, which will be programmatically overwritten at run time) -->
         <RelativeLayout
             android:id="@+id/profile_picture_container"
             android:layout_width="match_parent"
@@ -26,8 +29,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
+                android:layout_marginHorizontal="16dp"
                 android:contentDescription="@string/profile_picture"
-                app:srcCompat="@drawable/user_profile_picture" />
+                app:srcCompat="@drawable/user_profile_picture"
+                tools:ignore="ImageContrastCheck" />
 
         </RelativeLayout>
 
@@ -35,7 +40,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/background_orange"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -48,7 +52,7 @@
                 <TextView
                     android:id="@+id/first_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="42sp"
+                    android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_semibold"
                     android:text="@string/first_name"
                     android:textColor="@color/black"
@@ -61,7 +65,7 @@
                 <TextView
                     android:id="@+id/last_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="42sp"
+                    android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_semibold"
                     android:text="@string/last_name"
                     android:textColor="@color/black"
@@ -161,7 +165,8 @@
                     android:orientation="horizontal"
                     app:layout_constraintTop_toBottomOf="@+id/user_sex_and_age_wrapper"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginTop="4sp">
+                    android:layout_marginTop="4sp"
+                    tools:ignore="UseCompoundDrawables">
 
                     <!-- icon -->
                     <ImageView
@@ -171,33 +176,22 @@
                         android:layout_gravity="center_vertical"
                         android:contentDescription="@string/image_location_content_description"
                         app:srcCompat="@drawable/baseline_location_on_24" />
-                    <!-- (Lives in) -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:layout_gravity="center_vertical"
-                        android:fontFamily="@font/poppins_medium"
-                        android:text="Lives in "
-                        android:textColor="@color/black"
-                        android:textSize="18sp"
-                        android:includeFontPadding="false"
-                        tools:ignore="HardcodedText" />
+
                     <!-- User location -->
                     <TextView
+                        android:id="@+id/user_location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginStart="4sp"
                         android:fontFamily="@font/poppins_medium"
-                        android:text="@string/location"
+                        android:text="@string/user_location"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:includeFontPadding="false"
                         tools:ignore="HardcodedText" />
 
                 </LinearLayout>
-
-                <!-- Buttons -->
 
                 <!-- Add Friend Button -->
                 <Button
@@ -220,6 +214,7 @@
                     android:includeFontPadding="false"
                     android:textAlignment="center"
                     app:icon="@drawable/baseline_person_add_24"
+                    android:contentDescription="@string/add_friend_button_description"
                     app:iconGravity="textStart"
                     app:iconTint="#000000" />
                 <!-- Message Button -->
@@ -241,6 +236,7 @@
                     android:textSize="18sp"
                     android:textAlignment="center"
                     app:icon="@drawable/baseline_forum_24"
+                    android:contentDescription="@string/message_button_description"
                     app:iconGravity="textStart"
                     app:iconTint="#000000"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -293,6 +289,7 @@
                         android:textSize="16sp"
                         app:textStartPadding="10sp"
                         app:textEndPadding="13sp"
+                        android:layout_marginEnd="4sp"
                         android:text="@string/sport1"
                         app:chipBackgroundColor="@color/pale_orange"
                         app:chipIcon="@drawable/beginner_level_badge" />
@@ -309,6 +306,7 @@
                         android:textSize="16sp"
                         app:textStartPadding="10sp"
                         app:textEndPadding="13sp"
+                        android:layout_marginEnd="4sp"
                         android:text="@string/sport2"
                         app:chipBackgroundColor="@color/pale_green"
                         app:chipIcon="@drawable/intermediate_level_badge" />
@@ -325,6 +323,7 @@
                         android:textSize="16sp"
                         app:textStartPadding="10sp"
                         app:textEndPadding="13sp"
+                        android:layout_marginEnd="4sp"
                         android:text="@string/sport3"
                         app:chipBackgroundColor="@color/pale_blue"
                         app:chipIcon="@drawable/pro_level_badge" />
@@ -341,6 +340,7 @@
                         android:textSize="16sp"
                         app:textStartPadding="10sp"
                         app:textEndPadding="13sp"
+                        android:layout_marginEnd="4sp"
                         android:text="@string/sport4"
                         app:chipBackgroundColor="@color/pale_ametista"
                         app:chipIcon="@drawable/intermediate_level_badge" />
@@ -357,6 +357,7 @@
                         android:textSize="16sp"
                         app:textStartPadding="10sp"
                         app:textEndPadding="13sp"
+                        android:layout_marginEnd="4sp"
                         android:text="@string/sport5"
                         app:chipBackgroundColor="@color/pale_lighter_blue"
                         app:chipIcon="@drawable/expert_level_badge" />
@@ -373,6 +374,7 @@
                         android:textSize="16sp"
                         app:textStartPadding="10sp"
                         app:textEndPadding="13sp"
+                        android:layout_marginEnd="4sp"
                         android:text="@string/sport6"
                         app:chipBackgroundColor="@color/pale_lighter_green"
                         app:chipIcon="@drawable/intermediate_level_badge" />
@@ -390,6 +392,7 @@
                         android:textSize="16sp"
                         app:textStartPadding="10sp"
                         app:textEndPadding="13sp"
+                        android:layout_marginEnd="4sp"
                         android:text="@string/sport7"
                         app:chipBackgroundColor="@color/pale_lighter_yellow"
                         app:chipIcon="@drawable/beginner_level_badge" />
@@ -406,6 +409,7 @@
                         android:textSize="16sp"
                         app:textStartPadding="10sp"
                         app:textEndPadding="13sp"
+                        android:layout_marginEnd="4sp"
                         android:text="@string/sport8"
                         app:chipBackgroundColor="@color/pale_lighter_grey"
                         app:chipIcon="@drawable/intermediate_level_badge" />
@@ -415,17 +419,19 @@
                         style="@style/Widget.MaterialComponents.Chip.Action"
                         android:layout_width="wrap_content"
                         android:layout_height="52sp"
+                        android:layout_marginEnd="4sp"
+                        android:clickable="false"
                         android:fontFamily="@font/poppins_bold"
                         android:layoutDirection="rtl"
-                        android:clickable="false"
-                        android:visibility="visible"
-                        app:chipIconSize="48sp"
-                        android:textSize="16sp"
-                        app:textStartPadding="10sp"
-                        app:textEndPadding="13sp"
                         android:text="@string/sport9"
-                        app:chipBackgroundColor="@color/pale_lighter_orange"
-                        app:chipIcon="@drawable/pro_level_badge" />
+                        android:textSize="16sp"
+                        android:visibility="visible"
+                        app:chipBackgroundColor="@color/pale_gold_brown"
+                        app:chipIcon="@drawable/pro_level_badge"
+                        app:chipIconSize="48sp"
+                        app:textEndPadding="13sp"
+                        app:textStartPadding="10sp"
+                        tools:ignore="TextContrastCheck" />
                     <!-- Mini Golf -->
                     <com.google.android.material.chip.Chip
                         android:id="@+id/miniGolfChip"
@@ -440,6 +446,7 @@
                         android:textSize="16sp"
                         app:textStartPadding="10sp"
                         app:textEndPadding="13sp"
+                        android:layout_marginEnd="4sp"
                         android:text="@string/sport10"
                         app:chipBackgroundColor="@color/pale_lighter_red"
                         app:chipIcon="@drawable/expert_level_badge" />
@@ -475,15 +482,14 @@
 
                 <!-- bio -->
                 <TextView
-                    android:id="@+id/bio"
+                    android:id="@+id/user_bio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
-                    android:text="@string/bio"
+                    android:text="@string/user_bio"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:includeFontPadding="false"/>
-
             </LinearLayout>
 
         </LinearLayout>

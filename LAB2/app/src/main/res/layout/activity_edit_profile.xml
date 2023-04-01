@@ -231,7 +231,7 @@
                             android:fontFamily="@font/poppins_medium"
                             android:gravity="start"
                             android:inputType="numberDecimal"
-                            android:text="@string/age"
+                            android:text="@string/user_age"
                             android:textColor="@color/black"
                             android:textSize="18sp" />
                     </LinearLayout>
@@ -247,7 +247,6 @@
                             android:layout_gravity="center_vertical"
                             android:contentDescription="@string/image_location_content_description"
                             android:fontFamily="@font/poppins_bold"
-                            android:text="@string/lives_in"
                             android:textColor="@color/black"
                             android:textSize="18sp" />
 
@@ -257,9 +256,10 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:fontFamily="@font/poppins_medium"
-                            android:text="@string/location"
+                            android:text="@string/user_location"
                             android:textColor="@color/black"
-                            android:textSize="18sp" />
+                            android:textSize="18sp"
+                            android:autofillHints="" />
 
                     </LinearLayout>
 
@@ -311,7 +311,7 @@
                             android:text="@string/sport1"
                             android:visibility="visible"
                             app:chipBackgroundColor="@color/pale_orange"
-                            app:chipIcon="@drawable/level_badge_beginner" />
+                            app:chipIcon="@drawable/beginner_level_badge" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chipSport2"
@@ -322,7 +322,7 @@
                             android:layoutDirection="rtl"
                             android:text="@string/sport2"
                             app:chipBackgroundColor="@color/pale_green"
-                            app:chipIcon="@drawable/level_badge_intermediate" />
+                            app:chipIcon="@drawable/intermediate_level_badge" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chipSport3"
@@ -334,7 +334,7 @@
                             android:layoutDirection="rtl"
                             android:text="@string/sport3"
                             app:chipBackgroundColor="@color/pale_blue"
-                            app:chipIcon="@drawable/level_badge_pro" />
+                            app:chipIcon="@drawable/pro_level_badge" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chipSport4"
@@ -346,7 +346,7 @@
                             android:layoutDirection="rtl"
                             android:text="@string/sport4"
                             app:chipBackgroundColor="@color/pale_ametista"
-                            app:chipIcon="@drawable/level_badge_intermediate" />
+                            app:chipIcon="@drawable/intermediate_level_badge" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chipSport5"
@@ -358,7 +358,7 @@
                             android:layoutDirection="rtl"
                             android:text="@string/sport5"
                             app:chipBackgroundColor="@color/pale_lighter_blue"
-                            app:chipIcon="@drawable/level_badge_beginner" />
+                            app:chipIcon="@drawable/beginner_level_badge" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chipSport6"
@@ -370,7 +370,7 @@
                             android:layoutDirection="rtl"
                             android:text="@string/sport6"
                             app:chipBackgroundColor="@color/pale_lighter_green"
-                            app:chipIcon="@drawable/level_badge_intermediate" />
+                            app:chipIcon="@drawable/intermediate_level_badge" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chipSport7"
@@ -382,7 +382,7 @@
                             android:layoutDirection="rtl"
                             android:text="@string/sport7"
                             app:chipBackgroundColor="@color/pale_lighter_yellow"
-                            app:chipIcon="@drawable/level_badge_beginner" />
+                            app:chipIcon="@drawable/beginner_level_badge" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chipSport8"
@@ -394,7 +394,7 @@
                             android:layoutDirection="rtl"
                             android:text="@string/sport8"
                             app:chipBackgroundColor="@color/pale_lighter_grey"
-                            app:chipIcon="@drawable/level_badge_intermediate" />
+                            app:chipIcon="@drawable/intermediate_level_badge" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chipSport9"
@@ -405,8 +405,8 @@
                             android:fontFamily="@font/poppins_medium"
                             android:layoutDirection="rtl"
                             android:text="@string/sport9"
-                            app:chipBackgroundColor="@color/pale_lighter_orange"
-                            app:chipIcon="@drawable/level_badge_pro" />
+                            app:chipBackgroundColor="@color/pale_gold_brown"
+                            app:chipIcon="@drawable/pro_level_badge" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chipSport10"
@@ -418,7 +418,7 @@
                             android:layoutDirection="rtl"
                             android:text="@string/sport10"
                             app:chipBackgroundColor="@color/pale_lighter_red"
-                            app:chipIcon="@drawable/level_badge_beginner" />
+                            app:chipIcon="@drawable/beginner_level_badge" />
 
                     </com.google.android.material.chip.ChipGroup>
 
@@ -455,7 +455,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
-                    android:text="@string/bio"
+                    android:text="@string/user_bio"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
