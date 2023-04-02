@@ -10,6 +10,10 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.graphics.drawable.Drawable
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
@@ -18,8 +22,6 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Base64
-import android.util.DisplayMetrics
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
@@ -65,10 +67,25 @@ class EditProfileActivity : AppCompatActivity() {
                 val data: Intent? = it.data
                 galleryUri = data?.data
                 inputImage = galleryUri?.let { it1 -> uriToBitmap(it1) }
-                //Glide.with(this).load(inputImage).override(displayWidth, 300).centerCrop().into(profilePicture)
 
-                //Setting picture into the imageView
-                profilePicture.setImageBitmap(inputImage)
+                Glide.with(this)
+                    .asBitmap()
+                    .load(inputImage)
+                    .override(getDisplayMeasures().first, getDisplayMeasures().second / 3)
+                    .centerCrop()
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onResourceReady(
+                            resource: Bitmap,
+                            transition: Transition<in Bitmap>?
+                        ) {
+                            profilePicture.setImageBitmap(resource)
+                            savePictureOnSharedPreferences(resource)
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {
+
+                        }
+                    })
             }
         }
 
