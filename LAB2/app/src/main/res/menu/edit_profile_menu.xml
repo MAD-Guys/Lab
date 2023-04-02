@@ -6,14 +6,14 @@
     <!-- Back button -->
     <item
         android:id="@+id/back_button"
-        android:title="@string/back_button"
+        android:title="@string/back_button_description"
         android:icon="@drawable/baseline_keyboard_return_24"
         app:showAsAction="ifRoom"/>
 
     <!--  Confirm button-->
     <item
         android:id="@+id/confirm_button"
-        android:title="@string/confirm_button"
+        android:title="@string/confirm_button_description"
         android:icon="@drawable/baseline_check_24"
         app:showAsAction="always"/>
 

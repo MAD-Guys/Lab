@@ -93,8 +93,8 @@ class EditProfileActivity : AppCompatActivity() {
         //Initializing the EditText views
         firstName = findViewById(R.id.edit_first_name)
         lastName = findViewById(R.id.edit_last_name)
-        username = findViewById(R.id.edit_nickname)
-        radioGroup = findViewById(R.id.radioSexGroup)
+        username = findViewById(R.id.edit_username)
+        radioGroup = findViewById(R.id.radio_gender_group)
         age = findViewById(R.id.edit_age)
         location = findViewById(R.id.edit_location)
         bio = findViewById(R.id.edit_bio)

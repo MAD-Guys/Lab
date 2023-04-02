@@ -32,7 +32,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:backgroundTint="@color/background_blue"
-            android:contentDescription="@string/profile_image_button_description"
+            android:contentDescription="@string/profile_picture_button_description"
             app:srcCompat="@drawable/baseline_add_a_photo_24" />
 
     </RelativeLayout>
@@ -147,11 +147,11 @@
 
 
                                 <EditText
-                                    android:id="@+id/edit_nickname"
+                                    android:id="@+id/edit_username"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:fontFamily="@font/poppins_medium"
-                                    android:text="@string/editNickname"
+                                    android:text="@string/username"
                                     android:textColor="@color/light_grey"
                                     android:textSize="20sp" />
                             </LinearLayout>
@@ -184,7 +184,7 @@
                                 android:textSize="18sp" />
 
                             <RadioGroup
-                                android:id="@+id/radioSexGroup"
+                                android:id="@+id/radioGenderGroup"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal">
@@ -194,7 +194,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:fontFamily="@font/poppins_medium"
-                                    android:text="@string/sexMale"
+                                    android:text="@string/male_gender"
                                     android:textSize="18sp" />
 
                                 <RadioButton
@@ -203,7 +203,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="8dp"
                                     android:fontFamily="@font/poppins_medium"
-                                    android:text="@string/sexFemale"
+                                    android:text="@string/female_gender"
                                     android:textSize="18sp" />
 
                                 <RadioButton
@@ -212,7 +212,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="8dp"
                                     android:fontFamily="@font/poppins_medium"
-                                    android:text="@string/sexOther"
+                                    android:text="@string/other_gender"
                                     android:textSize="18sp" />
                             </RadioGroup>
 
