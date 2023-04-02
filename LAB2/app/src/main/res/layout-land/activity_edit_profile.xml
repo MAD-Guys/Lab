@@ -4,467 +4,561 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/background_orange"
     android:baselineAligned="false"
-    android:orientation="horizontal"
     tools:context=".EditProfileActivity">
 
-    <!-- RelativeLayout for the profile picture -->
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+    <!-- Profile picture box
+    (put a default height which will be programmatically overwritten at run time) -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profile_picture_container"
+        android:layout_width="@dimen/picture_default_size"
+        android:layout_height="match_parent"
         android:background="@color/background_blue"
-        android:orientation="vertical">
-
+        android:paddingHorizontal="16dp">
+        <!-- background profile picture -->
+        <ImageView
+            android:id="@+id/background_profile_picture"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/background_profile_picture"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/background_user_profile_picture"
+            tools:ignore="ImageContrastCheck" />
+        <!-- profile picture -->
         <ImageView
             android:id="@+id/profile_picture"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:contentDescription="@string/profile_picture"
-            app:srcCompat="@drawable/user_profile_picture" />
-
+            app:srcCompat="@drawable/user_profile_picture_noaplha"
+            tools:ignore="ImageContrastCheck" />
+        <!-- Button to change profile picture -->
         <ImageButton
             android:id="@+id/profile_picture_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
+            app:layout_constraintEnd_toEndOf="@id/profile_picture"
+            app:layout_constraintBottom_toBottomOf="@id/profile_picture"
+            android:paddingVertical="10dp"
+            android:paddingHorizontal="14dp"
             android:backgroundTint="@color/background_blue"
             android:contentDescription="@string/profile_picture_button_description"
-            app:srcCompat="@drawable/baseline_add_a_photo_24" />
+            app:srcCompat="@drawable/baseline_add_a_photo_24"
+            tools:ignore="ImageContrastCheck"
+            android:background="@null"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:background="@color/background_orange"
-        android:orientation="vertical"
-        android:paddingHorizontal="16dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="6dp"
-        android:paddingBottom="0dp">
-
-        <ScrollView
+    <!-- Profile information -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="none"
-            tools:ignore="UselessParent">
+            android:orientation="vertical"
+            android:padding="16dp">
 
+            <!-- Section 1: General information -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Section 1: General information -->
+                <!-- first name box -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
                     android:orientation="vertical"
-                    android:paddingTop="8dp">
-
-                    <!-- LinearLayout for the first name, the last name and the nickname -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppins_bold"
-                                android:text="First Name: "
-                                android:textColor="@color/black"
-                                android:textSize="18sp" />
-
-                            <EditText
-                                android:id="@+id/edit_first_name"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppins_medium"
-                                android:text="@string/first_name"
-                                android:textColor="@color/black"
-                                android:textSize="32sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppins_bold"
-                                android:text="Last Name: "
-                                android:textColor="@color/black"
-                                android:textSize="18sp" />
-
-                            <EditText
-                                android:id="@+id/edit_last_name"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppins_medium"
-                                android:text="@string/first_name"
-                                android:textColor="@color/black"
-                                android:textSize="32sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppins_bold"
-                                android:text="Nickname: "
-                                android:textColor="@color/black"
-                                android:textSize="18sp" />
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="@font/poppins_medium"
-                                    android:text="\@"
-                                    android:textColor="@color/light_grey"
-                                    android:textSize="20sp"
-                                    tools:ignore="HardcodedText" />
-
-
-                                <EditText
-                                    android:id="@+id/edit_username"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="@font/poppins_medium"
-                                    android:text="@string/username"
-                                    android:textColor="@color/light_grey"
-                                    android:textSize="20sp" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <!-- LinearLayout for the remaining information -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="top"
-                        android:orientation="vertical"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="8dp">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:contentDescription="@string/image_person_content_description"
-                                android:fontFamily="@font/poppins_bold"
-                                android:text="Sex: "
-                                android:textColor="@color/black"
-                                android:textSize="18sp" />
-
-                            <RadioGroup
-                                android:id="@+id/radio_gender_group"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-
-                                <RadioButton
-                                    android:id="@+id/radio_male"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="@font/poppins_medium"
-                                    android:text="@string/male_gender"
-                                    android:textSize="18sp" />
-
-                                <RadioButton
-                                    android:id="@+id/radio_female"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="8dp"
-                                    android:fontFamily="@font/poppins_medium"
-                                    android:text="@string/female_gender"
-                                    android:textSize="18sp" />
-
-                                <RadioButton
-                                    android:id="@+id/radio_other"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="8dp"
-                                    android:fontFamily="@font/poppins_medium"
-                                    android:text="@string/other_gender"
-                                    android:textSize="18sp" />
-                            </RadioGroup>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:fontFamily="@font/poppins_bold"
-                                android:gravity="center_vertical"
-                                android:text="@string/age_label"
-                                android:textColor="@color/black"
-                                android:textSize="18sp" />
-
-                            <EditText
-                                android:id="@+id/edit_age"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppins_medium"
-                                android:gravity="start"
-                                android:inputType="numberDecimal"
-                                android:text="@string/user_age"
-                                android:textColor="@color/black"
-                                android:textSize="18sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <EditText
-                                android:id="@+id/edit_location"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:fontFamily="@font/poppins_medium"
-                                android:text="@string/user_location"
-                                android:textColor="@color/black"
-                                android:textSize="18sp" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/sport_divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginVertical="2dp"
-                    android:background="?android:attr/listDivider" />
-
-                <!-- Section 2: Sports -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:orientation="vertical">
-
-                    <!-- title -->
+                    android:layout_marginBottom="10sp">
+                    <!-- first name header -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:text="@string/sports_title"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="@string/first_name_header"
                         android:textColor="@color/black"
-                        android:textSize="24sp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <com.google.android.material.chip.ChipGroup
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:visibility="visible">
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport1"
-                                android:visibility="visible"
-                                app:chipBackgroundColor="@color/pale_orange"
-                                app:chipIcon="@drawable/beginner_level_badge" />
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport2"
-                                app:chipBackgroundColor="@color/pale_green"
-                                app:chipIcon="@drawable/intermediate_level_badge" />
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport3"
-                                style="@style/Widget.MaterialComponents.Chip.Action"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport3"
-                                app:chipBackgroundColor="@color/pale_blue"
-                                app:chipIcon="@drawable/pro_level_badge" />
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport4"
-                                style="@style/Widget.MaterialComponents.Chip.Action"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport4"
-                                app:chipBackgroundColor="@color/pale_ametista"
-                                app:chipIcon="@drawable/intermediate_level_badge" />
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport5"
-                                style="@style/Widget.MaterialComponents.Chip.Action"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport5"
-                                app:chipBackgroundColor="@color/pale_lighter_blue"
-                                app:chipIcon="@drawable/beginner_level_badge" />
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport6"
-                                style="@style/Widget.MaterialComponents.Chip.Action"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport6"
-                                app:chipBackgroundColor="@color/pale_lighter_green"
-                                app:chipIcon="@drawable/intermediate_level_badge" />
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport7"
-                                style="@style/Widget.MaterialComponents.Chip.Action"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport7"
-                                app:chipBackgroundColor="@color/pale_lighter_yellow"
-                                app:chipIcon="@drawable/beginner_level_badge" />
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport8"
-                                style="@style/Widget.MaterialComponents.Chip.Action"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport8"
-                                app:chipBackgroundColor="@color/pale_lighter_grey"
-                                app:chipIcon="@drawable/intermediate_level_badge" />
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport9"
-                                style="@style/Widget.MaterialComponents.Chip.Action"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport9"
-                                app:chipBackgroundColor="@color/pale_gold_brown"
-                                app:chipIcon="@drawable/pro_level_badge" />
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipSport10"
-                                style="@style/Widget.MaterialComponents.Chip.Action"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="false"
-                                android:fontFamily="@font/poppins_medium"
-                                android:layoutDirection="rtl"
-                                android:text="@string/sport10"
-                                app:chipBackgroundColor="@color/pale_lighter_red"
-                                app:chipIcon="@drawable/beginner_level_badge" />
-
-                        </com.google.android.material.chip.ChipGroup>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/Bio_divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginVertical="2dp"
-                    android:background="?android:attr/listDivider" />
-
-                <!-- Section 3: Bio -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="vertical">
-
-                    <!-- title -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:text="@string/bio_title"
-                        android:textColor="@color/black"
-                        android:textSize="24sp" />
-
-                    <!-- bio -->
+                        android:textSize="@dimen/edit_text_header_text_size"
+                        android:includeFontPadding="false"/>
+                    <!-- first name field -->
                     <EditText
-                        android:id="@+id/edit_bio"
+                        android:id="@+id/edit_first_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/edit_text_padding_bottom"
+                        android:paddingTop="@dimen/edit_text_padding_top"
+                        android:layout_marginLeft="@dimen/edit_text_margin"
+                        android:layout_marginRight="@dimen/edit_text_margin"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textColor="@color/edit_text_text_color"
+                        android:textColorHint="@color/edit_text_text_color_hint"
+                        android:textSize="@dimen/edit_text_text_size"
+                        android:includeFontPadding="false"
+                        android:autofillHints="name"
+                        android:text="@string/first_name"
+                        android:hint="@string/first_name_header"
+                        android:inputType="textPersonName"
+                        tools:ignore="VisualLintTextFieldSize" />
+                </LinearLayout>
+                <!-- last name box -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="10sp">
+                    <!-- last name header -->
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_medium"
-                        android:text="@string/user_bio"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="@string/last_name_header"
                         android:textColor="@color/black"
-                        android:textSize="18sp"
-                        tools:ignore="VisualLintTextFieldSize,VisualLintLongText" />
+                        android:textSize="@dimen/edit_text_header_text_size"
+                        android:includeFontPadding="false"/>
+                    <!-- last name field -->
+                    <EditText
+                        android:id="@+id/edit_last_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/edit_text_padding_bottom"
+                        android:paddingTop="@dimen/edit_text_padding_top"
+                        android:layout_marginLeft="@dimen/edit_text_margin"
+                        android:layout_marginRight="@dimen/edit_text_margin"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textColor="@color/edit_text_text_color"
+                        android:textColorHint="@color/edit_text_text_color_hint"                        android:textSize="@dimen/edit_text_text_size"
+                        android:includeFontPadding="false"
+                        android:autofillHints="name"
+                        android:text="@string/last_name"
+                        android:hint="@string/last_name_header"
+                        android:inputType="textPersonName"
+                        tools:ignore="VisualLintTextFieldSize" />
+                </LinearLayout>
+                <!-- username box -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="10sp">
+                    <!-- username header -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="@string/username_header"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/edit_text_header_text_size"
+                        android:includeFontPadding="false"/>
+                    <!-- username field -->
+                    <EditText
+                        android:id="@+id/edit_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/edit_text_padding_bottom"
+                        android:paddingTop="@dimen/edit_text_padding_top"
+                        android:layout_marginLeft="@dimen/edit_text_margin"
+                        android:layout_marginRight="@dimen/edit_text_margin"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textColor="@color/edit_text_text_color"
+                        android:textColorHint="@color/edit_text_text_color_hint"                        android:textSize="@dimen/edit_text_text_size"
+                        android:includeFontPadding="false"
+                        android:autofillHints="name"
+                        android:text="@string/username"
+                        android:hint="@string/username_header"
+                        android:inputType="textPersonName"
+                        tools:ignore="VisualLintTextFieldSize" />
+                </LinearLayout>
+                <!-- gender box -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="2sp">
+                    <!-- gender header -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="@string/gender_header"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/edit_text_header_text_size"
+                        android:includeFontPadding="false" />
+                    <!-- Gender -->
+                    <RadioGroup
+                        android:id="@+id/radio_gender_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:checkedButton="@id/radio_male">
+                        <!-- Male -->
+                        <RadioButton
+                            android:id="@+id/radio_male"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="4sp"
+                            android:layout_marginEnd="10sp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:textColor="@color/edit_text_text_color"
+                            android:text="@string/male_gender"
+                            android:textSize="18sp"
+                            android:includeFontPadding="false"
+                            android:layout_marginStart="-5dp"/>
+                        <!-- Female -->
+                        <RadioButton
+                            android:id="@+id/radio_female"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="4sp"
+                            android:layout_marginEnd="10sp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:textColor="@color/edit_text_text_color"
+                            android:textColorHint="@color/edit_text_text_color_hint"
+                            android:text="@string/female_gender"
+                            android:textSize="18sp"
+                            android:includeFontPadding="false" />
+                        <!-- Other -->
+                        <RadioButton
+                            android:id="@+id/radio_other"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="4sp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:textColor="@color/edit_text_text_color"
+                            android:textColorHint="@color/edit_text_text_color_hint"
+                            android:text="@string/other_gender"
+                            android:textSize="18sp"
+                            android:includeFontPadding="false" />
+                    </RadioGroup>
+                </LinearLayout>
+                <!-- age box -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="10sp">
+                    <!-- Age header -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="@string/age_header"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/edit_text_header_text_size"
+                        android:includeFontPadding="false" />
+                    <!-- Age -->
+                    <EditText
+                        android:id="@+id/edit_age"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/edit_text_padding_bottom"
+                        android:paddingTop="@dimen/edit_text_padding_top"
+                        android:layout_marginLeft="@dimen/edit_text_margin"
+                        android:layout_marginRight="@dimen/edit_text_margin"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textColor="@color/edit_text_text_color"
+                        android:textColorHint="@color/edit_text_text_color_hint"                        android:textSize="@dimen/edit_text_text_size"
+                        android:text="@string/user_age"
+                        android:includeFontPadding="false"
+                        android:autofillHints="age"
+                        android:hint="@string/age_header"
+                        android:inputType="number"
+                        tools:ignore="VisualLintTextFieldSize" />
+                </LinearLayout>
+                <!-- location box -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="10sp">
+                    <!-- Location header -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="@string/location_header"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/edit_text_header_text_size"
+                        android:includeFontPadding="false"/>
+                    <!-- Location -->
+                    <EditText
+                        android:id="@+id/edit_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/edit_text_padding_bottom"
+                        android:paddingTop="@dimen/edit_text_padding_top"
+                        android:layout_marginLeft="@dimen/edit_text_margin"
+                        android:layout_marginRight="@dimen/edit_text_margin"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textColor="@color/edit_text_text_color"
+                        android:textColorHint="@color/edit_text_text_color_hint"                        android:textSize="@dimen/edit_text_text_size"
+                        android:includeFontPadding="false"
+                        android:autofillHints="location"
+                        android:text="@string/user_location"
+                        android:hint="@string/location_header"
+                        android:inputType="text"
+                        tools:ignore="VisualLintTextFieldSize" />
 
                 </LinearLayout>
-
             </LinearLayout>
 
+            <View
+                android:id="@+id/sport_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="8dp"
+                android:background="?android:attr/listDivider" />
 
-        </ScrollView>
+            <!-- Section 2: Sports -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-    </LinearLayout>
+                <!-- Sport title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="@string/sports_title"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/section_title_text_size"
+                    android:includeFontPadding="false"
+                    android:layout_marginBottom="8sp"/>
 
+                <!-- Sports Pills -->
+                <com.google.android.material.chip.ChipGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible">
+                    <!-- Basket -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/basketChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/chip_height"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
+                        android:text="@string/sport1"
+                        app:chipBackgroundColor="@color/pale_orange"
+                        app:chipIcon="@drawable/beginner_level_badge" />
+                    <!-- 11-a-side-Football -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/football11Chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/chip_height"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
+                        android:text="@string/sport2"
+                        app:chipBackgroundColor="@color/pale_green"
+                        app:chipIcon="@drawable/intermediate_level_badge" />
+                    <!-- 5-a-side-Football -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/football5Chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/chip_height"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
+                        android:text="@string/sport3"
+                        app:chipBackgroundColor="@color/pale_blue"
+                        app:chipIcon="@drawable/pro_level_badge" />
+                    <!-- 8-a-side-Football -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/football8Chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/chip_height"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
+                        android:text="@string/sport4"
+                        app:chipBackgroundColor="@color/pale_ametista"
+                        app:chipIcon="@drawable/intermediate_level_badge" />
+                    <!-- Tennis -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/tennisChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/chip_height"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
+                        android:text="@string/sport5"
+                        app:chipBackgroundColor="@color/pale_lighter_blue"
+                        app:chipIcon="@drawable/expert_level_badge" />
+                    <!-- Volleyball -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/volleyballChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/chip_height"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
+                        android:text="@string/sport6"
+                        app:chipBackgroundColor="@color/pale_lighter_green"
+                        app:chipIcon="@drawable/intermediate_level_badge" />
+                    <!-- Table Tennis -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/tableTennisChip"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/chip_height"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
+                        android:text="@string/sport7"
+                        app:chipBackgroundColor="@color/pale_lighter_yellow"
+                        app:chipIcon="@drawable/beginner_level_badge" />
+                    <!-- Beach Volley -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/beachVolleyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/chip_height"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
+                        android:text="@string/sport8"
+                        app:chipBackgroundColor="@color/pale_lighter_grey"
+                        app:chipIcon="@drawable/intermediate_level_badge" />
+                    <!-- Padel -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/padelChip"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/chip_height"
+                        android:clickable="false"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:visibility="visible"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
+                        android:text="@string/sport9"
+                        app:chipBackgroundColor="@color/pale_gold_brown"
+                        app:chipIcon="@drawable/pro_level_badge"
+                        tools:ignore="TextContrastCheck" />
+                    <!-- Mini Golf -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/miniGolfChip"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/chip_height"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
+                        android:text="@string/sport10"
+                        app:chipBackgroundColor="@color/pale_lighter_red"
+                        app:chipIcon="@drawable/expert_level_badge" />
+
+                </com.google.android.material.chip.ChipGroup>
+            </LinearLayout>
+
+            <!-- line divider -->
+            <View
+                android:id="@+id/bio_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="8dp"
+                android:background="?android:attr/listDivider" />
+
+            <!-- Section 3: Bio -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="20sp">
+
+                <!-- title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="@string/bio_title"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/section_title_text_size"
+                    android:includeFontPadding="false"
+                    android:layout_marginBottom="2sp"/>
+
+                <!-- bio -->
+
+                <EditText
+                    android:id="@+id/edit_bio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/edit_text_padding_bottom"
+                    android:paddingTop="@dimen/edit_text_padding_top"
+                    android:layout_marginLeft="@dimen/edit_text_margin"
+                    android:layout_marginRight="@dimen/edit_text_margin"
+                    android:fontFamily="@font/poppins_medium"
+                    android:textColor="@color/edit_text_text_color"
+                    android:textColorHint="@color/edit_text_text_color_hint"                    android:textSize="@dimen/edit_text_text_size"
+                    android:text="@string/user_bio"
+                    android:includeFontPadding="false"
+                    android:autofillHints="bio"
+                    android:hint="@string/bio_title"
+                    android:inputType="textMultiLine"
+                    tools:ignore="VisualLintTextFieldSize,VisualLintLongText" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

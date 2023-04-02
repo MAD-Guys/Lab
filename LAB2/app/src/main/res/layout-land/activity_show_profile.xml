@@ -10,7 +10,7 @@
     tools:context=".ShowProfileActivity">
 
     <!-- Profile picture box
-    (put a default length (240dp) which will be programmatically overwritten at run time) -->
+    (put a default length which will be programmatically overwritten at run time) -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profile_picture_container"
         android:layout_width="@dimen/picture_default_size"
@@ -116,7 +116,7 @@
                             android:includeFontPadding="false"
                             android:text="\@"
                             android:textColor="@color/light_grey"
-                            android:textSize="16sp"
+                            android:textSize="@dimen/default_text_size"
                             tools:ignore="HardcodedText" />
                         <!-- username -->
                         <TextView
@@ -127,7 +127,7 @@
                             android:includeFontPadding="false"
                             android:text="@string/username"
                             android:textColor="@color/light_grey"
-                            android:textSize="18sp"
+                            android:textSize="@dimen/default_text_size"
                             android:autoSizeTextType="uniform"
                             tools:ignore="UnusedAttribute" />
                     </LinearLayout>
@@ -171,7 +171,7 @@
                                 android:includeFontPadding="false"
                                 android:text="@string/user_gender"
                                 android:textColor="@color/black"
-                                android:textSize="17sp" />
+                                android:textSize="@dimen/default_text_size" />
                             <!-- comma -->
                             <TextView
                                 android:id="@+id/comma"
@@ -182,7 +182,7 @@
                                 android:includeFontPadding="false"
                                 android:text=", "
                                 android:textColor="@color/black"
-                                android:textSize="17sp"
+                                android:textSize="@dimen/default_text_size"
                                 tools:ignore="HardcodedText" />
                             <!-- user age -->
                             <TextView
@@ -194,7 +194,7 @@
                                 android:includeFontPadding="false"
                                 android:text="@string/user_age"
                                 android:textColor="@color/black"
-                                android:textSize="17sp" />
+                                android:textSize="@dimen/default_text_size" />
 
                         </LinearLayout>
 
@@ -226,7 +226,7 @@
                                 android:includeFontPadding="false"
                                 android:text="@string/user_location"
                                 android:textColor="@color/black"
-                                android:textSize="17sp" />
+                                android:textSize="@dimen/default_text_size" />
 
                         </LinearLayout>
                     </LinearLayout>
@@ -297,7 +297,7 @@
                     android:fontFamily="@font/poppins_semibold"
                     android:text="@string/sports_title"
                     android:textColor="@color/black"
-                    android:textSize="24sp"
+                    android:textSize="@dimen/section_title_text_size"
                     android:includeFontPadding="false"
                     android:layout_marginBottom="8sp"/>
 
@@ -310,16 +310,16 @@
                     <com.google.android.material.chip.Chip
                         android:id="@+id/basketChip"
                         android:layout_width="wrap_content"
-                        android:layout_height="52sp"
+                        android:layout_height="@dimen/chip_height"
                         android:fontFamily="@font/poppins_bold"
                         android:layoutDirection="rtl"
                         android:clickable="false"
                         android:visibility="visible"
-                        app:chipIconSize="48sp"
-                        android:textSize="16sp"
-                        app:textStartPadding="10sp"
-                        app:textEndPadding="13sp"
-                        android:layout_marginEnd="4sp"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
                         android:text="@string/sport1"
                         app:chipBackgroundColor="@color/pale_orange"
                         app:chipIcon="@drawable/beginner_level_badge" />
@@ -327,16 +327,16 @@
                     <com.google.android.material.chip.Chip
                         android:id="@+id/football11Chip"
                         android:layout_width="wrap_content"
-                        android:layout_height="52sp"
+                        android:layout_height="@dimen/chip_height"
                         android:fontFamily="@font/poppins_bold"
                         android:layoutDirection="rtl"
                         android:clickable="false"
                         android:visibility="visible"
-                        app:chipIconSize="48sp"
-                        android:textSize="16sp"
-                        app:textStartPadding="10sp"
-                        app:textEndPadding="13sp"
-                        android:layout_marginEnd="4sp"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
                         android:text="@string/sport2"
                         app:chipBackgroundColor="@color/pale_green"
                         app:chipIcon="@drawable/intermediate_level_badge" />
@@ -344,16 +344,16 @@
                     <com.google.android.material.chip.Chip
                         android:id="@+id/football5Chip"
                         android:layout_width="wrap_content"
-                        android:layout_height="52sp"
+                        android:layout_height="@dimen/chip_height"
                         android:fontFamily="@font/poppins_bold"
                         android:layoutDirection="rtl"
                         android:clickable="false"
                         android:visibility="visible"
-                        app:chipIconSize="48sp"
-                        android:textSize="16sp"
-                        app:textStartPadding="10sp"
-                        app:textEndPadding="13sp"
-                        android:layout_marginEnd="4sp"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
                         android:text="@string/sport3"
                         app:chipBackgroundColor="@color/pale_blue"
                         app:chipIcon="@drawable/pro_level_badge" />
@@ -361,16 +361,16 @@
                     <com.google.android.material.chip.Chip
                         android:id="@+id/football8Chip"
                         android:layout_width="wrap_content"
-                        android:layout_height="52sp"
+                        android:layout_height="@dimen/chip_height"
                         android:fontFamily="@font/poppins_bold"
                         android:layoutDirection="rtl"
                         android:clickable="false"
                         android:visibility="visible"
-                        app:chipIconSize="48sp"
-                        android:textSize="16sp"
-                        app:textStartPadding="10sp"
-                        app:textEndPadding="13sp"
-                        android:layout_marginEnd="4sp"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
                         android:text="@string/sport4"
                         app:chipBackgroundColor="@color/pale_ametista"
                         app:chipIcon="@drawable/intermediate_level_badge" />
@@ -378,16 +378,16 @@
                     <com.google.android.material.chip.Chip
                         android:id="@+id/tennisChip"
                         android:layout_width="wrap_content"
-                        android:layout_height="52sp"
+                        android:layout_height="@dimen/chip_height"
                         android:fontFamily="@font/poppins_bold"
                         android:layoutDirection="rtl"
                         android:clickable="false"
                         android:visibility="visible"
-                        app:chipIconSize="48sp"
-                        android:textSize="16sp"
-                        app:textStartPadding="10sp"
-                        app:textEndPadding="13sp"
-                        android:layout_marginEnd="4sp"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
                         android:text="@string/sport5"
                         app:chipBackgroundColor="@color/pale_lighter_blue"
                         app:chipIcon="@drawable/expert_level_badge" />
@@ -395,16 +395,16 @@
                     <com.google.android.material.chip.Chip
                         android:id="@+id/volleyballChip"
                         android:layout_width="wrap_content"
-                        android:layout_height="52sp"
+                        android:layout_height="@dimen/chip_height"
                         android:fontFamily="@font/poppins_bold"
                         android:layoutDirection="rtl"
                         android:clickable="false"
                         android:visibility="visible"
-                        app:chipIconSize="48sp"
-                        android:textSize="16sp"
-                        app:textStartPadding="10sp"
-                        app:textEndPadding="13sp"
-                        android:layout_marginEnd="4sp"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
                         android:text="@string/sport6"
                         app:chipBackgroundColor="@color/pale_lighter_green"
                         app:chipIcon="@drawable/intermediate_level_badge" />
@@ -413,16 +413,16 @@
                         android:id="@+id/tableTennisChip"
                         style="@style/Widget.MaterialComponents.Chip.Action"
                         android:layout_width="wrap_content"
-                        android:layout_height="52sp"
+                        android:layout_height="@dimen/chip_height"
                         android:fontFamily="@font/poppins_bold"
                         android:layoutDirection="rtl"
                         android:clickable="false"
                         android:visibility="visible"
-                        app:chipIconSize="48sp"
-                        android:textSize="16sp"
-                        app:textStartPadding="10sp"
-                        app:textEndPadding="13sp"
-                        android:layout_marginEnd="4sp"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
                         android:text="@string/sport7"
                         app:chipBackgroundColor="@color/pale_lighter_yellow"
                         app:chipIcon="@drawable/beginner_level_badge" />
@@ -430,16 +430,16 @@
                     <com.google.android.material.chip.Chip
                         android:id="@+id/beachVolleyChip"
                         android:layout_width="wrap_content"
-                        android:layout_height="52sp"
+                        android:layout_height="@dimen/chip_height"
                         android:fontFamily="@font/poppins_bold"
                         android:layoutDirection="rtl"
                         android:clickable="false"
                         android:visibility="visible"
-                        app:chipIconSize="48sp"
-                        android:textSize="16sp"
-                        app:textStartPadding="10sp"
-                        app:textEndPadding="13sp"
-                        android:layout_marginEnd="4sp"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
                         android:text="@string/sport8"
                         app:chipBackgroundColor="@color/pale_lighter_grey"
                         app:chipIcon="@drawable/intermediate_level_badge" />
@@ -448,39 +448,38 @@
                         android:id="@+id/padelChip"
                         style="@style/Widget.MaterialComponents.Chip.Action"
                         android:layout_width="wrap_content"
-                        android:layout_height="52sp"
-                        android:layout_marginEnd="4sp"
+                        android:layout_height="@dimen/chip_height"
                         android:clickable="false"
                         android:fontFamily="@font/poppins_bold"
                         android:layoutDirection="rtl"
-                        android:text="@string/sport9"
-                        android:textSize="16sp"
                         android:visibility="visible"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
+                        android:text="@string/sport9"
                         app:chipBackgroundColor="@color/pale_gold_brown"
                         app:chipIcon="@drawable/pro_level_badge"
-                        app:chipIconSize="48sp"
-                        app:textEndPadding="13sp"
-                        app:textStartPadding="10sp"
                         tools:ignore="TextContrastCheck" />
                     <!-- Mini Golf -->
                     <com.google.android.material.chip.Chip
                         android:id="@+id/miniGolfChip"
                         style="@style/Widget.MaterialComponents.Chip.Action"
                         android:layout_width="wrap_content"
-                        android:layout_height="52sp"
-                        android:layout_marginEnd="4sp"
-                        android:clickable="false"
+                        android:layout_height="@dimen/chip_height"
                         android:fontFamily="@font/poppins_bold"
                         android:layoutDirection="rtl"
-                        android:text="@string/sport10"
-                        android:textSize="16sp"
+                        android:clickable="false"
                         android:visibility="visible"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
+                        android:text="@string/sport10"
                         app:chipBackgroundColor="@color/pale_lighter_red"
-                        app:chipIcon="@drawable/expert_level_badge"
-                        app:chipIconSize="48sp"
-                        app:textEndPadding="13sp"
-                        app:textStartPadding="10sp"
-                        tools:ignore="TextContrastCheck" />
+                        app:chipIcon="@drawable/expert_level_badge" />
 
                 </com.google.android.material.chip.ChipGroup>
 
@@ -507,7 +506,7 @@
                     android:fontFamily="@font/poppins_semibold"
                     android:text="@string/bio_title"
                     android:textColor="@color/black"
-                    android:textSize="24sp"
+                    android:textSize="@dimen/section_title_text_size"
                     android:includeFontPadding="false"
                     android:layout_marginBottom="8sp"/>
 
@@ -519,7 +518,7 @@
                     android:fontFamily="@font/poppins_medium"
                     android:text="@string/user_bio"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="@dimen/default_text_size"
                     android:includeFontPadding="false"
                     tools:ignore="VisualLintLongText" />
 

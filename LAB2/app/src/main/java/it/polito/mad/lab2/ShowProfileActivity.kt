@@ -2,8 +2,6 @@ package it.polito.mad.lab2
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration.ORIENTATION_LANDSCAPE
-import android.content.res.Configuration.ORIENTATION_PORTRAIT
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -102,7 +100,7 @@ class ShowProfileActivity : AppCompatActivity() {
         }
     }
 
-    /* menu */
+    /* app menu */
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // inflate and render the menu
@@ -111,36 +109,15 @@ class ShowProfileActivity : AppCompatActivity() {
         // change app bar's title
         supportActionBar?.title = "Profile"
 
+        val menuHeight = supportActionBar?.height!!
+        val profilePictureContainer = findViewById<ConstraintLayout>(R.id.profile_picture_container)
+        val backgroundProfilePicture = findViewById<ImageView>(R.id.background_profile_picture)
+        val profilePicture = findViewById<ImageView>(R.id.profile_picture)
+
         // set profile picture height 1/3 of the app view
-        this.setProfilePictureSize(supportActionBar?.height!!)
+        this.setProfilePictureSize(menuHeight, profilePictureContainer, backgroundProfilePicture, profilePicture)
 
         return true
-    }
-
-    /**
-     * Change profile picture size:
-     * - set the height to 1/3 of the view (*excluding* the menu) in portrait view
-     * - set the width to 1/3 of the view in landscape view
-     * */
-    private fun setProfilePictureSize(menuHeight: Int) {
-        // retrieve display sizes
-        val (displayWidth, displayHeight) = this.getDisplayMeasures()
-
-        val profilePictureContainer = findViewById<ConstraintLayout>(R.id.profile_picture_container)
-
-        // if orientation is vertical, set the picture box height to 1/3 of the display (excluding the menu)
-        if (resources.configuration.orientation == ORIENTATION_PORTRAIT) {
-            profilePictureContainer.layoutParams.height = (displayHeight-menuHeight)/3
-        }
-        // if orientation is horizontal, set the picture box width to 1/3 the display
-        else if (resources.configuration.orientation == ORIENTATION_LANDSCAPE) {
-            profilePictureContainer.layoutParams.width = displayWidth/3
-        }
-
-        // render new dimensions on the screen
-        profilePictureContainer.requestLayout()
-        backgroundProfilePicture.requestLayout()
-        profilePicture.requestLayout()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {

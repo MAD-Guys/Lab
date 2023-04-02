@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="picture_default_size">130dp</dimen>
+    <!-- lab text constraints padding -->
     <dimen name="standard_padding">16dp</dimen>
+
+    <!-- default sizes -->
+    <dimen name="picture_default_size">
+        240dp<!-- *** Change this value to modify picture size *** -->
+    </dimen>
+    <dimen name="section_title_text_size">24sp</dimen>
+    <dimen name="default_text_size">18sp</dimen>
+
+    <!-- chips -->
+    <dimen name="chip_height">52sp</dimen>
+    <dimen name="chip_icon_size">48sp</dimen>
+    <dimen name="chip_text_size">16sp</dimen>
+    <dimen name="chip_text_start_padding">10sp</dimen>
+    <dimen name="chip_text_end_padding">13sp</dimen>
+    <dimen name="chip_margin_end">4sp</dimen>
+
+    <!-- EditText -->
+    <dimen name="edit_text_margin">-4dp</dimen>
+    <dimen name="edit_text_padding_bottom">14sp</dimen>
+    <dimen name="edit_text_padding_top">6sp</dimen>
+    <dimen name="edit_text_text_size">22sp</dimen>
+
+    <dimen name="edit_text_header_text_size">18sp</dimen>
+
 </resources>
