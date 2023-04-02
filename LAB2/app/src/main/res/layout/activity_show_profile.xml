@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="240dp"
             android:background="@color/background_blue">
-
+            <!-- Profile picture -->
             <ImageView
                 android:id="@+id/profile_picture"
                 android:layout_width="match_parent"
@@ -33,7 +33,6 @@
                 android:contentDescription="@string/profile_picture"
                 app:srcCompat="@drawable/user_profile_picture"
                 tools:ignore="ImageContrastCheck" />
-
         </RelativeLayout>
 
         <!-- Profile information -->
@@ -483,7 +482,7 @@
                 <!-- bio -->
                 <TextView
                     android:id="@+id/user_bio"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
                     android:text="@string/user_bio"

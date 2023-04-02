@@ -10,6 +10,8 @@
     <string name="image_person_content_description">imagePerson</string>
     <string name="image_location_content_description">imageLocation</string>
 
+    <!-- *default values* -->
+
     <!-- user names -->
     <string name="first_name">John</string>
     <string name="last_name">Doe</string>
@@ -52,20 +54,30 @@
     -->
 
     <!-- images -->
-    <string name="profile_image_button_description">Profile image button</string>
+    <string name="profile_picture_button_description">Chang profile picture</string>
 
     <!-- select picture menu selections -->
     <string name="camera">Use the camera to take a picture</string>
     <string name="gallery">Select an image from the phone gallery</string>
 
-    <!-- user info -->
-    <string name="editNickname">johndoe</string>
-    <string name="sexMale">Male</string>
-    <string name="sexFemale">Female</string>
-    <string name="sexOther">Other</string>
+    <!-- user info headers -->
+    <string name="first_name_header">First Name</string>
+    <string name="last_name_header">Last Name</string>
+    <string name="username_header">Username</string>
+    <string name="gender_header">Gender</string>
+    <string name="age_header">Age</string>
+    <string name="location_header">Location</string>
+
+    <!-- *default values* -->
+
+    <string name="male_gender">Male</string>
+    <string name="female_gender">Female</string>
+    <string name="other_gender">Other</string>
 
     <!-- buttons -->
-    <string name="confirm_button">Confirm button</string>
-    <string name="back_button">Back button</string>
+    <string name="confirm_button_description">Confirm button</string>
+    <string name="back_button_description">Back button</string>
+
+
 
 </resources>

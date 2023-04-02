@@ -455,7 +455,8 @@
                         android:fontFamily="@font/poppins_medium"
                         android:text="@string/user_bio"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        tools:ignore="VisualLintTextFieldSize,VisualLintLongText" />
 
                 </LinearLayout>
 
