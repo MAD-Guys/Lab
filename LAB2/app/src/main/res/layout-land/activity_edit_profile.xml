@@ -26,7 +26,7 @@
             app:srcCompat="@drawable/user_profile_picture" />
 
         <ImageButton
-            android:id="@+id/profile_image_button"
+            android:id="@+id/profile_picture_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -184,13 +184,13 @@
                                 android:textSize="18sp" />
 
                             <RadioGroup
-                                android:id="@+id/radioGenderGroup"
+                                android:id="@+id/radio_gender_group"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal">
 
                                 <RadioButton
-                                    android:id="@+id/radioMale"
+                                    android:id="@+id/radio_male"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:fontFamily="@font/poppins_medium"
@@ -198,7 +198,7 @@
                                     android:textSize="18sp" />
 
                                 <RadioButton
-                                    android:id="@+id/radioFemale"
+                                    android:id="@+id/radio_female"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="8dp"
@@ -207,7 +207,7 @@
                                     android:textSize="18sp" />
 
                                 <RadioButton
-                                    android:id="@+id/radioOther"
+                                    android:id="@+id/radio_other"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="8dp"

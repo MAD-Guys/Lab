@@ -185,7 +185,7 @@
                         android:orientation="horizontal">
                         <!-- Male -->
                         <RadioButton
-                            android:id="@+id/radioMale"
+                            android:id="@+id/radio_male"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:paddingHorizontal="4sp"
@@ -198,7 +198,7 @@
                             android:layout_marginStart="-5dp"/>
                         <!-- Female -->
                         <RadioButton
-                            android:id="@+id/radioFemale"
+                            android:id="@+id/radio_female"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:paddingHorizontal="4sp"
@@ -210,7 +210,7 @@
                             android:includeFontPadding="false" />
                         <!-- Other -->
                         <RadioButton
-                            android:id="@+id/radioOther"
+                            android:id="@+id/radio_other"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:paddingHorizontal="4sp"

@@ -36,7 +36,7 @@ class EditProfileActivity : AppCompatActivity() {
     private var lastNameTemp: String? = null
     private var usernameTemp: String? = null
     private var ageTemp: String? = null
-    private var radioGenderTemp: Int = R.id.radioMale
+    private var radioGenderTemp: Int = R.id.radio_male
     private var locationTemp: String? = null
     private var bioTemp: String? = null
 
@@ -82,9 +82,7 @@ class EditProfileActivity : AppCompatActivity() {
                             savePictureOnSharedPreferences(resource)
                         }
 
-                        override fun onLoadCleared(placeholder: Drawable?) {
-
-                        }
+                        override fun onLoadCleared(placeholder: Drawable?) {}
                     })
             }
         }
@@ -93,7 +91,7 @@ class EditProfileActivity : AppCompatActivity() {
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) {
-            if (it.resultCode == Activity.RESULT_OK) {
+            if (it.resultCode == RESULT_OK) {
                 inputImage = cameraUri?.let { it1 -> uriToBitmap(it1) }
                 inputImage = inputImage?.let { it1 -> rotateBitmap(it1) }
 
@@ -117,7 +115,7 @@ class EditProfileActivity : AppCompatActivity() {
         bio = findViewById(R.id.edit_bio)
         profilePicture = findViewById(R.id.profile_picture)
 
-        val profileImageButton: ImageButton = findViewById(R.id.profile_image_button)
+        val profileImageButton: ImageButton = findViewById(R.id.profile_picture_button)
         registerForContextMenu(profileImageButton)
 
         profileImageButton.setOnClickListener() {
@@ -145,12 +143,12 @@ class EditProfileActivity : AppCompatActivity() {
     private fun loadDataFromSharedPreferences() {
 
         // retrieving data from SharedPreferences
-        val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
+        val sh = getSharedPreferences("it.polito.mad.lab2", MODE_PRIVATE)
 
         val firstNameResume = sh.getString("firstName", getString(R.string.first_name))
         val lastNameResume = sh.getString("lastName", getString(R.string.last_name))
         val usernameResume = sh.getString("username", getString(R.string.username))
-        val radioCheckedResume = sh.getInt("radioChecked", R.id.radioMale)
+        val radioCheckedResume = sh.getInt("radioChecked", R.id.radio_male)
         val ageResume = sh.getString("age", getString(R.string.user_age))
         val locationResume = sh.getString("location", getString(R.string.user_location))
         val bioResume = sh.getString("bio", getString(R.string.user_bio))
@@ -301,7 +299,7 @@ class EditProfileActivity : AppCompatActivity() {
     private fun savePictureOnInternalStorage(picture: Bitmap) {
         val cw = ContextWrapper(applicationContext)
 
-        val directory: File = cw.getDir("imageDir", Context.MODE_PRIVATE)
+        val directory: File = cw.getDir("imageDir", MODE_PRIVATE)
 
         val file = File(directory, "profile_picture" + ".jpg")
 
@@ -320,7 +318,7 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun savePictureOnSharedPreferences(picture: Bitmap) {
-        val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
+        val sh = getSharedPreferences("it.polito.mad.lab2", MODE_PRIVATE)
         val editor = sh.edit()
 
         //Encoding bitmap into Base64 string
@@ -372,7 +370,7 @@ class EditProfileActivity : AppCompatActivity() {
         val inflater: MenuInflater = menuInflater
 
         when (v.id) {
-            R.id.profile_image_button -> {
+            R.id.profile_picture_button -> {
                 inflater.inflate(R.menu.profile_picture_context_menu, menu)
             }
         }
@@ -385,7 +383,7 @@ class EditProfileActivity : AppCompatActivity() {
         R.id.confirm_button -> {
 
             //Saving values into the sharedPreferences file
-            val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
+            val sh = getSharedPreferences("it.polito.mad.lab2", MODE_PRIVATE)
             val editor = sh.edit()
 
             editor.putString("firstName", firstNameTemp)
@@ -398,17 +396,19 @@ class EditProfileActivity : AppCompatActivity() {
 
             //Managing the Gender field in order to display it correctly into the ShowProfileActivity
             when (radioGenderTemp) {
-                R.id.radioFemale -> editor.putString("gender", "Female")
-                R.id.radioOther -> editor.putString("gender", "Other")
+                R.id.radio_female -> editor.putString("gender", "Female")
+                R.id.radio_other -> editor.putString("gender", "Other")
                 else -> editor.putString("gender", "Male")
             }
 
-            //Saving the pi
+            //Saving the picture into the sharedPreferences file
             if (inputImage != null) {
                 savePictureOnSharedPreferences(inputImage!!)
             }
 
             editor.apply()
+
+            Toast.makeText(this, "Information successfully saved!", Toast.LENGTH_LONG).show()
 
             this.finish()
             true
