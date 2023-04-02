@@ -2,6 +2,7 @@ package it.polito.mad.lab2
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.content.res.Configuration.ORIENTATION_PORTRAIT
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
@@ -12,10 +13,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 
 
 class ShowProfileActivity : AppCompatActivity() {
@@ -28,8 +28,9 @@ class ShowProfileActivity : AppCompatActivity() {
     private lateinit var location: TextView
     private lateinit var bio: TextView
 
-    // Profile picture view
+    // Profile picture views
     private lateinit var profilePicture: ImageView
+    private lateinit var backgroundProfilePicture: ImageView
 
     // Button views
     private lateinit var addFriendButton: Button
@@ -51,6 +52,7 @@ class ShowProfileActivity : AppCompatActivity() {
         location = findViewById(R.id.user_location)
         bio = findViewById(R.id.user_bio)
         profilePicture = findViewById(R.id.profile_picture)
+        backgroundProfilePicture = findViewById(R.id.background_profile_picture)
 
         // retrieve buttons, set callbacks and text
         addFriendButton = findViewById(R.id.button_add_friend)
@@ -109,37 +111,36 @@ class ShowProfileActivity : AppCompatActivity() {
         // change app bar's title
         supportActionBar?.title = "Profile"
 
-        // when orientation is VERTICAL, set profile picture height 1/3 of the app view
-        if (resources.configuration.orientation == ORIENTATION_PORTRAIT)
-            this.setProfilePictureSize(supportActionBar?.height!!)
+        // set profile picture height 1/3 of the app view
+        this.setProfilePictureSize(supportActionBar?.height!!)
 
         return true
     }
 
     /**
-     * Change profile picture RelativeLayout height to 1/3 of the view, *excluding* the menu
-     * (to be used in Portrait mode only)
+     * Change profile picture size:
+     * - set the height to 1/3 of the view (*excluding* the menu) in portrait view
+     * - set the width to 1/3 of the view in landscape view
      * */
     private fun setProfilePictureSize(menuHeight: Int) {
-        // * it is NOT possible to change a Relative Layout height when it is already displayed.
-        //   Therefore, it is necessary first to remove it, to change its dimensions,
-        //   and then to render it again *
+        // retrieve display sizes
+        val (displayWidth, displayHeight) = this.getDisplayMeasures()
 
-        val (_, displayHeight) = this.getDisplayMeasures()
+        val profilePictureContainer = findViewById<ConstraintLayout>(R.id.profile_picture_container)
 
-        // retrieve profile picture container view and its parent one
-        val profilePictureContainer = findViewById<RelativeLayout>(R.id.profile_picture_container)
-        val mainContainer = findViewById<LinearLayout>(R.id.main_container)
+        // if orientation is vertical, set the picture box height to 1/3 of the display (excluding the menu)
+        if (resources.configuration.orientation == ORIENTATION_PORTRAIT) {
+            profilePictureContainer.layoutParams.height = (displayHeight-menuHeight)/3
+        }
+        // if orientation is horizontal, set the picture box width to 1/3 the display
+        else if (resources.configuration.orientation == ORIENTATION_LANDSCAPE) {
+            profilePictureContainer.layoutParams.width = displayWidth/3
+        }
 
-        // remove picture box from the view
-        mainContainer.removeViewAt(0)
-
-        // set new profile picture height to 1/3 (excluding the menu)
-        val newHeight = (displayHeight-menuHeight)/3
-        profilePictureContainer.layoutParams.height = newHeight
-
-        // render the Relative Layout view with the new size
-        mainContainer.addView(profilePictureContainer, 0)
+        // render new dimensions on the screen
+        profilePictureContainer.requestLayout()
+        backgroundProfilePicture.requestLayout()
+        profilePicture.requestLayout()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
