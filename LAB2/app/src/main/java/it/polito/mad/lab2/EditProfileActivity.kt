@@ -1,10 +1,10 @@
 package it.polito.mad.lab2
 
 import android.Manifest
-import android.annotation.TargetApi
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -19,27 +19,31 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Base64
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileDescriptor
-import java.io.IOException
+import java.io.*
 
 class EditProfileActivity : AppCompatActivity() {
 
-    //General info variables
+    private var firstNameTemp: String? = null
+    private var lastNameTemp: String? = null
+    private var usernameTemp: String? = null
+    private var ageTemp: String? = null
+    private var radioGenderTemp: Int = R.id.radioMale
+    private var locationTemp: String? = null
+    private var bioTemp: String? = null
 
+    private var inputImage: Bitmap? = null
+
+    //User info EditTexts
     private lateinit var firstName: EditText
     private lateinit var lastName: EditText
-    private lateinit var nickname: EditText
+    private lateinit var username: EditText
     private lateinit var age: EditText
     private lateinit var location: EditText
     private lateinit var bio: EditText
@@ -47,7 +51,7 @@ class EditProfileActivity : AppCompatActivity() {
     //Radio group variables
     private lateinit var radioGroup: RadioGroup
 
-    //Profile picture variable
+    //Profile picture view and launchers
     private lateinit var profilePicture: ImageView
 
     private var galleryUri: Uri? = null
@@ -60,16 +64,11 @@ class EditProfileActivity : AppCompatActivity() {
             if (it.resultCode == RESULT_OK) {
                 val data: Intent? = it.data
                 galleryUri = data?.data
-                val inputImage: Bitmap? = galleryUri?.let { it1 -> uriToBitmap(it1) }
+                inputImage = galleryUri?.let { it1 -> uriToBitmap(it1) }
                 //Glide.with(this).load(inputImage).override(displayWidth, 300).centerCrop().into(profilePicture)
 
                 //Setting picture into the imageView
                 profilePicture.setImageBitmap(inputImage)
-
-                //Saving picture into shared preferences
-                if (inputImage != null) {
-                    savePictureOnSharedPreferences(inputImage)
-                }
             }
         }
 
@@ -78,16 +77,11 @@ class EditProfileActivity : AppCompatActivity() {
             ActivityResultContracts.StartActivityForResult()
         ) {
             if (it.resultCode == Activity.RESULT_OK) {
-                val inputImage: Bitmap? = cameraUri?.let { it1 -> uriToBitmap(it1) }
-                val rotated: Bitmap? = inputImage?.let { it1 -> rotateBitmap(it1) }
+                inputImage = cameraUri?.let { it1 -> uriToBitmap(it1) }
+                inputImage = inputImage?.let { it1 -> rotateBitmap(it1) }
 
                 //Setting picture into the imageView
-                profilePicture.setImageBitmap(rotated)
-
-                //Saving picture into shared preferences
-                if (rotated != null) {
-                    savePictureOnSharedPreferences(rotated)
-                }
+                profilePicture.setImageBitmap(inputImage)
             }
         }
 
@@ -95,42 +89,16 @@ class EditProfileActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
-        val metrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(metrics)
-        val displayHeight = metrics.heightPixels
-        val displayWidth = metrics.widthPixels
 
-        Toast.makeText(this, displayHeight.toString(), Toast.LENGTH_SHORT).show()
+        //Initializing the EditText views
         firstName = findViewById(R.id.edit_first_name)
         lastName = findViewById(R.id.edit_last_name)
-        nickname = findViewById(R.id.edit_nickname)
+        username = findViewById(R.id.edit_nickname)
         radioGroup = findViewById(R.id.radioSexGroup)
         age = findViewById(R.id.edit_age)
         location = findViewById(R.id.edit_location)
         bio = findViewById(R.id.edit_bio)
         profilePicture = findViewById(R.id.profile_picture)
-
-        firstName.addTextChangedListener(textListenersInit("firstName", firstName))
-        lastName.addTextChangedListener(textListenersInit("lastName", lastName))
-        nickname.addTextChangedListener(textListenersInit("nickname", nickname))
-        age.addTextChangedListener(textListenersInit("age", age))
-        location.addTextChangedListener(textListenersInit("location", location))
-        bio.addTextChangedListener(textListenersInit("bio", bio))
-
-        radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
-            val editor = sh.edit()
-            editor.putInt("radioChecked", checkedId)
-
-            //Managing the Sex field in order to display it correctly into the ShowActivityProfile activity
-            when (checkedId) {
-                R.id.radioFemale -> editor.putString("sex", "Female")
-                R.id.radioOther -> editor.putString("sex", "Other")
-                else -> editor.putString("sex", "Male")
-            }
-
-            editor.apply()
-        }
 
         val profileImageButton: ImageButton = findViewById(R.id.profile_image_button)
         registerForContextMenu(profileImageButton)
@@ -140,17 +108,31 @@ class EditProfileActivity : AppCompatActivity() {
             openContextMenu(profileImageButton)
         }
 
+        //Loading data from sharedPreferences file
+        loadDataFromSharedPreferences()
+
+        //Adding listeners to the temporary variables
+        firstName.addTextChangedListener(textListenerInit("firstName"))
+        lastName.addTextChangedListener(textListenerInit("lastName"))
+        username.addTextChangedListener(textListenerInit("username"))
+        age.addTextChangedListener(textListenerInit("age"))
+        location.addTextChangedListener(textListenerInit("location"))
+        bio.addTextChangedListener(textListenerInit("bio"))
+
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            radioGenderTemp = checkedId
+        }
+
     }
 
-    override fun onResume() {
-        super.onResume()
+    private fun loadDataFromSharedPreferences() {
 
-        // retrieve data from SharedPreferences
+        // retrieving data from SharedPreferences
         val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
 
         val firstNameResume = sh.getString("firstName", getString(R.string.first_name))
         val lastNameResume = sh.getString("lastName", getString(R.string.last_name))
-        val nicknameResume = sh.getString("nickname", getString(R.string.username))
+        val usernameResume = sh.getString("username", getString(R.string.username))
         val radioCheckedResume = sh.getInt("radioChecked", R.id.radioMale)
         val ageResume = sh.getString("age", getString(R.string.user_age))
         val locationResume = sh.getString("location", getString(R.string.user_location))
@@ -158,40 +140,88 @@ class EditProfileActivity : AppCompatActivity() {
 
         val profilePictureResume = sh.getString("profilePicture", null)
 
+        //Setting EditText views
         firstName.setText(firstNameResume)
         lastName.setText(lastNameResume)
-        nickname.setText(nicknameResume)
+        username.setText(usernameResume)
         radioGroup.check(radioCheckedResume)
         age.setText(ageResume)
         location.setText(locationResume)
         bio.setText(bioResume)
+
+        //Setting temporary variables
+        firstNameTemp = firstNameResume
+        lastNameTemp = lastNameResume
+        usernameTemp = usernameResume
+        radioGenderTemp = radioCheckedResume
+        ageTemp = ageResume
+        locationTemp = locationResume
+        bioTemp = bioResume
 
         if (profilePictureResume != null && !profilePictureResume.equals("", ignoreCase = true)) {
             val b: ByteArray = Base64.decode(profilePictureResume, Base64.DEFAULT)
             val bitmap = BitmapFactory.decodeByteArray(b, 0, b.size)
             profilePicture.setImageBitmap(bitmap)
         }
-
     }
 
-    private fun textListenersInit(id: String, et: EditText): TextWatcher {
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
 
+        //Saving temporary variables into the bundle in order to have the right values after the activity's restore
+        outState.putString("firstNameTemp", firstNameTemp)
+        outState.putString("lastNameTemp", lastNameTemp)
+        outState.putString("usernameTemp", usernameTemp)
+        outState.putString("ageTemp", ageTemp)
+        outState.putInt("radioGenderChecked", radioGenderTemp)
+        outState.putString("locationTemp", locationTemp)
+        outState.putString("bioTemp", bioTemp)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+
+        //Restoring temporary variables from the bundle
+        firstNameTemp = savedInstanceState.getString("firstNameTemp").toString()
+        firstName.setText(firstNameTemp)
+
+        lastNameTemp = savedInstanceState.getString("lastNameTemp").toString()
+        lastName.setText(lastNameTemp)
+
+        usernameTemp = savedInstanceState.getString("usernameTemp").toString()
+        username.setText(usernameTemp)
+
+        ageTemp = savedInstanceState.getString("ageTemp").toString()
+        age.setText(ageTemp)
+
+        radioGenderTemp = savedInstanceState.getInt("radioGenderChecked")
+        radioGroup.check(radioGenderTemp)
+
+        locationTemp = savedInstanceState.getString("locationTemp").toString()
+        location.setText(locationTemp)
+
+        bioTemp = savedInstanceState.getString("bioTemp").toString()
+        bio.setText(bioTemp)
+    }
+
+    private fun textListenerInit(fieldName: String): TextWatcher {
+
+        //Implementing and returning the TextWatcher interface
         return object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
-                val editor = sh.edit()
-                editor.putString(id, et.text.toString())
-                editor.apply()
+                when (fieldName) {
+                    "firstName" -> firstNameTemp = firstName.text.toString()
+                    "lastName" -> lastNameTemp = lastName.text.toString()
+                    "username" -> usernameTemp = username.text.toString()
+                    "age" -> ageTemp = age.text.toString()
+                    "location" -> locationTemp = location.text.toString()
+                    "bio" -> bioTemp = bio.text.toString()
+                }
             }
 
-            override fun afterTextChanged(s: Editable?) {
-                val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
-                val editor = sh.edit()
-                editor.putString(id, et.text.toString())
-                editor.apply()
-            }
+            override fun afterTextChanged(s: Editable?) {}
         }
     }
 
@@ -223,7 +253,7 @@ class EditProfileActivity : AppCompatActivity() {
         cameraUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)*/
 
         //Creating a file object for the temporal image
-        val imageFile = File.createTempFile("temp_image", ".jpeg", cacheDir)
+        val imageFile = File.createTempFile("temp_profile_picture", ".jpeg", cacheDir)
 
         //Creating through a FileProvider the URI
         cameraUri = FileProvider.getUriForFile(
@@ -251,6 +281,27 @@ class EditProfileActivity : AppCompatActivity() {
         return null
     }
 
+    private fun savePictureOnInternalStorage(picture: Bitmap) {
+        val cw = ContextWrapper(applicationContext)
+
+        val directory: File = cw.getDir("imageDir", Context.MODE_PRIVATE)
+
+        val file = File(directory, "profile_picture" + ".jpg")
+
+        if (!file.exists()) {
+            val fos: FileOutputStream?
+
+            try {
+                fos = FileOutputStream(file)
+                picture.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                fos.flush()
+                fos.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     private fun savePictureOnSharedPreferences(picture: Bitmap) {
         val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
         val editor = sh.edit()
@@ -266,7 +317,7 @@ class EditProfileActivity : AppCompatActivity() {
         editor.apply()
     }
 
-    //rotate image if image captured on samsung devices
+    //This function rotates the image if the image captured on samsung devices
     //Most phone cameras are landscape, meaning if you take the photo in portrait, the resulting photos will be rotated 90 degrees.
     private fun rotateBitmap(bitmap: Bitmap): Bitmap? {
         val input = MediaStore.Images.Media.getBitmap(contentResolver, cameraUri)
@@ -313,17 +364,43 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 
         //detect when the user clicks on the "confirm" button
+        //if the user clicks on the confirm button, the information changed is saved
         R.id.confirm_button -> {
+
+            //Saving values into the sharedPreferences file
+            val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
+            val editor = sh.edit()
+
+            editor.putString("firstName", firstNameTemp)
+            editor.putString("lastName", lastNameTemp)
+            editor.putString("username", usernameTemp)
+            editor.putString("age", ageTemp)
+            editor.putInt("radioChecked", radioGenderTemp)
+            editor.putString("location", locationTemp)
+            editor.putString("bio", bioTemp)
+
+            //Managing the Gender field in order to display it correctly into the ShowProfileActivity
+            when (radioGenderTemp) {
+                R.id.radioFemale -> editor.putString("gender", "Female")
+                R.id.radioOther -> editor.putString("gender", "Other")
+                else -> editor.putString("gender", "Male")
+            }
+
+            //Saving the pi
+            if (inputImage != null) {
+                savePictureOnSharedPreferences(inputImage!!)
+            }
+
+            editor.apply()
+
             this.finish()
-            val toast: Toast = Toast.makeText(this, "Save button clicked!!!", Toast.LENGTH_SHORT)
-            toast.show()
             true
         }
+
         //detect when the user clicks on the "back" button
+        //if the user clicks the back button the information changed is not saved
         R.id.back_button -> {
             this.finish()
-            val toast: Toast = Toast.makeText(this, "Back button clicked!!!", Toast.LENGTH_SHORT)
-            toast.show()
             true
         }
         else -> {
