@@ -1,4 +1,5 @@
 package it.polito.mad.lab2
+
 import android.content.ContentResolver
 import android.content.res.Configuration
 import android.graphics.Bitmap

@@ -1,11 +1,8 @@
 package it.polito.mad.lab2
 
-import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Base64
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -14,6 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import org.json.JSONObject
 
 
 class ShowProfileActivity : AppCompatActivity() {
@@ -64,28 +62,39 @@ class ShowProfileActivity : AppCompatActivity() {
         }
 
         // TODO: Manage sport chips variables
+    }
 
-        /* update showed user info and pictures */
+    override fun onResume() {
+        super.onResume()
 
-        // retrieve shared preferences object
-        val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
+        // the information retrieval is done in onResume() because information has to be refreshed
+        // after saving (in EditProfileActivity the ShowProfileActivity is not destroyed)
 
-        // retrieve user info from SharedPreferences (if any, or take the default one) and update view's texts
-        firstName.text = sh.getString("firstName", getString(R.string.first_name))
-        lastName.text = sh.getString("lastName", getString(R.string.last_name))
-        username.text = sh.getString("username", getString(R.string.username))
-        gender.text = sh.getString("gender", getString(R.string.user_gender))
-        age.text = sh.getString("age", getString(R.string.user_age))
-        location.text = sh.getString("location", getString(R.string.user_location))
-        bio.text = sh.getString("bio", getString(R.string.user_bio))
+        /* update shown user info and pictures */
+
+        // retrieve data from SharedPreferences
+        val sh = getSharedPreferences("it.polito.mad.lab2", MODE_PRIVATE)
+        val jsonObjectProfile: JSONObject? = sh.getString("profile", null)?.let { JSONObject(it) }
+
+        // retrieve user info from JSON object (if any, or take the default one) and update view's texts
+        firstName.text = jsonObjectProfile?.getString("firstName") ?: getString(R.string.first_name)
+        lastName.text = jsonObjectProfile?.getString("lastName") ?: getString(R.string.last_name)
+        username.text = jsonObjectProfile?.getString("username") ?: getString(R.string.username)
+        gender.text = jsonObjectProfile?.getString("gender") ?: getString(R.string.user_gender)
+        age.text = jsonObjectProfile?.getString("age") ?: getString(R.string.user_age)
+        location.text =
+            jsonObjectProfile?.getString("location") ?: getString(R.string.user_location)
+        bio.text = jsonObjectProfile?.getString("bio") ?: getString(R.string.user_bio)
 
         // retrieve profile picture from the internal storage
         val profilePictureBitmap = getPictureFromInternalStorage(filesDir, "profilePicture.jpeg")
-        val backgroundProfilePictureBitmap = getPictureFromInternalStorage(filesDir, "backgroundProfilePicture.jpeg")
+        val backgroundProfilePictureBitmap =
+            getPictureFromInternalStorage(filesDir, "backgroundProfilePicture.jpeg")
 
         // update profile and background picture with the ones uploaded by the user, if any
         profilePictureBitmap?.let { profilePicture.setImageBitmap(it) }
-        backgroundProfilePictureBitmap?.let { backgroundProfilePicture.setImageBitmap(it)}
+        backgroundProfilePictureBitmap?.let { backgroundProfilePicture.setImageBitmap(it) }
+
     }
 
     /* app menu */

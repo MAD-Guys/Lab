@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Base64
 import android.view.*
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
@@ -24,6 +23,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import jp.wasabeef.glide.transformations.BlurTransformation
 import java.io.ByteArrayOutputStream
+import org.json.JSONObject
 import java.io.File
 
 class EditProfileActivity : AppCompatActivity() {
@@ -64,7 +64,8 @@ class EditProfileActivity : AppCompatActivity() {
                 galleryUri = it.data?.data
 
                 // convert it to a bitmap
-                val galleryImageBitmap = galleryUri?.let { it1 -> uriToBitmap(it1, contentResolver) }
+                val galleryImageBitmap =
+                    galleryUri?.let { it1 -> uriToBitmap(it1, contentResolver) }
 
                 // edit image and show it
                 editAndShowProfilePicture(galleryImageBitmap)
@@ -176,18 +177,25 @@ class EditProfileActivity : AppCompatActivity() {
     private fun loadDataFromStorage() {
         // retrieve data from SharedPreferences
         val sh = getSharedPreferences("it.polito.mad.lab2", MODE_PRIVATE)
+        val jsonObjectProfile: JSONObject? = sh.getString("profile", null)?.let { JSONObject(it) }
 
-        val firstNameResume = sh.getString("firstName", getString(R.string.first_name))
-        val lastNameResume = sh.getString("lastName", getString(R.string.last_name))
-        val usernameResume = sh.getString("username", getString(R.string.username))
-        val radioCheckedResume = sh.getInt("radioChecked", R.id.radio_male)
-        val ageResume = sh.getString("age", getString(R.string.user_age))
-        val locationResume = sh.getString("location", getString(R.string.user_location))
-        val bioResume = sh.getString("bio", getString(R.string.user_bio))
+        // retrieve data from the JSON object
+        val firstNameResume: String =
+            jsonObjectProfile?.getString("firstName") ?: getString(R.string.first_name)
+        val lastNameResume: String =
+            jsonObjectProfile?.getString("lastName") ?: getString(R.string.last_name)
+        val usernameResume: String =
+            jsonObjectProfile?.getString("username") ?: getString(R.string.username)
+        val radioCheckedResume: Int = jsonObjectProfile?.getInt("radioChecked") ?: R.id.radio_male
+        val ageResume: String = jsonObjectProfile?.getString("age") ?: getString(R.string.user_age)
+        val locationResume: String =
+            jsonObjectProfile?.getString("location") ?: getString(R.string.user_location)
+        val bioResume: String = jsonObjectProfile?.getString("bio") ?: getString(R.string.user_bio)
 
         // retrieve profile and background picture from internal storage
         val profilePictureResume = getPictureFromInternalStorage(filesDir, "profilePicture.jpeg")
-        val backgroundProfilePictureResume = getPictureFromInternalStorage(filesDir, "backgroundProfilePicture.jpeg")
+        val backgroundProfilePictureResume =
+            getPictureFromInternalStorage(filesDir, "backgroundProfilePicture.jpeg")
 
         // set EditText views
         firstName.setText(firstNameResume)
@@ -230,18 +238,23 @@ class EditProfileActivity : AppCompatActivity() {
         // * save pictures temporarily *
 
         // encode profile picture
-        var baos = ByteArrayOutputStream()
-        profilePictureBitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-        val encodedProfilePicture = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT)
+        val encodedProfilePicture = ByteArrayOutputStream()
+        profilePictureBitmap?.compress(Bitmap.CompressFormat.JPEG, 100, encodedProfilePicture)
 
         // encode background picture
-        baos = ByteArrayOutputStream()
-        backgroundProfilePictureBitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-        val encodedBackgroundProfilePicture = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT)
+        val encodedBackgroundProfilePicture = ByteArrayOutputStream()
+        backgroundProfilePictureBitmap?.compress(
+            Bitmap.CompressFormat.JPEG,
+            100,
+            encodedBackgroundProfilePicture
+        )
 
         // save them
-        outState.putString("profilePictureTemp", encodedProfilePicture)
-        outState.putString("backgroundProfilePictureTemp", encodedBackgroundProfilePicture)
+        outState.putByteArray("profilePictureTemp", encodedProfilePicture.toByteArray())
+        outState.putByteArray(
+            "backgroundProfilePictureTemp",
+            encodedBackgroundProfilePicture.toByteArray()
+        )
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -271,17 +284,17 @@ class EditProfileActivity : AppCompatActivity() {
 
         // * get and show temporary images *
 
-        // decode and save profile picture
-        val encodedProfilePicture = savedInstanceState.getString("profilePictureTemp")
-        var byteArray = Base64.decode(encodedProfilePicture, Base64.DEFAULT)
-        profilePictureBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-        profilePicture.setImageBitmap(profilePictureBitmap)
+        // get and save profile picture
+        savedInstanceState.getByteArray("profilePictureTemp")?.let {
+            profilePictureBitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
+            profilePicture.setImageBitmap(profilePictureBitmap)
+        }
 
-        // decode and save background profile picture
-        val encodedBackgroundProfilePicture = savedInstanceState.getString("backgroundProfilePictureTemp")
-        byteArray = Base64.decode(encodedBackgroundProfilePicture, Base64.DEFAULT)
-        backgroundProfilePictureBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-        backgroundProfilePicture.setImageBitmap(backgroundProfilePictureBitmap)
+        // get and save background profile picture
+        savedInstanceState.getByteArray("backgroundProfilePictureTemp")?.let {
+            backgroundProfilePictureBitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
+            backgroundProfilePicture.setImageBitmap(backgroundProfilePictureBitmap)
+        }
     }
 
     private fun textListenerInit(fieldName: String): TextWatcher {
@@ -332,24 +345,27 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         // detect when the user clicks on the "confirm" button
         R.id.confirm_button -> {
-            // if the user clicks on the confirm button, the temporary information is *saved*
-            // into the sharedPreferences file
+            // if the user clicks on the confirm button, the temporary information is *serialized*
+            // firstly into a JSONObject and then into the sharedPreferences file with the key *profile*
             val sh = getSharedPreferences("it.polito.mad.lab2", MODE_PRIVATE)
             val editor = sh.edit()
 
-            editor.putString("firstName", firstNameTemp)
-            editor.putString("lastName", lastNameTemp)
-            editor.putString("username", usernameTemp)
-            editor.putString("age", ageTemp)
-            editor.putInt("radioChecked", radioGenderCheckedTemp)
-            editor.putString("location", locationTemp)
-            editor.putString("bio", bioTemp)
+            val jsonObjectProfile = JSONObject()
+
+            // serializing the temporary profile variables into the JSONObject
+            jsonObjectProfile.put("firstName", firstNameTemp)
+            jsonObjectProfile.put("lastName", lastNameTemp)
+            jsonObjectProfile.put("username", usernameTemp)
+            jsonObjectProfile.put("age", ageTemp)
+            jsonObjectProfile.put("radioChecked", radioGenderCheckedTemp)
+            jsonObjectProfile.put("location", locationTemp)
+            jsonObjectProfile.put("bio", bioTemp)
 
             // manage the Gender field to display it correctly in the ShowProfileActivity
             when (radioGenderCheckedTemp) {
-                R.id.radio_female -> editor.putString("gender", "Female")
-                R.id.radio_other -> editor.putString("gender", "Other")
-                else -> editor.putString("gender", "Male")
+                R.id.radio_female -> jsonObjectProfile.put("gender", "Female")
+                R.id.radio_other -> jsonObjectProfile.put("gender", "Other")
+                else -> jsonObjectProfile.put("gender", "Male")
             }
 
             // save the profile and background pictures into the internal storage
@@ -363,6 +379,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
 
             // apply changes and show a pop up to the user
+            editor.putString("profile", jsonObjectProfile.toString())
             editor.apply()
 
             Toast.makeText(
