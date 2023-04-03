@@ -23,7 +23,6 @@ import com.bumptech.glide.request.transition.Transition
 import org.json.JSONObject
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import java.io.ByteArrayOutputStream
 import java.io.File
 
 class EditProfileActivity : AppCompatActivity() {
@@ -228,45 +227,45 @@ class EditProfileActivity : AppCompatActivity() {
             getPictureFromInternalStorage(filesDir, "backgroundProfilePicture.jpeg")
 
         // retrieve sports
-        val basketJSON :JSONObject? = jsonObjectProfile?.optJSONObject("basket") ?: null
+        val basketJSON :JSONObject? = jsonObjectProfile?.optJSONObject("basket")
         var basketResume :Sport? = null
-        if(basketJSON != null) basketResume = Sport(basketJSON!!.getBoolean("selected"), basketJSON!!.getInt("level"))
+        if(basketJSON != null) basketResume = Sport(basketJSON.getBoolean("selected"), basketJSON.getInt("level"))
 
-        val football11JSON :JSONObject? = jsonObjectProfile?.optJSONObject("football11") ?: null
+        val football11JSON :JSONObject? = jsonObjectProfile?.optJSONObject("football11")
         var football11Resume :Sport? = null
-        if(football11JSON != null) football11Resume = Sport(football11JSON!!.getBoolean("selected"), football11JSON!!.getInt("level"))
+        if(football11JSON != null) football11Resume = Sport(football11JSON.getBoolean("selected"), football11JSON.getInt("level"))
 
-        val football5JSON :JSONObject? = jsonObjectProfile?.optJSONObject("football5") ?: null
+        val football5JSON :JSONObject? = jsonObjectProfile?.optJSONObject("football5")
         var football5Resume :Sport? = null
-        if(football5JSON != null) football5Resume = Sport(football5JSON!!.getBoolean("selected"), football5JSON!!.getInt("level"))
+        if(football5JSON != null) football5Resume = Sport(football5JSON.getBoolean("selected"), football5JSON.getInt("level"))
 
-        val football8JSON :JSONObject? = jsonObjectProfile?.optJSONObject("football8") ?: null
+        val football8JSON :JSONObject? = jsonObjectProfile?.optJSONObject("football8")
         var football8Resume :Sport? = null
-        if(football8JSON != null) football8Resume = Sport(football8JSON!!.getBoolean("selected"), football8JSON!!.getInt("level"))
+        if(football8JSON != null) football8Resume = Sport(football8JSON.getBoolean("selected"), football8JSON.getInt("level"))
 
-        val tennisJSON :JSONObject? = jsonObjectProfile?.optJSONObject("tennis") ?: null
-        var tennisResume :Sport? = null
-        if(tennisJSON != null) football5Resume = Sport(tennisJSON!!.getBoolean("selected"), tennisJSON!!.getInt("level"))
+        val tennisJSON :JSONObject? = jsonObjectProfile?.optJSONObject("tennis")
+        val tennisResume :Sport? = null
+        if(tennisJSON != null) football5Resume = Sport(tennisJSON.getBoolean("selected"), tennisJSON.getInt("level"))
 
-        val volleyballJSON :JSONObject? = jsonObjectProfile?.optJSONObject("volleyball") ?: null
+        val volleyballJSON :JSONObject? = jsonObjectProfile?.optJSONObject("volleyball")
         var volleyballResume :Sport? = null
-        if(volleyballJSON != null) volleyballResume = Sport(volleyballJSON!!.getBoolean("selected"), volleyballJSON!!.getInt("level"))
+        if(volleyballJSON != null) volleyballResume = Sport(volleyballJSON.getBoolean("selected"), volleyballJSON.getInt("level"))
 
-        val tableTennisJSON :JSONObject? = jsonObjectProfile?.optJSONObject("tableTennis") ?: null
+        val tableTennisJSON :JSONObject? = jsonObjectProfile?.optJSONObject("tableTennis")
         var tableTennisResume :Sport? = null
-        if(tableTennisJSON != null) tableTennisResume = Sport(tableTennisJSON!!.getBoolean("selected"), tableTennisJSON!!.getInt("level"))
+        if(tableTennisJSON != null) tableTennisResume = Sport(tableTennisJSON.getBoolean("selected"), tableTennisJSON.getInt("level"))
 
-        val beachVolleyJSON :JSONObject? = jsonObjectProfile?.optJSONObject("beachVolley") ?: null
+        val beachVolleyJSON :JSONObject? = jsonObjectProfile?.optJSONObject("beachVolley")
         var beachVolleyResume :Sport? = null
-        if(beachVolleyJSON != null) beachVolleyResume = Sport(beachVolleyJSON!!.getBoolean("selected"), beachVolleyJSON!!.getInt("level"))
+        if(beachVolleyJSON != null) beachVolleyResume = Sport(beachVolleyJSON.getBoolean("selected"), beachVolleyJSON.getInt("level"))
 
-        val padelJSON :JSONObject? = jsonObjectProfile?.optJSONObject("padel") ?: null
+        val padelJSON :JSONObject? = jsonObjectProfile?.optJSONObject("padel")
         var padelResume :Sport? = null
-        if(padelJSON != null) padelResume = Sport(padelJSON!!.getBoolean("selected"), padelJSON!!.getInt("level"))
+        if(padelJSON != null) padelResume = Sport(padelJSON.getBoolean("selected"), padelJSON.getInt("level"))
 
-        val miniGolfJSON :JSONObject? = jsonObjectProfile?.optJSONObject("miniGolf") ?: null
+        val miniGolfJSON :JSONObject? = jsonObjectProfile?.optJSONObject("miniGolf")
         var miniGolfResume :Sport? = null
-        if(miniGolfJSON != null) miniGolfResume = Sport(miniGolfJSON!!.getBoolean("selected"), miniGolfJSON!!.getInt("level"))
+        if(miniGolfJSON != null) miniGolfResume = Sport(miniGolfJSON.getBoolean("selected"), miniGolfJSON.getInt("level"))
 
 
         // set EditText views
