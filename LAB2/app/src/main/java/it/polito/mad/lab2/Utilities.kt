@@ -357,3 +357,8 @@ internal fun fastblur(bitmapParam: Bitmap, scale: Float, radius: Int): Bitmap? {
     bitmap.setPixels(pix, 0, w, 0, 0, w, h)
     return bitmap
 }
+
+data class Sport(val selected :Boolean, val level :Int)
+enum class Level {
+    BEGINNER, INTERMEDIATE, EXPERT, PRO
+}
