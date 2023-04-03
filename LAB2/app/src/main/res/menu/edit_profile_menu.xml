@@ -3,13 +3,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Back button -->
-    <item
-        android:id="@+id/back_button"
-        android:title="@string/back_button_description"
-        android:icon="@drawable/baseline_keyboard_return_24"
-        app:showAsAction="ifRoom"/>
-
     <!--  Confirm button-->
     <item
         android:id="@+id/confirm_button"

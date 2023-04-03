@@ -220,91 +220,50 @@ class EditProfileActivity : AppCompatActivity() {
         backgroundProfilePictureResume?.let { backgroundProfilePicture.setImageBitmap(it) }
     }
 
-    /* save and restore temporary state */
+    private fun saveInformationOnStorage() {
+        // the temporary information is *serialized* firstly into a JSONObject
+        // and then into the sharedPreferences file with the key *profile*
+        val sh = getSharedPreferences("it.polito.mad.lab2", MODE_PRIVATE)
+        val editor = sh.edit()
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
+        val jsonObjectProfile = JSONObject()
 
-        // Save temporary variables into the bundle in order
-        // to have the right values once the activity restores
-        outState.putString("firstNameTemp", firstNameTemp)
-        outState.putString("lastNameTemp", lastNameTemp)
-        outState.putString("usernameTemp", usernameTemp)
-        outState.putString("ageTemp", ageTemp)
-        outState.putInt("radioGenderChecked", radioGenderCheckedTemp)
-        outState.putString("locationTemp", locationTemp)
-        outState.putString("bioTemp", bioTemp)
+        // serializing the temporary profile variables into the JSONObject
+        jsonObjectProfile.put("firstName", firstNameTemp)
+        jsonObjectProfile.put("lastName", lastNameTemp)
+        jsonObjectProfile.put("username", usernameTemp)
+        jsonObjectProfile.put("age", ageTemp)
+        jsonObjectProfile.put("radioChecked", radioGenderCheckedTemp)
+        jsonObjectProfile.put("location", locationTemp)
+        jsonObjectProfile.put("bio", bioTemp)
 
-        // * save pictures temporarily only if the user changed the default one *
+        // manage the Gender field to display it correctly in the ShowProfileActivity
+        when (radioGenderCheckedTemp) {
+            R.id.radio_female -> jsonObjectProfile.put("gender", "Female")
+            R.id.radio_other -> jsonObjectProfile.put("gender", "Other")
+            else -> jsonObjectProfile.put("gender", "Male")
+        }
 
-        // encode temporary profile picture
-        val encodedProfilePicture = ByteArrayOutputStream()
+        // save the profile and background pictures into the internal storage
+
         profilePictureBitmap?.let {
-            it.compress(Bitmap.CompressFormat.JPEG, 100, encodedProfilePicture)
-
-            // save temporary profile picture
-            outState.putByteArray("profilePictureTemp", encodedProfilePicture.toByteArray())
+            savePictureOnInternalStorage(it, filesDir, "profilePicture.jpeg")
         }
 
-        // encode background picture
-        val encodedBackgroundProfilePicture = ByteArrayOutputStream()
         backgroundProfilePictureBitmap?.let {
-            it.compress(
-                Bitmap.CompressFormat.JPEG,
-                100,
-                encodedBackgroundProfilePicture
-            )
-
-            // save temporary background picture
-            outState.putByteArray(
-                "backgroundProfilePictureTemp",
-                encodedBackgroundProfilePicture.toByteArray()
-            )
-        }
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-
-        // Restore temporary variables from the bundle
-        firstNameTemp = savedInstanceState.getString("firstNameTemp").toString()
-        firstName.setText(firstNameTemp)
-
-        lastNameTemp = savedInstanceState.getString("lastNameTemp").toString()
-        lastName.setText(lastNameTemp)
-
-        usernameTemp = savedInstanceState.getString("usernameTemp").toString()
-        username.setText(usernameTemp)
-
-        ageTemp = savedInstanceState.getString("ageTemp").toString()
-        age.setText(ageTemp)
-
-        radioGenderCheckedTemp = savedInstanceState.getInt("radioGenderChecked")
-        genderRadioGroup.check(radioGenderCheckedTemp)
-
-        locationTemp = savedInstanceState.getString("locationTemp").toString()
-        location.setText(locationTemp)
-
-        bioTemp = savedInstanceState.getString("bioTemp").toString()
-        bio.setText(bioTemp)
-
-        // * get and show temporary images *
-
-        // get and save profile picture
-        savedInstanceState.getByteArray("profilePictureTemp")?.let {
-            profilePictureBitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
-            profilePicture.setImageBitmap(profilePictureBitmap)
+            savePictureOnInternalStorage(it, filesDir, "backgroundProfilePicture.jpeg")
         }
 
-        // get and save background profile picture
-        savedInstanceState.getByteArray("backgroundProfilePictureTemp")?.let {
-            backgroundProfilePictureBitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
-            backgroundProfilePicture.setImageBitmap(backgroundProfilePictureBitmap)
-        }
+        // apply changes and show a pop up to the user
+        editor.putString("profile", jsonObjectProfile.toString())
+        editor.apply()
     }
 
     override fun onPause() {
         super.onPause()
+
+        // save the temporary profile variables into the sharedPreferences file
+        saveInformationOnStorage()
 
         // delete the temporary profile pictures saved into cache (if any)
         clearStorageFiles(cacheDir, "temp_profile_picture[a-zA-Z0-9]*.jpeg")
@@ -358,57 +317,9 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         // detect when the user clicks on the "confirm" button
         R.id.confirm_button -> {
-            // if the user clicks on the confirm button, the temporary information is *serialized*
-            // firstly into a JSONObject and then into the sharedPreferences file with the key *profile*
-            val sh = getSharedPreferences("it.polito.mad.lab2", MODE_PRIVATE)
-            val editor = sh.edit()
-
-            val jsonObjectProfile = JSONObject()
-
-            // serializing the temporary profile variables into the JSONObject
-            jsonObjectProfile.put("firstName", firstNameTemp)
-            jsonObjectProfile.put("lastName", lastNameTemp)
-            jsonObjectProfile.put("username", usernameTemp)
-            jsonObjectProfile.put("age", ageTemp)
-            jsonObjectProfile.put("radioChecked", radioGenderCheckedTemp)
-            jsonObjectProfile.put("location", locationTemp)
-            jsonObjectProfile.put("bio", bioTemp)
-
-            // manage the Gender field to display it correctly in the ShowProfileActivity
-            when (radioGenderCheckedTemp) {
-                R.id.radio_female -> jsonObjectProfile.put("gender", "Female")
-                R.id.radio_other -> jsonObjectProfile.put("gender", "Other")
-                else -> jsonObjectProfile.put("gender", "Male")
-            }
-
-            // save the profile and background pictures into the internal storage
-
-            profilePictureBitmap?.let {
-                savePictureOnInternalStorage(it, filesDir, "profilePicture.jpeg")
-            }
-
-            backgroundProfilePictureBitmap?.let {
-                savePictureOnInternalStorage(it, filesDir, "backgroundProfilePicture.jpeg")
-            }
-
-            // apply changes and show a pop up to the user
-            editor.putString("profile", jsonObjectProfile.toString())
-            editor.apply()
-
-            Toast.makeText(
-                this,
-                "Information successfully saved!", Toast.LENGTH_LONG
-            ).show()
+            // (the information will be persistently saved in the onPause method)
 
             // terminate this activity (go back to the previous one according to the stack queue)
-            this.finish()
-            true
-        }
-        // detect when the user clicks on the "back" button
-        R.id.back_button -> {
-            // if the user clicks the back button, the temporary information is *not* saved:
-            // terminate this activity (go to the previous one according to the stack queue)
-
             this.finish()
             true
         }
