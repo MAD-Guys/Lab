@@ -17,7 +17,7 @@ import java.io.FileDescriptor
 import java.io.IOException
 
 
-/*** Returns display width and display height */
+/** Returns display width and display height */
 internal fun AppCompatActivity.getDisplayMeasures(): Pair<Int,Int> {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         val metrics: WindowMetrics = windowManager.currentWindowMetrics
@@ -59,7 +59,9 @@ internal fun AppCompatActivity.getDisplayMeasures(): Pair<Int,Int> {
     profilePicture.requestLayout()
 }
 
-// Transform image into a bitmap
+/* manipulate imgae bitmaps */
+
+/** Transform image into a bitmap */
 internal fun uriToBitmap(selectedFileUri: Uri, contentResolver: ContentResolver): Bitmap? {
     try {
         val parcelFileDescriptor = contentResolver.openFileDescriptor(selectedFileUri, "r")
@@ -73,9 +75,10 @@ internal fun uriToBitmap(selectedFileUri: Uri, contentResolver: ContentResolver)
     return null
 }
 
-// Rotate image if image captured from samsung devices
-// (Most phone cameras are landscape, meaning if you take the photo in portrait,
-// the resulting photos will be rotated 90 degrees)
+/** Rotate image if image captured from samsung devices
+ * (Most phone cameras are landscape, meaning if you take the photo in portrait,
+ * the resulting photos will be rotated 90 degrees)
+ * */
 internal fun rotateBitmap(imageUri: Uri?, bitmap: Bitmap, contentResolver: ContentResolver): Bitmap? {
     val input = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
     val exif = ExifInterface(imageUri?.let { contentResolver.openInputStream(it) }!!)
