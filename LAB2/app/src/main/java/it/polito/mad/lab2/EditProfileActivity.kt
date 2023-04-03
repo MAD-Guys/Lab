@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -21,8 +20,6 @@ import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import jp.wasabeef.glide.transformations.BlurTransformation
-import java.io.ByteArrayOutputStream
 import org.json.JSONObject
 import java.io.File
 
@@ -63,9 +60,12 @@ class EditProfileActivity : AppCompatActivity() {
                 // retrieve gallery picture Uri
                 galleryUri = it.data?.data
 
-                // convert it to a bitmap
-                val galleryImageBitmap =
-                    galleryUri?.let { it1 -> uriToBitmap(it1, contentResolver) }
+                // convert it to a bitmap and rotate it
+                val galleryImageBitmap = galleryUri?.let { uri ->
+                        uriToBitmap(uri, contentResolver)?.let { bitmap ->
+                            rotateBitmap(uri, bitmap, contentResolver)
+                        }
+                    }
 
                 // edit image and show it
                 editAndShowProfilePicture(galleryImageBitmap)
@@ -91,21 +91,21 @@ class EditProfileActivity : AppCompatActivity() {
 
                     // copy the profile picture to create the blurred background image
                     val backgroundImage = croppedImage.copy(croppedImage.config, true)
+                    val blurredBackgroundImage = fastblur(backgroundImage, 0.5f, 25)
 
-                    // apply blur effect to the background image after reshaping it to its view sizes
+                    // apply blur effect to the background image and then reshape it to its view sizes
                     Glide.with(context).asBitmap()
-                        .load(backgroundImage)
+                        .load(blurredBackgroundImage)
                         .override(backgroundProfilePicture.width, backgroundProfilePicture.height)
                         .centerCrop()
-                        .transform(BlurTransformation(25))
                         .into(object : CustomTarget<Bitmap>() {
                             override fun onResourceReady(
-                                blurredBackgroundImage: Bitmap,
+                                croppedBlurredBackgroundImage: Bitmap,
                                 transition: Transition<in Bitmap>?
                             ) {
                                 // save background image bitmap and put it on the view
-                                backgroundProfilePictureBitmap = backgroundImage
-                                backgroundProfilePicture.setImageBitmap(backgroundImage)
+                                backgroundProfilePictureBitmap = croppedBlurredBackgroundImage
+                                backgroundProfilePicture.setImageBitmap(croppedBlurredBackgroundImage)
                             }
 
                             override fun onLoadCleared(placeholder: Drawable?) {}
@@ -124,7 +124,7 @@ class EditProfileActivity : AppCompatActivity() {
                 // transform camera image uri into a (rotated) bitmap
                 val cameraImageBitmap = cameraUri?.let { uri ->
                     uriToBitmap(uri, contentResolver)?.let { bitmap ->
-                        rotateBitmap(cameraUri, bitmap, contentResolver)
+                        rotateBitmap(uri, bitmap, contentResolver)
                     }
                 }
 
@@ -318,6 +318,7 @@ class EditProfileActivity : AppCompatActivity() {
         // detect when the user clicks on the "confirm" button
         R.id.confirm_button -> {
             // (the information will be persistently saved in the onPause method)
+            Toast.makeText(this, "Information correctly saved! \uD83D\uDE0B", Toast.LENGTH_SHORT).show()
 
             // terminate this activity (go back to the previous one according to the stack queue)
             this.finish()

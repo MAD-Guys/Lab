@@ -15,7 +15,7 @@
         android:id="@+id/profile_picture_container"
         android:layout_width="@dimen/picture_default_size"
         android:layout_height="match_parent"
-        android:background="@color/background_blue"
+        android:background="@color/profile_picture_background"
         android:paddingHorizontal="16dp">
         <!-- background profile picture -->
         <ImageView

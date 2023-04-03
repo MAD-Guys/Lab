@@ -22,7 +22,7 @@
             android:id="@+id/profile_picture_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/picture_default_size"
-            android:background="@color/background_blue"
+            android:background="@color/profile_picture_background"
             android:paddingHorizontal="@dimen/standard_padding">
             <!-- background profile picture -->
             <ImageView

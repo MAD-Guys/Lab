@@ -11,7 +11,7 @@
     <color name="lighter_blue">#CFEAF1</color>
     <color name="light_grey">#606060</color>
     <color name="background_orange">#FFFDE8</color>
-    <color name="background_blue">#D2F7FF</color>
+    <color name="background_blue">#D5F4FA</color>
 
     <!-- Sports -->
     <color name="pale_orange">#FFCA7A</color>
@@ -30,4 +30,7 @@
     <!-- edit view -->
     <color name="edit_text_text_color">@color/light_grey</color>
     <color name="edit_text_text_color_hint">@color/pale_lighter_grey</color>
+
+    <!-- -->
+    <color name="profile_picture_background">@color/background_blue</color>
 </resources>
