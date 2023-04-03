@@ -116,3 +116,20 @@ internal fun getPictureFromInternalStorage(directory: File, filename: String): B
         BitmapFactory.decodeFile(file.absolutePath)
     } else null
 }
+
+/* clearing storage files that match a specific regexp */
+
+internal fun clearStorageFiles(directory: File, regexp: String) {
+
+    // get all files in the cache directory
+    val files = directory.listFiles()
+
+    files?.let {
+        for (file in it) {
+            // delete file if it matches the regexp
+            if (file.name.matches(Regex(regexp))) {
+                file.delete()
+            }
+        }
+    }
+}
