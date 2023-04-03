@@ -1,21 +1,15 @@
 package it.polito.mad.lab2
 
 import android.Manifest
-import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Base64
 import android.view.*
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
@@ -23,8 +17,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
-import java.io.*
-
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import java.io.File
 
 class EditProfileActivity : AppCompatActivity() {
     // user info fields' temporary state
@@ -35,7 +31,7 @@ class EditProfileActivity : AppCompatActivity() {
     private var radioGenderCheckedTemp = R.id.radio_male
     private var locationTemp: String? = null
     private var bioTemp: String? = null
-    
+
     // User info views
     private lateinit var firstName: EditText
     private lateinit var lastName: EditText
@@ -44,7 +40,7 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var genderRadioGroup: RadioGroup
     private lateinit var location: EditText
     private lateinit var bio: EditText
-    
+
     // Profile picture 
     private lateinit var profilePicture: ImageView
     private lateinit var backgroundProfilePicture: ImageView
@@ -74,7 +70,7 @@ class EditProfileActivity : AppCompatActivity() {
                             transition: Transition<in Bitmap>?
                         ) {
                             profilePicture.setImageBitmap(resource)
-                            saveProfilePictureOnInternalStorage(resource)
+                            saveProfilePictureOnInternalStorage(resource, filesDir)
                         }
 
                         override fun onLoadCleared(placeholder: Drawable?) {}
@@ -88,8 +84,8 @@ class EditProfileActivity : AppCompatActivity() {
         ) {
             if (it.resultCode == RESULT_OK) {
                 // transform camera image uri into a (rotated) bitmap
-                inputImage = cameraUri?.let {uri ->
-                    uriToBitmap(uri, contentResolver)?.let {bitmap ->
+                inputImage = cameraUri?.let { uri ->
+                    uriToBitmap(uri, contentResolver)?.let { bitmap ->
                         rotateBitmap(cameraUri, bitmap, contentResolver)
                     }
                 }
@@ -99,7 +95,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
         }
 
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
@@ -123,8 +119,8 @@ class EditProfileActivity : AppCompatActivity() {
             openContextMenu(profileImageButton)
         }
 
-        // load data from sharedPreferences file
-        this.loadDataFromSharedPreferences()
+        // load data from SharedPreferences and internal storage
+        this.loadDataFromStorage()
 
         // add listeners to the temporary variables
         firstName.addTextChangedListener(textListenerInit("firstName"))
@@ -139,7 +135,7 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadDataFromSharedPreferences() {
+    private fun loadDataFromStorage() {
         // retrieve data from SharedPreferences
         val sh = getSharedPreferences("it.polito.mad.lab2", MODE_PRIVATE)
 
@@ -151,7 +147,8 @@ class EditProfileActivity : AppCompatActivity() {
         val locationResume = sh.getString("location", getString(R.string.user_location))
         val bioResume = sh.getString("bio", getString(R.string.user_bio))
 
-        val profilePictureResume = sh.getString("profilePicture", null)
+        // retrieve profile picture from internal storage
+        val profilePictureResume: Bitmap? = getProfilePictureFromInternalStorage(filesDir)
 
         // set EditText views
         firstName.setText(firstNameResume)
@@ -171,10 +168,9 @@ class EditProfileActivity : AppCompatActivity() {
         locationTemp = locationResume
         bioTemp = bioResume
 
-        if (profilePictureResume != null && !profilePictureResume.equals("", ignoreCase = true)) {
-            val b: ByteArray = Base64.decode(profilePictureResume, Base64.DEFAULT)
-            val bitmap = BitmapFactory.decodeByteArray(b, 0, b.size)
-            profilePicture.setImageBitmap(bitmap)
+        // update profile picture with the one uploaded by the user, if any
+        if (profilePictureResume != null) {
+            profilePicture.setImageBitmap(profilePictureResume)
         }
     }
 
@@ -255,7 +251,12 @@ class EditProfileActivity : AppCompatActivity() {
         val profilePicture = findViewById<ImageView>(R.id.profile_picture)
 
         // set profile picture height 1/3 of the app view
-        this.setProfilePictureSize(menuHeight, profilePictureContainer, backgroundProfilePicture, profilePicture)
+        this.setProfilePictureSize(
+            menuHeight,
+            profilePictureContainer,
+            backgroundProfilePicture,
+            profilePicture
+        )
 
         return true
     }
@@ -283,23 +284,27 @@ class EditProfileActivity : AppCompatActivity() {
                 else -> editor.putString("gender", "Male")
             }
 
-            // save the picture into the sharedPreferences file
+            // save the picture on the internal storage
             if (inputImage != null) {
-                savePictureOnSharedPreferences(inputImage!!)
+                saveProfilePictureOnInternalStorage(inputImage!!, filesDir)
             }
 
             // apply changes and show a pop up to the user
             editor.apply()
-            Toast.makeText(this, "Information successfully saved!", Toast.LENGTH_LONG).show()
 
-            // terminate this activity (go back to the previous one)
+            Toast.makeText(
+                this,
+                "Information successfully saved!", Toast.LENGTH_LONG
+            ).show()
+
+            // terminate this activity (go back to the previous one according to the stack queue)
             this.finish()
             true
         }
         // detect when the user clicks on the "back" button
         R.id.back_button -> {
             // if the user clicks the back button, the temporary information is *not* saved:
-            // terminate this activity (go to the previous one)
+            // terminate this activity (go to the previous one according to the stack queue)
             this.finish()
             true
         }
@@ -309,7 +314,8 @@ class EditProfileActivity : AppCompatActivity() {
     /* context menu (to choose how to change profile picture) */
 
     override fun onCreateContextMenu(
-        menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
+        menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
         super.onCreateContextMenu(menu, v, menuInfo)
         val inflater: MenuInflater = menuInflater
 
@@ -338,8 +344,7 @@ class EditProfileActivity : AppCompatActivity() {
                     // in the callback function but it is completely random
                     requestPermissions(permission, 112)
                     onRequestPermissionsResult(112, permission, intArrayOf(0, 0))
-                }
-                else openCamera()
+                } else openCamera()
                 true
             }
             R.id.gallery -> {
@@ -353,9 +358,7 @@ class EditProfileActivity : AppCompatActivity() {
 
                     requestPermissions(permission, 113)
                     onRequestPermissionsResult(113, permission, intArrayOf(0, 0))
-                }
-                else openGallery()
-
+                } else openGallery()
                 true
             }
             else -> super.onContextItemSelected(item)
@@ -364,7 +367,8 @@ class EditProfileActivity : AppCompatActivity() {
 
     // Handle the result of the permission request
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         // if camera permissions have been granted, open the camera
@@ -402,44 +406,5 @@ class EditProfileActivity : AppCompatActivity() {
         // create intent and open phone gallery
         val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryActivityResultLauncher.launch(galleryIntent)
-    }
-
-    /* picture saving */
-
-    private fun saveProfilePictureOnInternalStorage(picture: Bitmap) {
-        val cw = ContextWrapper(applicationContext)
-
-        val directory: File = cw.getDir("imageDir", MODE_PRIVATE)
-
-        val file = File(directory, "profile_picture" + ".jpg")
-
-        if (!file.exists()) {
-            val fos: FileOutputStream?
-
-            try {
-                fos = FileOutputStream(file)
-                picture.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-                fos.flush()
-                fos.close()
-            }
-            catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    private fun savePictureOnSharedPreferences(picture: Bitmap) {
-        val sh = getSharedPreferences("it.polito.mad.lab2", MODE_PRIVATE)
-        val editor = sh.edit()
-
-        //Encoding bitmap into Base64 string
-        val baos = ByteArrayOutputStream()
-        picture.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-        val b: ByteArray = baos.toByteArray()
-        val encodedImage: String = Base64.encodeToString(b, Base64.DEFAULT)
-
-        // Saving Base64 string into shared preferences
-        editor.putString("profilePicture", encodedImage)
-        editor.apply()
     }
 }

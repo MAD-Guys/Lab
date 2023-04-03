@@ -13,9 +13,10 @@ import android.view.WindowMetrics
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import java.io.File
 import java.io.FileDescriptor
+import java.io.FileOutputStream
 import java.io.IOException
-
 
 /** Returns display width and display height */
 internal fun AppCompatActivity.getDisplayMeasures(): Pair<Int,Int> {
@@ -59,7 +60,7 @@ internal fun AppCompatActivity.getDisplayMeasures(): Pair<Int,Int> {
     profilePicture.requestLayout()
 }
 
-/* manipulate imgae bitmaps */
+/* manipulate image bitmaps */
 
 /** Transform image into a bitmap */
 internal fun uriToBitmap(selectedFileUri: Uri, contentResolver: ContentResolver): Bitmap? {
@@ -94,4 +95,23 @@ internal fun rotateBitmap(imageUri: Uri?, bitmap: Bitmap, contentResolver: Conte
     }
 
     return Bitmap.createBitmap(input, 0, 0, input.width, input.height, rotationMatrix, true)
+}
+
+/* saving picture on internal storage */
+
+internal fun saveProfilePictureOnInternalStorage(picture: Bitmap, directory: File) {
+    val file = File(directory, "profilePicture.jpeg")
+    val outputStream = FileOutputStream(file)
+    picture.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+    outputStream.flush()
+    outputStream.close()
+}
+
+/* getting picture from internal storage */
+
+internal fun getProfilePictureFromInternalStorage(directory: File): Bitmap? {
+    val file = File(directory, "profilePicture.jpeg")
+    return if (file.exists()) {
+        BitmapFactory.decodeFile(file.absolutePath)
+    } else null
 }

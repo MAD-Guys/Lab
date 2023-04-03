@@ -81,7 +81,9 @@ class ShowProfileActivity : AppCompatActivity() {
         val ageResume = sh.getString("age", getString(R.string.user_age))
         val locationResume = sh.getString("location", getString(R.string.user_location))
         val bioResume = sh.getString("bio", getString(R.string.user_bio))
-        val profilePictureResume = sh.getString("profilePicture", null)
+
+        // retrieve profile picture from the internal storage
+        val profilePictureResume = getProfilePictureFromInternalStorage(filesDir)
 
         // update view's texts with the actual user info
         firstName.text = firstNameResume
@@ -93,10 +95,8 @@ class ShowProfileActivity : AppCompatActivity() {
         bio.text = bioResume
 
         // update profile picture with the one uploaded by the user, if any
-        if (profilePictureResume != null && !profilePictureResume.equals("", ignoreCase = true)) {
-            val b: ByteArray = Base64.decode(profilePictureResume, Base64.DEFAULT)
-            val bitmap = BitmapFactory.decodeByteArray(b, 0, b.size)
-            profilePicture.setImageBitmap(bitmap)
+        if (profilePictureResume != null) {
+            profilePicture.setImageBitmap(profilePictureResume)
         }
     }
 
@@ -115,7 +115,12 @@ class ShowProfileActivity : AppCompatActivity() {
         val profilePicture = findViewById<ImageView>(R.id.profile_picture)
 
         // set profile picture height 1/3 of the app view
-        this.setProfilePictureSize(menuHeight, profilePictureContainer, backgroundProfilePicture, profilePicture)
+        this.setProfilePictureSize(
+            menuHeight,
+            profilePictureContainer,
+            backgroundProfilePicture,
+            profilePicture
+        )
 
         return true
     }
