@@ -235,26 +235,32 @@ class EditProfileActivity : AppCompatActivity() {
         outState.putString("locationTemp", locationTemp)
         outState.putString("bioTemp", bioTemp)
 
-        // * save pictures temporarily *
+        // * save pictures temporarily only if the user changed the default one *
 
-        // encode profile picture
+        // encode temporary profile picture
         val encodedProfilePicture = ByteArrayOutputStream()
-        profilePictureBitmap?.compress(Bitmap.CompressFormat.JPEG, 100, encodedProfilePicture)
+        profilePictureBitmap?.let {
+            it.compress(Bitmap.CompressFormat.JPEG, 100, encodedProfilePicture)
+
+            // save temporary profile picture
+            outState.putByteArray("profilePictureTemp", encodedProfilePicture.toByteArray())
+        }
 
         // encode background picture
         val encodedBackgroundProfilePicture = ByteArrayOutputStream()
-        backgroundProfilePictureBitmap?.compress(
-            Bitmap.CompressFormat.JPEG,
-            100,
-            encodedBackgroundProfilePicture
-        )
+        backgroundProfilePictureBitmap?.let {
+            it.compress(
+                Bitmap.CompressFormat.JPEG,
+                100,
+                encodedBackgroundProfilePicture
+            )
 
-        // save them
-        outState.putByteArray("profilePictureTemp", encodedProfilePicture.toByteArray())
-        outState.putByteArray(
-            "backgroundProfilePictureTemp",
-            encodedBackgroundProfilePicture.toByteArray()
-        )
+            // save temporary background picture
+            outState.putByteArray(
+                "backgroundProfilePictureTemp",
+                encodedBackgroundProfilePicture.toByteArray()
+            )
+        }
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {

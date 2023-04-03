@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import org.json.JSONObject
 
-
 class ShowProfileActivity : AppCompatActivity() {
     // User info views
     private lateinit var firstName: TextView
@@ -68,7 +67,7 @@ class ShowProfileActivity : AppCompatActivity() {
         super.onResume()
 
         // the information retrieval is done in onResume() because information has to be refreshed
-        // after saving (in EditProfileActivity the ShowProfileActivity is not destroyed)
+        // after saving (when the EditProfileActivity is created and started, the ShowProfileActivity is not destroyed)
 
         /* update shown user info and pictures */
 
