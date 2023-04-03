@@ -303,6 +303,13 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+
+        // delete the temporary profile pictures saved into cache (if any)
+        clearStorageFiles(cacheDir, "temp_profile_picture[a-zA-Z0-9]*.jpeg")
+    }
+
     private fun textListenerInit(fieldName: String): TextWatcher {
         // implement and return the TextWatcher interface
         return object : TextWatcher {
@@ -394,8 +401,6 @@ class EditProfileActivity : AppCompatActivity() {
             ).show()
 
             // terminate this activity (go back to the previous one according to the stack queue)
-            // and delete the temporary profile pictures saved into cache (if any)
-            clearStorageFiles(cacheDir, "temp_profile_picture[a-zA-Z0-9]*.jpeg")
             this.finish()
             true
         }
@@ -403,9 +408,7 @@ class EditProfileActivity : AppCompatActivity() {
         R.id.back_button -> {
             // if the user clicks the back button, the temporary information is *not* saved:
             // terminate this activity (go to the previous one according to the stack queue)
-            // and delete the temporary profile pictures saved into cache (if any)
 
-            clearStorageFiles(cacheDir, "temp_profile_picture[a-zA-Z0-9]*.jpeg")
             this.finish()
             true
         }
