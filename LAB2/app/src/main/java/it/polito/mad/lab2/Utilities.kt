@@ -133,3 +133,8 @@ internal fun clearStorageFiles(directory: File, regexp: String) {
         }
     }
 }
+
+data class Sport(val selected :Boolean, val level :Int)
+enum class Level {
+    BEGINNER, INTERMEDIATE, EXPERT, PRO
+}

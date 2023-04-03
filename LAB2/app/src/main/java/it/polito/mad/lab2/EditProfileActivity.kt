@@ -450,25 +450,64 @@ class EditProfileActivity : AppCompatActivity() {
 
         // save sports
         val basket = Sport(sportSelectedTemp[0], sportLevelTemp[0].ordinal)
-        jsonObjectProfile.put("basket", basket)
+        val basketJson = JSONObject()
+        basketJson.put("selected", basket.selected)
+        basketJson.put("level", basket.level)
+        jsonObjectProfile.put("basket", basketJson)
+
         val football11 = Sport(sportSelectedTemp[1], sportLevelTemp[1].ordinal)
-        jsonObjectProfile.put("football11", football11)
+        val football11Json = JSONObject()
+        football11Json.put("selected", football11.selected)
+        football11Json.put("level", football11.level)
+        jsonObjectProfile.put("football11", football11Json)
+
         val football5 = Sport(sportSelectedTemp[2], sportLevelTemp[2].ordinal)
-        jsonObjectProfile.put("football5", football5)
+        val football5Json = JSONObject()
+        football5Json.put("selected", football5.selected)
+        football5Json.put("level", football5.level)
+        jsonObjectProfile.put("football5", football5Json)
+
         val football8 = Sport(sportSelectedTemp[3], sportLevelTemp[3].ordinal)
-        jsonObjectProfile.put("football8", football8)
+        val football8Json = JSONObject()
+        football8Json.put("selected", football8.selected)
+        football8Json.put("level", football8.level)
+        jsonObjectProfile.put("football8", football8Json)
+
         val tennis = Sport(sportSelectedTemp[4], sportLevelTemp[4].ordinal)
-        jsonObjectProfile.put("tennis", tennis)
+        val tennisJson = JSONObject()
+        tennisJson.put("selected", tennis.selected)
+        tennisJson.put("level", tennis.level)
+        jsonObjectProfile.put("tennis", tennisJson)
+
         val volleyball = Sport(sportSelectedTemp[5], sportLevelTemp[5].ordinal)
-        jsonObjectProfile.put("volleyball", volleyball)
+        val volleyballJson = JSONObject()
+        volleyballJson.put("selected", volleyball.selected)
+        volleyballJson.put("level", volleyball.level)
+        jsonObjectProfile.put("volleyball", volleyballJson)
+
         val tableTennis = Sport(sportSelectedTemp[6], sportLevelTemp[6].ordinal)
-        jsonObjectProfile.put("tableTennis", tableTennis)
+        val tableTennisJson = JSONObject()
+        tableTennisJson.put("selected", tableTennis.selected)
+        tableTennisJson.put("level", tableTennis.level)
+        jsonObjectProfile.put("tableTennis", tableTennisJson)
+
         val beachVolley = Sport(sportSelectedTemp[7], sportLevelTemp[7].ordinal)
-        jsonObjectProfile.put("beachVolley", beachVolley)
+        val beachVolleyJson = JSONObject()
+        beachVolleyJson.put("selected", beachVolley.selected)
+        beachVolleyJson.put("level", beachVolley.level)
+        jsonObjectProfile.put("beachVolley", beachVolleyJson)
+
         val padel = Sport(sportSelectedTemp[8], sportLevelTemp[8].ordinal)
-        jsonObjectProfile.put("padel", padel)
+        val padelJson = JSONObject()
+        padelJson.put("selected", padel.selected)
+        padelJson.put("level", padel.level)
+        jsonObjectProfile.put("padel", padelJson)
+
         val miniGolf = Sport(sportSelectedTemp[9], sportLevelTemp[9].ordinal)
-        jsonObjectProfile.put("miniGolf", miniGolf)
+        val miniGolfJson = JSONObject()
+        miniGolfJson.put("selected", miniGolf.selected)
+        miniGolfJson.put("level", miniGolf.level)
+        jsonObjectProfile.put("miniGolf", miniGolfJson)
 
         // apply changes and show a pop up to the user
         editor.putString("profile", jsonObjectProfile.toString())
@@ -640,10 +679,7 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     /*----- SPORTS UTILITIES -----*/
-    private data class Sport(val selected :Boolean, val level :Int)
-    private enum class Level {
-        BEGINNER, INTERMEDIATE, EXPERT, PRO
-    }
+
 
     // Fills sport chips and sport level lists, the chips in xml are named with the sport name
     private fun sportsInit(){
