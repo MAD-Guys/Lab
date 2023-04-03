@@ -4,12 +4,14 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Base64
 import android.view.*
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
@@ -20,6 +22,8 @@ import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import jp.wasabeef.glide.transformations.BlurTransformation
+import java.io.ByteArrayOutputStream
 import java.io.File
 
 class EditProfileActivity : AppCompatActivity() {
@@ -44,7 +48,9 @@ class EditProfileActivity : AppCompatActivity() {
     // Profile picture 
     private lateinit var profilePicture: ImageView
     private lateinit var backgroundProfilePicture: ImageView
-    private var inputImage: Bitmap? = null
+    private var profilePictureBitmap: Bitmap? = null
+    private var backgroundProfilePictureBitmap: Bitmap? = null
+
     private var galleryUri: Uri? = null
     private var cameraUri: Uri? = null
 
@@ -56,27 +62,58 @@ class EditProfileActivity : AppCompatActivity() {
             if (it.resultCode == RESULT_OK) {
                 // retrieve gallery picture Uri
                 galleryUri = it.data?.data
+
                 // convert it to a bitmap
-                inputImage = galleryUri?.let { it1 -> uriToBitmap(it1, contentResolver) }
+                val galleryImageBitmap = galleryUri?.let { it1 -> uriToBitmap(it1, contentResolver) }
 
-                // crop image in the center (adapt to profile picture dimensions) and set profile picture
-                Glide.with(this).asBitmap()
-                    .load(inputImage)
-                    .override(profilePicture.width, profilePicture.height)  // set dimensions
-                    .centerCrop()
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(
-                            resource: Bitmap,
-                            transition: Transition<in Bitmap>?
-                        ) {
-                            profilePicture.setImageBitmap(resource)
-                            saveProfilePictureOnInternalStorage(resource, filesDir)
-                        }
-
-                        override fun onLoadCleared(placeholder: Drawable?) {}
-                    })
+                // edit image and show it
+                editAndShowProfilePicture(galleryImageBitmap)
             }
         }
+
+    private fun editAndShowProfilePicture(image: Bitmap?) {
+        val context = this
+
+        // crop image in the center (adapt to profile picture dimensions) and set profile picture
+        Glide.with(context).asBitmap()
+            .load(image)
+            .override(profilePicture.width, profilePicture.height)  // set dimensions
+            .centerCrop()
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(
+                    croppedImage: Bitmap,
+                    transition: Transition<in Bitmap>?
+                ) {
+                    // save profile picture bitmap and put it on the view
+                    profilePictureBitmap = croppedImage
+                    profilePicture.setImageBitmap(croppedImage)
+
+                    // copy the profile picture to create the blurred background image
+                    val backgroundImage = croppedImage.copy(croppedImage.config, true)
+
+                    // apply blur effect to the background image after reshaping it to its view sizes
+                    Glide.with(context).asBitmap()
+                        .load(backgroundImage)
+                        .override(backgroundProfilePicture.width, backgroundProfilePicture.height)
+                        .centerCrop()
+                        .transform(BlurTransformation(25))
+                        .into(object : CustomTarget<Bitmap>() {
+                            override fun onResourceReady(
+                                blurredBackgroundImage: Bitmap,
+                                transition: Transition<in Bitmap>?
+                            ) {
+                                // save background image bitmap and put it on the view
+                                backgroundProfilePictureBitmap = backgroundImage
+                                backgroundProfilePicture.setImageBitmap(backgroundImage)
+                            }
+
+                            override fun onLoadCleared(placeholder: Drawable?) {}
+                        })
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {}
+            })
+    }
 
     private var cameraActivityResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(
@@ -84,14 +121,14 @@ class EditProfileActivity : AppCompatActivity() {
         ) {
             if (it.resultCode == RESULT_OK) {
                 // transform camera image uri into a (rotated) bitmap
-                inputImage = cameraUri?.let { uri ->
+                val cameraImageBitmap = cameraUri?.let { uri ->
                     uriToBitmap(uri, contentResolver)?.let { bitmap ->
                         rotateBitmap(cameraUri, bitmap, contentResolver)
                     }
                 }
 
-                // Setting picture into the imageView
-                profilePicture.setImageBitmap(inputImage)
+                // edit image and show it
+                editAndShowProfilePicture(cameraImageBitmap)
             }
         }
 
@@ -120,6 +157,7 @@ class EditProfileActivity : AppCompatActivity() {
         }
 
         // load data from SharedPreferences and internal storage
+
         this.loadDataFromStorage()
 
         // add listeners to the temporary variables
@@ -147,8 +185,9 @@ class EditProfileActivity : AppCompatActivity() {
         val locationResume = sh.getString("location", getString(R.string.user_location))
         val bioResume = sh.getString("bio", getString(R.string.user_bio))
 
-        // retrieve profile picture from internal storage
-        val profilePictureResume: Bitmap? = getProfilePictureFromInternalStorage(filesDir)
+        // retrieve profile and background picture from internal storage
+        val profilePictureResume = getPictureFromInternalStorage(filesDir, "profilePicture.jpeg")
+        val backgroundProfilePictureResume = getPictureFromInternalStorage(filesDir, "backgroundProfilePicture.jpeg")
 
         // set EditText views
         firstName.setText(firstNameResume)
@@ -168,10 +207,9 @@ class EditProfileActivity : AppCompatActivity() {
         locationTemp = locationResume
         bioTemp = bioResume
 
-        // update profile picture with the one uploaded by the user, if any
-        if (profilePictureResume != null) {
-            profilePicture.setImageBitmap(profilePictureResume)
-        }
+        // update profile and background pictures with the one uploaded by the user, if any
+        profilePictureResume?.let { profilePicture.setImageBitmap(it) }
+        backgroundProfilePictureResume?.let { backgroundProfilePicture.setImageBitmap(it) }
     }
 
     /* save and restore temporary state */
@@ -188,6 +226,22 @@ class EditProfileActivity : AppCompatActivity() {
         outState.putInt("radioGenderChecked", radioGenderCheckedTemp)
         outState.putString("locationTemp", locationTemp)
         outState.putString("bioTemp", bioTemp)
+
+        // * save pictures temporarily *
+
+        // encode profile picture
+        var baos = ByteArrayOutputStream()
+        profilePictureBitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val encodedProfilePicture = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT)
+
+        // encode background picture
+        baos = ByteArrayOutputStream()
+        backgroundProfilePictureBitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val encodedBackgroundProfilePicture = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT)
+
+        // save them
+        outState.putString("profilePictureTemp", encodedProfilePicture)
+        outState.putString("backgroundProfilePictureTemp", encodedBackgroundProfilePicture)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -214,6 +268,20 @@ class EditProfileActivity : AppCompatActivity() {
 
         bioTemp = savedInstanceState.getString("bioTemp").toString()
         bio.setText(bioTemp)
+
+        // * get and show temporary images *
+
+        // decode and save profile picture
+        val encodedProfilePicture = savedInstanceState.getString("profilePictureTemp")
+        var byteArray = Base64.decode(encodedProfilePicture, Base64.DEFAULT)
+        profilePictureBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+        profilePicture.setImageBitmap(profilePictureBitmap)
+
+        // decode and save background profile picture
+        val encodedBackgroundProfilePicture = savedInstanceState.getString("backgroundProfilePictureTemp")
+        byteArray = Base64.decode(encodedBackgroundProfilePicture, Base64.DEFAULT)
+        backgroundProfilePictureBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+        backgroundProfilePicture.setImageBitmap(backgroundProfilePictureBitmap)
     }
 
     private fun textListenerInit(fieldName: String): TextWatcher {
@@ -284,9 +352,14 @@ class EditProfileActivity : AppCompatActivity() {
                 else -> editor.putString("gender", "Male")
             }
 
-            // save the picture on the internal storage
-            if (inputImage != null) {
-                saveProfilePictureOnInternalStorage(inputImage!!, filesDir)
+            // save the profile and background pictures into the internal storage
+
+            profilePictureBitmap?.let {
+                savePictureOnInternalStorage(it, filesDir, "profilePicture.jpeg")
+            }
+
+            backgroundProfilePictureBitmap?.let {
+                savePictureOnInternalStorage(it, filesDir, "backgroundProfilePicture.jpeg")
             }
 
             // apply changes and show a pop up to the user

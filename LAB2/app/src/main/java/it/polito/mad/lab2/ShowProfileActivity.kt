@@ -38,9 +38,6 @@ class ShowProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
 
-        // Sport chips variables
-        // TODO
-
         // retrieve user info and picture views
         firstName = findViewById(R.id.first_name)
         lastName = findViewById(R.id.last_name)
@@ -52,7 +49,7 @@ class ShowProfileActivity : AppCompatActivity() {
         profilePicture = findViewById(R.id.profile_picture)
         backgroundProfilePicture = findViewById(R.id.background_profile_picture)
 
-        // retrieve buttons, set callbacks and text
+        // retrieve buttons and set their callbacks
         addFriendButton = findViewById(R.id.button_add_friend)
         messageButton = findViewById(R.id.button_message)
 
@@ -65,39 +62,30 @@ class ShowProfileActivity : AppCompatActivity() {
             val toast = Toast.makeText(this, "Message button clicked!!!", Toast.LENGTH_SHORT)
             toast.show()
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
+        // TODO: Manage sport chips variables
+
+        /* update showed user info and pictures */
 
         // retrieve shared preferences object
         val sh = getSharedPreferences("it.polito.mad.lab2", Context.MODE_PRIVATE)
 
-        // retrieve data from SharedPreferences, if any, or take a default one
-        val firstNameResume = sh.getString("firstName", getString(R.string.first_name))
-        val lastNameResume = sh.getString("lastName", getString(R.string.last_name))
-        val nicknameResume = sh.getString("username", getString(R.string.username))
-        val genderResume = sh.getString("gender", getString(R.string.user_gender))
-        val ageResume = sh.getString("age", getString(R.string.user_age))
-        val locationResume = sh.getString("location", getString(R.string.user_location))
-        val bioResume = sh.getString("bio", getString(R.string.user_bio))
+        // retrieve user info from SharedPreferences (if any, or take the default one) and update view's texts
+        firstName.text = sh.getString("firstName", getString(R.string.first_name))
+        lastName.text = sh.getString("lastName", getString(R.string.last_name))
+        username.text = sh.getString("username", getString(R.string.username))
+        gender.text = sh.getString("gender", getString(R.string.user_gender))
+        age.text = sh.getString("age", getString(R.string.user_age))
+        location.text = sh.getString("location", getString(R.string.user_location))
+        bio.text = sh.getString("bio", getString(R.string.user_bio))
 
         // retrieve profile picture from the internal storage
-        val profilePictureResume = getProfilePictureFromInternalStorage(filesDir)
+        val profilePictureBitmap = getPictureFromInternalStorage(filesDir, "profilePicture.jpeg")
+        val backgroundProfilePictureBitmap = getPictureFromInternalStorage(filesDir, "backgroundProfilePicture.jpeg")
 
-        // update view's texts with the actual user info
-        firstName.text = firstNameResume
-        lastName.text = lastNameResume
-        username.text = nicknameResume
-        gender.text = genderResume
-        age.text = ageResume
-        location.text = locationResume
-        bio.text = bioResume
-
-        // update profile picture with the one uploaded by the user, if any
-        if (profilePictureResume != null) {
-            profilePicture.setImageBitmap(profilePictureResume)
-        }
+        // update profile and background picture with the ones uploaded by the user, if any
+        profilePictureBitmap?.let { profilePicture.setImageBitmap(it) }
+        backgroundProfilePictureBitmap?.let { backgroundProfilePicture.setImageBitmap(it)}
     }
 
     /* app menu */

@@ -99,8 +99,8 @@ internal fun rotateBitmap(imageUri: Uri?, bitmap: Bitmap, contentResolver: Conte
 
 /* saving picture on internal storage */
 
-internal fun saveProfilePictureOnInternalStorage(picture: Bitmap, directory: File) {
-    val file = File(directory, "profilePicture.jpeg")
+internal fun savePictureOnInternalStorage(picture: Bitmap, directory: File, filename: String) {
+    val file = File(directory, filename)
     val outputStream = FileOutputStream(file)
     picture.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
     outputStream.flush()
@@ -109,8 +109,8 @@ internal fun saveProfilePictureOnInternalStorage(picture: Bitmap, directory: Fil
 
 /* getting picture from internal storage */
 
-internal fun getProfilePictureFromInternalStorage(directory: File): Bitmap? {
-    val file = File(directory, "profilePicture.jpeg")
+internal fun getPictureFromInternalStorage(directory: File, filename: String): Bitmap? {
+    val file = File(directory, filename)
     return if (file.exists()) {
         BitmapFactory.decodeFile(file.absolutePath)
     } else null
