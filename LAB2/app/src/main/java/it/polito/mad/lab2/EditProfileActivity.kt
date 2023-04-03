@@ -21,6 +21,8 @@ import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import jp.wasabeef.glide.transformations.BlurTransformation
 import java.io.ByteArrayOutputStream
 import org.json.JSONObject
@@ -35,6 +37,15 @@ class EditProfileActivity : AppCompatActivity() {
     private var radioGenderCheckedTemp = R.id.radio_male
     private var locationTemp: String? = null
     private var bioTemp: String? = null
+    // Sports temporary state
+    private var sportSelectedTemp: MutableList<Boolean> = mutableListOf(
+        false, false, false, false, false, false, false, false, false, false
+    ) // 10 values initially set to false
+    private var sportLevelTemp: MutableList<Level> = mutableListOf(
+        Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER,
+        Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER
+    ) // 10 values initially set to BEGINNER
+
 
     // User info views
     private lateinit var firstName: EditText
@@ -44,6 +55,11 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var genderRadioGroup: RadioGroup
     private lateinit var location: EditText
     private lateinit var bio: EditText
+
+    // Sports
+    private lateinit var sportChips: MutableList<Chip>
+    private lateinit var sportLevels: MutableList<ChipGroup>
+    private lateinit var sportLevelChips: MutableList<MutableList<Chip>>
 
     // Profile picture 
     private lateinit var profilePicture: ImageView
@@ -149,6 +165,12 @@ class EditProfileActivity : AppCompatActivity() {
         profilePicture = findViewById(R.id.profile_picture)
         backgroundProfilePicture = findViewById(R.id.background_profile_picture)
 
+        // initialize sports and levels
+        sportChips = mutableListOf()
+        sportLevels = mutableListOf()
+        sportLevelChips = mutableListOf()
+        sportsInit() //fills the sportChips and sportLevels lists
+
         // set context menu to change profile picture
         val profileImageButton: ImageButton = findViewById(R.id.profile_picture_button)
         registerForContextMenu(profileImageButton)
@@ -171,6 +193,13 @@ class EditProfileActivity : AppCompatActivity() {
 
         genderRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             radioGenderCheckedTemp = checkedId
+        }
+
+        for( (index, sport) in sportChips.withIndex() ){
+            sport.setOnClickListener { sportChipListener(index) }
+        }
+        for( (index, sportLevel) in sportLevels.withIndex() ){
+            sportLevel.setOnCheckedStateChangeListener { it, _ -> sportLevelListener(it, index) }
         }
     }
 
@@ -421,5 +450,155 @@ class EditProfileActivity : AppCompatActivity() {
         // create intent and open phone gallery
         val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryActivityResultLauncher.launch(galleryIntent)
+    }
+
+    /*----- SPORTS UTILITIES -----*/
+    private enum class Level {
+        BEGINNER, INTERMEDIATE, EXPERT, PRO
+    }
+
+    // Fills sport chips and sport level lists, the chips in xml are named with the sport name
+    private fun sportsInit(){
+
+        // SportChips
+        val basket :Chip = findViewById(R.id.basketChip)
+        val football11 :Chip = findViewById(R.id.football11Chip)
+        val football5 :Chip = findViewById(R.id.football5Chip)
+        val football8 :Chip = findViewById(R.id.football8Chip)
+        val tennis :Chip = findViewById(R.id.tennisChip)
+        val volleyball :Chip = findViewById(R.id.volleyballChip)
+        val tableTennis :Chip = findViewById(R.id.tableTennisChip)
+        val beachVolley :Chip = findViewById(R.id.beachVolleyChip)
+        val padel :Chip = findViewById(R.id.padelChip)
+        val miniGolf :Chip = findViewById(R.id.miniGolfChip)
+
+        // SportLevels
+        val basketLevel :ChipGroup = findViewById(R.id.basketLevelSelector)
+        val football11Level :ChipGroup = findViewById(R.id.football11LevelSelector)
+        val football5Level :ChipGroup = findViewById(R.id.football5LevelSelector)
+        val football8Level :ChipGroup = findViewById(R.id.football8LevelSelector)
+        val tennisLevel :ChipGroup = findViewById(R.id.tennisLevelSelector)
+        val volleyballLevel :ChipGroup = findViewById(R.id.volleyballLevelSelector)
+        val tableTennisLevel :ChipGroup = findViewById(R.id.tableTennisLevelSelector)
+        val beachVolleyLevel :ChipGroup = findViewById(R.id.beachVolleyLevelSelector)
+        val padelLevel :ChipGroup = findViewById(R.id.padelLevelSelector)
+        val miniGolfLevel :ChipGroup = findViewById(R.id.miniGolfLevelSelector)
+
+        // Add items to lists
+        // To make changes easier, insertions are ordered by sport
+
+        sportChips.add(0, basket)
+        sportLevels.add(0, basketLevel)
+
+        sportChips.add(1, football11)
+        sportLevels.add(1, football11Level)
+
+        sportChips.add(2, football5)
+        sportLevels.add(2, football5Level)
+
+        sportChips.add(3, football8)
+        sportLevels.add(3, football8Level)
+
+        sportChips.add(4, tennis)
+        sportLevels.add(4, tennisLevel)
+
+        sportChips.add(5, volleyball)
+        sportLevels.add(5, volleyballLevel)
+
+        sportChips.add(6, tableTennis)
+        sportLevels.add(6, tableTennisLevel)
+
+        sportChips.add(7, beachVolley)
+        sportLevels.add(7, beachVolleyLevel)
+
+        sportChips.add(8, padel)
+        sportLevels.add(8, padelLevel)
+
+        sportChips.add(9, miniGolf)
+        sportLevels.add(9, miniGolfLevel)
+
+        // level chips
+        sportLevelChips.add(0, mutableListOf())
+        sportLevelChips[0].add(0, findViewById(R.id.basketBeginner))
+        sportLevelChips[0].add(1, findViewById(R.id.basketIntermediate))
+        sportLevelChips[0].add(2, findViewById(R.id.basketExpert))
+        sportLevelChips[0].add(3, findViewById(R.id.basketPro))
+
+        sportLevelChips.add(1, mutableListOf())
+        sportLevelChips[1].add(0, findViewById(R.id.football11Beginner))
+        sportLevelChips[1].add(1, findViewById(R.id.football11Intermediate))
+        sportLevelChips[1].add(2, findViewById(R.id.football11Expert))
+        sportLevelChips[1].add(3, findViewById(R.id.football11Pro))
+
+        sportLevelChips.add(2, mutableListOf())
+        sportLevelChips[2].add(0, findViewById(R.id.football5Beginner))
+        sportLevelChips[2].add(1, findViewById(R.id.football5Intermediate))
+        sportLevelChips[2].add(2, findViewById(R.id.football5Expert))
+        sportLevelChips[2].add(3, findViewById(R.id.football5Pro))
+
+        sportLevelChips.add(3, mutableListOf())
+        sportLevelChips[3].add(0, findViewById(R.id.football8Beginner))
+        sportLevelChips[3].add(1, findViewById(R.id.football8Intermediate))
+        sportLevelChips[3].add(2, findViewById(R.id.football8Expert))
+        sportLevelChips[3].add(3, findViewById(R.id.football8Pro))
+
+        sportLevelChips.add(4, mutableListOf())
+        sportLevelChips[4].add(0, findViewById(R.id.tennisBeginner))
+        sportLevelChips[4].add(1, findViewById(R.id.tennisIntermediate))
+        sportLevelChips[4].add(2, findViewById(R.id.tennisExpert))
+        sportLevelChips[4].add(3, findViewById(R.id.tennisPro))
+
+        sportLevelChips.add(5, mutableListOf())
+        sportLevelChips[5].add(0, findViewById(R.id.volleyballBeginner))
+        sportLevelChips[5].add(1, findViewById(R.id.volleyballIntermediate))
+        sportLevelChips[5].add(2, findViewById(R.id.volleyballExpert))
+        sportLevelChips[5].add(3, findViewById(R.id.volleyballPro))
+
+        sportLevelChips.add(6, mutableListOf())
+        sportLevelChips[6].add(0, findViewById(R.id.tableTennisBeginner))
+        sportLevelChips[6].add(1, findViewById(R.id.tableTennisIntermediate))
+        sportLevelChips[6].add(2, findViewById(R.id.tableTennisExpert))
+        sportLevelChips[6].add(3, findViewById(R.id.tableTennisPro))
+
+        sportLevelChips.add(7, mutableListOf())
+        sportLevelChips[7].add(0, findViewById(R.id.beachVolleyBeginner))
+        sportLevelChips[7].add(1, findViewById(R.id.beachVolleyIntermediate))
+        sportLevelChips[7].add(2, findViewById(R.id.beachVolleyExpert))
+        sportLevelChips[7].add(3, findViewById(R.id.beachVolleyPro))
+
+        sportLevelChips.add(8, mutableListOf())
+        sportLevelChips[8].add(0, findViewById(R.id.padelBeginner))
+        sportLevelChips[8].add(1, findViewById(R.id.padelIntermediate))
+        sportLevelChips[8].add(2, findViewById(R.id.padelExpert))
+        sportLevelChips[8].add(3, findViewById(R.id.padelPro))
+
+        sportLevelChips.add(9, mutableListOf())
+        sportLevelChips[9].add(0, findViewById(R.id.miniGolfBeginner))
+        sportLevelChips[9].add(1, findViewById(R.id.miniGolfIntermediate))
+        sportLevelChips[9].add(2, findViewById(R.id.miniGolfExpert))
+        sportLevelChips[9].add(3, findViewById(R.id.miniGolfPro))
+    }
+
+    //Generic listener to select or deselect a sport
+    private fun sportChipListener(index :Int) {
+        if(sportSelectedTemp[index]){ // this sport was already selected -> deselect it
+            sportSelectedTemp[index] = false
+            sportLevels[index].visibility = ChipGroup.GONE
+
+        } else { // this sport was not selected -> select it
+            sportSelectedTemp[index] = true
+            sportLevels[index].check( sportLevelChips[index][sportLevelTemp[index].ordinal].id )
+            sportLevels[index].visibility = ChipGroup.VISIBLE
+        }
+    }
+
+    private fun sportLevelListener(chipGroup: ChipGroup, index: Int) {
+        when (chipGroup.checkedChipId) {
+            sportLevelChips[index][Level.BEGINNER.ordinal].id -> sportLevelTemp[index] = Level.BEGINNER
+            sportLevelChips[index][Level.INTERMEDIATE.ordinal].id -> sportLevelTemp[index] = Level.INTERMEDIATE
+            sportLevelChips[index][Level.EXPERT.ordinal].id -> sportLevelTemp[index] = Level.EXPERT
+            sportLevelChips[index][Level.PRO.ordinal].id -> sportLevelTemp[index] = Level.PRO
+        }
+        println("Set level ${sportLevelTemp[index]} for sport $index")
     }
 }
