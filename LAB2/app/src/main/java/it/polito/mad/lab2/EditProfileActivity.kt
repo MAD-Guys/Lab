@@ -720,15 +720,15 @@ class EditProfileActivity : AppCompatActivity() {
     private fun setHardcodedSportFields(){
         //basket expert
         sportSelectedTemp[0] = true
-        sportLevelTemp[0]
-        sportLevels[0].check( Level.EXPERT.ordinal )
+        sportLevelTemp[0] = Level.EXPERT
+        sportLevels[0].check( sportLevelChips[0][Level.EXPERT.ordinal].id )
         sportLevels[0].visibility = ChipGroup.VISIBLE
         sportChips[0].isChecked = true
 
         //tennis beginner
         sportSelectedTemp[4] = true
-        sportLevelTemp[4]
-        sportLevels[4].check( Level.BEGINNER.ordinal )
+        sportLevelTemp[4] = Level.BEGINNER
+        sportLevels[4].check( sportLevelChips[0][Level.BEGINNER.ordinal].id )
         sportLevels[4].visibility = ChipGroup.VISIBLE
         sportChips[4].isChecked = true
 
