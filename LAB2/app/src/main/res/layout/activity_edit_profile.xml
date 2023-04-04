@@ -352,11 +352,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8sp"
-                    android:fontFamily="@font/poppins_semibold"
+                    android:fontFamily="@font/poppins_medium"
                     android:includeFontPadding="false"
                     android:text="@string/sport_selection_description"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/default_text_size" />
+                    android:textColor="@color/light_grey"
+                    android:textSize="16sp" />
 
                 <com.google.android.material.chip.ChipGroup
                     android:layout_width="match_parent"
@@ -384,9 +384,11 @@
                             android:textSize="@dimen/chip_text_size"
                             android:visibility="visible"
                             app:checkedIconVisible="true"
-                            app:chipBackgroundColor="@color/pale_orange"
+                            app:chipBackgroundColor="@color/selected_chip_color"
                             app:textEndPadding="@dimen/chip_text_end_padding"
-                            app:textStartPadding="@dimen/chip_text_start_padding" />
+                            app:textStartPadding="@dimen/chip_text_start_padding"
+                            app:chipStrokeColor="@color/selected_chip_border_color"
+                            app:chipStrokeWidth="0.8dp"/>
 
                         <!-- Basket level selector -->
                         <com.google.android.material.chip.ChipGroup
@@ -476,9 +478,11 @@
                             android:textSize="@dimen/chip_text_size"
                             android:visibility="visible"
                             app:checkedIconVisible="true"
-                            app:chipBackgroundColor="@color/pale_green"
+                            app:chipBackgroundColor="@color/selected_chip_color"
                             app:textEndPadding="@dimen/chip_text_end_padding"
-                            app:textStartPadding="@dimen/chip_text_start_padding" />
+                            app:textStartPadding="@dimen/chip_text_start_padding"
+                            app:chipStrokeColor="@color/selected_chip_border_color"
+                            app:chipStrokeWidth="0.8dp"/>
 
                         <!-- 11-a-side-Football level selector -->
                         <com.google.android.material.chip.ChipGroup
@@ -568,9 +572,11 @@
                             android:textSize="@dimen/chip_text_size"
                             android:visibility="visible"
                             app:checkedIconVisible="true"
-                            app:chipBackgroundColor="@color/pale_blue"
+                            app:chipBackgroundColor="@color/selected_chip_color"
                             app:textEndPadding="@dimen/chip_text_end_padding"
-                            app:textStartPadding="@dimen/chip_text_start_padding" />
+                            app:textStartPadding="@dimen/chip_text_start_padding"
+                            app:chipStrokeColor="@color/selected_chip_border_color"
+                            app:chipStrokeWidth="0.8dp"/>
 
                         <!-- 5-a-side-Football level selector -->
                         <com.google.android.material.chip.ChipGroup
@@ -660,9 +666,11 @@
                             android:textSize="@dimen/chip_text_size"
                             android:visibility="visible"
                             app:checkedIconVisible="true"
-                            app:chipBackgroundColor="@color/pale_ametista"
+                            app:chipBackgroundColor="@color/selected_chip_color"
                             app:textEndPadding="@dimen/chip_text_end_padding"
-                            app:textStartPadding="@dimen/chip_text_start_padding" />
+                            app:textStartPadding="@dimen/chip_text_start_padding"
+                            app:chipStrokeColor="@color/selected_chip_border_color"
+                            app:chipStrokeWidth="0.8dp"/>
 
                         <!-- 8-a-side-Football level selector -->
                         <com.google.android.material.chip.ChipGroup
@@ -752,9 +760,11 @@
                             android:textSize="@dimen/chip_text_size"
                             android:visibility="visible"
                             app:checkedIconVisible="true"
-                            app:chipBackgroundColor="@color/pale_lighter_blue"
+                            app:chipBackgroundColor="@color/selected_chip_color"
                             app:textEndPadding="@dimen/chip_text_end_padding"
-                            app:textStartPadding="@dimen/chip_text_start_padding" />
+                            app:textStartPadding="@dimen/chip_text_start_padding"
+                            app:chipStrokeColor="@color/selected_chip_border_color"
+                            app:chipStrokeWidth="0.8dp"/>
 
                         <!-- Tennis level selector -->
                         <com.google.android.material.chip.ChipGroup
@@ -844,9 +854,11 @@
                             android:textSize="@dimen/chip_text_size"
                             android:visibility="visible"
                             app:checkedIconVisible="true"
-                            app:chipBackgroundColor="@color/pale_lighter_green"
+                            app:chipBackgroundColor="@color/selected_chip_color"
                             app:textEndPadding="@dimen/chip_text_end_padding"
-                            app:textStartPadding="@dimen/chip_text_start_padding" />
+                            app:textStartPadding="@dimen/chip_text_start_padding"
+                            app:chipStrokeColor="@color/selected_chip_border_color"
+                            app:chipStrokeWidth="0.8dp"/>
 
                         <!-- Volleyball level selector -->
                         <com.google.android.material.chip.ChipGroup
@@ -936,9 +948,11 @@
                             android:textSize="@dimen/chip_text_size"
                             android:visibility="visible"
                             app:checkedIconVisible="true"
-                            app:chipBackgroundColor="@color/pale_lighter_yellow"
+                            app:chipBackgroundColor="@color/selected_chip_color"
                             app:textEndPadding="@dimen/chip_text_end_padding"
-                            app:textStartPadding="@dimen/chip_text_start_padding" />
+                            app:textStartPadding="@dimen/chip_text_start_padding"
+                            app:chipStrokeColor="@color/selected_chip_border_color"
+                            app:chipStrokeWidth="0.8dp"/>
 
                         <!-- Table Tennis level selector -->
                         <com.google.android.material.chip.ChipGroup
@@ -1028,9 +1042,11 @@
                             android:textSize="@dimen/chip_text_size"
                             android:visibility="visible"
                             app:checkedIconVisible="true"
-                            app:chipBackgroundColor="@color/pale_lighter_grey"
+                            app:chipBackgroundColor="@color/selected_chip_color"
                             app:textEndPadding="@dimen/chip_text_end_padding"
-                            app:textStartPadding="@dimen/chip_text_start_padding" />
+                            app:textStartPadding="@dimen/chip_text_start_padding"
+                            app:chipStrokeColor="@color/selected_chip_border_color"
+                            app:chipStrokeWidth="0.8dp"/>
 
                         <!-- Beach Volley level selector -->
                         <com.google.android.material.chip.ChipGroup
@@ -1120,9 +1136,11 @@
                             android:textSize="@dimen/chip_text_size"
                             android:visibility="visible"
                             app:checkedIconVisible="true"
-                            app:chipBackgroundColor="@color/pale_gold_brown"
+                            app:chipBackgroundColor="@color/selected_chip_color"
                             app:textEndPadding="@dimen/chip_text_end_padding"
-                            app:textStartPadding="@dimen/chip_text_start_padding" />
+                            app:textStartPadding="@dimen/chip_text_start_padding"
+                            app:chipStrokeColor="@color/selected_chip_border_color"
+                            app:chipStrokeWidth="0.8dp"/>
 
                         <!-- Padel level selector -->
                         <com.google.android.material.chip.ChipGroup
@@ -1212,7 +1230,9 @@
                             android:textSize="@dimen/chip_text_size"
                             android:visibility="visible"
                             app:checkedIconVisible="true"
-                            app:chipBackgroundColor="@color/pale_lighter_red"
+                            app:chipBackgroundColor="@color/selected_chip_color"
+                            app:chipStrokeColor="@color/selected_chip_border_color"
+                            app:chipStrokeWidth="0.8dp"
                             app:textEndPadding="@dimen/chip_text_end_padding"
                             app:textStartPadding="@dimen/chip_text_start_padding" />
 
