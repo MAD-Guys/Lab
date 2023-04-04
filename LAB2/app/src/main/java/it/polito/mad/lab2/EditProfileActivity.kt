@@ -39,13 +39,13 @@ class EditProfileActivity : AppCompatActivity() {
 
     // Sports temporary state
     private var sportSelectedTemp: MutableList<Boolean> = mutableListOf(
-        false, false, false, false, false, false, false, false, false, false
-    ) // 10 values initially set to false
+        true, false, false, false, true, false, false, false, false, false
+    ) // 10 values initially set according to the values hard coded in ShowProfileActivity.kt
 
     private var sportLevelTemp: MutableList<Level> = mutableListOf(
         Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER,
         Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER
-    ) // 10 values initially set to BEGINNER
+    ) // 10 values initially set according to the values hard coded in ShowProfileActivity.kt
 
     // User info views
     private lateinit var firstName: EditText
@@ -300,146 +300,21 @@ class EditProfileActivity : AppCompatActivity() {
         profilePictureResume?.let { profilePicture.setImageBitmap(it) }
         backgroundProfilePictureResume?.let { backgroundProfilePicture.setImageBitmap(it) }
 
+
         // set sports Edit fields and temporary values
-        if(basketResume != null && basketResume.selected){
-            sportSelectedTemp[0] = true
-            sportLevelTemp[0] = when(basketResume.level){
-                0 -> Level.BEGINNER
-                1 -> Level.INTERMEDIATE
-                2 -> Level.EXPERT
-                3 -> Level.PRO
-                else -> Level.BEGINNER //never used
-            }
-            sportLevels[0].check( sportLevelChips[0][sportLevelTemp[0].ordinal].id )
-            sportLevels[0].visibility = ChipGroup.VISIBLE
-            sportChips[0].isChecked = true
-        }
+        setEditSportsField(basketResume, 0);
+        setEditSportsField(soccer11Resume, 1);
+        setEditSportsField(soccer5Resume, 2);
+        setEditSportsField(soccer8Resume, 3);
+        setEditSportsField(tennisResume, 4);
+        setEditSportsField(volleyballResume, 5);
+        setEditSportsField(tableTennisResume, 6);
+        setEditSportsField(beachVolleyResume, 7);
+        setEditSportsField(padelResume, 8);
+        setEditSportsField(miniGolfResume, 9);
 
-        if(soccer11Resume != null && soccer11Resume.selected){
-            sportSelectedTemp[1] = true
-            sportLevelTemp[1] = when(soccer11Resume.level){
-                0 -> Level.BEGINNER
-                1 -> Level.INTERMEDIATE
-                2 -> Level.EXPERT
-                3 -> Level.PRO
-                else -> Level.BEGINNER //never used
-            }
-            sportLevels[1].check( sportLevelChips[1][sportLevelTemp[1].ordinal].id )
-            sportLevels[1].visibility = ChipGroup.VISIBLE
-            sportChips[1].isChecked = true
-        }
-
-        if(soccer5Resume != null && soccer5Resume.selected){
-            sportSelectedTemp[2] = true
-            sportLevelTemp[2] = when(soccer5Resume.level){
-                0 -> Level.BEGINNER
-                1 -> Level.INTERMEDIATE
-                2 -> Level.EXPERT
-                3 -> Level.PRO
-                else -> Level.BEGINNER //never used
-            }
-            sportLevels[2].check( sportLevelChips[2][sportLevelTemp[2].ordinal].id )
-            sportLevels[2].visibility = ChipGroup.VISIBLE
-            sportChips[2].isChecked = true
-        }
-
-        if(soccer8Resume != null && soccer8Resume.selected){
-            sportSelectedTemp[3] = true
-            sportLevelTemp[3] = when(soccer8Resume.level){
-                0 -> Level.BEGINNER
-                1 -> Level.INTERMEDIATE
-                2 -> Level.EXPERT
-                3 -> Level.PRO
-                else -> Level.BEGINNER //never used
-            }
-            sportLevels[3].check( sportLevelChips[3][sportLevelTemp[3].ordinal].id )
-            sportLevels[3].visibility = ChipGroup.VISIBLE
-            sportChips[3].isChecked = true
-        }
-
-        if(tennisResume != null && tennisResume.selected){
-            sportSelectedTemp[4] = true
-            sportLevelTemp[4] = when(tennisResume.level){
-                0 -> Level.BEGINNER
-                1 -> Level.INTERMEDIATE
-                2 -> Level.EXPERT
-                3 -> Level.PRO
-                else -> Level.BEGINNER //never used
-            }
-            sportLevels[4].check( sportLevelChips[4][sportLevelTemp[4].ordinal].id )
-            sportLevels[4].visibility = ChipGroup.VISIBLE
-            sportChips[4].isChecked = true
-        }
-
-        if(volleyballResume != null && volleyballResume.selected){
-            sportSelectedTemp[5] = true
-            sportLevelTemp[5] = when(volleyballResume.level){
-                0 -> Level.BEGINNER
-                1 -> Level.INTERMEDIATE
-                2 -> Level.EXPERT
-                3 -> Level.PRO
-                else -> Level.BEGINNER //never used
-            }
-            sportLevels[5].check( sportLevelChips[5][sportLevelTemp[5].ordinal].id )
-            sportLevels[5].visibility = ChipGroup.VISIBLE
-            sportChips[5].isChecked = true
-        }
-
-        if(tableTennisResume != null && tableTennisResume.selected){
-            sportSelectedTemp[6] = true
-            sportLevelTemp[6] = when(tableTennisResume.level){
-                0 -> Level.BEGINNER
-                1 -> Level.INTERMEDIATE
-                2 -> Level.EXPERT
-                3 -> Level.PRO
-                else -> Level.BEGINNER //never used
-            }
-            sportLevels[6].check( sportLevelChips[6][sportLevelTemp[6].ordinal].id )
-            sportLevels[6].visibility = ChipGroup.VISIBLE
-            sportChips[6].isChecked = true
-        }
-
-        if(beachVolleyResume != null && beachVolleyResume.selected){
-            sportSelectedTemp[7] = true
-            sportLevelTemp[7] = when(beachVolleyResume.level){
-                0 -> Level.BEGINNER
-                1 -> Level.INTERMEDIATE
-                2 -> Level.EXPERT
-                3 -> Level.PRO
-                else -> Level.BEGINNER //never used
-            }
-            sportLevels[7].check( sportLevelChips[7][sportLevelTemp[7].ordinal].id )
-            sportLevels[7].visibility = ChipGroup.VISIBLE
-            sportChips[7].isChecked = true
-        }
-
-        if(padelResume != null && padelResume.selected){
-            sportSelectedTemp[8] = true
-            sportLevelTemp[8] = when(padelResume.level){
-                0 -> Level.BEGINNER
-                1 -> Level.INTERMEDIATE
-                2 -> Level.EXPERT
-                3 -> Level.PRO
-                else -> Level.BEGINNER //never used
-            }
-            sportLevels[8].check( sportLevelChips[8][sportLevelTemp[8].ordinal].id )
-            sportLevels[8].visibility = ChipGroup.VISIBLE
-            sportChips[8].isChecked = true
-        }
-
-        if(miniGolfResume != null && miniGolfResume.selected){
-            sportSelectedTemp[9] = true
-            sportLevelTemp[9] = when(miniGolfResume.level){
-                0 -> Level.BEGINNER
-                1 -> Level.INTERMEDIATE
-                2 -> Level.EXPERT
-                3 -> Level.PRO
-                else -> Level.BEGINNER //never used
-            }
-            sportLevels[9].check( sportLevelChips[9][sportLevelTemp[9].ordinal].id )
-            sportLevels[9].visibility = ChipGroup.VISIBLE
-            sportChips[9].isChecked = true
-        }
+        //set hard coded sports the first time the app is launched
+        setHardcodedSportFields()
 
     }
 
@@ -477,66 +352,18 @@ class EditProfileActivity : AppCompatActivity() {
             savePictureOnInternalStorage(it, filesDir, "backgroundProfilePicture.jpeg")
         }
 
-        // save sports
-        val basket = Sport(sportSelectedTemp[0], sportLevelTemp[0].ordinal)
-        val basketJson = JSONObject()
-        basketJson.put("selected", basket.selected)
-        basketJson.put("level", basket.level)
-        jsonObjectProfile.put("basket", basketJson)
+        // save sports as JsonObjects
+        saveSportAsJson(Sport(sportSelectedTemp[0], sportLevelTemp[0].ordinal), "basket", jsonObjectProfile)
+        saveSportAsJson(Sport(sportSelectedTemp[1], sportLevelTemp[1].ordinal), "soccer11", jsonObjectProfile)
+        saveSportAsJson(Sport(sportSelectedTemp[2], sportLevelTemp[2].ordinal), "soccer5", jsonObjectProfile)
+        saveSportAsJson(Sport(sportSelectedTemp[3], sportLevelTemp[3].ordinal), "soccer8", jsonObjectProfile)
+        saveSportAsJson(Sport(sportSelectedTemp[4], sportLevelTemp[4].ordinal), "tennis", jsonObjectProfile)
+        saveSportAsJson(Sport(sportSelectedTemp[5], sportLevelTemp[5].ordinal), "volleyball", jsonObjectProfile)
+        saveSportAsJson(Sport(sportSelectedTemp[6], sportLevelTemp[6].ordinal), "tableTennis", jsonObjectProfile)
+        saveSportAsJson(Sport(sportSelectedTemp[7], sportLevelTemp[7].ordinal), "beachVolley", jsonObjectProfile)
+        saveSportAsJson(Sport(sportSelectedTemp[8], sportLevelTemp[8].ordinal), "padel", jsonObjectProfile)
+        saveSportAsJson(Sport(sportSelectedTemp[9], sportLevelTemp[9].ordinal), "miniGolf", jsonObjectProfile)
 
-        val soccer11 = Sport(sportSelectedTemp[1], sportLevelTemp[1].ordinal)
-        val soccer11Json = JSONObject()
-        soccer11Json.put("selected", soccer11.selected)
-        soccer11Json.put("level", soccer11.level)
-        jsonObjectProfile.put("soccer11", soccer11Json)
-
-        val soccer5 = Sport(sportSelectedTemp[2], sportLevelTemp[2].ordinal)
-        val soccer5Json = JSONObject()
-        soccer5Json.put("selected", soccer5.selected)
-        soccer5Json.put("level", soccer5.level)
-        jsonObjectProfile.put("soccer5", soccer5Json)
-
-        val soccer8 = Sport(sportSelectedTemp[3], sportLevelTemp[3].ordinal)
-        val soccer8Json = JSONObject()
-        soccer8Json.put("selected", soccer8.selected)
-        soccer8Json.put("level", soccer8.level)
-        jsonObjectProfile.put("soccer8", soccer8Json)
-
-        val tennis = Sport(sportSelectedTemp[4], sportLevelTemp[4].ordinal)
-        val tennisJson = JSONObject()
-        tennisJson.put("selected", tennis.selected)
-        tennisJson.put("level", tennis.level)
-        jsonObjectProfile.put("tennis", tennisJson)
-
-        val volleyball = Sport(sportSelectedTemp[5], sportLevelTemp[5].ordinal)
-        val volleyballJson = JSONObject()
-        volleyballJson.put("selected", volleyball.selected)
-        volleyballJson.put("level", volleyball.level)
-        jsonObjectProfile.put("volleyball", volleyballJson)
-
-        val tableTennis = Sport(sportSelectedTemp[6], sportLevelTemp[6].ordinal)
-        val tableTennisJson = JSONObject()
-        tableTennisJson.put("selected", tableTennis.selected)
-        tableTennisJson.put("level", tableTennis.level)
-        jsonObjectProfile.put("tableTennis", tableTennisJson)
-
-        val beachVolley = Sport(sportSelectedTemp[7], sportLevelTemp[7].ordinal)
-        val beachVolleyJson = JSONObject()
-        beachVolleyJson.put("selected", beachVolley.selected)
-        beachVolleyJson.put("level", beachVolley.level)
-        jsonObjectProfile.put("beachVolley", beachVolleyJson)
-
-        val padel = Sport(sportSelectedTemp[8], sportLevelTemp[8].ordinal)
-        val padelJson = JSONObject()
-        padelJson.put("selected", padel.selected)
-        padelJson.put("level", padel.level)
-        jsonObjectProfile.put("padel", padelJson)
-
-        val miniGolf = Sport(sportSelectedTemp[9], sportLevelTemp[9].ordinal)
-        val miniGolfJson = JSONObject()
-        miniGolfJson.put("selected", miniGolf.selected)
-        miniGolfJson.put("level", miniGolf.level)
-        jsonObjectProfile.put("miniGolf", miniGolfJson)
 
         // apply changes and show a pop up to the user
         editor.putString("profile", jsonObjectProfile.toString())
@@ -865,5 +692,45 @@ class EditProfileActivity : AppCompatActivity() {
             sportLevelChips[index][Level.PRO.ordinal].id -> sportLevelTemp[index] = Level.PRO
         }
         println("Set level ${sportLevelTemp[index]} for sport $index")
+    }
+
+    // The function set sports Edit fields and temporary values
+    private fun setEditSportsField(sport: Sport?, index: Int){
+        if(sport != null && sport.selected){
+            sportSelectedTemp[index] = true
+            sportLevelTemp[index] = when(sport.level){
+                0 -> Level.BEGINNER
+                1 -> Level.INTERMEDIATE
+                2 -> Level.EXPERT
+                3 -> Level.PRO
+                else -> Level.BEGINNER //never used
+            }
+            sportLevels[index].check( sportLevelChips[index][sportLevelTemp[index].ordinal].id )
+            sportLevels[index].visibility = ChipGroup.VISIBLE
+            sportChips[index].isChecked = true
+        }
+    }
+    private fun saveSportAsJson(sport: Sport, sportName: String, jsonObjectProfile: JSONObject) {
+        val sportJson = JSONObject()
+        sportJson.put("selected", sport.selected)
+        sportJson.put("level", sport.level)
+        jsonObjectProfile.put(sportName, sportJson)
+    }
+
+    private fun setHardcodedSportFields(){
+        //basket expert
+        sportSelectedTemp[0] = true
+        sportLevelTemp[0] = Level.EXPERT
+        sportLevels[0].check( sportLevelChips[0][Level.EXPERT.ordinal].id )
+        sportLevels[0].visibility = ChipGroup.VISIBLE
+        sportChips[0].isChecked = true
+
+        //tennis beginner
+        sportSelectedTemp[4] = true
+        sportLevelTemp[4] = Level.BEGINNER
+        sportLevels[4].check( sportLevelChips[0][Level.BEGINNER.ordinal].id )
+        sportLevels[4].visibility = ChipGroup.VISIBLE
+        sportChips[4].isChecked = true
+
     }
 }

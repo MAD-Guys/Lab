@@ -464,7 +464,8 @@
                     <LinearLayout
                         android:id="@+id/soccer11Selector"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
                         <!-- 11-a-side-Football chip -->
                         <com.google.android.material.chip.Chip

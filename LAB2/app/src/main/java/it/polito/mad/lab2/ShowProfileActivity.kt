@@ -279,6 +279,17 @@ class ShowProfileActivity : AppCompatActivity() {
             }
         }
 
+        if( jsonObjectProfile == null){ // first time the app is launched
+            loadHardcodedSports() //Some sports will appear the first time
+        }
+
+    }
+
+    private fun loadHardcodedSports() {
+        basketChip.chipIcon = getDrawable(R.drawable.expert_level_badge)
+        basketChip.visibility = Chip.VISIBLE
+        tennisChip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
+        tennisChip.visibility = Chip.VISIBLE
     }
 
     /* app menu */
