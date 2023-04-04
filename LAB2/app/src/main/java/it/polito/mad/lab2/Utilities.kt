@@ -23,7 +23,7 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 /** Returns display width and display height */
-internal fun AppCompatActivity.getDisplayMeasures(): Pair<Int,Int> {
+internal fun AppCompatActivity.getDisplayMeasures(): Pair<Int, Int> {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         val metrics: WindowMetrics = windowManager.currentWindowMetrics
         val displayHeight = metrics.bounds.height()
@@ -40,27 +40,29 @@ internal fun AppCompatActivity.getDisplayMeasures(): Pair<Int,Int> {
 
 /**
  * Change profile picture size:
- * - set the height to 1/3 of the view (*excluding* the menu) in portrait view
+ * - set the height to 1/3 of the view (*excluding* the menu) in portrait
+ *   view
  * - set the width to 1/3 of the view in landscape view
- * */
- internal fun AppCompatActivity.setProfilePictureSize(
-     menuHeight: Int, profilePictureContainer: ConstraintLayout,
-     backgroundProfilePicture: ImageView, profilePicture: ImageView) {
+ */
+internal fun AppCompatActivity.setProfilePictureSize(
+    menuHeight: Int, profilePictureContainer: ConstraintLayout,
+    backgroundProfilePicture: ImageView, profilePicture: ImageView
+) {
     // retrieve display sizes
     val (displayWidth, displayHeight) = this.getDisplayMeasures()
 
     // if orientation is vertical, set the picture box height to 1/3 of the display (excluding the menu)
     if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-        profilePictureContainer.layoutParams.height = (displayHeight-menuHeight)/3
+        profilePictureContainer.layoutParams.height = (displayHeight - menuHeight) / 3
     }
     // if orientation is horizontal, set the picture box width to 1/3 the display
     else if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        profilePictureContainer.layoutParams.width = displayWidth/3
+        profilePictureContainer.layoutParams.width = displayWidth / 3
     }
 
     // render new dimensions on the screen
     profilePictureContainer.requestLayout()
-    backgroundProfilePicture.requestLayout()
+    backgroundProfilePicture?.requestLayout()
     profilePicture.requestLayout()
 }
 
@@ -80,11 +82,16 @@ internal fun uriToBitmap(selectedFileUri: Uri, contentResolver: ContentResolver)
     return null
 }
 
-/** Rotate image if image captured from samsung devices
- * (Most phone cameras are landscape, meaning if you take the photo in portrait,
- * the resulting photos will be rotated 90 degrees)
- * */
-internal fun rotateBitmap(imageUri: Uri?, bitmap: Bitmap, contentResolver: ContentResolver): Bitmap? {
+/**
+ * Rotate image if image captured from samsung devices (Most phone cameras
+ * are landscape, meaning if you take the photo in portrait, the resulting
+ * photos will be rotated 90 degrees)
+ */
+internal fun rotateBitmap(
+    imageUri: Uri?,
+    bitmap: Bitmap,
+    contentResolver: ContentResolver
+): Bitmap? {
     val input = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
     val exif = ExifInterface(imageUri?.let { contentResolver.openInputStream(it) }!!)
     val orientation =
@@ -140,9 +147,9 @@ internal fun clearStorageFiles(directory: File, regexp: String) {
 /**
  * Stack Blur Algorithm by Mario Klingemann mario@quasimondo.com
  *
- * This is a compromise between Gaussian Blur and Box blur
- * It creates much better looking blurs than Box Blur, but is
- * 7x faster than my Gaussian Blur implementation.
+ * This is a compromise between Gaussian Blur and Box blur It creates much
+ * better looking blurs than Box Blur, but is 7x faster than my Gaussian
+ * Blur implementation.
  */
 internal fun fastblur(bitmapParam: Bitmap, scale: Float, radius: Int): Bitmap? {
     var sentBitmap = bitmapParam
@@ -358,7 +365,8 @@ internal fun fastblur(bitmapParam: Bitmap, scale: Float, radius: Int): Bitmap? {
     return bitmap
 }
 
-data class Sport(val selected :Boolean, val level :Int)
+data class Sport(val selected: Boolean, val level: Int)
+
 enum class Level {
     BEGINNER, INTERMEDIATE, EXPERT, PRO
 }

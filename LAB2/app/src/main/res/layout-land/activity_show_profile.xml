@@ -25,7 +25,8 @@
             android:contentDescription="@string/background_profile_picture"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/background_user_profile_picture"
-            tools:ignore="ImageContrastCheck" />
+            tools:ignore="ImageContrastCheck"
+            android:visibility="gone"/>
         <!-- profile picture -->
         <ImageView
             android:id="@+id/profile_picture"

@@ -347,6 +347,17 @@
                                 - levels
                  -->
 
+                <!-- Sports selection description -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8sp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:includeFontPadding="false"
+                    android:text="@string/sport_selection_description"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size" />
+
                 <com.google.android.material.chip.ChipGroup
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

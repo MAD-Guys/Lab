@@ -244,8 +244,8 @@ class EditProfileActivity : AppCompatActivity() {
         if(football8JSON != null) football8Resume = Sport(football8JSON.getBoolean("selected"), football8JSON.getInt("level"))
 
         val tennisJSON :JSONObject? = jsonObjectProfile?.optJSONObject("tennis")
-        val tennisResume :Sport? = null
-        if(tennisJSON != null) football5Resume = Sport(tennisJSON.getBoolean("selected"), tennisJSON.getInt("level"))
+        var tennisResume :Sport? = null
+        if(tennisJSON != null) tennisResume = Sport(tennisJSON.getBoolean("selected"), tennisJSON.getInt("level"))
 
         val volleyballJSON :JSONObject? = jsonObjectProfile?.optJSONObject("volleyball")
         var volleyballResume :Sport? = null
@@ -302,6 +302,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
             sportLevels[0].check( sportLevelChips[0][sportLevelTemp[0].ordinal].id )
             sportLevels[0].visibility = ChipGroup.VISIBLE
+            sportChips[0].isChecked = true
         }
         if(football11Resume != null && football11Resume.selected){
             sportSelectedTemp[1] = true
@@ -314,6 +315,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
             sportLevels[1].check( sportLevelChips[1][sportLevelTemp[1].ordinal].id )
             sportLevels[1].visibility = ChipGroup.VISIBLE
+            sportChips[1].isChecked = true
         }
         if(football5Resume != null && football5Resume.selected){
             sportSelectedTemp[2] = true
@@ -326,6 +328,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
             sportLevels[2].check( sportLevelChips[2][sportLevelTemp[2].ordinal].id )
             sportLevels[2].visibility = ChipGroup.VISIBLE
+            sportChips[2].isChecked = true
         }
         if(football8Resume != null && football8Resume.selected){
             sportSelectedTemp[3] = true
@@ -338,6 +341,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
             sportLevels[3].check( sportLevelChips[3][sportLevelTemp[3].ordinal].id )
             sportLevels[3].visibility = ChipGroup.VISIBLE
+            sportChips[3].isChecked = true
         }
         if(tennisResume != null && tennisResume.selected){
             sportSelectedTemp[4] = true
@@ -350,6 +354,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
             sportLevels[4].check( sportLevelChips[4][sportLevelTemp[4].ordinal].id )
             sportLevels[4].visibility = ChipGroup.VISIBLE
+            sportChips[4].isChecked = true
         }
         if(volleyballResume != null && volleyballResume.selected){
             sportSelectedTemp[5] = true
@@ -362,6 +367,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
             sportLevels[5].check( sportLevelChips[5][sportLevelTemp[5].ordinal].id )
             sportLevels[5].visibility = ChipGroup.VISIBLE
+            sportChips[5].isChecked = true
         }
         if(tableTennisResume != null && tableTennisResume.selected){
             sportSelectedTemp[6] = true
@@ -374,6 +380,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
             sportLevels[6].check( sportLevelChips[6][sportLevelTemp[6].ordinal].id )
             sportLevels[6].visibility = ChipGroup.VISIBLE
+            sportChips[6].isChecked = true
         }
         if(beachVolleyResume != null && beachVolleyResume.selected){
             sportSelectedTemp[7] = true
@@ -386,6 +393,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
             sportLevels[7].check( sportLevelChips[7][sportLevelTemp[7].ordinal].id )
             sportLevels[7].visibility = ChipGroup.VISIBLE
+            sportChips[7].isChecked = true
         }
         if(padelResume != null && padelResume.selected){
             sportSelectedTemp[8] = true
@@ -398,6 +406,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
             sportLevels[8].check( sportLevelChips[8][sportLevelTemp[8].ordinal].id )
             sportLevels[8].visibility = ChipGroup.VISIBLE
+            sportChips[8].isChecked = true
         }
         if(miniGolfResume != null && miniGolfResume.selected){
             sportSelectedTemp[9] = true
@@ -410,6 +419,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
             sportLevels[9].check( sportLevelChips[9][sportLevelTemp[9].ordinal].id )
             sportLevels[9].visibility = ChipGroup.VISIBLE
+            sportChips[9].isChecked = true
         }
 
     }

@@ -172,7 +172,7 @@ class ShowProfileActivity : AppCompatActivity() {
             Sport(football8JSON.getBoolean("selected"), football8JSON.getInt("level"))
         football8Chip.visibility = Chip.GONE
         if (football8Resume != null && football8Resume.selected) {
-            football11Chip.visibility = Chip.VISIBLE
+            football8Chip.visibility = Chip.VISIBLE
             when(football8Resume.level){
                 0 -> football8Chip.chipIcon.let { R.drawable.beginner_level_badge }
                 1 -> football8Chip.chipIcon.let { R.drawable.intermediate_level_badge }
@@ -183,7 +183,7 @@ class ShowProfileActivity : AppCompatActivity() {
 
         val tennisJSON: JSONObject? = jsonObjectProfile?.optJSONObject("tennis")
         var tennisResume: Sport? = null
-        if (tennisJSON != null) football5Resume =
+        if (tennisJSON != null) tennisResume =
             Sport(tennisJSON.getBoolean("selected"), tennisJSON.getInt("level"))
         tennisChip.visibility = Chip.GONE
         if (tennisResume != null && tennisResume.selected) {

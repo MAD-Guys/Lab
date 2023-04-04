@@ -75,6 +75,9 @@
     <string name="female_gender">Female</string>
     <string name="other_gender">Other</string>
 
+    <!-- sport selection description -->
+    <string name="sport_selection_description">Ciao come stai? Mi chiamo francesco</string>
+
     <!-- buttons -->
     <string name="confirm_button_description">Confirm button</string>
     <string name="back_button_description">Back button</string>
