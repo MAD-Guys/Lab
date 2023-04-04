@@ -23,9 +23,11 @@ import com.bumptech.glide.request.transition.Transition
 import org.json.JSONObject
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import es.dmoral.toasty.Toasty
 import java.io.File
 
 class EditProfileActivity : AppCompatActivity() {
+
     // user info fields' temporary state
     private var firstNameTemp: String? = null
     private var lastNameTemp: String? = null
@@ -154,6 +156,14 @@ class EditProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
+        // configure toasts appearance
+        Toasty.Config.getInstance()
+            .allowQueue(true) // optional (prevents several Toastys from queuing)
+            .setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 100) // optional (set toast gravity, offsets are optional)
+            .supportDarkTheme(true) // optional (whether to support dark theme or not)
+            .setRTL(true) // optional (icon is on the right)
+            .apply(); // required
+
         // initialize the EditText views
         firstName = findViewById(R.id.edit_first_name)
         lastName = findViewById(R.id.edit_last_name)
@@ -266,7 +276,6 @@ class EditProfileActivity : AppCompatActivity() {
         val miniGolfJSON :JSONObject? = jsonObjectProfile?.optJSONObject("miniGolf")
         var miniGolfResume :Sport? = null
         if(miniGolfJSON != null) miniGolfResume = Sport(miniGolfJSON.getBoolean("selected"), miniGolfJSON.getInt("level"))
-
 
         // set EditText views
         firstName.setText(firstNameResume)
@@ -534,6 +543,15 @@ class EditProfileActivity : AppCompatActivity() {
         clearStorageFiles(cacheDir, "temp_profile_picture[a-zA-Z0-9]*.jpeg")
     }
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            showToasty("success", this,"Information correctly saved!")
+        }
+
+        return super.onKeyDown(keyCode, event)
+    }
+
     private fun textListenerInit(fieldName: String): TextWatcher {
         // implement and return the TextWatcher interface
         return object : TextWatcher {
@@ -583,7 +601,9 @@ class EditProfileActivity : AppCompatActivity() {
         // detect when the user clicks on the "confirm" button
         R.id.confirm_button -> {
             // (the information will be persistently saved in the onPause method)
-            Toast.makeText(this, "Information correctly saved! \uD83D\uDE0B", Toast.LENGTH_SHORT).show()
+
+            // showing feedback information
+            showToasty("success", this, "Information correctly saved!")
 
             // terminate this activity (go back to the previous one according to the stack queue)
             this.finish()

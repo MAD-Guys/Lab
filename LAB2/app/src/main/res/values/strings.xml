@@ -55,7 +55,7 @@
     -->
 
     <!-- images -->
-    <string name="profile_picture_button_description">Chang profile picture</string>
+    <string name="profile_picture_button_description">Change profile picture</string>
 
     <!-- select picture menu selections -->
     <string name="camera">Use the camera to take a picture</string>
@@ -76,12 +76,10 @@
     <string name="other_gender">Other</string>
 
     <!-- sport selection description -->
-    <string name="sport_selection_description">Ciao come stai? Mi chiamo francesco</string>
+    <string name="sport_selection_description">Tap on the sport you want to select and specify its level! 🚀 \nTap again to unselect! ❌</string>
 
     <!-- buttons -->
     <string name="confirm_button_description">Confirm button</string>
     <string name="back_button_description">Back button</string>
-
-
 
 </resources>

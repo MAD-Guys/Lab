@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -14,6 +15,7 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.drawable.toDrawable
 import com.google.android.material.chip.Chip
+import es.dmoral.toasty.Toasty
 import org.json.JSONObject
 
 class ShowProfileActivity : AppCompatActivity() {
@@ -50,6 +52,13 @@ class ShowProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
 
+        // configure toasts appearance
+        Toasty.Config.getInstance()
+            .allowQueue(true) // optional (prevents several Toastys from queuing)
+            .supportDarkTheme(true) // optional (whether to support dark theme or not)
+            .setRTL(true) // optional (icon is on the right)
+            .apply(); // required
+
         // retrieve user info and picture views
         firstName = findViewById(R.id.first_name)
         lastName = findViewById(R.id.last_name)
@@ -78,13 +87,11 @@ class ShowProfileActivity : AppCompatActivity() {
         miniGolfChip = findViewById(R.id.miniGolfChip)
 
         addFriendButton.setOnClickListener {
-            val toast = Toast.makeText(this, "Add friend button clicked!!!", Toast.LENGTH_SHORT)
-            toast.show()
+            showToasty("info", this,"Add friend button clicked!!!")
         }
 
         messageButton.setOnClickListener {
-            val toast = Toast.makeText(this, "Message button clicked!!!", Toast.LENGTH_SHORT)
-            toast.show()
+            showToasty("info", this,"Message button clicked!!!")
         }
 
     }

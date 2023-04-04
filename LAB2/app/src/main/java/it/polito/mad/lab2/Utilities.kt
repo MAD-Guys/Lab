@@ -1,6 +1,7 @@
 package it.polito.mad.lab2
 
 import android.content.ContentResolver
+import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -15,12 +16,19 @@ import android.view.WindowMetrics
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import es.dmoral.toasty.Toasty
 import java.io.File
 import java.io.FileDescriptor
 import java.io.FileOutputStream
 import java.io.IOException
 import kotlin.math.abs
 import kotlin.math.roundToInt
+
+internal data class Sport(val selected: Boolean, val level: Int)
+
+internal enum class Level {
+    BEGINNER, INTERMEDIATE, EXPERT, PRO
+}
 
 /** Returns display width and display height */
 internal fun AppCompatActivity.getDisplayMeasures(): Pair<Int, Int> {
@@ -141,6 +149,17 @@ internal fun clearStorageFiles(directory: File, regexp: String) {
                 file.delete()
             }
         }
+    }
+}
+
+/* showing toasts according to the type */
+
+internal fun showToasty(type: String, context: Context, message: String) {
+    when (type) {
+        "success" -> Toasty.success(context, message, Toasty.LENGTH_LONG, true).show()
+        "error" -> Toasty.error(context, message, Toasty.LENGTH_SHORT, true).show()
+        "info" -> Toasty.info(context, message, Toasty.LENGTH_SHORT, true).show()
+        "warning" -> Toasty.warning(context, message, Toasty.LENGTH_SHORT, true).show()
     }
 }
 
@@ -363,10 +382,4 @@ internal fun fastblur(bitmapParam: Bitmap, scale: Float, radius: Int): Bitmap? {
     Log.e("pix", w.toString() + " " + h + " " + pix.size)
     bitmap.setPixels(pix, 0, w, 0, 0, w, h)
     return bitmap
-}
-
-data class Sport(val selected: Boolean, val level: Int)
-
-enum class Level {
-    BEGINNER, INTERMEDIATE, EXPERT, PRO
 }
