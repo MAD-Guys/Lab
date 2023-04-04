@@ -39,13 +39,13 @@ class EditProfileActivity : AppCompatActivity() {
 
     // Sports temporary state
     private var sportSelectedTemp: MutableList<Boolean> = mutableListOf(
-        false, false, false, false, false, false, false, false, false, false
-    ) // 10 values initially set to false
+        true, false, false, false, true, false, false, false, false, false
+    ) // 10 values initially set according to the values hard coded in ShowProfileActivity.kt
 
     private var sportLevelTemp: MutableList<Level> = mutableListOf(
-        Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER,
+        Level.EXPERT, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER,
         Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER
-    ) // 10 values initially set to BEGINNER
+    ) // 10 values initially set according to the values hard coded in ShowProfileActivity.kt
 
     // User info views
     private lateinit var firstName: EditText
