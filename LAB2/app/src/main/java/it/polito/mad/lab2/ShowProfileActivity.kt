@@ -129,10 +129,10 @@ class ShowProfileActivity : AppCompatActivity() {
         if (basketResume != null && basketResume.selected) {
             basketChip.visibility = Chip.VISIBLE
             when(basketResume.level){
-                0 -> basketChip.chipIcon.let { R.drawable.beginner_level_badge }
-                1 -> basketChip.chipIcon.let { R.drawable.intermediate_level_badge }
-                2 -> basketChip.chipIcon.let { R.drawable.expert_level_badge }
-                3 -> basketChip.chipIcon.let { R.drawable.pro_level_badge }
+                0 -> basketChip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
+                1 -> basketChip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
+                2 -> basketChip.chipIcon = getDrawable(R.drawable.expert_level_badge)
+                3 -> basketChip.chipIcon = getDrawable(R.drawable.pro_level_badge)
             }
         }
 
@@ -144,10 +144,10 @@ class ShowProfileActivity : AppCompatActivity() {
         if (football11Resume != null && football11Resume.selected) {
             football11Chip.visibility = Chip.VISIBLE
             when(football11Resume.level){
-                0 -> football11Chip.chipIcon.let { R.drawable.beginner_level_badge }
-                1 -> football11Chip.chipIcon.let { R.drawable.intermediate_level_badge }
-                2 -> football11Chip.chipIcon.let { R.drawable.expert_level_badge }
-                3 -> football11Chip.chipIcon.let { R.drawable.pro_level_badge }
+                0 -> football11Chip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
+                1 -> football11Chip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
+                2 -> football11Chip.chipIcon = getDrawable(R.drawable.expert_level_badge)
+                3 -> football11Chip.chipIcon = getDrawable(R.drawable.pro_level_badge)
             }
         }
 
@@ -159,10 +159,10 @@ class ShowProfileActivity : AppCompatActivity() {
         if (football5Resume != null && football5Resume.selected) {
             football5Chip.visibility = Chip.VISIBLE
             when(football5Resume.level){
-                0 -> football5Chip.chipIcon.let { R.drawable.beginner_level_badge }
-                1 -> football5Chip.chipIcon.let { R.drawable.intermediate_level_badge }
-                2 -> football5Chip.chipIcon.let { R.drawable.expert_level_badge }
-                3 -> football5Chip.chipIcon.let { R.drawable.pro_level_badge }
+                0 -> football5Chip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
+                1 -> football5Chip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
+                2 -> football5Chip.chipIcon = getDrawable(R.drawable.expert_level_badge)
+                3 -> football5Chip.chipIcon = getDrawable(R.drawable.pro_level_badge)
             }
         }
 
@@ -174,10 +174,10 @@ class ShowProfileActivity : AppCompatActivity() {
         if (football8Resume != null && football8Resume.selected) {
             football8Chip.visibility = Chip.VISIBLE
             when(football8Resume.level){
-                0 -> football8Chip.chipIcon.let { R.drawable.beginner_level_badge }
-                1 -> football8Chip.chipIcon.let { R.drawable.intermediate_level_badge }
-                2 -> football8Chip.chipIcon.let { R.drawable.expert_level_badge }
-                3 -> football8Chip.chipIcon.let { R.drawable.pro_level_badge }
+                0 -> football8Chip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
+                1 -> football8Chip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
+                2 -> football8Chip.chipIcon = getDrawable(R.drawable.expert_level_badge)
+                3 -> football8Chip.chipIcon = getDrawable(R.drawable.pro_level_badge)
             }
         }
 
@@ -189,10 +189,10 @@ class ShowProfileActivity : AppCompatActivity() {
         if (tennisResume != null && tennisResume.selected) {
             tennisChip.visibility = Chip.VISIBLE
             when(tennisResume.level){
-                0 -> tennisChip.chipIcon.let { R.drawable.beginner_level_badge }
-                1 -> tennisChip.chipIcon.let { R.drawable.intermediate_level_badge }
-                2 -> tennisChip.chipIcon.let { R.drawable.expert_level_badge }
-                3 -> tennisChip.chipIcon.let { R.drawable.pro_level_badge }
+                0 -> tennisChip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
+                1 -> tennisChip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
+                2 -> tennisChip.chipIcon = getDrawable(R.drawable.expert_level_badge)
+                3 -> tennisChip.chipIcon = getDrawable(R.drawable.pro_level_badge)
             }
         }
 
@@ -204,10 +204,10 @@ class ShowProfileActivity : AppCompatActivity() {
         if (volleyballResume != null && volleyballResume.selected) {
             volleyballChip.visibility = Chip.VISIBLE
             when(volleyballResume.level){
-                0 -> volleyballChip.chipIcon.let { R.drawable.beginner_level_badge }
-                1 -> volleyballChip.chipIcon.let { R.drawable.intermediate_level_badge }
-                2 -> volleyballChip.chipIcon.let { R.drawable.expert_level_badge }
-                3 -> volleyballChip.chipIcon.let { R.drawable.pro_level_badge }
+                0 -> volleyballChip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
+                1 -> volleyballChip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
+                2 -> volleyballChip.chipIcon = getDrawable(R.drawable.expert_level_badge)
+                3 -> volleyballChip.chipIcon = getDrawable(R.drawable.pro_level_badge)
             }
         }
 
@@ -219,10 +219,10 @@ class ShowProfileActivity : AppCompatActivity() {
         if (tableTennisResume != null && tableTennisResume.selected) {
             tableTennisChip.visibility = Chip.VISIBLE
             when(tableTennisResume.level){
-                0 -> tableTennisChip.chipIcon.let { R.drawable.beginner_level_badge }
-                1 -> tableTennisChip.chipIcon.let { R.drawable.intermediate_level_badge }
-                2 -> tableTennisChip.chipIcon.let { R.drawable.expert_level_badge }
-                3 -> tableTennisChip.chipIcon.let { R.drawable.pro_level_badge }
+                0 -> tableTennisChip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
+                1 -> tableTennisChip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
+                2 -> tableTennisChip.chipIcon = getDrawable(R.drawable.expert_level_badge)
+                3 -> tableTennisChip.chipIcon = getDrawable(R.drawable.pro_level_badge)
             }
         }
 
@@ -234,10 +234,10 @@ class ShowProfileActivity : AppCompatActivity() {
         if (beachVolleyResume != null && beachVolleyResume.selected) {
             beachVolleyChip.visibility = Chip.VISIBLE
             when(beachVolleyResume.level){
-                0 -> beachVolleyChip.chipIcon.let { R.drawable.beginner_level_badge }
-                1 -> beachVolleyChip.chipIcon.let { R.drawable.intermediate_level_badge }
-                2 -> beachVolleyChip.chipIcon.let { R.drawable.expert_level_badge }
-                3 -> beachVolleyChip.chipIcon.let { R.drawable.pro_level_badge }
+                0 -> beachVolleyChip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
+                1 -> beachVolleyChip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
+                2 -> beachVolleyChip.chipIcon = getDrawable(R.drawable.expert_level_badge)
+                3 -> beachVolleyChip.chipIcon = getDrawable(R.drawable.pro_level_badge)
             }
         }
 
@@ -249,10 +249,10 @@ class ShowProfileActivity : AppCompatActivity() {
         if (padelResume != null && padelResume.selected) {
             padelChip.visibility = Chip.VISIBLE
             when(padelResume.level){
-                0 -> padelChip.chipIcon.let { R.drawable.beginner_level_badge }
-                1 -> padelChip.chipIcon.let { R.drawable.intermediate_level_badge }
-                2 -> padelChip.chipIcon.let { R.drawable.expert_level_badge }
-                3 -> padelChip.chipIcon.let { R.drawable.pro_level_badge }
+                0 -> padelChip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
+                1 -> padelChip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
+                2 -> padelChip.chipIcon = getDrawable(R.drawable.expert_level_badge)
+                3 -> padelChip.chipIcon = getDrawable(R.drawable.pro_level_badge)
             }
         }
 
@@ -264,10 +264,10 @@ class ShowProfileActivity : AppCompatActivity() {
         if (miniGolfResume != null && miniGolfResume.selected) {
             miniGolfChip.visibility = Chip.VISIBLE
             when(miniGolfResume.level){
-                0 -> miniGolfChip.chipIcon.let { R.drawable.beginner_level_badge }
-                1 -> miniGolfChip.chipIcon.let { R.drawable.intermediate_level_badge }
-                2 -> miniGolfChip.chipIcon.let { R.drawable.expert_level_badge }
-                3 -> miniGolfChip.chipIcon.let { R.drawable.pro_level_badge }
+                0 -> miniGolfChip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
+                1 -> miniGolfChip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
+                2 -> miniGolfChip.chipIcon = getDrawable(R.drawable.expert_level_badge)
+                3 -> miniGolfChip.chipIcon = getDrawable(R.drawable.pro_level_badge)
             }
         }
 
