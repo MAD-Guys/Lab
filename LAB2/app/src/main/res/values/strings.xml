@@ -70,13 +70,12 @@
     <string name="location_header">Location</string>
 
     <!-- *default values* -->
-
     <string name="male_gender">Male</string>
     <string name="female_gender">Female</string>
     <string name="other_gender">Other</string>
 
     <!-- sport selection description -->
-    <string name="sport_selection_description">Tap on the sport you want to select and specify its level! 🚀</string>
+    <string name="sport_selection_description">Tap on the sport you want to select and specify your level! 🚀</string>
 
     <!-- buttons -->
     <string name="confirm_button_description">Confirm button</string>

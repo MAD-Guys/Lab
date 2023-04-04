@@ -10,7 +10,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="lighter_blue">#CFEAF1</color>
     <color name="light_grey">#606060</color>
-    <color name="background_orange">#FFFDE8</color>
+    <color name="background_orange">#FAF9F3</color>
     <color name="background_blue">#D5F4FA</color>
 
     <!-- Toasts -->
@@ -34,16 +34,27 @@
     <color name="pale_lighter_grey">#D2D2D2</color>
     <color name="pale_lighter_ametista">#E5DAD9</color>
 
-
     <!-- edit view -->
     <color name="edit_text_text_color">@color/light_grey</color>
     <color name="edit_text_text_color_hint">@color/pale_lighter_grey</color>
 
     <!-- -->
     <color name="profile_picture_background">@color/background_blue</color>
+    <color name="button_text_color">#000000</color>
 
     <!-- Chip colors -->
-    <color name="selected_chip_border_color">#B1B0AB</color>
-    <color name="selected_chip_color">#ECECE5</color>
+    <color name="unselected_chip_border_color">@color/light_grey</color>
+    <color name="unselected_chip_text_color">#303030</color>
+    <color name="unselected_chip_color">@color/background_orange</color>
+
+    <!-- app colors -->
+    <color name="primary_orange">#FAAC14</color>
+    <color name="secondary_blue">#67C0F3</color>
+
+    <!-- badge colors -->
+    <color name="pro_badge_grey">#424242</color>
+    <color name="expert_badge_blue">#003E76</color>
+    <color name="intermediate_badge_blue">#317AA4</color>
+    <color name="beginner_badge_blue">#67C0F3</color>
 
 </resources>

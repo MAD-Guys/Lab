@@ -26,7 +26,7 @@
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/background_user_profile_picture"
             tools:ignore="ImageContrastCheck"
-            android:visibility="gone"/>
+            android:visibility="visible"/>
         <!-- profile picture -->
         <ImageView
             android:id="@+id/profile_picture"
@@ -307,45 +307,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="visible">
-                    <!-- Basket -->
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/basketChip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/chip_height"
-                        android:fontFamily="@font/poppins_bold"
-                        android:layoutDirection="rtl"
-                        android:clickable="false"
-                        android:visibility="visible"
-                        app:chipIconSize="@dimen/chip_icon_size"
-                        android:textSize="@dimen/chip_text_size"
-                        app:textStartPadding="@dimen/chip_text_start_padding"
-                        app:textEndPadding="@dimen/chip_text_end_padding"
-                        android:layout_marginEnd="@dimen/chip_margin_end"
-                        android:text="@string/sport1"
-                        app:chipBackgroundColor="@color/selected_chip_color"
-                        app:chipIcon="@drawable/beginner_level_badge"
-                        app:chipStrokeColor="@color/selected_chip_border_color"
-                        app:chipStrokeWidth="0.8dp"/>
-                    <!-- 11-a-side-Football -->
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/soccer11Chip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/chip_height"
-                        android:fontFamily="@font/poppins_bold"
-                        android:layoutDirection="rtl"
-                        android:clickable="false"
-                        android:visibility="visible"
-                        app:chipIconSize="@dimen/chip_icon_size"
-                        android:textSize="@dimen/chip_text_size"
-                        app:textStartPadding="@dimen/chip_text_start_padding"
-                        app:textEndPadding="@dimen/chip_text_end_padding"
-                        android:layout_marginEnd="@dimen/chip_margin_end"
-                        android:text="@string/sport2"
-                        app:chipBackgroundColor="@color/selected_chip_color"
-                        app:chipIcon="@drawable/intermediate_level_badge"
-                        app:chipStrokeColor="@color/selected_chip_border_color"
-                        app:chipStrokeWidth="0.8dp"/>
-                    <!-- 5-a-side-Football -->
+                    <!-- 5-a-side-Soccer -->
                     <com.google.android.material.chip.Chip
                         android:id="@+id/soccer5Chip"
                         android:layout_width="wrap_content"
@@ -360,106 +322,11 @@
                         app:textEndPadding="@dimen/chip_text_end_padding"
                         android:layout_marginEnd="@dimen/chip_margin_end"
                         android:text="@string/sport3"
-                        app:chipBackgroundColor="@color/selected_chip_color"
+                        app:chipBackgroundColor="@color/background_orange"
                         app:chipIcon="@drawable/pro_level_badge"
-                        app:chipStrokeColor="@color/selected_chip_border_color"
-                        app:chipStrokeWidth="0.8dp"/>
-                    <!-- 8-a-side-Football -->
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/soccer8Chip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/chip_height"
-                        android:fontFamily="@font/poppins_bold"
-                        android:layoutDirection="rtl"
-                        android:clickable="false"
-                        android:visibility="visible"
-                        app:chipIconSize="@dimen/chip_icon_size"
-                        android:textSize="@dimen/chip_text_size"
-                        app:textStartPadding="@dimen/chip_text_start_padding"
-                        app:textEndPadding="@dimen/chip_text_end_padding"
-                        android:layout_marginEnd="@dimen/chip_margin_end"
-                        android:text="@string/sport4"
-                        app:chipBackgroundColor="@color/selected_chip_color"
-                        app:chipIcon="@drawable/intermediate_level_badge"
-                        app:chipStrokeColor="@color/selected_chip_border_color"
-                        app:chipStrokeWidth="0.8dp"/>
-                    <!-- Tennis -->
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/tennisChip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/chip_height"
-                        android:fontFamily="@font/poppins_bold"
-                        android:layoutDirection="rtl"
-                        android:clickable="false"
-                        android:visibility="visible"
-                        app:chipIconSize="@dimen/chip_icon_size"
-                        android:textSize="@dimen/chip_text_size"
-                        app:textStartPadding="@dimen/chip_text_start_padding"
-                        app:textEndPadding="@dimen/chip_text_end_padding"
-                        android:layout_marginEnd="@dimen/chip_margin_end"
-                        android:text="@string/sport5"
-                        app:chipBackgroundColor="@color/selected_chip_color"
-                        app:chipIcon="@drawable/expert_level_badge"
-                        app:chipStrokeColor="@color/selected_chip_border_color"
-                        app:chipStrokeWidth="0.8dp"/>
-                    <!-- Volleyball -->
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/volleyballChip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/chip_height"
-                        android:fontFamily="@font/poppins_bold"
-                        android:layoutDirection="rtl"
-                        android:clickable="false"
-                        android:visibility="visible"
-                        app:chipIconSize="@dimen/chip_icon_size"
-                        android:textSize="@dimen/chip_text_size"
-                        app:textStartPadding="@dimen/chip_text_start_padding"
-                        app:textEndPadding="@dimen/chip_text_end_padding"
-                        android:layout_marginEnd="@dimen/chip_margin_end"
-                        android:text="@string/sport6"
-                        app:chipBackgroundColor="@color/selected_chip_color"
-                        app:chipIcon="@drawable/intermediate_level_badge"
-                        app:chipStrokeColor="@color/selected_chip_border_color"
-                        app:chipStrokeWidth="0.8dp"/>
-                    <!-- Table Tennis -->
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/tableTennisChip"
-                        style="@style/Widget.MaterialComponents.Chip.Action"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/chip_height"
-                        android:fontFamily="@font/poppins_bold"
-                        android:layoutDirection="rtl"
-                        android:clickable="false"
-                        android:visibility="visible"
-                        app:chipIconSize="@dimen/chip_icon_size"
-                        android:textSize="@dimen/chip_text_size"
-                        app:textStartPadding="@dimen/chip_text_start_padding"
-                        app:textEndPadding="@dimen/chip_text_end_padding"
-                        android:layout_marginEnd="@dimen/chip_margin_end"
-                        android:text="@string/sport7"
-                        app:chipBackgroundColor="@color/selected_chip_color"
-                        app:chipIcon="@drawable/beginner_level_badge"
-                        app:chipStrokeColor="@color/selected_chip_border_color"
-                        app:chipStrokeWidth="0.8dp"/>
-                    <!-- Beach Volley -->
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/beachVolleyChip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/chip_height"
-                        android:fontFamily="@font/poppins_bold"
-                        android:layoutDirection="rtl"
-                        android:clickable="false"
-                        android:visibility="visible"
-                        app:chipIconSize="@dimen/chip_icon_size"
-                        android:textSize="@dimen/chip_text_size"
-                        app:textStartPadding="@dimen/chip_text_start_padding"
-                        app:textEndPadding="@dimen/chip_text_end_padding"
-                        android:layout_marginEnd="@dimen/chip_margin_end"
-                        android:text="@string/sport8"
-                        app:chipBackgroundColor="@color/selected_chip_color"
-                        app:chipIcon="@drawable/intermediate_level_badge"
-                        app:chipStrokeColor="@color/selected_chip_border_color"
-                        app:chipStrokeWidth="0.8dp"/>
+                        app:chipStrokeColor="@color/pro_badge_grey"
+                        app:chipStrokeWidth="1dp"
+                        android:textColor="@color/pro_badge_grey"/>
                     <!-- Padel -->
                     <com.google.android.material.chip.Chip
                         android:id="@+id/padelChip"
@@ -476,11 +343,12 @@
                         app:textEndPadding="@dimen/chip_text_end_padding"
                         android:layout_marginEnd="@dimen/chip_margin_end"
                         android:text="@string/sport9"
-                        app:chipBackgroundColor="@color/selected_chip_color"
+                        app:chipBackgroundColor="@color/background_orange"
                         app:chipIcon="@drawable/pro_level_badge"
                         tools:ignore="TextContrastCheck"
-                        app:chipStrokeColor="@color/selected_chip_border_color"
-                        app:chipStrokeWidth="0.8dp"/>
+                        app:chipStrokeColor="@color/pro_badge_grey"
+                        app:chipStrokeWidth="1dp"
+                        android:textColor="@color/pro_badge_grey"/>
                     <!-- Mini Golf -->
                     <com.google.android.material.chip.Chip
                         android:id="@+id/miniGolfChip"
@@ -497,10 +365,154 @@
                         app:textEndPadding="@dimen/chip_text_end_padding"
                         android:layout_marginEnd="@dimen/chip_margin_end"
                         android:text="@string/sport10"
-                        app:chipBackgroundColor="@color/selected_chip_color"
+                        app:chipBackgroundColor="@color/background_orange"
                         app:chipIcon="@drawable/expert_level_badge"
-                        app:chipStrokeColor="@color/selected_chip_border_color"
-                        app:chipStrokeWidth="0.8dp"/>
+                        app:chipStrokeColor="@color/expert_badge_blue"
+                        app:chipStrokeWidth="1dp"
+                        android:textColor="@color/expert_badge_blue"/>
+                    <!-- Tennis -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/tennisChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/chip_height"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
+                        android:text="@string/sport5"
+                        app:chipBackgroundColor="@color/background_orange"
+                        app:chipIcon="@drawable/expert_level_badge"
+                        app:chipStrokeColor="@color/expert_badge_blue"
+                        app:chipStrokeWidth="1dp"
+                        android:textColor="@color/expert_badge_blue"/>
+                    <!-- 11-a-side-Soccer -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/soccer11Chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/chip_height"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
+                        android:text="@string/sport2"
+                        app:chipBackgroundColor="@color/background_orange"
+                        app:chipIcon="@drawable/intermediate_level_badge"
+                        app:chipStrokeColor="@color/intermediate_badge_blue"
+                        app:chipStrokeWidth="1dp"
+                        android:textColor="@color/intermediate_badge_blue"/>
+                    <!-- 8-a-side-Soccer -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/soccer8Chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/chip_height"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
+                        android:text="@string/sport4"
+                        app:chipBackgroundColor="@color/background_orange"
+                        app:chipIcon="@drawable/intermediate_level_badge"
+                        app:chipStrokeColor="@color/intermediate_badge_blue"
+                        app:chipStrokeWidth="1dp"
+                        android:textColor="@color/intermediate_badge_blue"/>
+                    <!-- Volleyball -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/volleyballChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/chip_height"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
+                        android:text="@string/sport6"
+                        app:chipBackgroundColor="@color/background_orange"
+                        app:chipIcon="@drawable/intermediate_level_badge"
+                        app:chipStrokeColor="@color/intermediate_badge_blue"
+                        app:chipStrokeWidth="1dp"
+                        android:textColor="@color/intermediate_badge_blue"/>
+                    <!-- Beach Volley -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/beachVolleyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/chip_height"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
+                        android:text="@string/sport8"
+                        app:chipBackgroundColor="@color/background_orange"
+                        app:chipIcon="@drawable/intermediate_level_badge"
+                        app:chipStrokeColor="@color/intermediate_badge_blue"
+                        app:chipStrokeWidth="1dp"
+                        android:textColor="@color/intermediate_badge_blue"/>
+                    <!-- Table Tennis -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/tableTennisChip"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/chip_height"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
+                        android:text="@string/sport7"
+                        app:chipBackgroundColor="@color/background_orange"
+                        app:chipIcon="@drawable/beginner_level_badge"
+                        app:chipStrokeColor="@color/beginner_badge_blue"
+                        app:chipStrokeWidth="1dp"
+                        android:textColor="@color/beginner_badge_blue"/>
+
+
+                    <!-- Basket -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/basketChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52sp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layoutDirection="rtl"
+                        android:clickable="false"
+                        android:visibility="visible"
+                        app:chipIconSize="@dimen/chip_icon_size"
+                        android:textSize="@dimen/chip_text_size"
+                        app:textStartPadding="@dimen/chip_text_start_padding"
+                        app:textEndPadding="@dimen/chip_text_end_padding"
+                        android:layout_marginEnd="@dimen/chip_margin_end"
+                        android:text="@string/sport1"
+                        app:chipBackgroundColor="@color/background_orange"
+                        app:chipIcon="@drawable/beginner_level_badge"
+                        app:chipStrokeColor="@color/beginner_badge_blue"
+                        android:textColor="@color/beginner_badge_blue"
+                        app:chipStrokeWidth="1dp" />
 
                 </com.google.android.material.chip.ChipGroup>
 
