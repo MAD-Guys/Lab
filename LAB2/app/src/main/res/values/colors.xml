@@ -26,6 +26,8 @@
     <color name="pale_lighter_yellow">#EEECA7</color>
     <color name="pale_lighter_brown">#D2A7A7</color>
     <color name="pale_lighter_grey">#D2D2D2</color>
+    <color name="pale_lighter_ametista">#E5DAD9</color>
+
 
     <!-- edit view -->
     <color name="edit_text_text_color">@color/light_grey</color>
@@ -33,4 +35,9 @@
 
     <!-- -->
     <color name="profile_picture_background">@color/background_blue</color>
+
+    <!-- Chip colors -->
+    <color name="selected_chip_border_color">#B1B0AB</color>
+    <color name="selected_chip_color">#ECECE5</color>
+
 </resources>
