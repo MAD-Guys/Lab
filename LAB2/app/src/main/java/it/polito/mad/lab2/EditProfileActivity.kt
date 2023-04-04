@@ -43,7 +43,7 @@ class EditProfileActivity : AppCompatActivity() {
     ) // 10 values initially set according to the values hard coded in ShowProfileActivity.kt
 
     private var sportLevelTemp: MutableList<Level> = mutableListOf(
-        Level.EXPERT, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER,
+        Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER,
         Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER
     ) // 10 values initially set according to the values hard coded in ShowProfileActivity.kt
 
@@ -312,6 +312,9 @@ class EditProfileActivity : AppCompatActivity() {
         setEditSportsField(beachVolleyResume, 7);
         setEditSportsField(padelResume, 8);
         setEditSportsField(miniGolfResume, 9);
+
+        //set hard coded sports the first time the app is launched
+        setHardcodedSportFields()
 
     }
 
@@ -712,5 +715,22 @@ class EditProfileActivity : AppCompatActivity() {
         sportJson.put("selected", sport.selected)
         sportJson.put("level", sport.level)
         jsonObjectProfile.put(sportName, sportJson)
+    }
+
+    private fun setHardcodedSportFields(){
+        //basket expert
+        sportSelectedTemp[0] = true
+        sportLevelTemp[0]
+        sportLevels[0].check( Level.EXPERT.ordinal )
+        sportLevels[0].visibility = ChipGroup.VISIBLE
+        sportChips[0].isChecked = true
+
+        //tennis beginner
+        sportSelectedTemp[4] = true
+        sportLevelTemp[4]
+        sportLevels[4].check( Level.BEGINNER.ordinal )
+        sportLevels[4].visibility = ChipGroup.VISIBLE
+        sportChips[4].isChecked = true
+
     }
 }
