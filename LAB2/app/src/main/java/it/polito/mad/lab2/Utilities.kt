@@ -16,6 +16,7 @@ import android.view.WindowMetrics
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import es.dmoral.toasty.Toasty
 import java.io.File
 import java.io.FileDescriptor
@@ -70,7 +71,7 @@ internal fun AppCompatActivity.setProfilePictureSize(
 
     // render new dimensions on the screen
     profilePictureContainer.requestLayout()
-    backgroundProfilePicture?.requestLayout()
+    backgroundProfilePicture.requestLayout()
     profilePicture.requestLayout()
 }
 
@@ -152,14 +153,14 @@ internal fun clearStorageFiles(directory: File, regexp: String) {
     }
 }
 
-/* showing toasts according to the type */
+/* showing toast according to its type */
 
 internal fun showToasty(type: String, context: Context, message: String) {
     when (type) {
-        "success" -> Toasty.success(context, message, Toasty.LENGTH_LONG, true).show()
-        "error" -> Toasty.error(context, message, Toasty.LENGTH_SHORT, true).show()
-        "info" -> Toasty.info(context, message, Toasty.LENGTH_SHORT, true).show()
-        "warning" -> Toasty.warning(context, message, Toasty.LENGTH_SHORT, true).show()
+        "success" -> Toasty.custom(context, message, ContextCompat.getDrawable(context, R.drawable.baseline_check_24),  ContextCompat.getColor(context, R.color.toast_success), ContextCompat.getColor(context, R.color.white), Toasty.LENGTH_SHORT, true, true).show()
+        "error" -> Toasty.custom(context, message, ContextCompat.getDrawable(context, R.drawable.outline_close_24),  ContextCompat.getColor(context, R.color.toast_error), ContextCompat.getColor(context, R.color.white), Toasty.LENGTH_SHORT, true, true).show()
+        "info" -> Toasty.custom(context, message, ContextCompat.getDrawable(context, R.drawable.outline_info_24),  ContextCompat.getColor(context, R.color.toast_info), ContextCompat.getColor(context, R.color.white), Toasty.LENGTH_SHORT, true, true).show()
+        "warning" -> Toasty.custom(context, message, ContextCompat.getDrawable(context, R.drawable.baseline_warning_24),  ContextCompat.getColor(context, R.color.toast_warning), ContextCompat.getColor(context, R.color.white), Toasty.LENGTH_SHORT, true, true).show()
     }
 }
 

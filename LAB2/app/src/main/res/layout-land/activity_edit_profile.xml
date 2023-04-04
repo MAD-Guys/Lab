@@ -459,14 +459,14 @@
 
                     <!-- 11-a-side-Football -->
                     <LinearLayout
-                        android:id="@+id/football11Selector"
+                        android:id="@+id/soccer11Selector"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
                         <!-- 11-a-side-Football chip -->
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/football11Chip"
+                            android:id="@+id/soccer11Chip"
                             android:layout_width="wrap_content"
                             android:layout_height="@dimen/chip_height"
                             android:layout_marginEnd="@dimen/chip_margin_end"
@@ -484,7 +484,7 @@
 
                         <!-- 11-a-side-Football level selector -->
                         <com.google.android.material.chip.ChipGroup
-                            android:id="@+id/football11LevelSelector"
+                            android:id="@+id/soccer11LevelSelector"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:paddingBottom="16dp"
@@ -493,7 +493,7 @@
                             app:singleSelection="true">
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/football11Beginner"
+                                android:id="@+id/soccer11Beginner"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:checkable="true"
@@ -507,7 +507,7 @@
                                 app:textStartPadding="0dp" />
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/football11Intermediate"
+                                android:id="@+id/soccer11Intermediate"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:checkable="true"
@@ -521,7 +521,7 @@
                                 app:textStartPadding="0dp" />
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/football11Expert"
+                                android:id="@+id/soccer11Expert"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:checkable="true"
@@ -535,7 +535,7 @@
                                 app:textStartPadding="0dp" />
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/football11Pro"
+                                android:id="@+id/soccer11Pro"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:checkable="true"
@@ -553,14 +553,14 @@
 
                     <!-- 5-a-side-Football -->
                     <LinearLayout
-                        android:id="@+id/football5Selector"
+                        android:id="@+id/soccer5Selector"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
                         <!-- 5-a-side-Football chip -->
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/football5Chip"
+                            android:id="@+id/soccer5Chip"
                             android:layout_width="wrap_content"
                             android:layout_height="@dimen/chip_height"
                             android:layout_marginEnd="@dimen/chip_margin_end"
@@ -578,7 +578,7 @@
 
                         <!-- 5-a-side-Football level selector -->
                         <com.google.android.material.chip.ChipGroup
-                            android:id="@+id/football5LevelSelector"
+                            android:id="@+id/soccer5LevelSelector"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:paddingBottom="16dp"
@@ -587,7 +587,7 @@
                             app:singleSelection="true">
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/football5Beginner"
+                                android:id="@+id/soccer5Beginner"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:checkable="true"
@@ -601,7 +601,7 @@
                                 app:textStartPadding="0dp" />
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/football5Intermediate"
+                                android:id="@+id/soccer5Intermediate"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:checkable="true"
@@ -615,7 +615,7 @@
                                 app:textStartPadding="0dp" />
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/football5Expert"
+                                android:id="@+id/soccer5Expert"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:checkable="true"
@@ -629,7 +629,7 @@
                                 app:textStartPadding="0dp" />
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/football5Pro"
+                                android:id="@+id/soccer5Pro"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:checkable="true"
@@ -647,14 +647,14 @@
 
                     <!-- 8-a-side-Football -->
                     <LinearLayout
-                        android:id="@+id/football8Selector"
+                        android:id="@+id/soccer8Selector"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
                         <!-- 8-a-side-Football chip -->
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/football8Chip"
+                            android:id="@+id/soccer8Chip"
                             android:layout_width="wrap_content"
                             android:layout_height="@dimen/chip_height"
                             android:layout_marginEnd="@dimen/chip_margin_end"
@@ -672,7 +672,7 @@
 
                         <!-- 8-a-side-Football level selector -->
                         <com.google.android.material.chip.ChipGroup
-                            android:id="@+id/football8LevelSelector"
+                            android:id="@+id/soccer8LevelSelector"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:paddingBottom="16dp"
@@ -681,7 +681,7 @@
                             app:singleSelection="true">
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/football8Beginner"
+                                android:id="@+id/soccer8Beginner"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:checkable="true"
@@ -695,7 +695,7 @@
                                 app:textStartPadding="0dp" />
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/football8Intermediate"
+                                android:id="@+id/soccer8Intermediate"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:checkable="true"
@@ -709,7 +709,7 @@
                                 app:textStartPadding="0dp" />
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/football8Expert"
+                                android:id="@+id/soccer8Expert"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:checkable="true"
@@ -723,7 +723,7 @@
                                 app:textStartPadding="0dp" />
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/football8Pro"
+                                android:id="@+id/soccer8Pro"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:checkable="true"

@@ -1,7 +1,7 @@
 package it.polito.mad.lab2
 
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
@@ -11,14 +11,13 @@ import android.view.MenuItem
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.graphics.drawable.toDrawable
 import com.google.android.material.chip.Chip
 import es.dmoral.toasty.Toasty
 import org.json.JSONObject
 
 class ShowProfileActivity : AppCompatActivity() {
+
     // User info views
     private lateinit var firstName: TextView
     private lateinit var lastName: TextView
@@ -38,9 +37,9 @@ class ShowProfileActivity : AppCompatActivity() {
 
     // Sport views
     private lateinit var basketChip: Chip
-    private lateinit var football11Chip: Chip
-    private lateinit var football5Chip: Chip
-    private lateinit var football8Chip: Chip
+    private lateinit var soccer11Chip: Chip
+    private lateinit var soccer5Chip: Chip
+    private lateinit var soccer8Chip: Chip
     private lateinit var tennisChip: Chip
     private lateinit var volleyballChip: Chip
     private lateinit var tableTennisChip: Chip
@@ -55,9 +54,10 @@ class ShowProfileActivity : AppCompatActivity() {
         // configure toasts appearance
         Toasty.Config.getInstance()
             .allowQueue(true) // optional (prevents several Toastys from queuing)
+            .setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 100) // optional (set toast gravity, offsets are optional)
             .supportDarkTheme(true) // optional (whether to support dark theme or not)
             .setRTL(true) // optional (icon is on the right)
-            .apply(); // required
+            .apply() // required
 
         // retrieve user info and picture views
         firstName = findViewById(R.id.first_name)
@@ -76,9 +76,9 @@ class ShowProfileActivity : AppCompatActivity() {
 
         // retrieve sport chips
         basketChip = findViewById(R.id.basketChip)
-        football11Chip = findViewById(R.id.football11Chip)
-        football5Chip = findViewById(R.id.football5Chip)
-        football8Chip = findViewById(R.id.football8Chip)
+        soccer11Chip = findViewById(R.id.soccer11Chip)
+        soccer5Chip = findViewById(R.id.soccer5Chip)
+        soccer8Chip = findViewById(R.id.soccer8Chip)
         tennisChip = findViewById(R.id.tennisChip)
         volleyballChip = findViewById(R.id.volleyballChip)
         tableTennisChip = findViewById(R.id.tableTennisChip)
@@ -96,6 +96,7 @@ class ShowProfileActivity : AppCompatActivity() {
 
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onResume() {
         super.onResume()
 
@@ -127,7 +128,7 @@ class ShowProfileActivity : AppCompatActivity() {
         profilePictureBitmap?.let { profilePicture.setImageBitmap(it) }
         backgroundProfilePictureBitmap?.let { backgroundProfilePicture.setImageBitmap(it) }
 
-        // retrieve sports
+        // retrieve sports from storage
         val basketJSON: JSONObject? = jsonObjectProfile?.optJSONObject("basket")
         var basketResume: Sport? = null
         if (basketJSON != null) basketResume =
@@ -143,48 +144,48 @@ class ShowProfileActivity : AppCompatActivity() {
             }
         }
 
-        val football11JSON: JSONObject? = jsonObjectProfile?.optJSONObject("football11")
-        var football11Resume: Sport? = null
-        if (football11JSON != null) football11Resume =
-            Sport(football11JSON.getBoolean("selected"), football11JSON.getInt("level"))
-        football11Chip.visibility = Chip.GONE
-        if (football11Resume != null && football11Resume.selected) {
-            football11Chip.visibility = Chip.VISIBLE
-            when(football11Resume.level){
-                0 -> football11Chip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
-                1 -> football11Chip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
-                2 -> football11Chip.chipIcon = getDrawable(R.drawable.expert_level_badge)
-                3 -> football11Chip.chipIcon = getDrawable(R.drawable.pro_level_badge)
+        val soccer11JSON: JSONObject? = jsonObjectProfile?.optJSONObject("soccer11")
+        var soccer11Resume: Sport? = null
+        if (soccer11JSON != null) soccer11Resume =
+            Sport(soccer11JSON.getBoolean("selected"), soccer11JSON.getInt("level"))
+        soccer11Chip.visibility = Chip.GONE
+        if (soccer11Resume != null && soccer11Resume.selected) {
+            soccer11Chip.visibility = Chip.VISIBLE
+            when(soccer11Resume.level){
+                0 -> soccer11Chip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
+                1 -> soccer11Chip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
+                2 -> soccer11Chip.chipIcon = getDrawable(R.drawable.expert_level_badge)
+                3 -> soccer11Chip.chipIcon = getDrawable(R.drawable.pro_level_badge)
             }
         }
 
-        val football5JSON: JSONObject? = jsonObjectProfile?.optJSONObject("football5")
-        var football5Resume: Sport? = null
-        if (football5JSON != null) football5Resume =
-            Sport(football5JSON.getBoolean("selected"), football5JSON.getInt("level"))
-        football5Chip.visibility = Chip.GONE
-        if (football5Resume != null && football5Resume.selected) {
-            football5Chip.visibility = Chip.VISIBLE
-            when(football5Resume.level){
-                0 -> football5Chip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
-                1 -> football5Chip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
-                2 -> football5Chip.chipIcon = getDrawable(R.drawable.expert_level_badge)
-                3 -> football5Chip.chipIcon = getDrawable(R.drawable.pro_level_badge)
+        val soccer5JSON: JSONObject? = jsonObjectProfile?.optJSONObject("soccer5")
+        var soccer5Resume: Sport? = null
+        if (soccer5JSON != null) soccer5Resume =
+            Sport(soccer5JSON.getBoolean("selected"), soccer5JSON.getInt("level"))
+        soccer5Chip.visibility = Chip.GONE
+        if (soccer5Resume != null && soccer5Resume.selected) {
+            soccer5Chip.visibility = Chip.VISIBLE
+            when(soccer5Resume.level){
+                0 -> soccer5Chip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
+                1 -> soccer5Chip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
+                2 -> soccer5Chip.chipIcon = getDrawable(R.drawable.expert_level_badge)
+                3 -> soccer5Chip.chipIcon = getDrawable(R.drawable.pro_level_badge)
             }
         }
 
-        val football8JSON: JSONObject? = jsonObjectProfile?.optJSONObject("football8")
-        var football8Resume: Sport? = null
-        if (football8JSON != null) football8Resume =
-            Sport(football8JSON.getBoolean("selected"), football8JSON.getInt("level"))
-        football8Chip.visibility = Chip.GONE
-        if (football8Resume != null && football8Resume.selected) {
-            football8Chip.visibility = Chip.VISIBLE
-            when(football8Resume.level){
-                0 -> football8Chip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
-                1 -> football8Chip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
-                2 -> football8Chip.chipIcon = getDrawable(R.drawable.expert_level_badge)
-                3 -> football8Chip.chipIcon = getDrawable(R.drawable.pro_level_badge)
+        val soccer8JSON: JSONObject? = jsonObjectProfile?.optJSONObject("soccer8")
+        var soccer8Resume: Sport? = null
+        if (soccer8JSON != null) soccer8Resume =
+            Sport(soccer8JSON.getBoolean("selected"), soccer8JSON.getInt("level"))
+        soccer8Chip.visibility = Chip.GONE
+        if (soccer8Resume != null && soccer8Resume.selected) {
+            soccer8Chip.visibility = Chip.VISIBLE
+            when(soccer8Resume.level){
+                0 -> soccer8Chip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
+                1 -> soccer8Chip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
+                2 -> soccer8Chip.chipIcon = getDrawable(R.drawable.expert_level_badge)
+                3 -> soccer8Chip.chipIcon = getDrawable(R.drawable.pro_level_badge)
             }
         }
 
@@ -277,7 +278,6 @@ class ShowProfileActivity : AppCompatActivity() {
                 3 -> miniGolfChip.chipIcon = getDrawable(R.drawable.pro_level_badge)
             }
         }
-
 
     }
 

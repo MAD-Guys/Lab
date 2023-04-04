@@ -307,7 +307,7 @@
                         app:chipStrokeWidth="0.8dp"/>
                     <!-- 11-a-side-Football -->
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/football11Chip"
+                        android:id="@+id/soccer11Chip"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/chip_height"
                         android:fontFamily="@font/poppins_bold"
@@ -326,7 +326,7 @@
                         app:chipStrokeWidth="0.8dp"/>
                     <!-- 5-a-side-Football -->
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/football5Chip"
+                        android:id="@+id/soccer5Chip"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/chip_height"
                         android:fontFamily="@font/poppins_bold"
@@ -345,7 +345,7 @@
                         app:chipStrokeWidth="0.8dp"/>
                     <!-- 8-a-side-Football -->
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/football8Chip"
+                        android:id="@+id/soccer8Chip"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/chip_height"
                         android:fontFamily="@font/poppins_bold"

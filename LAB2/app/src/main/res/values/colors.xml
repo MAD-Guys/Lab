@@ -13,6 +13,12 @@
     <color name="background_orange">#FFFDE8</color>
     <color name="background_blue">#D5F4FA</color>
 
+    <!-- Toasts -->
+    <color name="toast_success">#8BC34A</color>
+    <color name="toast_error">#EA473B</color>
+    <color name="toast_info">#5FC1F9</color>
+    <color name="toast_warning">#FFBF00</color>
+
     <!-- Sports -->
     <color name="pale_orange">#FFCA7A</color>
     <color name="pale_green">#BDEA9A</color>

@@ -36,15 +36,16 @@ class EditProfileActivity : AppCompatActivity() {
     private var radioGenderCheckedTemp = R.id.radio_male
     private var locationTemp: String? = null
     private var bioTemp: String? = null
+
     // Sports temporary state
     private var sportSelectedTemp: MutableList<Boolean> = mutableListOf(
         false, false, false, false, false, false, false, false, false, false
     ) // 10 values initially set to false
+
     private var sportLevelTemp: MutableList<Level> = mutableListOf(
         Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER,
         Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER, Level.BEGINNER
     ) // 10 values initially set to BEGINNER
-
 
     // User info views
     private lateinit var firstName: EditText
@@ -162,7 +163,7 @@ class EditProfileActivity : AppCompatActivity() {
             .setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 100) // optional (set toast gravity, offsets are optional)
             .supportDarkTheme(true) // optional (whether to support dark theme or not)
             .setRTL(true) // optional (icon is on the right)
-            .apply(); // required
+            .apply() // required
 
         // initialize the EditText views
         firstName = findViewById(R.id.edit_first_name)
@@ -236,22 +237,22 @@ class EditProfileActivity : AppCompatActivity() {
         val backgroundProfilePictureResume =
             getPictureFromInternalStorage(filesDir, "backgroundProfilePicture.jpeg")
 
-        // retrieve sports
+        // retrieve sports from storage
         val basketJSON :JSONObject? = jsonObjectProfile?.optJSONObject("basket")
         var basketResume :Sport? = null
         if(basketJSON != null) basketResume = Sport(basketJSON.getBoolean("selected"), basketJSON.getInt("level"))
 
-        val football11JSON :JSONObject? = jsonObjectProfile?.optJSONObject("football11")
-        var football11Resume :Sport? = null
-        if(football11JSON != null) football11Resume = Sport(football11JSON.getBoolean("selected"), football11JSON.getInt("level"))
+        val soccer11JSON :JSONObject? = jsonObjectProfile?.optJSONObject("soccer11")
+        var soccer11Resume :Sport? = null
+        if(soccer11JSON != null) soccer11Resume = Sport(soccer11JSON.getBoolean("selected"), soccer11JSON.getInt("level"))
 
-        val football5JSON :JSONObject? = jsonObjectProfile?.optJSONObject("football5")
-        var football5Resume :Sport? = null
-        if(football5JSON != null) football5Resume = Sport(football5JSON.getBoolean("selected"), football5JSON.getInt("level"))
+        val soccer5JSON :JSONObject? = jsonObjectProfile?.optJSONObject("soccer5")
+        var soccer5Resume :Sport? = null
+        if(soccer5JSON != null) soccer5Resume = Sport(soccer5JSON.getBoolean("selected"), soccer5JSON.getInt("level"))
 
-        val football8JSON :JSONObject? = jsonObjectProfile?.optJSONObject("football8")
-        var football8Resume :Sport? = null
-        if(football8JSON != null) football8Resume = Sport(football8JSON.getBoolean("selected"), football8JSON.getInt("level"))
+        val soccer8JSON :JSONObject? = jsonObjectProfile?.optJSONObject("soccer8")
+        var soccer8Resume :Sport? = null
+        if(soccer8JSON != null) soccer8Resume = Sport(soccer8JSON.getBoolean("selected"), soccer8JSON.getInt("level"))
 
         val tennisJSON :JSONObject? = jsonObjectProfile?.optJSONObject("tennis")
         var tennisResume :Sport? = null
@@ -313,9 +314,10 @@ class EditProfileActivity : AppCompatActivity() {
             sportLevels[0].visibility = ChipGroup.VISIBLE
             sportChips[0].isChecked = true
         }
-        if(football11Resume != null && football11Resume.selected){
+
+        if(soccer11Resume != null && soccer11Resume.selected){
             sportSelectedTemp[1] = true
-            sportLevelTemp[1] = when(football11Resume.level){
+            sportLevelTemp[1] = when(soccer11Resume.level){
                 0 -> Level.BEGINNER
                 1 -> Level.INTERMEDIATE
                 2 -> Level.EXPERT
@@ -326,9 +328,10 @@ class EditProfileActivity : AppCompatActivity() {
             sportLevels[1].visibility = ChipGroup.VISIBLE
             sportChips[1].isChecked = true
         }
-        if(football5Resume != null && football5Resume.selected){
+
+        if(soccer5Resume != null && soccer5Resume.selected){
             sportSelectedTemp[2] = true
-            sportLevelTemp[2] = when(football5Resume.level){
+            sportLevelTemp[2] = when(soccer5Resume.level){
                 0 -> Level.BEGINNER
                 1 -> Level.INTERMEDIATE
                 2 -> Level.EXPERT
@@ -339,9 +342,10 @@ class EditProfileActivity : AppCompatActivity() {
             sportLevels[2].visibility = ChipGroup.VISIBLE
             sportChips[2].isChecked = true
         }
-        if(football8Resume != null && football8Resume.selected){
+
+        if(soccer8Resume != null && soccer8Resume.selected){
             sportSelectedTemp[3] = true
-            sportLevelTemp[3] = when(football8Resume.level){
+            sportLevelTemp[3] = when(soccer8Resume.level){
                 0 -> Level.BEGINNER
                 1 -> Level.INTERMEDIATE
                 2 -> Level.EXPERT
@@ -352,6 +356,7 @@ class EditProfileActivity : AppCompatActivity() {
             sportLevels[3].visibility = ChipGroup.VISIBLE
             sportChips[3].isChecked = true
         }
+
         if(tennisResume != null && tennisResume.selected){
             sportSelectedTemp[4] = true
             sportLevelTemp[4] = when(tennisResume.level){
@@ -365,6 +370,7 @@ class EditProfileActivity : AppCompatActivity() {
             sportLevels[4].visibility = ChipGroup.VISIBLE
             sportChips[4].isChecked = true
         }
+
         if(volleyballResume != null && volleyballResume.selected){
             sportSelectedTemp[5] = true
             sportLevelTemp[5] = when(volleyballResume.level){
@@ -378,6 +384,7 @@ class EditProfileActivity : AppCompatActivity() {
             sportLevels[5].visibility = ChipGroup.VISIBLE
             sportChips[5].isChecked = true
         }
+
         if(tableTennisResume != null && tableTennisResume.selected){
             sportSelectedTemp[6] = true
             sportLevelTemp[6] = when(tableTennisResume.level){
@@ -391,6 +398,7 @@ class EditProfileActivity : AppCompatActivity() {
             sportLevels[6].visibility = ChipGroup.VISIBLE
             sportChips[6].isChecked = true
         }
+
         if(beachVolleyResume != null && beachVolleyResume.selected){
             sportSelectedTemp[7] = true
             sportLevelTemp[7] = when(beachVolleyResume.level){
@@ -404,6 +412,7 @@ class EditProfileActivity : AppCompatActivity() {
             sportLevels[7].visibility = ChipGroup.VISIBLE
             sportChips[7].isChecked = true
         }
+
         if(padelResume != null && padelResume.selected){
             sportSelectedTemp[8] = true
             sportLevelTemp[8] = when(padelResume.level){
@@ -417,6 +426,7 @@ class EditProfileActivity : AppCompatActivity() {
             sportLevels[8].visibility = ChipGroup.VISIBLE
             sportChips[8].isChecked = true
         }
+
         if(miniGolfResume != null && miniGolfResume.selected){
             sportSelectedTemp[9] = true
             sportLevelTemp[9] = when(miniGolfResume.level){
@@ -474,23 +484,23 @@ class EditProfileActivity : AppCompatActivity() {
         basketJson.put("level", basket.level)
         jsonObjectProfile.put("basket", basketJson)
 
-        val football11 = Sport(sportSelectedTemp[1], sportLevelTemp[1].ordinal)
-        val football11Json = JSONObject()
-        football11Json.put("selected", football11.selected)
-        football11Json.put("level", football11.level)
-        jsonObjectProfile.put("football11", football11Json)
+        val soccer11 = Sport(sportSelectedTemp[1], sportLevelTemp[1].ordinal)
+        val soccer11Json = JSONObject()
+        soccer11Json.put("selected", soccer11.selected)
+        soccer11Json.put("level", soccer11.level)
+        jsonObjectProfile.put("soccer11", soccer11Json)
 
-        val football5 = Sport(sportSelectedTemp[2], sportLevelTemp[2].ordinal)
-        val football5Json = JSONObject()
-        football5Json.put("selected", football5.selected)
-        football5Json.put("level", football5.level)
-        jsonObjectProfile.put("football5", football5Json)
+        val soccer5 = Sport(sportSelectedTemp[2], sportLevelTemp[2].ordinal)
+        val soccer5Json = JSONObject()
+        soccer5Json.put("selected", soccer5.selected)
+        soccer5Json.put("level", soccer5.level)
+        jsonObjectProfile.put("soccer5", soccer5Json)
 
-        val football8 = Sport(sportSelectedTemp[3], sportLevelTemp[3].ordinal)
-        val football8Json = JSONObject()
-        football8Json.put("selected", football8.selected)
-        football8Json.put("level", football8.level)
-        jsonObjectProfile.put("football8", football8Json)
+        val soccer8 = Sport(sportSelectedTemp[3], sportLevelTemp[3].ordinal)
+        val soccer8Json = JSONObject()
+        soccer8Json.put("selected", soccer8.selected)
+        soccer8Json.put("level", soccer8.level)
+        jsonObjectProfile.put("soccer8", soccer8Json)
 
         val tennis = Sport(sportSelectedTemp[4], sportLevelTemp[4].ordinal)
         val tennisJson = JSONObject()
@@ -717,9 +727,9 @@ class EditProfileActivity : AppCompatActivity() {
 
         // SportChips
         val basket :Chip = findViewById(R.id.basketChip)
-        val football11 :Chip = findViewById(R.id.football11Chip)
-        val football5 :Chip = findViewById(R.id.football5Chip)
-        val football8 :Chip = findViewById(R.id.football8Chip)
+        val soccer11 :Chip = findViewById(R.id.soccer11Chip)
+        val soccer5 :Chip = findViewById(R.id.soccer5Chip)
+        val soccer8 :Chip = findViewById(R.id.soccer8Chip)
         val tennis :Chip = findViewById(R.id.tennisChip)
         val volleyball :Chip = findViewById(R.id.volleyballChip)
         val tableTennis :Chip = findViewById(R.id.tableTennisChip)
@@ -729,9 +739,9 @@ class EditProfileActivity : AppCompatActivity() {
 
         // SportLevels
         val basketLevel :ChipGroup = findViewById(R.id.basketLevelSelector)
-        val football11Level :ChipGroup = findViewById(R.id.football11LevelSelector)
-        val football5Level :ChipGroup = findViewById(R.id.football5LevelSelector)
-        val football8Level :ChipGroup = findViewById(R.id.football8LevelSelector)
+        val soccer11Level :ChipGroup = findViewById(R.id.soccer11LevelSelector)
+        val soccer5Level :ChipGroup = findViewById(R.id.soccer5LevelSelector)
+        val soccer8Level :ChipGroup = findViewById(R.id.soccer8LevelSelector)
         val tennisLevel :ChipGroup = findViewById(R.id.tennisLevelSelector)
         val volleyballLevel :ChipGroup = findViewById(R.id.volleyballLevelSelector)
         val tableTennisLevel :ChipGroup = findViewById(R.id.tableTennisLevelSelector)
@@ -745,14 +755,14 @@ class EditProfileActivity : AppCompatActivity() {
         sportChips.add(0, basket)
         sportLevels.add(0, basketLevel)
 
-        sportChips.add(1, football11)
-        sportLevels.add(1, football11Level)
+        sportChips.add(1, soccer11)
+        sportLevels.add(1, soccer11Level)
 
-        sportChips.add(2, football5)
-        sportLevels.add(2, football5Level)
+        sportChips.add(2, soccer5)
+        sportLevels.add(2, soccer5Level)
 
-        sportChips.add(3, football8)
-        sportLevels.add(3, football8Level)
+        sportChips.add(3, soccer8)
+        sportLevels.add(3, soccer8Level)
 
         sportChips.add(4, tennis)
         sportLevels.add(4, tennisLevel)
@@ -780,22 +790,22 @@ class EditProfileActivity : AppCompatActivity() {
         sportLevelChips[0].add(3, findViewById(R.id.basketPro))
 
         sportLevelChips.add(1, mutableListOf())
-        sportLevelChips[1].add(0, findViewById(R.id.football11Beginner))
-        sportLevelChips[1].add(1, findViewById(R.id.football11Intermediate))
-        sportLevelChips[1].add(2, findViewById(R.id.football11Expert))
-        sportLevelChips[1].add(3, findViewById(R.id.football11Pro))
+        sportLevelChips[1].add(0, findViewById(R.id.soccer11Beginner))
+        sportLevelChips[1].add(1, findViewById(R.id.soccer11Intermediate))
+        sportLevelChips[1].add(2, findViewById(R.id.soccer11Expert))
+        sportLevelChips[1].add(3, findViewById(R.id.soccer11Pro))
 
         sportLevelChips.add(2, mutableListOf())
-        sportLevelChips[2].add(0, findViewById(R.id.football5Beginner))
-        sportLevelChips[2].add(1, findViewById(R.id.football5Intermediate))
-        sportLevelChips[2].add(2, findViewById(R.id.football5Expert))
-        sportLevelChips[2].add(3, findViewById(R.id.football5Pro))
+        sportLevelChips[2].add(0, findViewById(R.id.soccer5Beginner))
+        sportLevelChips[2].add(1, findViewById(R.id.soccer5Intermediate))
+        sportLevelChips[2].add(2, findViewById(R.id.soccer5Expert))
+        sportLevelChips[2].add(3, findViewById(R.id.soccer5Pro))
 
         sportLevelChips.add(3, mutableListOf())
-        sportLevelChips[3].add(0, findViewById(R.id.football8Beginner))
-        sportLevelChips[3].add(1, findViewById(R.id.football8Intermediate))
-        sportLevelChips[3].add(2, findViewById(R.id.football8Expert))
-        sportLevelChips[3].add(3, findViewById(R.id.football8Pro))
+        sportLevelChips[3].add(0, findViewById(R.id.soccer8Beginner))
+        sportLevelChips[3].add(1, findViewById(R.id.soccer8Intermediate))
+        sportLevelChips[3].add(2, findViewById(R.id.soccer8Expert))
+        sportLevelChips[3].add(3, findViewById(R.id.soccer8Pro))
 
         sportLevelChips.add(4, mutableListOf())
         sportLevelChips[4].add(0, findViewById(R.id.tennisBeginner))
