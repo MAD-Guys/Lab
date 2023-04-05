@@ -164,9 +164,9 @@ class EditProfileActivity : AppCompatActivity() {
         // initialize options to crop the profile picture
         cropImageOptions = CropImageOptions(
             guidelines = CropImageView.Guidelines.ON,
-            aspectRatioX = 1,
-            aspectRatioY = 1,
             outputCompressQuality = 100,
+            allowFlipping = false,
+            allowRotation = false,
             outputCompressFormat = Bitmap.CompressFormat.JPEG
         )
 
