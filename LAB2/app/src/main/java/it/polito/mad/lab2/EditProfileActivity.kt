@@ -164,10 +164,14 @@ class EditProfileActivity : AppCompatActivity() {
         // initialize options to crop the profile picture
         cropImageOptions = CropImageOptions(
             guidelines = CropImageView.Guidelines.ON,
+            outputCompressFormat = Bitmap.CompressFormat.JPEG,
             outputCompressQuality = 100,
+            autoZoomEnabled = true,
             allowFlipping = false,
             allowRotation = false,
-            outputCompressFormat = Bitmap.CompressFormat.JPEG
+            fixAspectRatio = true,
+            aspectRatioX = 1,
+            aspectRatioY = 1
         )
 
         // initialize sports and levels
