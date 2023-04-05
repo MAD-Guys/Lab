@@ -430,7 +430,8 @@ class EditProfileActivity : AppCompatActivity() {
         super.onDestroy()
 
         // the clearStorageFile function is called here because
-        // the onPause function is called before the picture is cropped
+        // the cache must be cleared before the EditProfileActivity ends but
+        // cannot be cleared before the picture is cropped
 
         // delete the temporary profile pictures saved into cache (if any)
         clearStorageFiles(cacheDir, "temp_profile_picture[a-zA-Z0-9]*.jpeg")
