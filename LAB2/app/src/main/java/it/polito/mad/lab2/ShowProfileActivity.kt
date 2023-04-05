@@ -12,12 +12,12 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.google.android.material.chip.Chip
 import es.dmoral.toasty.Toasty
 import org.json.JSONObject
 
 class ShowProfileActivity : AppCompatActivity() {
-
     // User info views
     private lateinit var firstName: TextView
     private lateinit var lastName: TextView
@@ -36,16 +36,16 @@ class ShowProfileActivity : AppCompatActivity() {
     private lateinit var messageButton: Button
 
     // Sport views
-    private lateinit var basketChip: Chip
-    private lateinit var soccer11Chip: Chip
     private lateinit var soccer5Chip: Chip
-    private lateinit var soccer8Chip: Chip
-    private lateinit var tennisChip: Chip
-    private lateinit var volleyballChip: Chip
-    private lateinit var tableTennisChip: Chip
-    private lateinit var beachVolleyChip: Chip
     private lateinit var padelChip: Chip
     private lateinit var miniGolfChip: Chip
+    private lateinit var tennisChip: Chip
+    private lateinit var soccer11Chip: Chip
+    private lateinit var soccer8Chip: Chip
+    private lateinit var volleyballChip: Chip
+    private lateinit var beachVolleyChip: Chip
+    private lateinit var tableTennisChip: Chip
+    private lateinit var basketChip: Chip
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,36 +74,35 @@ class ShowProfileActivity : AppCompatActivity() {
         addFriendButton = findViewById(R.id.button_add_friend)
         messageButton = findViewById(R.id.button_message)
 
-        // retrieve sport chips
-        basketChip = findViewById(R.id.basketChip)
-        soccer11Chip = findViewById(R.id.soccer11Chip)
-        soccer5Chip = findViewById(R.id.soccer5Chip)
-        soccer8Chip = findViewById(R.id.soccer8Chip)
-        tennisChip = findViewById(R.id.tennisChip)
-        volleyballChip = findViewById(R.id.volleyballChip)
-        tableTennisChip = findViewById(R.id.tableTennisChip)
-        beachVolleyChip = findViewById(R.id.beachVolleyChip)
-        padelChip = findViewById(R.id.padelChip)
-        miniGolfChip = findViewById(R.id.miniGolfChip)
-
         addFriendButton.setOnClickListener {
             showToasty("info", this,"Add friend button clicked!!!")
         }
 
         messageButton.setOnClickListener {
-            showToasty("info", this,"Message button clicked!!!")
+            showToasty("info", this, "Message button clicked!!!")
         }
 
+        // retrieve sport chips
+        soccer5Chip = findViewById(R.id.soccer5Chip)
+        padelChip = findViewById(R.id.padelChip)
+        miniGolfChip = findViewById(R.id.miniGolfChip)
+        tennisChip = findViewById(R.id.tennisChip)
+        soccer11Chip = findViewById(R.id.soccer11Chip)
+        soccer8Chip = findViewById(R.id.soccer8Chip)
+        volleyballChip = findViewById(R.id.volleyballChip)
+        beachVolleyChip = findViewById(R.id.beachVolleyChip)
+        tableTennisChip = findViewById(R.id.tableTennisChip)
+        basketChip = findViewById(R.id.basketChip)
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onResume() {
         super.onResume()
 
-        // the information retrieval is done in onResume() because information has to be refreshed
-        // after saving (when the EditProfileActivity is created and started, the ShowProfileActivity is not destroyed)
-
-        /* update shown user info and pictures */
+        /*  The information is retrieved and showed in onResume() because  *
+         *  it has to be refreshed after saving in edit mode (in fact,     *
+         *  when the EditProfileActivity is created and started, the       *
+         *  ShowProfileActivity is not destroyed, but it is still behind) */
 
         // retrieve data from SharedPreferences
         val sh = getSharedPreferences("it.polito.mad.lab2", MODE_PRIVATE)
@@ -119,7 +118,7 @@ class ShowProfileActivity : AppCompatActivity() {
             jsonObjectProfile?.getString("location") ?: getString(R.string.user_location)
         bio.text = jsonObjectProfile?.getString("bio") ?: getString(R.string.user_bio)
 
-        // retrieve profile picture from the internal storage
+        // retrieve profile and background picture from the internal storage
         val profilePictureBitmap = getPictureFromInternalStorage(filesDir, "profilePicture.jpeg")
         val backgroundProfilePictureBitmap =
             getPictureFromInternalStorage(filesDir, "backgroundProfilePicture.jpeg")
@@ -128,167 +127,73 @@ class ShowProfileActivity : AppCompatActivity() {
         profilePictureBitmap?.let { profilePicture.setImageBitmap(it) }
         backgroundProfilePictureBitmap?.let { backgroundProfilePicture.setImageBitmap(it) }
 
-        // retrieve sports from storage
-        val basketJSON: JSONObject? = jsonObjectProfile?.optJSONObject("basket")
-        var basketResume: Sport? = null
-        if (basketJSON != null) basketResume =
-            Sport(basketJSON.getBoolean("selected"), basketJSON.getInt("level"))
-        basketChip.visibility = Chip.GONE
-        if (basketResume != null && basketResume.selected) {
-            basketChip.visibility = Chip.VISIBLE
-            when(basketResume.level){
-                0 -> basketChip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
-                1 -> basketChip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
-                2 -> basketChip.chipIcon = getDrawable(R.drawable.expert_level_badge)
-                3 -> basketChip.chipIcon = getDrawable(R.drawable.pro_level_badge)
-            }
-        }
+        // retrieve sports from storage and set them proèerly based on their respective level
 
-        val soccer11JSON: JSONObject? = jsonObjectProfile?.optJSONObject("soccer11")
-        var soccer11Resume: Sport? = null
-        if (soccer11JSON != null) soccer11Resume =
-            Sport(soccer11JSON.getBoolean("selected"), soccer11JSON.getInt("level"))
-        soccer11Chip.visibility = Chip.GONE
-        if (soccer11Resume != null && soccer11Resume.selected) {
-            soccer11Chip.visibility = Chip.VISIBLE
-            when(soccer11Resume.level){
-                0 -> soccer11Chip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
-                1 -> soccer11Chip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
-                2 -> soccer11Chip.chipIcon = getDrawable(R.drawable.expert_level_badge)
-                3 -> soccer11Chip.chipIcon = getDrawable(R.drawable.pro_level_badge)
-            }
-        }
+        setSportBadge("basket", basketChip, jsonObjectProfile)
+        setSportBadge("soccer11", soccer11Chip, jsonObjectProfile)
+        setSportBadge("soccer5", soccer5Chip, jsonObjectProfile)
+        setSportBadge("soccer8", soccer8Chip, jsonObjectProfile)
+        setSportBadge("tennis", tennisChip, jsonObjectProfile)
+        setSportBadge("volleyball", volleyballChip, jsonObjectProfile)
+        setSportBadge("tableTennis", tableTennisChip, jsonObjectProfile)
+        setSportBadge("beachVolley", beachVolleyChip, jsonObjectProfile)
+        setSportBadge("padel", padelChip, jsonObjectProfile)
+        setSportBadge("miniGolf", miniGolfChip, jsonObjectProfile)
 
-        val soccer5JSON: JSONObject? = jsonObjectProfile?.optJSONObject("soccer5")
-        var soccer5Resume: Sport? = null
-        if (soccer5JSON != null) soccer5Resume =
-            Sport(soccer5JSON.getBoolean("selected"), soccer5JSON.getInt("level"))
-        soccer5Chip.visibility = Chip.GONE
-        if (soccer5Resume != null && soccer5Resume.selected) {
-            soccer5Chip.visibility = Chip.VISIBLE
-            when(soccer5Resume.level){
-                0 -> soccer5Chip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
-                1 -> soccer5Chip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
-                2 -> soccer5Chip.chipIcon = getDrawable(R.drawable.expert_level_badge)
-                3 -> soccer5Chip.chipIcon = getDrawable(R.drawable.pro_level_badge)
-            }
-        }
-
-        val soccer8JSON: JSONObject? = jsonObjectProfile?.optJSONObject("soccer8")
-        var soccer8Resume: Sport? = null
-        if (soccer8JSON != null) soccer8Resume =
-            Sport(soccer8JSON.getBoolean("selected"), soccer8JSON.getInt("level"))
-        soccer8Chip.visibility = Chip.GONE
-        if (soccer8Resume != null && soccer8Resume.selected) {
-            soccer8Chip.visibility = Chip.VISIBLE
-            when(soccer8Resume.level){
-                0 -> soccer8Chip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
-                1 -> soccer8Chip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
-                2 -> soccer8Chip.chipIcon = getDrawable(R.drawable.expert_level_badge)
-                3 -> soccer8Chip.chipIcon = getDrawable(R.drawable.pro_level_badge)
-            }
-        }
-
-        val tennisJSON: JSONObject? = jsonObjectProfile?.optJSONObject("tennis")
-        var tennisResume: Sport? = null
-        if (tennisJSON != null) tennisResume =
-            Sport(tennisJSON.getBoolean("selected"), tennisJSON.getInt("level"))
-        tennisChip.visibility = Chip.GONE
-        if (tennisResume != null && tennisResume.selected) {
-            tennisChip.visibility = Chip.VISIBLE
-            when(tennisResume.level){
-                0 -> tennisChip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
-                1 -> tennisChip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
-                2 -> tennisChip.chipIcon = getDrawable(R.drawable.expert_level_badge)
-                3 -> tennisChip.chipIcon = getDrawable(R.drawable.pro_level_badge)
-            }
-        }
-
-        val volleyballJSON: JSONObject? = jsonObjectProfile?.optJSONObject("volleyball")
-        var volleyballResume: Sport? = null
-        if (volleyballJSON != null) volleyballResume =
-            Sport(volleyballJSON.getBoolean("selected"), volleyballJSON.getInt("level"))
-        volleyballChip.visibility = Chip.GONE
-        if (volleyballResume != null && volleyballResume.selected) {
-            volleyballChip.visibility = Chip.VISIBLE
-            when(volleyballResume.level){
-                0 -> volleyballChip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
-                1 -> volleyballChip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
-                2 -> volleyballChip.chipIcon = getDrawable(R.drawable.expert_level_badge)
-                3 -> volleyballChip.chipIcon = getDrawable(R.drawable.pro_level_badge)
-            }
-        }
-
-        val tableTennisJSON: JSONObject? = jsonObjectProfile?.optJSONObject("tableTennis")
-        var tableTennisResume: Sport? = null
-        if (tableTennisJSON != null) tableTennisResume =
-            Sport(tableTennisJSON.getBoolean("selected"), tableTennisJSON.getInt("level"))
-        tableTennisChip.visibility = Chip.GONE
-        if (tableTennisResume != null && tableTennisResume.selected) {
-            tableTennisChip.visibility = Chip.VISIBLE
-            when(tableTennisResume.level){
-                0 -> tableTennisChip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
-                1 -> tableTennisChip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
-                2 -> tableTennisChip.chipIcon = getDrawable(R.drawable.expert_level_badge)
-                3 -> tableTennisChip.chipIcon = getDrawable(R.drawable.pro_level_badge)
-            }
-        }
-
-        val beachVolleyJSON: JSONObject? = jsonObjectProfile?.optJSONObject("beachVolley")
-        var beachVolleyResume: Sport? = null
-        if (beachVolleyJSON != null) beachVolleyResume =
-            Sport(beachVolleyJSON.getBoolean("selected"), beachVolleyJSON.getInt("level"))
-        beachVolleyChip.visibility = Chip.GONE
-        if (beachVolleyResume != null && beachVolleyResume.selected) {
-            beachVolleyChip.visibility = Chip.VISIBLE
-            when(beachVolleyResume.level){
-                0 -> beachVolleyChip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
-                1 -> beachVolleyChip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
-                2 -> beachVolleyChip.chipIcon = getDrawable(R.drawable.expert_level_badge)
-                3 -> beachVolleyChip.chipIcon = getDrawable(R.drawable.pro_level_badge)
-            }
-        }
-
-        val padelJSON: JSONObject? = jsonObjectProfile?.optJSONObject("padel")
-        var padelResume: Sport? = null
-        if (padelJSON != null) padelResume =
-            Sport(padelJSON.getBoolean("selected"), padelJSON.getInt("level"))
-        padelChip.visibility = Chip.GONE
-        if (padelResume != null && padelResume.selected) {
-            padelChip.visibility = Chip.VISIBLE
-            when(padelResume.level){
-                0 -> padelChip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
-                1 -> padelChip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
-                2 -> padelChip.chipIcon = getDrawable(R.drawable.expert_level_badge)
-                3 -> padelChip.chipIcon = getDrawable(R.drawable.pro_level_badge)
-            }
-        }
-
-        val miniGolfJSON: JSONObject? = jsonObjectProfile?.optJSONObject("miniGolf")
-        var miniGolfResume: Sport? = null
-        if (miniGolfJSON != null) miniGolfResume =
-            Sport(miniGolfJSON.getBoolean("selected"), miniGolfJSON.getInt("level"))
-        miniGolfChip.visibility = Chip.GONE
-        if (miniGolfResume != null && miniGolfResume.selected) {
-            miniGolfChip.visibility = Chip.VISIBLE
-            when(miniGolfResume.level){
-                0 -> miniGolfChip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
-                1 -> miniGolfChip.chipIcon = getDrawable(R.drawable.intermediate_level_badge)
-                2 -> miniGolfChip.chipIcon = getDrawable(R.drawable.expert_level_badge)
-                3 -> miniGolfChip.chipIcon = getDrawable(R.drawable.pro_level_badge)
-            }
-        }
-
-        if( jsonObjectProfile == null){ // first time the app is launched
+        if (jsonObjectProfile == null) { // first time the app is launched
             loadHardcodedSports() //Some sports will appear the first time
+        }
+    }
+
+    private fun setSportBadge(sportName: String, sportChip: Chip, jsonObjectProfile: JSONObject?) {
+        // hide the sport badge
+        sportChip.visibility = Chip.GONE
+
+        // retrieve sport persistent data, if any
+        val sport: Sport? = jsonObjectProfile?.optJSONObject(sportName)?.run {
+            Sport(this.getBoolean("selected"), this.getInt("level"))
+        }
+
+        // if the sport has been selected, choose and set the right level icon
+        if (sport?.selected == true) {
+            // show the sport badge
+            sportChip.visibility = Chip.VISIBLE
+
+            when(sport.level) {
+                0 -> {
+                    sportChip.chipIcon = ContextCompat.getDrawable(this, R.drawable.beginner_level_badge)
+                    sportChip.setTextColor(getColor(R.color.beginner_badge_blue))
+                    sportChip.setChipStrokeColorResource(R.color.beginner_badge_blue)
+                }
+                1 -> {
+                    sportChip.chipIcon = ContextCompat.getDrawable(this, R.drawable.intermediate_level_badge)
+                    sportChip.setTextColor(getColor(R.color.intermediate_badge_blue))
+                    sportChip.setChipStrokeColorResource(R.color.intermediate_badge_blue)
+                }
+                2 -> {
+                    sportChip.chipIcon = ContextCompat.getDrawable(this, R.drawable.expert_level_badge)
+                    sportChip.setTextColor(getColor(R.color.expert_badge_blue))
+                    sportChip.setChipStrokeColorResource(R.color.expert_badge_blue)
+                }
+                3 -> {
+                    sportChip.chipIcon = ContextCompat.getDrawable(this, R.drawable.pro_level_badge)
+                    sportChip.setTextColor(getColor(R.color.pro_badge_grey))
+                    sportChip.setChipStrokeColorResource(R.color.pro_badge_grey)
+                }
+            }
         }
 
     }
 
     private fun loadHardcodedSports() {
-        basketChip.chipIcon = getDrawable(R.drawable.expert_level_badge)
+        basketChip.chipIcon = ContextCompat.getDrawable(this, R.drawable.expert_level_badge)
+        basketChip.setTextColor(getColor(R.color.expert_badge_blue))
+        basketChip.setChipStrokeColorResource(R.color.expert_badge_blue)
         basketChip.visibility = Chip.VISIBLE
-        tennisChip.chipIcon = getDrawable(R.drawable.beginner_level_badge)
+
+        tennisChip.chipIcon = ContextCompat.getDrawable(this, R.drawable.beginner_level_badge)
+        tennisChip.setTextColor(getColor(R.color.beginner_badge_blue))
+        tennisChip.setChipStrokeColorResource(R.color.beginner_badge_blue)
         tennisChip.visibility = Chip.VISIBLE
     }
 
