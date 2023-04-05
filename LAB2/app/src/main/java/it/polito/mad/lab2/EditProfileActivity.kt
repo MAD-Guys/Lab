@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
@@ -130,7 +131,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
 
         } else {
-            throw it.error!!
+            Log.d("CROP", "Cropping failed: ${it.error}")
         }
     }
 
@@ -423,6 +424,13 @@ class EditProfileActivity : AppCompatActivity() {
 
         // save the temporary profile variables into the sharedPreferences file
         saveInformationOnStorage()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        // the clearStorageFile function is called here because
+        // the onPause function is called before the picture is cropped
 
         // delete the temporary profile pictures saved into cache (if any)
         clearStorageFiles(cacheDir, "temp_profile_picture[a-zA-Z0-9]*.jpeg")
