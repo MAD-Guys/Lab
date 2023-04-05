@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -17,9 +16,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageContractOptions
+import com.canhub.cropper.CropImageOptions
+import com.canhub.cropper.CropImageView
 import org.json.JSONObject
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -67,8 +67,8 @@ class EditProfileActivity : AppCompatActivity() {
     private var profilePictureBitmap: Bitmap? = null
     private var backgroundProfilePictureBitmap: Bitmap? = null
 
-    private var galleryUri: Uri? = null
     private var cameraUri: Uri? = null
+    private lateinit var cropImageOptions: CropImageOptions
 
     /* results launchers */
     private var galleryActivityResultLauncher: ActivityResultLauncher<Intent> =
@@ -77,81 +77,62 @@ class EditProfileActivity : AppCompatActivity() {
         ) {
             if (it.resultCode == RESULT_OK) {
                 // retrieve gallery picture Uri
-                galleryUri = it.data?.data
+                val galleryUri = it.data?.data
 
-                // convert it to a bitmap and rotate it
-                val galleryImageBitmap = galleryUri?.let { uri ->
-                        uriToBitmap(uri, contentResolver)?.let { bitmap ->
-                            rotateBitmap(uri, bitmap, contentResolver)
-                        }
-                    }
-
-                // edit image and show it
-                editAndShowProfilePicture(galleryImageBitmap)
+                cropPicture.launch(
+                    CropImageContractOptions(
+                        galleryUri,
+                        cropImageOptions
+                    )
+                )
             }
         }
-
-    private fun editAndShowProfilePicture(image: Bitmap?) {
-        val context = this
-
-        // crop image in the center (adapt to profile picture dimensions) and set profile picture
-        Glide.with(context).asBitmap()
-            .load(image)
-            .override(profilePicture.width, profilePicture.height)  // set dimensions
-            .centerCrop()
-            .into(object : CustomTarget<Bitmap>() {
-                override fun onResourceReady(
-                    croppedImage: Bitmap,
-                    transition: Transition<in Bitmap>?
-                ) {
-                    // save profile picture bitmap and put it on the view
-                    profilePictureBitmap = croppedImage
-                    profilePicture.setImageBitmap(croppedImage)
-
-                    // copy the profile picture to create the blurred background image
-                    val backgroundImage = croppedImage.copy(croppedImage.config, true)
-                    val blurredBackgroundImage = fastblur(backgroundImage, 0.5f, 25)
-
-                    // apply blur effect to the background image and then reshape it to its view sizes
-                    Glide.with(context).asBitmap()
-                        .load(blurredBackgroundImage)
-                        .override(backgroundProfilePicture.width, backgroundProfilePicture.height)
-                        .centerCrop()
-                        .into(object : CustomTarget<Bitmap>() {
-                            override fun onResourceReady(
-                                croppedBlurredBackgroundImage: Bitmap,
-                                transition: Transition<in Bitmap>?
-                            ) {
-                                // save background image bitmap and put it on the view
-                                backgroundProfilePictureBitmap = croppedBlurredBackgroundImage
-                                backgroundProfilePicture.setImageBitmap(croppedBlurredBackgroundImage)
-                            }
-
-                            override fun onLoadCleared(placeholder: Drawable?) {}
-                        })
-                }
-
-                override fun onLoadCleared(placeholder: Drawable?) {}
-            })
-    }
 
     private var cameraActivityResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) {
             if (it.resultCode == RESULT_OK) {
-                // transform camera image uri into a (rotated) bitmap
-                val cameraImageBitmap = cameraUri?.let { uri ->
-                    uriToBitmap(uri, contentResolver)?.let { bitmap ->
-                        rotateBitmap(uri, bitmap, contentResolver)
-                    }
-                }
 
-                // edit image and show it
-                editAndShowProfilePicture(cameraImageBitmap)
+                cropPicture.launch(
+                    CropImageContractOptions(
+                        cameraUri,
+                        cropImageOptions
+                    )
+                )
             }
         }
 
+    private val cropPicture = registerForActivityResult(CropImageContract()) {
+        if (it.isSuccessful) {
+            val cropUri = it.uriContent
+
+            // convert cropUri to a bitmap and rotate it
+            profilePictureBitmap = cropUri?.let { uri ->
+                uriToBitmap(uri, contentResolver)?.let { bitmap ->
+                    rotateBitmap(uri, bitmap, contentResolver)
+                }
+            }
+
+            // set profile picture
+            profilePicture.setImageBitmap(profilePictureBitmap)
+
+            // copy the profile picture to create the blurred background image
+            val backgroundPicture = profilePictureBitmap?.copy(profilePictureBitmap!!.config, true)
+
+            backgroundPicture?.let {bitmap ->
+
+                // blur the background picture
+                backgroundProfilePictureBitmap = fastblur(bitmap, 0.5f, 25)
+
+                // set background profile picture
+                backgroundProfilePicture.setImageBitmap(backgroundProfilePictureBitmap)
+            }
+
+        } else {
+            throw it.error!!
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -160,7 +141,11 @@ class EditProfileActivity : AppCompatActivity() {
         // configure toasts appearance
         Toasty.Config.getInstance()
             .allowQueue(true) // optional (prevents several Toastys from queuing)
-            .setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 100) // optional (set toast gravity, offsets are optional)
+            .setGravity(
+                Gravity.TOP or Gravity.CENTER_HORIZONTAL,
+                0,
+                100
+            ) // optional (set toast gravity, offsets are optional)
             .supportDarkTheme(true) // optional (whether to support dark theme or not)
             .setRTL(true) // optional (icon is on the right)
             .apply() // required
@@ -175,6 +160,15 @@ class EditProfileActivity : AppCompatActivity() {
         bio = findViewById(R.id.edit_bio)
         profilePicture = findViewById(R.id.profile_picture)
         backgroundProfilePicture = findViewById(R.id.background_profile_picture)
+
+        // initialize options to crop the profile picture
+        cropImageOptions = CropImageOptions(
+            guidelines = CropImageView.Guidelines.ON,
+            aspectRatioX = 1,
+            aspectRatioY = 1,
+            outputCompressQuality = 100,
+            outputCompressFormat = Bitmap.CompressFormat.JPEG
+        )
 
         // initialize sports and levels
         sportChips = mutableListOf()
@@ -206,10 +200,10 @@ class EditProfileActivity : AppCompatActivity() {
             radioGenderCheckedTemp = checkedId
         }
 
-        for( (index, sport) in sportChips.withIndex() ){
+        for ((index, sport) in sportChips.withIndex()) {
             sport.setOnClickListener { sportChipListener(index) }
         }
-        for( (index, sportLevel) in sportLevels.withIndex() ){
+        for ((index, sportLevel) in sportLevels.withIndex()) {
             sportLevel.setOnCheckedStateChangeListener { it, _ -> sportLevelListener(it, index) }
         }
     }
@@ -238,45 +232,55 @@ class EditProfileActivity : AppCompatActivity() {
             getPictureFromInternalStorage(filesDir, "backgroundProfilePicture.jpeg")
 
         // retrieve sports from storage
-        val basketJSON :JSONObject? = jsonObjectProfile?.optJSONObject("basket")
-        var basketResume :Sport? = null
-        if(basketJSON != null) basketResume = Sport(basketJSON.getBoolean("selected"), basketJSON.getInt("level"))
+        val basketJSON: JSONObject? = jsonObjectProfile?.optJSONObject("basket")
+        var basketResume: Sport? = null
+        if (basketJSON != null) basketResume =
+            Sport(basketJSON.getBoolean("selected"), basketJSON.getInt("level"))
 
-        val soccer11JSON :JSONObject? = jsonObjectProfile?.optJSONObject("soccer11")
-        var soccer11Resume :Sport? = null
-        if(soccer11JSON != null) soccer11Resume = Sport(soccer11JSON.getBoolean("selected"), soccer11JSON.getInt("level"))
+        val soccer11JSON: JSONObject? = jsonObjectProfile?.optJSONObject("soccer11")
+        var soccer11Resume: Sport? = null
+        if (soccer11JSON != null) soccer11Resume =
+            Sport(soccer11JSON.getBoolean("selected"), soccer11JSON.getInt("level"))
 
-        val soccer5JSON :JSONObject? = jsonObjectProfile?.optJSONObject("soccer5")
-        var soccer5Resume :Sport? = null
-        if(soccer5JSON != null) soccer5Resume = Sport(soccer5JSON.getBoolean("selected"), soccer5JSON.getInt("level"))
+        val soccer5JSON: JSONObject? = jsonObjectProfile?.optJSONObject("soccer5")
+        var soccer5Resume: Sport? = null
+        if (soccer5JSON != null) soccer5Resume =
+            Sport(soccer5JSON.getBoolean("selected"), soccer5JSON.getInt("level"))
 
-        val soccer8JSON :JSONObject? = jsonObjectProfile?.optJSONObject("soccer8")
-        var soccer8Resume :Sport? = null
-        if(soccer8JSON != null) soccer8Resume = Sport(soccer8JSON.getBoolean("selected"), soccer8JSON.getInt("level"))
+        val soccer8JSON: JSONObject? = jsonObjectProfile?.optJSONObject("soccer8")
+        var soccer8Resume: Sport? = null
+        if (soccer8JSON != null) soccer8Resume =
+            Sport(soccer8JSON.getBoolean("selected"), soccer8JSON.getInt("level"))
 
-        val tennisJSON :JSONObject? = jsonObjectProfile?.optJSONObject("tennis")
-        var tennisResume :Sport? = null
-        if(tennisJSON != null) tennisResume = Sport(tennisJSON.getBoolean("selected"), tennisJSON.getInt("level"))
+        val tennisJSON: JSONObject? = jsonObjectProfile?.optJSONObject("tennis")
+        var tennisResume: Sport? = null
+        if (tennisJSON != null) tennisResume =
+            Sport(tennisJSON.getBoolean("selected"), tennisJSON.getInt("level"))
 
-        val volleyballJSON :JSONObject? = jsonObjectProfile?.optJSONObject("volleyball")
-        var volleyballResume :Sport? = null
-        if(volleyballJSON != null) volleyballResume = Sport(volleyballJSON.getBoolean("selected"), volleyballJSON.getInt("level"))
+        val volleyballJSON: JSONObject? = jsonObjectProfile?.optJSONObject("volleyball")
+        var volleyballResume: Sport? = null
+        if (volleyballJSON != null) volleyballResume =
+            Sport(volleyballJSON.getBoolean("selected"), volleyballJSON.getInt("level"))
 
-        val tableTennisJSON :JSONObject? = jsonObjectProfile?.optJSONObject("tableTennis")
-        var tableTennisResume :Sport? = null
-        if(tableTennisJSON != null) tableTennisResume = Sport(tableTennisJSON.getBoolean("selected"), tableTennisJSON.getInt("level"))
+        val tableTennisJSON: JSONObject? = jsonObjectProfile?.optJSONObject("tableTennis")
+        var tableTennisResume: Sport? = null
+        if (tableTennisJSON != null) tableTennisResume =
+            Sport(tableTennisJSON.getBoolean("selected"), tableTennisJSON.getInt("level"))
 
-        val beachVolleyJSON :JSONObject? = jsonObjectProfile?.optJSONObject("beachVolley")
-        var beachVolleyResume :Sport? = null
-        if(beachVolleyJSON != null) beachVolleyResume = Sport(beachVolleyJSON.getBoolean("selected"), beachVolleyJSON.getInt("level"))
+        val beachVolleyJSON: JSONObject? = jsonObjectProfile?.optJSONObject("beachVolley")
+        var beachVolleyResume: Sport? = null
+        if (beachVolleyJSON != null) beachVolleyResume =
+            Sport(beachVolleyJSON.getBoolean("selected"), beachVolleyJSON.getInt("level"))
 
-        val padelJSON :JSONObject? = jsonObjectProfile?.optJSONObject("padel")
-        var padelResume :Sport? = null
-        if(padelJSON != null) padelResume = Sport(padelJSON.getBoolean("selected"), padelJSON.getInt("level"))
+        val padelJSON: JSONObject? = jsonObjectProfile?.optJSONObject("padel")
+        var padelResume: Sport? = null
+        if (padelJSON != null) padelResume =
+            Sport(padelJSON.getBoolean("selected"), padelJSON.getInt("level"))
 
-        val miniGolfJSON :JSONObject? = jsonObjectProfile?.optJSONObject("miniGolf")
-        var miniGolfResume :Sport? = null
-        if(miniGolfJSON != null) miniGolfResume = Sport(miniGolfJSON.getBoolean("selected"), miniGolfJSON.getInt("level"))
+        val miniGolfJSON: JSONObject? = jsonObjectProfile?.optJSONObject("miniGolf")
+        var miniGolfResume: Sport? = null
+        if (miniGolfJSON != null) miniGolfResume =
+            Sport(miniGolfJSON.getBoolean("selected"), miniGolfJSON.getInt("level"))
 
         // set EditText views
         firstName.setText(firstNameResume)
@@ -302,16 +306,16 @@ class EditProfileActivity : AppCompatActivity() {
 
 
         // set sports Edit fields and temporary values
-        setEditSportsField(basketResume, 0);
-        setEditSportsField(soccer11Resume, 1);
-        setEditSportsField(soccer5Resume, 2);
-        setEditSportsField(soccer8Resume, 3);
-        setEditSportsField(tennisResume, 4);
-        setEditSportsField(volleyballResume, 5);
-        setEditSportsField(tableTennisResume, 6);
-        setEditSportsField(beachVolleyResume, 7);
-        setEditSportsField(padelResume, 8);
-        setEditSportsField(miniGolfResume, 9);
+        setEditSportsField(basketResume, 0)
+        setEditSportsField(soccer11Resume, 1)
+        setEditSportsField(soccer5Resume, 2)
+        setEditSportsField(soccer8Resume, 3)
+        setEditSportsField(tennisResume, 4)
+        setEditSportsField(volleyballResume, 5)
+        setEditSportsField(tableTennisResume, 6)
+        setEditSportsField(beachVolleyResume, 7)
+        setEditSportsField(padelResume, 8)
+        setEditSportsField(miniGolfResume, 9)
 
         //set hard coded sports the first time the app is launched
         setHardcodedSportFields()
@@ -353,16 +357,56 @@ class EditProfileActivity : AppCompatActivity() {
         }
 
         // save sports as JsonObjects
-        saveSportAsJson(Sport(sportSelectedTemp[0], sportLevelTemp[0].ordinal), "basket", jsonObjectProfile)
-        saveSportAsJson(Sport(sportSelectedTemp[1], sportLevelTemp[1].ordinal), "soccer11", jsonObjectProfile)
-        saveSportAsJson(Sport(sportSelectedTemp[2], sportLevelTemp[2].ordinal), "soccer5", jsonObjectProfile)
-        saveSportAsJson(Sport(sportSelectedTemp[3], sportLevelTemp[3].ordinal), "soccer8", jsonObjectProfile)
-        saveSportAsJson(Sport(sportSelectedTemp[4], sportLevelTemp[4].ordinal), "tennis", jsonObjectProfile)
-        saveSportAsJson(Sport(sportSelectedTemp[5], sportLevelTemp[5].ordinal), "volleyball", jsonObjectProfile)
-        saveSportAsJson(Sport(sportSelectedTemp[6], sportLevelTemp[6].ordinal), "tableTennis", jsonObjectProfile)
-        saveSportAsJson(Sport(sportSelectedTemp[7], sportLevelTemp[7].ordinal), "beachVolley", jsonObjectProfile)
-        saveSportAsJson(Sport(sportSelectedTemp[8], sportLevelTemp[8].ordinal), "padel", jsonObjectProfile)
-        saveSportAsJson(Sport(sportSelectedTemp[9], sportLevelTemp[9].ordinal), "miniGolf", jsonObjectProfile)
+        saveSportAsJson(
+            Sport(sportSelectedTemp[0], sportLevelTemp[0].ordinal),
+            "basket",
+            jsonObjectProfile
+        )
+        saveSportAsJson(
+            Sport(sportSelectedTemp[1], sportLevelTemp[1].ordinal),
+            "soccer11",
+            jsonObjectProfile
+        )
+        saveSportAsJson(
+            Sport(sportSelectedTemp[2], sportLevelTemp[2].ordinal),
+            "soccer5",
+            jsonObjectProfile
+        )
+        saveSportAsJson(
+            Sport(sportSelectedTemp[3], sportLevelTemp[3].ordinal),
+            "soccer8",
+            jsonObjectProfile
+        )
+        saveSportAsJson(
+            Sport(sportSelectedTemp[4], sportLevelTemp[4].ordinal),
+            "tennis",
+            jsonObjectProfile
+        )
+        saveSportAsJson(
+            Sport(sportSelectedTemp[5], sportLevelTemp[5].ordinal),
+            "volleyball",
+            jsonObjectProfile
+        )
+        saveSportAsJson(
+            Sport(sportSelectedTemp[6], sportLevelTemp[6].ordinal),
+            "tableTennis",
+            jsonObjectProfile
+        )
+        saveSportAsJson(
+            Sport(sportSelectedTemp[7], sportLevelTemp[7].ordinal),
+            "beachVolley",
+            jsonObjectProfile
+        )
+        saveSportAsJson(
+            Sport(sportSelectedTemp[8], sportLevelTemp[8].ordinal),
+            "padel",
+            jsonObjectProfile
+        )
+        saveSportAsJson(
+            Sport(sportSelectedTemp[9], sportLevelTemp[9].ordinal),
+            "miniGolf",
+            jsonObjectProfile
+        )
 
 
         // apply changes and show a pop up to the user
@@ -382,8 +426,8 @@ class EditProfileActivity : AppCompatActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
 
-        if(keyCode == KeyEvent.KEYCODE_BACK){
-            showToasty("success", this,"Information correctly saved!")
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            showToasty("success", this, "Information correctly saved!")
         }
 
         return super.onKeyDown(keyCode, event)
@@ -543,6 +587,7 @@ class EditProfileActivity : AppCompatActivity() {
     private fun openGallery() {
         // create intent and open phone gallery
         val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+
         galleryActivityResultLauncher.launch(galleryIntent)
     }
 
@@ -550,31 +595,31 @@ class EditProfileActivity : AppCompatActivity() {
 
 
     // Fills sport chips and sport level lists, the chips in xml are named with the sport name
-    private fun sportsInit(){
+    private fun sportsInit() {
 
         // SportChips
-        val basket :Chip = findViewById(R.id.basketChip)
-        val soccer11 :Chip = findViewById(R.id.soccer11Chip)
-        val soccer5 :Chip = findViewById(R.id.soccer5Chip)
-        val soccer8 :Chip = findViewById(R.id.soccer8Chip)
-        val tennis :Chip = findViewById(R.id.tennisChip)
-        val volleyball :Chip = findViewById(R.id.volleyballChip)
-        val tableTennis :Chip = findViewById(R.id.tableTennisChip)
-        val beachVolley :Chip = findViewById(R.id.beachVolleyChip)
-        val padel :Chip = findViewById(R.id.padelChip)
-        val miniGolf :Chip = findViewById(R.id.miniGolfChip)
+        val basket: Chip = findViewById(R.id.basketChip)
+        val soccer11: Chip = findViewById(R.id.soccer11Chip)
+        val soccer5: Chip = findViewById(R.id.soccer5Chip)
+        val soccer8: Chip = findViewById(R.id.soccer8Chip)
+        val tennis: Chip = findViewById(R.id.tennisChip)
+        val volleyball: Chip = findViewById(R.id.volleyballChip)
+        val tableTennis: Chip = findViewById(R.id.tableTennisChip)
+        val beachVolley: Chip = findViewById(R.id.beachVolleyChip)
+        val padel: Chip = findViewById(R.id.padelChip)
+        val miniGolf: Chip = findViewById(R.id.miniGolfChip)
 
         // SportLevels
-        val basketLevel :ChipGroup = findViewById(R.id.basketLevelSelector)
-        val soccer11Level :ChipGroup = findViewById(R.id.soccer11LevelSelector)
-        val soccer5Level :ChipGroup = findViewById(R.id.soccer5LevelSelector)
-        val soccer8Level :ChipGroup = findViewById(R.id.soccer8LevelSelector)
-        val tennisLevel :ChipGroup = findViewById(R.id.tennisLevelSelector)
-        val volleyballLevel :ChipGroup = findViewById(R.id.volleyballLevelSelector)
-        val tableTennisLevel :ChipGroup = findViewById(R.id.tableTennisLevelSelector)
-        val beachVolleyLevel :ChipGroup = findViewById(R.id.beachVolleyLevelSelector)
-        val padelLevel :ChipGroup = findViewById(R.id.padelLevelSelector)
-        val miniGolfLevel :ChipGroup = findViewById(R.id.miniGolfLevelSelector)
+        val basketLevel: ChipGroup = findViewById(R.id.basketLevelSelector)
+        val soccer11Level: ChipGroup = findViewById(R.id.soccer11LevelSelector)
+        val soccer5Level: ChipGroup = findViewById(R.id.soccer5LevelSelector)
+        val soccer8Level: ChipGroup = findViewById(R.id.soccer8LevelSelector)
+        val tennisLevel: ChipGroup = findViewById(R.id.tennisLevelSelector)
+        val volleyballLevel: ChipGroup = findViewById(R.id.volleyballLevelSelector)
+        val tableTennisLevel: ChipGroup = findViewById(R.id.tableTennisLevelSelector)
+        val beachVolleyLevel: ChipGroup = findViewById(R.id.beachVolleyLevelSelector)
+        val padelLevel: ChipGroup = findViewById(R.id.padelLevelSelector)
+        val miniGolfLevel: ChipGroup = findViewById(R.id.miniGolfLevelSelector)
 
         // Add items to lists
         // To make changes easier, insertions are ordered by sport
@@ -672,22 +717,24 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     //Generic listener to select or deselect a sport
-    private fun sportChipListener(index :Int) {
-        if(sportSelectedTemp[index]){ // this sport was already selected -> deselect it
+    private fun sportChipListener(index: Int) {
+        if (sportSelectedTemp[index]) { // this sport was already selected -> deselect it
             sportSelectedTemp[index] = false
             sportLevels[index].visibility = ChipGroup.GONE
 
         } else { // this sport was not selected -> select it
             sportSelectedTemp[index] = true
-            sportLevels[index].check( sportLevelChips[index][sportLevelTemp[index].ordinal].id )
+            sportLevels[index].check(sportLevelChips[index][sportLevelTemp[index].ordinal].id)
             sportLevels[index].visibility = ChipGroup.VISIBLE
         }
     }
 
     private fun sportLevelListener(chipGroup: ChipGroup, index: Int) {
         when (chipGroup.checkedChipId) {
-            sportLevelChips[index][Level.BEGINNER.ordinal].id -> sportLevelTemp[index] = Level.BEGINNER
-            sportLevelChips[index][Level.INTERMEDIATE.ordinal].id -> sportLevelTemp[index] = Level.INTERMEDIATE
+            sportLevelChips[index][Level.BEGINNER.ordinal].id -> sportLevelTemp[index] =
+                Level.BEGINNER
+            sportLevelChips[index][Level.INTERMEDIATE.ordinal].id -> sportLevelTemp[index] =
+                Level.INTERMEDIATE
             sportLevelChips[index][Level.EXPERT.ordinal].id -> sportLevelTemp[index] = Level.EXPERT
             sportLevelChips[index][Level.PRO.ordinal].id -> sportLevelTemp[index] = Level.PRO
         }
@@ -695,21 +742,22 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     // The function set sports Edit fields and temporary values
-    private fun setEditSportsField(sport: Sport?, index: Int){
-        if(sport != null && sport.selected){
+    private fun setEditSportsField(sport: Sport?, index: Int) {
+        if (sport != null && sport.selected) {
             sportSelectedTemp[index] = true
-            sportLevelTemp[index] = when(sport.level){
+            sportLevelTemp[index] = when (sport.level) {
                 0 -> Level.BEGINNER
                 1 -> Level.INTERMEDIATE
                 2 -> Level.EXPERT
                 3 -> Level.PRO
                 else -> Level.BEGINNER //never used
             }
-            sportLevels[index].check( sportLevelChips[index][sportLevelTemp[index].ordinal].id )
+            sportLevels[index].check(sportLevelChips[index][sportLevelTemp[index].ordinal].id)
             sportLevels[index].visibility = ChipGroup.VISIBLE
             sportChips[index].isChecked = true
         }
     }
+
     private fun saveSportAsJson(sport: Sport, sportName: String, jsonObjectProfile: JSONObject) {
         val sportJson = JSONObject()
         sportJson.put("selected", sport.selected)
@@ -717,18 +765,18 @@ class EditProfileActivity : AppCompatActivity() {
         jsonObjectProfile.put(sportName, sportJson)
     }
 
-    private fun setHardcodedSportFields(){
+    private fun setHardcodedSportFields() {
         //basket expert
         sportSelectedTemp[0] = true
         sportLevelTemp[0] = Level.EXPERT
-        sportLevels[0].check( sportLevelChips[0][Level.EXPERT.ordinal].id )
+        sportLevels[0].check(sportLevelChips[0][Level.EXPERT.ordinal].id)
         sportLevels[0].visibility = ChipGroup.VISIBLE
         sportChips[0].isChecked = true
 
         //tennis beginner
         sportSelectedTemp[4] = true
         sportLevelTemp[4] = Level.BEGINNER
-        sportLevels[4].check( sportLevelChips[0][Level.BEGINNER.ordinal].id )
+        sportLevels[4].check(sportLevelChips[0][Level.BEGINNER.ordinal].id)
         sportLevels[4].visibility = ChipGroup.VISIBLE
         sportChips[4].isChecked = true
 
