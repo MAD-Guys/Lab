@@ -1,8 +1,6 @@
 package it.polito.mad.lab2
 
-import android.annotation.SuppressLint
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import android.view.Menu
@@ -11,6 +9,7 @@ import android.view.MenuItem
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.google.android.material.chip.Chip
@@ -95,7 +94,6 @@ class ShowProfileActivity : AppCompatActivity() {
         basketChip = findViewById(R.id.basketChip)
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onResume() {
         super.onResume()
 
@@ -127,7 +125,7 @@ class ShowProfileActivity : AppCompatActivity() {
         profilePictureBitmap?.let { profilePicture.setImageBitmap(it) }
         backgroundProfilePictureBitmap?.let { backgroundProfilePicture.setImageBitmap(it) }
 
-        // retrieve sports from storage and set them proèerly based on their respective level
+        // retrieve sports from storage and set them properly based on their respective level
 
         setSportBadge("basket", basketChip, jsonObjectProfile)
         setSportBadge("soccer11", soccer11Chip, jsonObjectProfile)

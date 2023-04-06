@@ -40,7 +40,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     // Sports temporary state
     private var sportSelectedTemp: MutableList<Boolean> = mutableListOf(
-        true, false, false, false, true, false, false, false, false, false
+        false, false, false, false, false, false, false, false, false, false
     ) // 10 values initially set according to the values hard coded in ShowProfileActivity.kt
 
     private var sportLevelTemp: MutableList<Level> = mutableListOf(
@@ -121,7 +121,7 @@ class EditProfileActivity : AppCompatActivity() {
             // copy the profile picture to create the blurred background image
             val backgroundPicture = profilePictureBitmap?.copy(profilePictureBitmap!!.config, true)
 
-            backgroundPicture?.let {bitmap ->
+            backgroundPicture?.let { bitmap ->
 
                 // blur the background picture
                 backgroundProfilePictureBitmap = fastblur(bitmap, 0.5f, 25)
@@ -225,7 +225,8 @@ class EditProfileActivity : AppCompatActivity() {
             jsonObjectProfile?.getString("lastName") ?: getString(R.string.last_name)
         val usernameResume: String =
             jsonObjectProfile?.getString("username") ?: getString(R.string.username)
-        val radioCheckedResume: Int = jsonObjectProfile?.getInt("radioChecked") ?: R.id.radio_male
+        val genderResume: String =
+            jsonObjectProfile?.getString("gender") ?: getString(R.string.male_gender)
         val ageResume: String = jsonObjectProfile?.getString("age") ?: getString(R.string.user_age)
         val locationResume: String =
             jsonObjectProfile?.getString("location") ?: getString(R.string.user_location)
@@ -291,16 +292,21 @@ class EditProfileActivity : AppCompatActivity() {
         firstName.setText(firstNameResume)
         lastName.setText(lastNameResume)
         username.setText(usernameResume)
-        genderRadioGroup.check(radioCheckedResume)
         age.setText(ageResume)
         location.setText(locationResume)
         bio.setText(bioResume)
+
+        when (genderResume) {
+            getString(R.string.female_gender) -> genderRadioGroup.check(R.id.radio_female)
+            getString(R.string.other_gender) -> genderRadioGroup.check(R.id.radio_other)
+            else -> genderRadioGroup.check(R.id.radio_male)
+        }
 
         // set temporary variables
         firstNameTemp = firstNameResume
         lastNameTemp = lastNameResume
         usernameTemp = usernameResume
-        radioGenderCheckedTemp = radioCheckedResume
+        radioGenderCheckedTemp = genderRadioGroup.checkedRadioButtonId
         ageTemp = ageResume
         locationTemp = locationResume
         bioTemp = bioResume
@@ -308,7 +314,6 @@ class EditProfileActivity : AppCompatActivity() {
         // update profile and background pictures with the one uploaded by the user, if any
         profilePictureResume?.let { profilePicture.setImageBitmap(it) }
         backgroundProfilePictureResume?.let { backgroundProfilePicture.setImageBitmap(it) }
-
 
         // set sports Edit fields and temporary values
         setEditSportsField(basketResume, 0)
@@ -323,7 +328,9 @@ class EditProfileActivity : AppCompatActivity() {
         setEditSportsField(miniGolfResume, 9)
 
         //set hard coded sports the first time the app is launched
-        setHardcodedSportFields()
+        if (jsonObjectProfile == null) {
+            setHardcodedSportFields()
+        }
 
     }
 
@@ -340,7 +347,7 @@ class EditProfileActivity : AppCompatActivity() {
         jsonObjectProfile.put("lastName", lastNameTemp)
         jsonObjectProfile.put("username", usernameTemp)
         jsonObjectProfile.put("age", ageTemp)
-        jsonObjectProfile.put("radioChecked", radioGenderCheckedTemp)
+        //jsonObjectProfile.put("radioChecked", radioGenderCheckedTemp)
         jsonObjectProfile.put("location", locationTemp)
         jsonObjectProfile.put("bio", bioTemp)
 
@@ -412,7 +419,6 @@ class EditProfileActivity : AppCompatActivity() {
             "miniGolf",
             jsonObjectProfile
         )
-
 
         // apply changes and show a pop up to the user
         editor.putString("profile", jsonObjectProfile.toString())
@@ -606,7 +612,6 @@ class EditProfileActivity : AppCompatActivity() {
 
     /*----- SPORTS UTILITIES -----*/
 
-
     // Fills sport chips and sport level lists, the chips in xml are named with the sport name
     private fun sportsInit() {
 
@@ -789,7 +794,7 @@ class EditProfileActivity : AppCompatActivity() {
         //tennis beginner
         sportSelectedTemp[4] = true
         sportLevelTemp[4] = Level.BEGINNER
-        sportLevels[4].check(sportLevelChips[0][Level.BEGINNER.ordinal].id)
+        sportLevels[4].check(sportLevelChips[4][Level.BEGINNER.ordinal].id)
         sportLevels[4].visibility = ChipGroup.VISIBLE
         sportChips[4].isChecked = true
 
