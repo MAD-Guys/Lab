@@ -347,7 +347,6 @@ class EditProfileActivity : AppCompatActivity() {
         jsonObjectProfile.put("lastName", lastNameTemp)
         jsonObjectProfile.put("username", usernameTemp)
         jsonObjectProfile.put("age", ageTemp)
-        //jsonObjectProfile.put("radioChecked", radioGenderCheckedTemp)
         jsonObjectProfile.put("location", locationTemp)
         jsonObjectProfile.put("bio", bioTemp)
 

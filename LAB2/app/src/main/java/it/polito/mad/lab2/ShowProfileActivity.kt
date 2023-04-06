@@ -138,8 +138,9 @@ class ShowProfileActivity : AppCompatActivity() {
         setSportBadge("padel", padelChip, jsonObjectProfile)
         setSportBadge("miniGolf", miniGolfChip, jsonObjectProfile)
 
-        if (jsonObjectProfile == null) { // first time the app is launched
-            loadHardcodedSports() //Some sports will appear the first time
+        // first time the app is launched, some hardcoded sports will appear
+        if (jsonObjectProfile == null) {
+            loadHardcodedSports()
         }
     }
 
