@@ -2,17 +2,18 @@ package it.polito.mad.lab2
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
+import android.util.TypedValue
+import android.view.*
+import android.view.View.LAYOUT_DIRECTION_RTL
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import es.dmoral.toasty.Toasty
 import org.json.JSONObject
 
@@ -35,16 +36,9 @@ class ShowProfileActivity : AppCompatActivity() {
     private lateinit var messageButton: Button
 
     // Sport views
-    private lateinit var soccer5Chip: Chip
-    private lateinit var padelChip: Chip
-    private lateinit var miniGolfChip: Chip
-    private lateinit var tennisChip: Chip
-    private lateinit var soccer11Chip: Chip
-    private lateinit var soccer8Chip: Chip
-    private lateinit var volleyballChip: Chip
-    private lateinit var beachVolleyChip: Chip
-    private lateinit var tableTennisChip: Chip
-    private lateinit var basketChip: Chip
+    private lateinit var sportChips: MutableMap<String,Chip>
+    // sport data
+    private lateinit var sportData: MutableMap<String,Sport>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,18 +74,6 @@ class ShowProfileActivity : AppCompatActivity() {
         messageButton.setOnClickListener {
             showToasty("info", this, "Message button clicked!!!")
         }
-
-        // retrieve sport chips
-        soccer5Chip = findViewById(R.id.soccer5Chip)
-        padelChip = findViewById(R.id.padelChip)
-        miniGolfChip = findViewById(R.id.miniGolfChip)
-        tennisChip = findViewById(R.id.tennisChip)
-        soccer11Chip = findViewById(R.id.soccer11Chip)
-        soccer8Chip = findViewById(R.id.soccer8Chip)
-        volleyballChip = findViewById(R.id.volleyballChip)
-        beachVolleyChip = findViewById(R.id.beachVolleyChip)
-        tableTennisChip = findViewById(R.id.tableTennisChip)
-        basketChip = findViewById(R.id.basketChip)
     }
 
     override fun onResume() {
@@ -125,75 +107,97 @@ class ShowProfileActivity : AppCompatActivity() {
         profilePictureBitmap?.let { profilePicture.setImageBitmap(it) }
         backgroundProfilePictureBitmap?.let { backgroundProfilePicture.setImageBitmap(it) }
 
-        // retrieve sports from storage and set them properly based on their respective level
-
-        setSportBadge("basket", basketChip, jsonObjectProfile)
-        setSportBadge("soccer11", soccer11Chip, jsonObjectProfile)
-        setSportBadge("soccer5", soccer5Chip, jsonObjectProfile)
-        setSportBadge("soccer8", soccer8Chip, jsonObjectProfile)
-        setSportBadge("tennis", tennisChip, jsonObjectProfile)
-        setSportBadge("volleyball", volleyballChip, jsonObjectProfile)
-        setSportBadge("tableTennis", tableTennisChip, jsonObjectProfile)
-        setSportBadge("beachVolley", beachVolleyChip, jsonObjectProfile)
-        setSportBadge("padel", padelChip, jsonObjectProfile)
-        setSportBadge("miniGolf", miniGolfChip, jsonObjectProfile)
+        /* manage sports */
+        sportChips = HashMap()
+        sportData = HashMap()
 
         // first time the app is launched, some hardcoded sports will appear
-        if (jsonObjectProfile == null) {
-            loadHardcodedSports()
-        }
-    }
+        if (jsonObjectProfile == null)
+            loadHardcodedSports(*getHardcodedSports())
+        else {
+            // load the (already) selected sports by the user
+            val sportJson = jsonObjectProfile.getJSONObject("sports")
+            for (sportName in sportJson.keys()) {
+                val sport = Sport.from(sportName, sportJson)
 
-    private fun setSportBadge(sportName: String, sportChip: Chip, jsonObjectProfile: JSONObject?) {
-        // hide the sport badge
-        sportChip.visibility = Chip.GONE
+                if(sport.selected) {
+                    // create sport chip
+                    val sportChip = createSportChip(sport)
 
-        // retrieve sport persistent data, if any
-        val sport: Sport? = jsonObjectProfile?.optJSONObject(sportName)?.run {
-            Sport(this.getBoolean("selected"), this.getInt("level"))
-        }
-
-        // if the sport has been selected, choose and set the right level icon
-        if (sport?.selected == true) {
-            // show the sport badge
-            sportChip.visibility = Chip.VISIBLE
-
-            when(sport.level) {
-                0 -> {
-                    sportChip.chipIcon = ContextCompat.getDrawable(this, R.drawable.beginner_level_badge)
-                    sportChip.setTextColor(getColor(R.color.beginner_badge_blue))
-                    sportChip.setChipStrokeColorResource(R.color.beginner_badge_blue)
-                }
-                1 -> {
-                    sportChip.chipIcon = ContextCompat.getDrawable(this, R.drawable.intermediate_level_badge)
-                    sportChip.setTextColor(getColor(R.color.intermediate_badge_blue))
-                    sportChip.setChipStrokeColorResource(R.color.intermediate_badge_blue)
-                }
-                2 -> {
-                    sportChip.chipIcon = ContextCompat.getDrawable(this, R.drawable.expert_level_badge)
-                    sportChip.setTextColor(getColor(R.color.expert_badge_blue))
-                    sportChip.setChipStrokeColorResource(R.color.expert_badge_blue)
-                }
-                3 -> {
-                    sportChip.chipIcon = ContextCompat.getDrawable(this, R.drawable.pro_level_badge)
-                    sportChip.setTextColor(getColor(R.color.pro_badge_grey))
-                    sportChip.setChipStrokeColorResource(R.color.pro_badge_grey)
+                    // save chip and information
+                    sportChips[sportName] = sportChip
+                    sportData[sportName] = sport
                 }
             }
         }
+        // retieve sports container
+        val sportsContainer = findViewById<ChipGroup>(R.id.sports_container)
+        sportsContainer.removeAllViews()
 
+        // display sports in decreasing order of level
+        sportChips.asSequence().sortedByDescending {(sportName, _) ->
+            sportData[sportName]!!.level
+        }.forEach { (_, chip) ->
+            sportsContainer.addView(chip)
+        }
     }
 
-    private fun loadHardcodedSports() {
-        basketChip.chipIcon = ContextCompat.getDrawable(this, R.drawable.expert_level_badge)
-        basketChip.setTextColor(getColor(R.color.expert_badge_blue))
-        basketChip.setChipStrokeColorResource(R.color.expert_badge_blue)
-        basketChip.visibility = Chip.VISIBLE
+    private fun createSportChip(sport: Sport): Chip {
+        return Chip(this).apply {
+            layoutParams = ViewGroup.MarginLayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,                    // width
+                resources.getDimension(R.dimen.chip_height).toInt()     // height
+            ).apply {
+                marginEnd = resources.getDimension(R.dimen.chip_margin_end).toInt()
+            }
 
-        tennisChip.chipIcon = ContextCompat.getDrawable(this, R.drawable.beginner_level_badge)
-        tennisChip.setTextColor(getColor(R.color.beginner_badge_blue))
-        tennisChip.setChipStrokeColorResource(R.color.beginner_badge_blue)
-        tennisChip.visibility = Chip.VISIBLE
+            typeface = ResourcesCompat.getFont(context, R.font.poppins_bold)
+            layoutDirection = LAYOUT_DIRECTION_RTL
+            isClickable = false
+            setVisible(sport.selected)  // !!!
+            setChipIconSizeResource(R.dimen.chip_icon_size)
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(R.dimen.chip_text_size))
+            setTextStartPaddingResource(R.dimen.chip_text_start_padding)
+            setTextEndPaddingResource(R.dimen.chip_text_end_padding)
+            text = extendedNameOf(sport.name) // !!!
+            setChipBackgroundColorResource(R.color.background_orange)
+            chipStrokeWidth = 1.0f.dpToPx(context).toFloat()
+
+            // set level characteristics
+            when(sport.level) {
+                Level.BEGINNER -> {
+                    setChipIconResource(R.drawable.beginner_level_badge)
+                    setChipStrokeColorResource(R.color.beginner_badge_blue)
+                    setTextColor(getColor(R.color.beginner_badge_blue))
+                }
+                Level.INTERMEDIATE -> {
+                    setChipIconResource(R.drawable.intermediate_level_badge)
+                    setChipStrokeColorResource(R.color.intermediate_badge_blue)
+                    setTextColor(getColor(R.color.intermediate_badge_blue))
+                }
+                Level.EXPERT -> {
+                    setChipIconResource(R.drawable.expert_level_badge)
+                    setChipStrokeColorResource(R.color.expert_badge_blue)
+                    setTextColor(getColor(R.color.expert_badge_blue))
+                }
+                Level.PRO -> {
+                    setChipIconResource(R.drawable.pro_level_badge)
+                    setChipStrokeColorResource(R.color.pro_badge_grey)
+                    setTextColor(getColor(R.color.pro_badge_grey))
+                }
+            }
+        }
+    }
+
+    private fun loadHardcodedSports(vararg hardcodedSports: Sport) {
+        hardcodedSports.forEach {
+            // create chip view
+            val sportChip = createSportChip(it)
+
+            // save chip and sport info
+            sportChips[it.name] = sportChip
+            sportData[it.name] = it
+        }
     }
 
     /* app menu */

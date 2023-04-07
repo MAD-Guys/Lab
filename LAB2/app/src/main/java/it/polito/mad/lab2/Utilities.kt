@@ -12,12 +12,16 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.Log
+import android.util.TypedValue
 import android.view.WindowMetrics
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import es.dmoral.toasty.Toasty
+import org.json.JSONObject
 import java.io.File
 import java.io.FileDescriptor
 import java.io.FileOutputStream
@@ -25,10 +29,64 @@ import java.io.IOException
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-internal data class Sport(val selected: Boolean, val level: Int)
+internal data class Sport(val name: String, var selected: Boolean, var level: Level) {
+    companion object {
+        fun from(name: String, jsonObject: JSONObject): Sport =
+            jsonObject.getJSONObject(name).let {
+                Sport(name, it.getBoolean("selected"), Level.of(it.getInt("level")))
+            }
+    }
+
+    fun saveAsJson(jsonObject: JSONObject) {
+        val sportJson = JSONObject()
+        sportJson.put("selected", this.selected)
+        sportJson.put("level", this.level.ordinal)  // "level" -> 0/1/2/3
+        jsonObject.put(this.name, sportJson)
+    }
+}
+
+internal fun extendedNameOf(sportName: String): String = when(sportName) {
+    "basket" -> "Basket"
+    "soccer5" -> "5-a-side Soccer"
+    "soccer8" -> "8-a-side Soccer"
+    "soccer11" -> "11-a-side Soccer"
+    "tennis" -> "Tennis"
+    "tableTennis" -> "Table Tennis"
+    "volleyball" -> "Volleyball"
+    "beachVolley" -> "Beach Volley"
+    "padel" -> "Padel"
+    "miniGolf" -> "Mini Golf"
+    "swimming" -> "Swimming"
+    else -> "????"
+}
+
+
+internal fun getHardcodedSports() = arrayOf(
+    Sport("basket", true, Level.EXPERT),
+    Sport("tennis", true, Level.BEGINNER)
+)
+
+
+internal class SportChips(
+    val name: String, val chip: Chip,
+    val levelsChipGroup: ChipGroup, val levelsChips: List<Chip>)
+
+internal enum class Gender {
+    Male, Female, Other
+}
 
 internal enum class Level {
-    BEGINNER, INTERMEDIATE, EXPERT, PRO
+    BEGINNER, INTERMEDIATE, EXPERT, PRO;
+
+    companion object {
+        fun of(ordinal: Int): Level = when(ordinal) {
+            0 -> BEGINNER
+            1 -> INTERMEDIATE
+            2 -> EXPERT
+            3 -> PRO
+            else -> throw RuntimeException("It does not exist a Level of $ordinal")
+        }
+    }
 }
 
 /** Returns display width and display height */
@@ -49,8 +107,7 @@ internal fun AppCompatActivity.getDisplayMeasures(): Pair<Int, Int> {
 
 /**
  * Change profile picture size:
- * - set the height to 1/3 of the view (*excluding* the menu) in portrait
- *   view
+ * - set the height to 1/3 of the view (*excluding* the menu) in portrait view
  * - set the width to 1/3 of the view in landscape view
  */
 internal fun AppCompatActivity.setProfilePictureSize(
@@ -157,10 +214,29 @@ internal fun clearStorageFiles(directory: File, regexp: String) {
 
 internal fun showToasty(type: String, context: Context, message: String) {
     when (type) {
-        "success" -> Toasty.custom(context, message, ContextCompat.getDrawable(context, R.drawable.baseline_check_24),  ContextCompat.getColor(context, R.color.toast_success), ContextCompat.getColor(context, R.color.white), Toasty.LENGTH_SHORT, true, true).show()
-        "error" -> Toasty.custom(context, message, ContextCompat.getDrawable(context, R.drawable.outline_close_24),  ContextCompat.getColor(context, R.color.toast_error), ContextCompat.getColor(context, R.color.white), Toasty.LENGTH_SHORT, true, true).show()
-        "info" -> Toasty.custom(context, message, ContextCompat.getDrawable(context, R.drawable.outline_info_24),  ContextCompat.getColor(context, R.color.toast_info), ContextCompat.getColor(context, R.color.white), Toasty.LENGTH_SHORT, true, true).show()
-        "warning" -> Toasty.custom(context, message, ContextCompat.getDrawable(context, R.drawable.baseline_warning_24),  ContextCompat.getColor(context, R.color.toast_warning), ContextCompat.getColor(context, R.color.white), Toasty.LENGTH_SHORT, true, true).show()
+        "success" -> Toasty.custom(context, message,
+            ContextCompat.getDrawable(context, R.drawable.baseline_check_24),
+            ContextCompat.getColor(context, R.color.toast_success),
+            ContextCompat.getColor(context, R.color.white),
+            Toasty.LENGTH_SHORT, true, true).show()
+
+        "error"   -> Toasty.custom(context, message,
+            ContextCompat.getDrawable(context, R.drawable.outline_close_24),
+            ContextCompat.getColor(context, R.color.toast_error),
+            ContextCompat.getColor(context, R.color.white),
+            Toasty.LENGTH_SHORT, true, true).show()
+
+        "info"    -> Toasty.custom(context, message,
+            ContextCompat.getDrawable(context, R.drawable.outline_info_24),
+            ContextCompat.getColor(context, R.color.toast_info),
+            ContextCompat.getColor(context, R.color.white),
+            Toasty.LENGTH_SHORT, true, true).show()
+
+        "warning" -> Toasty.custom(context, message,
+            ContextCompat.getDrawable(context, R.drawable.baseline_warning_24),
+            ContextCompat.getColor(context, R.color.toast_warning),
+            ContextCompat.getColor(context, R.color.white),
+            Toasty.LENGTH_SHORT, true, true).show()
     }
 }
 
@@ -383,4 +459,25 @@ internal fun fastblur(bitmapParam: Bitmap, scale: Float, radius: Int): Bitmap? {
     Log.e("pix", w.toString() + " " + h + " " + pix.size)
     bitmap.setPixels(pix, 0, w, 0, 0, w, h)
     return bitmap
+}
+
+// other
+
+// Take a 'dp' number and compute the respective 'px' value
+// fun Float.dpToPx(): Float = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, DisplayMetrics())
+
+fun Float.dpToPx(context: Context): Int {
+    return (this * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).toInt()
+}
+
+fun Int.pxToDp(context: Context): Float {
+    return this.toFloat() / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+}
+
+fun Float.spToPx(context: Context): Int {
+    return TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_SP,
+        this,
+        context.resources.displayMetrics
+    ).toInt()
 }

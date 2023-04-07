@@ -34,17 +34,17 @@
 
     <!-- sports -->
     <string name="sports_title">Sports</string>
-    <string name="sport1">Basket</string>
-    <string name="sport2">11-a-side Soccer</string>
-    <string name="sport3">5-a-side Soccer</string>
-    <string name="sport4">8-a-side Soccer</string>
-    <string name="sport5">Tennis</string>
-    <string name="sport6">Volleyball</string>
-    <string name="sport7">Table Tennis</string>
-    <string name="sport8">Beach Volley</string>
-    <string name="sport9">Padel</string>
-    <string name="sport10">Mini Golf</string>
-    <string name="sport11">Swimming</string>
+    <string name="basket_sport">Basket</string>
+    <string name="soccer11_sport">11-a-side Soccer</string>
+    <string name="soccer5_sport">5-a-side Soccer</string>
+    <string name="soccer8_sport">8-a-side Soccer</string>
+    <string name="tennis_sport">Tennis</string>
+    <string name="volleyball_sport">Volleyball</string>
+    <string name="tableTennis_sport">Table Tennis</string>
+    <string name="beachVolley_sport">Beach Volley</string>
+    <string name="padel_sport">Padel</string>
+    <string name="miniGolf_spot">Mini Golf</string>
+    <string name="swimming_sport">Swimming</string>
 
     <!-- user bio -->
     <string name="bio_title">Bio</string>
@@ -75,7 +75,7 @@
     <string name="other_gender">Other</string>
 
     <!-- sport selection description -->
-    <string name="sport_selection_description">Tap on the sport you want to select and specify your level! 🚀</string>
+    <string name="sport_selection_description">Tap on the sports you like and specify your level! 🚀</string>
 
     <!-- buttons -->
     <string name="confirm_button_description">Confirm button</string>
