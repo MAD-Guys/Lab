@@ -1,6 +1,8 @@
 package it.polito.mad.lab2
 
+import android.Manifest
 import android.content.Intent
+import android.os.Build
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,6 +19,8 @@ import com.google.android.material.chip.ChipGroup
 import org.json.JSONObject
 import java.io.File
 
+
+/* manage load/save from/into storage */
 
 internal fun EditProfileActivity.loadDataFromStorage() {
     // retrieve data from SharedPreferences
@@ -177,6 +181,14 @@ internal fun EditProfileActivity.openGallery() {
     galleryActivityResultLauncher.launch(galleryIntent)
 }
 
+internal fun galleryImagesPermission(): String =
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            Manifest.permission.READ_MEDIA_IMAGES
+        else
+            Manifest.permission.READ_EXTERNAL_STORAGE
+
+
+
 /*----- SPORTS UTILITIES -----*/
 
 // Fills sport chips and sport level lists, the chips in xml are named with the sport name
@@ -219,8 +231,8 @@ internal fun EditProfileActivity.sportsInit() {
         // create the levels wrapper
         val sportLevelsChipGroup = ChipGroup(this).apply {
             layoutParams = ViewGroup.MarginLayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,                    // width
-                resources.getDimension(R.dimen.chip_icon_size).toInt()  // height
+                ViewGroup.LayoutParams.WRAP_CONTENT,                                      // width
+                (resources.getDimension(R.dimen.chip_icon_size) + 1.0f.spToPx(context)).toInt()  // height
             )
             setPadding(0, 0, 0, 8.0f.dpToPx(context))     // padding bottom
             visibility = GONE

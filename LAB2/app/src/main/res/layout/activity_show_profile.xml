@@ -56,7 +56,8 @@
             <!-- Section 1: General information -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp">
 
                 <!-- first name -->
                 <TextView
@@ -227,7 +228,8 @@
                     app:icon="@drawable/baseline_person_add_24"
                     android:contentDescription="@string/add_friend_button_description"
                     app:iconGravity="textStart"
-                    app:iconTint="@color/button_text_color" />
+                    app:iconTint="@color/button_text_color"
+                    android:visibility="gone"/>
                 <!-- Message Button -->
                 <Button
                     android:id="@+id/button_message"
@@ -253,6 +255,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/user_location_wrapper"
                     app:layout_constraintStart_toEndOf="@id/button_add_friend"
+                    android:visibility="gone"
                     />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

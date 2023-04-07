@@ -60,7 +60,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:baselineAligned="false">
+                android:baselineAligned="false"
+                android:layout_marginBottom="4dp">
 
                 <!-- full name and username wrapper -->
                 <LinearLayout
@@ -138,7 +139,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_gravity="bottom">
                     <!-- gender, age, location info wrapper -->
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -238,7 +240,8 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_gravity="center"
-                        android:layout_marginTop="5sp">
+                        android:layout_marginTop="5sp"
+                        android:visibility="gone">
                         <!-- Add Friend Button -->
                         <Button
                             android:id="@+id/button_add_friend"

@@ -4,7 +4,9 @@
 
     <!-- declare permissions to use phone camera and to write/read from the photo gallery -->
     <uses-permission android:name="android.permission.CAMERA" />
-    <!-- no need for WRITE_EXTERNAL_STORAGE and READ_EXTERNAL_STORAGE permissions -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <!-- no need for WRITE_EXTERNAL_STORAGE permission -->
 
     <application
         android:allowBackup="true"

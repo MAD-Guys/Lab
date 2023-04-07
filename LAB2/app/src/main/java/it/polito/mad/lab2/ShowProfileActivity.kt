@@ -1,5 +1,6 @@
 package it.polito.mad.lab2
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.TypedValue
@@ -142,27 +143,13 @@ class ShowProfileActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("InflateParams")
     private fun createSportChip(sport: Sport): Chip {
-        return Chip(this).apply {
-            layoutParams = ViewGroup.MarginLayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,                    // width
-                resources.getDimension(R.dimen.chip_height).toInt()     // height
-            ).apply {
-                marginEnd = resources.getDimension(R.dimen.chip_margin_end).toInt()
-            }
+        val chip = layoutInflater.inflate(R.layout.show_profile_chip, null) as Chip
 
-            typeface = ResourcesCompat.getFont(context, R.font.poppins_bold)
-            layoutDirection = LAYOUT_DIRECTION_RTL
-            isClickable = false
+        chip.apply {
             setVisible(sport.selected)  // !!!
-            setChipIconSizeResource(R.dimen.chip_icon_size)
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(R.dimen.chip_text_size))
-            setTextStartPaddingResource(R.dimen.chip_text_start_padding)
-            setTextEndPaddingResource(R.dimen.chip_text_end_padding)
             text = extendedNameOf(sport.name) // !!!
-            setChipBackgroundColorResource(R.color.background_orange)
-            chipStrokeWidth = 1.0f.dpToPx(context).toFloat()
-
             // set level characteristics
             when(sport.level) {
                 Level.BEGINNER -> {
@@ -187,6 +174,8 @@ class ShowProfileActivity : AppCompatActivity() {
                 }
             }
         }
+
+        return chip
     }
 
     private fun loadHardcodedSports(vararg hardcodedSports: Sport) {

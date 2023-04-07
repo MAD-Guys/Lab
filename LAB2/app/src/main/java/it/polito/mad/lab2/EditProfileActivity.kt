@@ -300,13 +300,11 @@ class EditProfileActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.camera -> {
                 // check if camera permissions have already been granted or not
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED
-                    // || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
-                ) {
+                if (ActivityCompat.checkSelfPermission(
+                        this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
                     // request permissions
                     val permission = arrayOf(
-                        Manifest.permission.CAMERA,
-                        // Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        Manifest.permission.CAMERA
                     )
 
                     // NOTE: the request code is used to identify the request
@@ -317,19 +315,16 @@ class EditProfileActivity : AppCompatActivity() {
                 true
             }
             R.id.gallery -> {
-                /*
                 // check if gallery permissions have already been granted or not
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                if (ActivityCompat.checkSelfPermission(this, galleryImagesPermission()) == PackageManager.PERMISSION_DENIED) {
                     // request permissions
                     val permissions = arrayOf(
-                        Manifest.permission.READ_EXTERNAL_STORAGE
+                        galleryImagesPermission()
                     )
 
                     ActivityCompat.requestPermissions(this, permissions, 113)
                 }
                 else openGallery()
-                */
-                openGallery()
 
                 true
             }
@@ -347,21 +342,17 @@ class EditProfileActivity : AppCompatActivity() {
         if (requestCode == 112) {
             val cameraGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED
 
-            // val writeExternalStorageGranted = grantResults[1] == PackageManager.PERMISSION_GRANTED
-
-            if (cameraGranted /* && writeExternalStorageGranted */ )
+            if (cameraGranted)
                 openCamera()
         }
         // if gallery permissions have been granted, open the gallery
-        /*
-        else if (requestCode == 113) {
 
-            val readExternalStorageGranted =
+        else if (requestCode == 113) {
+            val galleryImagesPermissionGranted =
                 grantResults[0] == PackageManager.PERMISSION_GRANTED
 
-            if (readExternalStorageGranted)
+            if (galleryImagesPermissionGranted)
                 openGallery()
         }
-        */
     }
 }

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- TODO: tutto -->
 <com.google.android.material.chip.Chip
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -16,11 +17,11 @@
     app:chipBackgroundColor="@color/background_orange"
     app:chipStrokeWidth="1dp"
     />
-<!--
-    (added programmatically)
-    android:visibility -> sport.selected
-    android:text -> extendedNameOf(sport.name)
-    app:chipIcon -> @drawable/[level_badge]
-    app:chipStrokeColor -> @color/[level_color]
-    android:textColor -> @color/[level_color]
--->
+    <!--
+        (added programmatically)
+        android:visibility -> sport.selected
+        android:text -> extendedNameOf(sport.name)
+        app:chipIcon -> @drawable/[level_badge]
+        app:chipStrokeColor -> @color/[level_color]
+        android:textColor -> @color/[level_color]
+    -->
