@@ -1,18 +1,14 @@
 package it.polito.mad.lab2
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.*
-import android.view.View.LAYOUT_DIRECTION_RTL
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.res.ResourcesCompat
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import es.dmoral.toasty.Toasty
@@ -108,13 +104,18 @@ class ShowProfileActivity : AppCompatActivity() {
         profilePictureBitmap?.let { profilePicture.setImageBitmap(it) }
         backgroundProfilePictureBitmap?.let { backgroundProfilePicture.setImageBitmap(it) }
 
+
         /* manage sports */
         sportChips = HashMap()
         sportData = HashMap()
 
+        // retieve and clean sports container
+        val sportsContainer = findViewById<ChipGroup>(R.id.sports_container)
+        sportsContainer.removeAllViews()
+
         // first time the app is launched, some hardcoded sports will appear
         if (jsonObjectProfile == null)
-            loadHardcodedSports(*getHardcodedSports())
+            loadHardcodedSports(*getHardcodedSports(), parent=sportsContainer)
         else {
             // load the (already) selected sports by the user
             val sportJson = jsonObjectProfile.getJSONObject("sports")
@@ -123,7 +124,7 @@ class ShowProfileActivity : AppCompatActivity() {
 
                 if(sport.selected) {
                     // create sport chip
-                    val sportChip = createSportChip(sport)
+                    val sportChip = createSportChip(sport, sportsContainer)
 
                     // save chip and information
                     sportChips[sportName] = sportChip
@@ -131,9 +132,6 @@ class ShowProfileActivity : AppCompatActivity() {
                 }
             }
         }
-        // retieve sports container
-        val sportsContainer = findViewById<ChipGroup>(R.id.sports_container)
-        sportsContainer.removeAllViews()
 
         // display sports in decreasing order of level
         sportChips.asSequence().sortedByDescending {(sportName, _) ->
@@ -143,9 +141,8 @@ class ShowProfileActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("InflateParams")
-    private fun createSportChip(sport: Sport): Chip {
-        val chip = layoutInflater.inflate(R.layout.show_profile_chip, null) as Chip
+    private fun createSportChip(sport: Sport, parent: ViewGroup): Chip {
+        val chip = layoutInflater.inflate(R.layout.show_profile_chip, parent, false) as Chip
 
         chip.apply {
             setVisible(sport.selected)  // !!!
@@ -161,6 +158,7 @@ class ShowProfileActivity : AppCompatActivity() {
                     setChipIconResource(R.drawable.intermediate_level_badge)
                     setChipStrokeColorResource(R.color.intermediate_badge_blue)
                     setTextColor(getColor(R.color.intermediate_badge_blue))
+                    setChipIconSizeResource(R.dimen.chip_icon_size_big)
                 }
                 Level.EXPERT -> {
                     setChipIconResource(R.drawable.expert_level_badge)
@@ -172,16 +170,17 @@ class ShowProfileActivity : AppCompatActivity() {
                     setChipStrokeColorResource(R.color.pro_badge_grey)
                     setTextColor(getColor(R.color.pro_badge_grey))
                 }
+                else -> throw RuntimeException("Unexpected selected sport with NO_LEVEL!")
             }
         }
 
         return chip
     }
 
-    private fun loadHardcodedSports(vararg hardcodedSports: Sport) {
+    private fun loadHardcodedSports(vararg hardcodedSports: Sport, parent: ViewGroup) {
         hardcodedSports.forEach {
             // create chip view
-            val sportChip = createSportChip(it)
+            val sportChip = createSportChip(it, parent)
 
             // save chip and sport info
             sportChips[it.name] = sportChip

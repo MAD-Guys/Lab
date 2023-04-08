@@ -40,7 +40,7 @@ internal data class Sport(val name: String, var selected: Boolean, var level: Le
     fun saveAsJson(jsonObject: JSONObject) {
         val sportJson = JSONObject()
         sportJson.put("selected", this.selected)
-        sportJson.put("level", this.level.ordinal)  // "level" -> 0/1/2/3
+        sportJson.put("level", this.level.ordinal)  // "level" -> 0/1/2/3/4
         jsonObject.put(this.name, sportJson)
     }
 }
@@ -68,7 +68,7 @@ internal fun getHardcodedSports() = arrayOf(
 
 
 internal class SportChips(
-    val name: String, val chip: Chip,
+    val name: String, val chip: Chip, val actualLevelChip: Chip,
     val levelsChipGroup: ChipGroup, val levelsChips: List<Chip>)
 
 internal enum class Gender {
@@ -76,7 +76,7 @@ internal enum class Gender {
 }
 
 internal enum class Level {
-    BEGINNER, INTERMEDIATE, EXPERT, PRO;
+    BEGINNER, INTERMEDIATE, EXPERT, PRO, NO_LEVEL;
 
     companion object {
         fun of(ordinal: Int): Level = when(ordinal) {
@@ -84,8 +84,17 @@ internal enum class Level {
             1 -> INTERMEDIATE
             2 -> EXPERT
             3 -> PRO
+            4 -> NO_LEVEL
             else -> throw RuntimeException("It does not exist a Level of $ordinal")
         }
+    }
+
+    fun icon() = when(this) {
+        BEGINNER -> R.drawable.beginner_level_badge
+        INTERMEDIATE -> R.drawable.intermediate_level_badge
+        EXPERT -> R.drawable.expert_level_badge
+        PRO -> R.drawable.pro_level_badge
+        else -> throw RuntimeException("It does not exist such level")
     }
 }
 

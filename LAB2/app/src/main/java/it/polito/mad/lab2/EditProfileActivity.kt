@@ -33,16 +33,16 @@ class EditProfileActivity : AppCompatActivity() {
     // Sports temporary state
     internal var sportsTemp = mutableMapOf(
         // 10 values initially set according to the values hard coded in ShowProfileActivity.kt
-        Pair("basket",      Sport("basket",     false, Level.BEGINNER)),
-        Pair("soccer11",    Sport("soccer11",   false, Level.BEGINNER)),
-        Pair("soccer5",     Sport("soccer5",    false, Level.BEGINNER)),
-        Pair("soccer8",     Sport("soccer8",    false, Level.BEGINNER)),
-        Pair("tennis",      Sport("tennis",     false, Level.BEGINNER)),
-        Pair("tableTennis", Sport("tableTennis",false, Level.BEGINNER)),
-        Pair("volleyball",  Sport("volleyball", false, Level.BEGINNER)),
-        Pair("beachVolley", Sport("beachVolley",false, Level.BEGINNER)),
-        Pair("padel",       Sport("padel",      false, Level.BEGINNER)),
-        Pair("miniGolf",    Sport("miniGolf",   false, Level.BEGINNER))
+        Pair("basket",      Sport("basket",     false, Level.NO_LEVEL)),
+        Pair("soccer11",    Sport("soccer11",   false, Level.NO_LEVEL)),
+        Pair("soccer5",     Sport("soccer5",    false, Level.NO_LEVEL)),
+        Pair("soccer8",     Sport("soccer8",    false, Level.NO_LEVEL)),
+        Pair("tennis",      Sport("tennis",     false, Level.NO_LEVEL)),
+        Pair("tableTennis", Sport("tableTennis",false, Level.NO_LEVEL)),
+        Pair("volleyball",  Sport("volleyball", false, Level.NO_LEVEL)),
+        Pair("beachVolley", Sport("beachVolley",false, Level.NO_LEVEL)),
+        Pair("padel",       Sport("padel",      false, Level.NO_LEVEL)),
+        Pair("miniGolf",    Sport("miniGolf",   false, Level.NO_LEVEL))
     )
 
     // User info views
@@ -184,8 +184,7 @@ class EditProfileActivity : AppCompatActivity() {
             openContextMenu(profileImageButton)
         }
 
-        // load data from SharedPreferences and internal storage
-        this.loadDataFromStorage()
+
 
         // add listeners to the user info views
         firstName.addTextChangedListener(textListenerInit("firstName"))
@@ -206,11 +205,29 @@ class EditProfileActivity : AppCompatActivity() {
 
         // add listeners to the sports views
         for ((sportName, sportChips) in sports) {
+            // add listener to the sport chip
             sportChips.chip.setOnClickListener { sportChipListener(sportName) }
+
+            // add listener to the sport levels chips
             sportChips.levelsChipGroup.setOnCheckedStateChangeListener { it, _ ->
                 sportLevelListener(it, sportName)
             }
+
+            // add listener to the actual level chip
+            sportChips.actualLevelChip.setOnClickListener {
+                // toggle sport levels chip group
+                toggleSportLevelsVisibility(sportName)
+            }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // load data from SharedPreferences and internal storage
+        this.loadDataFromStorage()
+        //val sportsContainer = findViewById<ChipGroup>(R.id.sports_container)
+        //sportsContainer.requestLayout()
     }
 
     override fun onPause() {

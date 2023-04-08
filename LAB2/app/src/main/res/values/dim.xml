@@ -13,10 +13,11 @@
     <!-- chips -->
     <dimen name="chip_height">52sp</dimen>
     <dimen name="chip_icon_size">60sp</dimen>
+    <dimen name="chip_icon_size_big">70sp</dimen>
     <dimen name="chip_text_size">16sp</dimen>
     <dimen name="chip_text_start_padding">9sp</dimen>
     <dimen name="chip_text_end_padding">13sp</dimen>
-    <dimen name="edit_chip_text_start_padding">13sp</dimen>
+    <dimen name="edit_chip_text_start_padding">8sp</dimen>
     <dimen name="edit_chip_text_end_padding">12sp</dimen>
     <dimen name="chip_margin_end">4sp</dimen>
 

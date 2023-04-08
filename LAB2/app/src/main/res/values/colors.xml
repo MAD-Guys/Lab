@@ -46,6 +46,7 @@
     <color name="unselected_chip_border_color">@color/light_grey</color>
     <color name="unselected_chip_text_color">#303030</color>
     <color name="unselected_chip_color">@color/background_orange</color>
+    <color name="checked_icon_grey">#898986</color>
 
     <!-- app colors -->
     <color name="primary_orange">#FAAC14</color>
