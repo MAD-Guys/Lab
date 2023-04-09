@@ -250,6 +250,8 @@ internal fun showToasty(type: String, context: Context, message: String) {
 }
 
 /**
+ * Blur an image bitmap according to the specified parameters
+ *
  * Stack Blur Algorithm by Mario Klingemann mario@quasimondo.com
  *
  * This is a compromise between Gaussian Blur and Box blur It creates much
@@ -470,18 +472,17 @@ internal fun fastblur(bitmapParam: Bitmap, scale: Float, radius: Int): Bitmap? {
     return bitmap
 }
 
-// other
-
-// Take a 'dp' number and compute the respective 'px' value
-// fun Float.dpToPx(): Float = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, DisplayMetrics())
+/* measures utilities */
 
 fun Float.dpToPx(context: Context): Int {
-    return (this * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).toInt()
+    return TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        this,
+        context.resources.displayMetrics
+    ).toInt()
 }
 
-fun Int.pxToDp(context: Context): Float {
-    return this.toFloat() / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
-}
+
 
 fun Float.spToPx(context: Context): Int {
     return TypedValue.applyDimension(
@@ -490,3 +491,8 @@ fun Float.spToPx(context: Context): Int {
         context.resources.displayMetrics
     ).toInt()
 }
+
+fun Int.pxToDp(context: Context): Float {
+    return this.toFloat() / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+}
+

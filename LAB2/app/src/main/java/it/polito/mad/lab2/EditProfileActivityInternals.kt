@@ -58,18 +58,6 @@ internal fun EditProfileActivity.loadDataFromStorage() {
     locationTemp = locationResume
     bioTemp = bioResume
 
-    /* manage profile and background picture */
-
-    // retrieve profile picture and update it with the one uploaded by the user, if any
-    getPictureFromInternalStorage(filesDir, "profilePicture.jpeg")?.let {
-        profilePicture.setImageBitmap(it)
-    }
-
-    // retrieve background picture and update it with the one uploaded by the user, if any
-    getPictureFromInternalStorage(filesDir, "backgroundProfilePicture.jpeg")?.let {
-        backgroundProfilePicture.setImageBitmap(it)
-    }
-
     /* manage user sports */
 
     // set hard coded sports the first time the app is launched

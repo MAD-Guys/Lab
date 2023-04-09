@@ -59,8 +59,8 @@ class EditProfileActivity : AppCompatActivity() {
     internal val sports = HashMap<String,SportChips>()
 
     // Profile picture
-    internal lateinit var profilePicture: ImageView
-    internal lateinit var backgroundProfilePicture: ImageView
+    private lateinit var profilePicture: ImageView
+    private lateinit var backgroundProfilePicture: ImageView
     internal var profilePictureBitmap: Bitmap? = null
     internal var backgroundProfilePictureBitmap: Bitmap? = null
 
@@ -174,6 +174,18 @@ class EditProfileActivity : AppCompatActivity() {
         // fills the sportChips and sportLevels lists
         this.sportsInit()
 
+        /* manage profile and background picture */
+
+        // retrieve profile picture and update it with the one uploaded by the user, if any
+        getPictureFromInternalStorage(filesDir, "profilePicture.jpeg")?.let {
+            profilePicture.setImageBitmap(it)
+        }
+
+        // retrieve background picture and update it with the one uploaded by the user, if any
+        getPictureFromInternalStorage(filesDir, "backgroundProfilePicture.jpeg")?.let {
+            backgroundProfilePicture.setImageBitmap(it)
+        }
+
         /* manage listeners */
 
         // set context menu to change profile picture
@@ -183,8 +195,6 @@ class EditProfileActivity : AppCompatActivity() {
             // open the related context menu
             openContextMenu(profileImageButton)
         }
-
-
 
         // add listeners to the user info views
         firstName.addTextChangedListener(textListenerInit("firstName"))
@@ -224,10 +234,8 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        // load data from SharedPreferences and internal storage
+        // load user data from SharedPreferences
         this.loadDataFromStorage()
-        //val sportsContainer = findViewById<ChipGroup>(R.id.sports_container)
-        //sportsContainer.requestLayout()
     }
 
     override fun onPause() {
