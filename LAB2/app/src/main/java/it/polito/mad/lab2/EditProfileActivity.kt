@@ -194,6 +194,10 @@ class EditProfileActivity : AppCompatActivity() {
         // set context menu to change profile picture
         val profileImageButton: ImageButton = findViewById(R.id.profile_picture_button)
         registerForContextMenu(profileImageButton)
+        // disable long default click listener
+        profileImageButton.setOnLongClickListener(null)
+
+        // set click listener to change profile picture
         profileImageButton.setOnClickListener {
             // open the related context menu
             openContextMenu(profileImageButton)
@@ -231,7 +235,6 @@ class EditProfileActivity : AppCompatActivity() {
                 // open the context menu to select a new sport level
                 openContextMenu(sportChips.actualLevelChip)
             }
-
 
             // add listener to the sport chip
             sportChips.chip.setOnClickListener {
@@ -328,6 +331,8 @@ class EditProfileActivity : AppCompatActivity() {
             }
             R.id.actual_level_chip -> {
                 inflater.inflate(R.menu.sport_level_context_menu, menu)
+                // set menu title
+                menu.setHeaderTitle("Select your level \uD83D\uDD25")
             }
         }
     }

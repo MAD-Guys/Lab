@@ -168,27 +168,18 @@ internal fun EditProfileActivity.sportsInit() {
     val sportsContainer = findViewById<ChipGroup>(R.id.sports_container)
 
     for (sport in sportsTemp.keys) {
-        // create the vertical wrapper
-        val linearLayout = LinearLayout(this).apply {
-            layoutParams = LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, // width
-                LinearLayout.LayoutParams.WRAP_CONTENT  // height
-            )
-            orientation = LinearLayout.VERTICAL
-        }
-
         // create the horizontal sport chip wrapper
         // (it will contain the sport chip and the level badge, if any)
         val sportChipWrapper = LinearLayout(this).apply {
             layoutParams = LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, // width
+                LinearLayout.LayoutParams.MATCH_PARENT, // width
                 LinearLayout.LayoutParams.WRAP_CONTENT  // height
             )
             orientation = LinearLayout.HORIZONTAL
         }
 
         // create the Sport Chip
-        val sportChip = createEditSportChip(sport, linearLayout)
+        val sportChip = createEditSportChip(sport, sportChipWrapper)
 
         // create the actual Sport level chip
         val sportActualLevelChip = createEditSportLevelBadge(R.drawable.beginner_level_badge, sportChipWrapper)
@@ -196,10 +187,9 @@ internal fun EditProfileActivity.sportsInit() {
         // build sport hierarchy
         sportChipWrapper.addView(sportChip)
         sportChipWrapper.addView(sportActualLevelChip)
-        linearLayout.addView(sportChipWrapper)
 
         // append everything to the sport container
-        sportsContainer.addView(linearLayout)
+        sportsContainer.addView(sportChipWrapper)
 
         // save views
         sports[sport] = SportChips(sport, sportChip, sportActualLevelChip)
@@ -216,7 +206,7 @@ private fun EditProfileActivity.createEditSportChip(sportName: String, parent: V
 }
 
 private fun EditProfileActivity.createEditSportLevelBadge(levelIconResource: Int, parent: ViewGroup): Chip {
-    // infate generic level badge
+    // inflate generic level badge
     val levelChip = layoutInflater.inflate(
         if(levelIconResource == R.drawable.intermediate_level_badge)
             R.layout.edit_profile_sport_level_chip_big
@@ -247,8 +237,6 @@ internal fun EditProfileActivity.sportChipListener(sportName: String) {
         sportTemp.selected = false
         sportTemp.level = Level.NO_LEVEL    // reset level
 
-        // uncheck sport icon
-        sport.chip.isChecked = false
         // hide actual level image
         sport.actualLevelChip.visibility = Chip.GONE
     }
