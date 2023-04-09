@@ -316,7 +316,7 @@ class EditProfileActivity : AppCompatActivity() {
             R.id.profile_picture_button -> {
                 inflater.inflate(R.menu.profile_picture_context_menu, menu)
             }
-            else -> {
+            R.id.actual_level_chip -> {
                 inflater.inflate(R.menu.sport_level_context_menu, menu)
             }
         }
