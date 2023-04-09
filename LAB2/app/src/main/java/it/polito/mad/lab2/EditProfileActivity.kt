@@ -45,6 +45,9 @@ class EditProfileActivity : AppCompatActivity() {
         Pair("miniGolf",    Sport("miniGolf",   false, Level.NO_LEVEL))
     )
 
+    // used to distinguish between tapped sports
+    internal lateinit var consideredSport: String
+
     // User info views
     internal lateinit var firstName: EditText
     internal lateinit var lastName: EditText
@@ -171,7 +174,7 @@ class EditProfileActivity : AppCompatActivity() {
             aspectRatioY = 1
         )
 
-        // fills the sportChips and sportLevels lists
+        // fills the sportChips
         this.sportsInit()
 
         /* manage profile and background picture */
@@ -215,18 +218,24 @@ class EditProfileActivity : AppCompatActivity() {
 
         // add listeners to the sports views
         for ((sportName, sportChips) in sports) {
-            // add listener to the sport chip
-            sportChips.chip.setOnClickListener { sportChipListener(sportName) }
-
-            // add listener to the sport levels chips
-            sportChips.levelsChipGroup.setOnCheckedStateChangeListener { it, _ ->
-                sportLevelListener(it, sportName)
-            }
+            // register floating context menu for the actual level icons
+            registerForContextMenu(sportChips.actualLevelChip)
+            // remove long press listener
+            sportChips.actualLevelChip.setOnLongClickListener(null)
 
             // add listener to the actual level chip
             sportChips.actualLevelChip.setOnClickListener {
-                // toggle sport levels chip group
-                toggleSportLevelsVisibility(sportName)
+                // update sport considered at the moment by the menu
+                consideredSport = sportName
+
+                // open the context menu to select a new sport level
+                openContextMenu(sportChips.actualLevelChip)
+            }
+
+
+            // add listener to the sport chip
+            sportChips.chip.setOnClickListener {
+                sportChipListener(sportName)
             }
         }
     }
@@ -317,6 +326,9 @@ class EditProfileActivity : AppCompatActivity() {
             R.id.profile_picture_button -> {
                 inflater.inflate(R.menu.profile_picture_context_menu, menu)
             }
+            R.id.actual_level_chip -> {
+                inflater.inflate(R.menu.sport_level_context_menu, menu)
+            }
         }
     }
 
@@ -353,6 +365,36 @@ class EditProfileActivity : AppCompatActivity() {
 
                 true
             }
+            // sport level menu options
+            R.id.beginner_sport_level -> {
+                // retrieve tapped sport
+                val tappedSport = consideredSport
+                // change level
+                changeSportLevel(tappedSport, Level.BEGINNER)
+                true
+            }
+            R.id.intermediate_sport_level -> {
+                // retrieve tapped sport
+                val tappedSport = consideredSport
+                // change level
+                changeSportLevel(tappedSport, Level.INTERMEDIATE)
+                true
+            }
+            R.id.expert_sport_level -> {
+                // retrieve tapped sport
+                val tappedSport = consideredSport
+                // change level
+                changeSportLevel(tappedSport, Level.EXPERT)
+                true
+            }
+            R.id.pro_sport_level -> {
+                // retrieve tapped sport
+                val tappedSport = consideredSport
+                // change level
+                changeSportLevel(tappedSport, Level.PRO)
+                true
+            }
+
             else -> super.onContextItemSelected(item)
         }
     }

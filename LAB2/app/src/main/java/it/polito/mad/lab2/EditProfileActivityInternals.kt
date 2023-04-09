@@ -190,35 +190,19 @@ internal fun EditProfileActivity.sportsInit() {
         // create the Sport Chip
         val sportChip = createEditSportChip(sport, linearLayout)
 
-        // create the Sport level chip
-        val sportActualLevelChip = createEditSportLevelBadge(
-            R.drawable.beginner_level_badge, sportChipWrapper, true)
-
-        // create the levels wrapper
-        val sportLevelsChipGroup = createEditSportLevelsChipGroup(linearLayout)
-
-        // create levels badges
-        val sportLevelsChips = listOf(
-            R.drawable.beginner_level_badge,
-            R.drawable.intermediate_level_badge,
-            R.drawable.expert_level_badge,
-            R.drawable.pro_level_badge
-        ).map {level_badge ->
-            createEditSportLevelBadge(level_badge, sportLevelsChipGroup)
-        }
+        // create the actual Sport level chip
+        val sportActualLevelChip = createEditSportLevelBadge(R.drawable.beginner_level_badge, sportChipWrapper)
 
         // build sport hierarchy
         sportChipWrapper.addView(sportChip)
         sportChipWrapper.addView(sportActualLevelChip)
-        sportLevelsChips.forEach { chip -> sportLevelsChipGroup.addView(chip) }
         linearLayout.addView(sportChipWrapper)
-        linearLayout.addView(sportLevelsChipGroup)
 
         // append everything to the sport container
         sportsContainer.addView(linearLayout)
 
         // save views
-        sports[sport] = SportChips(sport, sportChip, sportActualLevelChip, sportLevelsChipGroup, sportLevelsChips)
+        sports[sport] = SportChips(sport, sportChip, sportActualLevelChip)
     }
 }
 
@@ -231,12 +215,7 @@ private fun EditProfileActivity.createEditSportChip(sportName: String, parent: V
     return sportChip
 }
 
-private fun EditProfileActivity.createEditSportLevelsChipGroup(parent: ViewGroup): ChipGroup {
-    return layoutInflater.inflate(R.layout.edit_profile_chip_group, parent, false) as ChipGroup
-}
-
-private fun EditProfileActivity.createEditSportLevelBadge(
-    levelIconResource: Int, parent: ViewGroup, actualLevel: Boolean = false): Chip {
+private fun EditProfileActivity.createEditSportLevelBadge(levelIconResource: Int, parent: ViewGroup): Chip {
     // infate generic level badge
     val levelChip = layoutInflater.inflate(
         if(levelIconResource == R.drawable.intermediate_level_badge)
@@ -249,14 +228,12 @@ private fun EditProfileActivity.createEditSportLevelBadge(
     // customize icon based on the level
     levelChip.setChipIconResource(levelIconResource)
 
-    if(actualLevel) {
-        // (it is the level badge next to the sport chip)
-        levelChip.isCheckable = false
-        levelChip.visibility = Chip.GONE
-        levelChip.layoutParams = LayoutParams(
-            LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT
-        )
-    }
+    // (this is the level badge next to the sport chip)
+    levelChip.isCheckable = false
+    levelChip.visibility = Chip.GONE
+    levelChip.layoutParams = LayoutParams(
+        LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT
+    )
 
     return levelChip
 }
@@ -267,75 +244,45 @@ internal fun EditProfileActivity.sportChipListener(sportName: String) {
     val sportTemp = sportsTemp[sportName]!!
 
     if (sportTemp.selected) { // this sport was already selected -> deselect it
-        sport.levelsChipGroup.clearCheck()
+        sportTemp.selected = false
+        sportTemp.level = Level.NO_LEVEL    // reset level
+
+        // uncheck sport icon
+        sport.chip.isChecked = false
+        // hide actual level image
+        sport.actualLevelChip.visibility = Chip.GONE
     }
     else {
-        // this sport was not selected -> toggle the levels chip group
-        toggleSportLevelsVisibility(sportName)
+        // update sport considered at the moment by the menu
+        consideredSport = sportName
+
+        // this sport was not selected -> open the context menu to choose the level
+        openContextMenu(sport.actualLevelChip)
 
         // hide the checked icon on the sport badge
         sport.chip.isChecked = false
     }
 }
 
-internal fun EditProfileActivity.toggleSportLevelsVisibility(sportName: String) {
-    val sport = sports[sportName]!!
+internal fun EditProfileActivity.changeSportLevel(sportName: String, level: Level) {
+    val sport = sportsTemp[sportName]!!
+    val sportChips = sports[sportName]!!
 
-    // (hide/show the level badges)
-    sport.levelsChipGroup.visibility = when(sport.levelsChipGroup.visibility) {
-        ChipGroup.VISIBLE -> ChipGroup.GONE
-        ChipGroup.GONE -> {
-            // hide all the other sports' levels
-            sports.forEach{(_,sportChips) ->
-                sportChips.levelsChipGroup.visibility = ChipGroup.GONE
-            }
+    // mark sport as selected and set new level
+    sport.selected = true
+    sport.level = level
 
-            // set this chip visible
-            ChipGroup.VISIBLE
-        }
-        else -> throw RuntimeException("Unexpected ChipGroup visibility attribute")
-    }
-}
+    // mark sport chip as selected and show proper level badge
+    sportChips.chip.isChecked = true
+    sportChips.actualLevelChip.setChipIconResource(level.icon())
+    sportChips.actualLevelChip.setChipIconSizeResource(
+        if (level == Level.INTERMEDIATE)
+            R.dimen.chip_icon_size_big
+        else
+            R.dimen.chip_icon_size
+    )
 
-internal fun EditProfileActivity.sportLevelListener(chipGroup: ChipGroup, sportName: String) {
-    val sport = sports[sportName]!!
-    val sportTemp = sportsTemp[sportName]!!
-
-    // update level info
-    sportTemp.level = when (chipGroup.checkedChipId) {
-        sport.levelsChips[Level.BEGINNER.ordinal].id -> Level.BEGINNER
-        sport.levelsChips[Level.INTERMEDIATE.ordinal].id -> Level.INTERMEDIATE
-        sport.levelsChips[Level.EXPERT.ordinal].id -> Level.EXPERT
-        sport.levelsChips[Level.PRO.ordinal].id -> Level.PRO
-        ChipGroup.NO_ID -> Level.NO_LEVEL
-        else -> throw RuntimeException("Detected unexpected checked chip id")
-    }
-
-    // update selection info
-    sportTemp.selected = sportTemp.level != Level.NO_LEVEL
-
-    if (sportTemp.selected) {
-        // change actual level badge icon
-        sport.actualLevelChip.setChipIconResource(sportTemp.level.icon())
-        sport.actualLevelChip.setChipIconSizeResource(
-            if (sportTemp.level == Level.INTERMEDIATE)
-                R.dimen.chip_icon_size_big
-            else
-                R.dimen.chip_icon_size
-        )
-        // show badge
-        sport.actualLevelChip.visibility = Chip.VISIBLE
-        // hide chip Group
-        sport.levelsChipGroup.visibility = ChipGroup.GONE
-        // check sport chip
-        sport.chip.isChecked = true
-    }
-    else {
-        // hide actual level badge icon
-        sport.actualLevelChip.visibility = Chip.GONE
-        // uncheck sport chip
-        sport.chip.isChecked = false
-    }
+    sportChips.actualLevelChip.visibility = Chip.VISIBLE
 }
 
 // Set sports Edit fields and temporary values
@@ -359,9 +306,6 @@ private fun EditProfileActivity.setEditSportsField(sport: Sport) {
                 R.dimen.chip_icon_size
         )
         sportGroup.actualLevelChip.visibility = Chip.VISIBLE
-
-        // check the right level badge
-        sportGroup.levelsChipGroup.check(sportGroup.levelsChips[sport.level.ordinal].id)
     }
 }
 

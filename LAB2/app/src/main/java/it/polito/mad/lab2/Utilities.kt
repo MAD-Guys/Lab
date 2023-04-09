@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import es.dmoral.toasty.Toasty
 import org.json.JSONObject
 import java.io.File
@@ -68,8 +67,7 @@ internal fun getHardcodedSports() = arrayOf(
 
 
 internal class SportChips(
-    val name: String, val chip: Chip, val actualLevelChip: Chip,
-    val levelsChipGroup: ChipGroup, val levelsChips: List<Chip>)
+    val name: String, val chip: Chip, val actualLevelChip: Chip)
 
 internal enum class Gender {
     Male, Female, Other
