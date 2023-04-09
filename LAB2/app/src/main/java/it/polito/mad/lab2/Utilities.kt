@@ -28,6 +28,8 @@ import java.io.IOException
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
+/* Sport utilities */
+
 internal data class Sport(val name: String, var selected: Boolean, var level: Level) {
     companion object {
         fun from(name: String, jsonObject: JSONObject): Sport =
@@ -59,15 +61,15 @@ internal fun extendedNameOf(sportName: String): String = when(sportName) {
     else -> "????"
 }
 
-
 internal fun getHardcodedSports() = arrayOf(
     Sport("basket", true, Level.EXPERT),
     Sport("tennis", true, Level.BEGINNER)
 )
 
-
 internal class SportChips(
     val name: String, val chip: Chip, val actualLevelChip: Chip)
+
+/* Enum utilities */
 
 internal enum class Gender {
     Male, Female, Other
@@ -95,6 +97,8 @@ internal enum class Level {
         else -> throw RuntimeException("It does not exist such level")
     }
 }
+
+/* Display utilities */
 
 /** Returns display width and display height */
 internal fun AppCompatActivity.getDisplayMeasures(): Pair<Int, Int> {

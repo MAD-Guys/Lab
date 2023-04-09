@@ -11,6 +11,7 @@ import android.view.ViewGroup.LayoutParams
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.core.view.children
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import org.json.JSONObject
@@ -194,6 +195,9 @@ internal fun EditProfileActivity.sportsInit() {
         // save views
         sports[sport] = SportChips(sport, sportChip, sportActualLevelChip)
     }
+
+    // * hide pad sport at the bottom *
+    sportsContainer.children.last().visibility = LinearLayout.GONE
 }
 
 private fun EditProfileActivity.createEditSportChip(sportName: String, parent: ViewGroup): Chip {

@@ -8,6 +8,7 @@
     android:layout_marginEnd="@dimen/chip_margin_end"
     android:layout_gravity="center_vertical"
     android:checkable="true"
+    android:checked="false"
     app:checkedIconVisible="true"
     android:fontFamily="@font/poppins_bold"
     android:textColor="@color/unselected_chip_text_color"

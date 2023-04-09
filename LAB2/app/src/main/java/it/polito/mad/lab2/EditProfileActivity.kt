@@ -42,7 +42,9 @@ class EditProfileActivity : AppCompatActivity() {
         Pair("volleyball",  Sport("volleyball", false, Level.NO_LEVEL)),
         Pair("beachVolley", Sport("beachVolley",false, Level.NO_LEVEL)),
         Pair("padel",       Sport("padel",      false, Level.NO_LEVEL)),
-        Pair("miniGolf",    Sport("miniGolf",   false, Level.NO_LEVEL))
+        Pair("miniGolf",    Sport("miniGolf",   false, Level.NO_LEVEL)),
+        // * added to deal with a nosense ChipGroup bug inherent to the last Chip *
+        Pair("pad",         Sport("pad",        false, Level.NO_LEVEL))
     )
 
     // used to distinguish between tapped sports
@@ -57,8 +59,7 @@ class EditProfileActivity : AppCompatActivity() {
     internal lateinit var location: EditText
     internal lateinit var bio: EditText
 
-    // Sports views: each element contains the Sport Chip,
-    //               the levels ChipGroup and a list of the levels' Chips
+    // Sports views: each element contains the Sport Chip and the actual level icon Chip
     internal val sports = HashMap<String,SportChips>()
 
     // Profile picture
@@ -332,7 +333,7 @@ class EditProfileActivity : AppCompatActivity() {
             R.id.actual_level_chip -> {
                 inflater.inflate(R.menu.sport_level_context_menu, menu)
                 // set menu title
-                menu.setHeaderTitle("Select your level \uD83D\uDD25")
+                menu.setHeaderTitle("Choose your level \uD83D\uDD25")
             }
         }
     }
