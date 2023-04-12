@@ -10,6 +10,15 @@ import it.polito.mad.lab2.UserDao
 @Database(entities = arrayOf(User::class, Sport::class, SportCenter::class, UserSport::class, Playground::class, PlaygroundSport::class, PlaygroundReservation::class, Equipment::class, EquipmentReservation::class),  version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
+    abstract fun sportDao(): SportDao
+    abstract fun sportCenterDao(): SportCenterDao
+    abstract fun userSportDao(): UserSportDao
+    abstract fun playgroundDao(): PlaygroundDao
+    abstract fun playgroundSportDao(): PlaygroundSportDao
+    abstract fun playgroundReservationDao(): PlaygroundReservationDao
+    abstract fun equipmentDao(): EquipmentDao
+    abstract fun equipmentReservationDao(): EquipmentReservationDao
+
 
 
     companion object {
