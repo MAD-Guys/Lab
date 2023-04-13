@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="blue_200">#5FC1F9</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="lighter_blue">#CFEAF1</color>
+    <color name="light_grey">#606060</color>
+    <color name="background_orange">#FAF9F3</color>
+    <color name="background_blue">#D5F4FA</color>
+
+    <!-- Toasts -->
+    <color name="toast_success">#8BC34A</color>
+    <color name="toast_error">#EA473B</color>
+    <color name="toast_info">#5FC1F9</color>
+    <color name="toast_warning">#FFBF00</color>
+
+    <!-- Sports -->
+    <color name="pale_orange">#FFCA7A</color>
+    <color name="pale_green">#BDEA9A</color>
+    <color name="pale_blue">#6195E2</color>
+    <color name="pale_ametista">#D9C6E5</color>
+    <color name="pale_lighter_violet">#AFA6CF</color>
+    <color name="pale_lighter_blue">#A7D2EE</color>
+    <color name="pale_lighter_green">#A7EED2</color>
+    <color name="pale_gold_brown">#bea16e</color>
+    <color name="pale_lighter_red">#EEA7A7</color>
+    <color name="pale_lighter_yellow">#EEECA7</color>
+    <color name="pale_lighter_brown">#D2A7A7</color>
+    <color name="pale_lighter_grey">#D2D2D2</color>
+    <color name="pale_lighter_ametista">#E5DAD9</color>
+
+    <!-- edit view -->
+    <color name="edit_text_text_color">@color/light_grey</color>
+    <color name="edit_text_text_color_hint">@color/pale_lighter_grey</color>
+
+    <!-- -->
+    <color name="profile_picture_background">@color/background_blue</color>
+    <color name="button_text_color">#000000</color>
+
+    <!-- Chip colors -->
+    <color name="unselected_chip_border_color">@color/light_grey</color>
+    <color name="unselected_chip_text_color">#303030</color>
+    <color name="unselected_chip_color">@color/background_orange</color>
+    <color name="checked_icon_grey">#898986</color>
+
+    <!-- app colors -->
+    <color name="primary_orange">#FAAC14</color>
+    <color name="secondary_blue">#67C0F3</color>
+
+    <!-- badge colors -->
+    <color name="pro_badge_grey">#424242</color>
+    <color name="expert_badge_blue">#003E76</color>
+    <color name="intermediate_badge_blue">#317AA4</color>
+    <color name="beginner_badge_blue">#67C0F3</color>
+
+</resources>

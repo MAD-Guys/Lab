@@ -1,0 +1,90 @@
+<resources>
+    <string name="app_name">MAD GUYS</string>
+
+    <!--
+    ShowProfileActivity
+    -->
+
+    <!-- images -->
+    <string name="profile_picture">Profile picture</string>
+    <string name="background_profile_picture">Background profile picture</string>
+    <string name="image_person_content_description">imagePerson</string>
+    <string name="image_location_content_description">imageLocation</string>
+
+    <!-- *default values* -->
+
+    <!-- user names -->
+    <string name="first_name">John</string>
+    <string name="last_name">Doe</string>
+    <string name="username">johndoe</string>
+
+    <!-- user age, location, gender -->
+    <string name="user_gender">Male</string>
+    <string name="user_age">23</string>
+    <string name="age_label">Age: </string>
+
+    <string name="user_location">Rome</string>
+
+    <!-- buttons -->
+    <string name="edit_button">Edit button</string>
+    <string name="add_friend_button">Add Friend</string>
+    <string name="message_button">Message</string>
+    <string name="add_friend_button_description">add friend</string>
+    <string name="message_button_description">message</string>
+
+    <!-- sports -->
+    <string name="sports_title">Sports</string>
+    <string name="basket_sport">Basket</string>
+    <string name="soccer11_sport">11-a-side Soccer</string>
+    <string name="soccer5_sport">5-a-side Soccer</string>
+    <string name="soccer8_sport">8-a-side Soccer</string>
+    <string name="tennis_sport">Tennis</string>
+    <string name="volleyball_sport">Volleyball</string>
+    <string name="tableTennis_sport">Table Tennis</string>
+    <string name="beachVolley_sport">Beach Volley</string>
+    <string name="padel_sport">Padel</string>
+    <string name="miniGolf_spot">Mini Golf</string>
+    <string name="swimming_sport">Swimming</string>
+
+    <!-- sport levels -->
+    <string name="beginner_sport_level">Beginner</string>
+    <string name="intermediate_sport_level">Intermediate</string>
+    <string name="expert_sport_level">Expert</string>
+    <string name="pro_sport_level">Pro</string>
+
+    <!-- user bio -->
+    <string name="bio_title">Bio</string>
+    <string name="user_bio">I’m a Computer Engineering student from Latina. I love playing basketball and tennis with my friends, especially on the weekend.</string>
+
+    <!--
+    EditProfileActivity
+    -->
+
+    <!-- images -->
+    <string name="profile_picture_button_description">Change profile picture</string>
+
+    <!-- select picture menu selections -->
+    <string name="camera">Use the camera to take a picture</string>
+    <string name="gallery">Select an image from the phone gallery</string>
+
+    <!-- user info headers -->
+    <string name="first_name_header">First Name</string>
+    <string name="last_name_header">Last Name</string>
+    <string name="username_header">Username</string>
+    <string name="gender_header">Gender</string>
+    <string name="age_header">Age</string>
+    <string name="location_header">Location</string>
+
+    <!-- *default values* -->
+    <string name="male_gender">Male</string>
+    <string name="female_gender">Female</string>
+    <string name="other_gender">Other</string>
+
+    <!-- sport selection description -->
+    <string name="sport_selection_description">Tap on the sports you like and specify your level! 🚀</string>
+
+    <!-- buttons -->
+    <string name="confirm_button_description">Confirm button</string>
+    <string name="back_button_description">Back button</string>
+
+</resources>

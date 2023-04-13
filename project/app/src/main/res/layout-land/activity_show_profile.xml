@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_orange"
+    android:baselineAligned="false"
+    tools:context=".ShowProfileActivity">
+
+    <!-- Profile picture box
+    (put a default length which will be programmatically overwritten at run time) -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profile_picture_container"
+        android:layout_width="@dimen/picture_default_size"
+        android:layout_height="match_parent"
+        android:background="@color/profile_picture_background"
+        android:paddingHorizontal="16dp">
+        <!-- background profile picture -->
+        <ImageView
+            android:id="@+id/background_profile_picture"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/background_profile_picture"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/background_user_profile_picture"
+            tools:ignore="ImageContrastCheck"
+            android:visibility="visible"/>
+        <!-- profile picture -->
+        <ImageView
+            android:id="@+id/profile_picture"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:contentDescription="@string/profile_picture"
+            app:srcCompat="@drawable/user_profile_picture_noaplha"
+            tools:ignore="ImageContrastCheck" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Profile information -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingVertical="16dp">
+
+            <!-- Section 1: General information -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_marginBottom="4dp">
+
+                <!-- full name and username wrapper -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="5"
+                    android:layout_gravity="top">
+                    <!-- full name wrapper -->
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:flexWrap="wrap"
+                        app:alignItems="stretch"
+                        app:alignContent="stretch">
+                        <!-- first name -->
+                        <TextView
+                            android:id="@+id/first_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:includeFontPadding="false"
+                            android:text="@string/first_name"
+                            android:textColor="@color/black"
+                            android:textSize="30sp"
+                            android:textStyle="bold"
+
+                            android:layout_marginEnd="5sp"/>
+                        <!-- last name -->
+                        <TextView
+                            android:id="@+id/last_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:includeFontPadding="false"
+                            android:text="@string/last_name"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:textSize="30sp"
+                            />
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <!-- username wrapper -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <!-- @ -->
+                        <TextView
+                            android:id="@+id/at"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
+                            android:text="\@"
+                            android:textColor="@color/light_grey"
+                            android:textSize="@dimen/default_text_size"
+                            tools:ignore="HardcodedText" />
+                        <!-- username -->
+                        <TextView
+                            android:id="@+id/username"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
+                            android:text="@string/username"
+                            android:textColor="@color/light_grey"
+                            android:textSize="@dimen/default_text_size"
+                            android:autoSizeTextType="uniform"
+                            tools:ignore="UnusedAttribute" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:orientation="vertical"
+                    android:layout_gravity="bottom">
+                    <!-- gender, age, location info wrapper -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_marginStart="5sp">
+                        <!-- User sex and age information -->
+                        <LinearLayout
+                            android:id="@+id/user_sex_and_age_wrapper"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <!-- icon -->
+                            <ImageView
+                                android:id="@+id/person_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical"
+                                android:contentDescription="@string/image_person_content_description"
+                                app:srcCompat="@drawable/baseline_person_24" />
+                            <!-- user sex -->
+                            <TextView
+                                android:id="@+id/user_gender"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginStart="4sp"
+                                android:fontFamily="@font/poppins_medium"
+                                android:includeFontPadding="false"
+                                android:text="@string/user_gender"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/default_text_size" />
+                            <!-- comma -->
+                            <TextView
+                                android:id="@+id/comma"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:fontFamily="@font/poppins_medium"
+                                android:includeFontPadding="false"
+                                android:text=", "
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/default_text_size"
+                                tools:ignore="HardcodedText" />
+                            <!-- user age -->
+                            <TextView
+                                android:id="@+id/user_age"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:fontFamily="@font/poppins_medium"
+                                android:includeFontPadding="false"
+                                android:text="@string/user_age"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/default_text_size" />
+
+                        </LinearLayout>
+
+                        <!-- User location -->
+                        <LinearLayout
+                            android:id="@+id/user_location_wrapper"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            tools:ignore="UseCompoundDrawables">
+
+                            <!-- icon -->
+                            <ImageView
+                                android:id="@+id/location_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="top"
+                                android:contentDescription="@string/image_location_content_description"
+                                app:srcCompat="@drawable/baseline_location_on_24" />
+
+                            <!-- User location -->
+                            <TextView
+                                android:id="@+id/user_location"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="top"
+                                android:layout_marginStart="4sp"
+                                android:fontFamily="@font/poppins_medium"
+                                android:includeFontPadding="false"
+                                android:text="@string/user_location"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/default_text_size" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- buttons wrapper -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5sp"
+                        android:visibility="gone">
+                        <!-- Add Friend Button -->
+                        <Button
+                            android:id="@+id/button_add_friend"
+                            android:layout_width="0dp"
+                            android:layout_height="60sp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="12sp"
+                            android:contentDescription="@string/add_friend_button_description"
+                            android:paddingTop="10.5sp"
+                            android:paddingBottom="10.5sp"
+                            app:icon="@drawable/baseline_person_add_24"
+                            app:iconGravity="textStart"
+                            app:iconPadding="0sp"
+                            app:iconSize="30sp"
+                            app:iconTint="#000000"
+                            tools:ignore="ButtonStyle,VisualLintButtonSize" />
+                        <!-- Message Button -->
+                        <Button
+                            android:id="@+id/button_message"
+                            android:layout_width="0sp"
+                            android:layout_height="60sp"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/blue_200"
+                            android:contentDescription="@string/message_button_description"
+                            android:fontFamily="@font/poppins_bold"
+                            android:includeFontPadding="false"
+                            android:paddingTop="10.5sp"
+                            android:paddingBottom="10.5sp"
+                            app:icon="@drawable/baseline_forum_24"
+                            app:iconGravity="textStart"
+                            app:iconPadding="0sp"
+                            app:iconSize="28sp"
+                            app:iconTint="#000000"
+                            tools:ignore="ButtonStyle,VisualLintButtonSize" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- line divider -->
+            <View
+                android:id="@+id/sport_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="8dp"
+                android:background="?android:attr/listDivider" />
+
+            <!-- Section 2: Sports -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Sports title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="@string/sports_title"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/section_title_text_size"
+                    android:includeFontPadding="false"
+                    android:layout_marginBottom="8sp"/>
+
+                <!-- Sports Pills -->
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/sports_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible">
+
+                    <!-- Sport chips added programmatically here -->
+
+                </com.google.android.material.chip.ChipGroup>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/bio_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="8dp"
+                android:background="?android:attr/listDivider" />
+
+            <!-- Section 3: Bio -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="20sp">
+
+                <!-- title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="@string/bio_title"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/section_title_text_size"
+                    android:includeFontPadding="false"
+                    android:layout_marginBottom="8sp"/>
+
+                <!-- bio -->
+                <TextView
+                    android:id="@+id/user_bio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="@string/user_bio"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size"
+                    android:includeFontPadding="false"
+                    tools:ignore="VisualLintLongText" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>
+

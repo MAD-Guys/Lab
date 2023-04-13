@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.chip.Chip
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/show_profile_sport_chip"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/chip_height"
+    android:layout_marginEnd="@dimen/chip_margin_end"
+    android:fontFamily="@font/poppins_bold"
+    android:layoutDirection="rtl"
+    android:clickable="false"
+    app:chipIconSize="@dimen/chip_icon_size"
+    android:textSize="@dimen/chip_text_size"
+    app:textStartPadding="@dimen/chip_text_start_padding"
+    app:textEndPadding="@dimen/chip_text_end_padding"
+    app:chipBackgroundColor="@color/background_orange"
+    app:chipStrokeWidth="1dp"
+    />
+<!--
+    (added programmatically)
+    android:visibility -> sport.selected
+    android:text -> extendedNameOf(sport.name)
+    app:chipIcon -> @drawable/[level_badge]
+    app:chipStrokeColor -> @color/[level_color]
+    android:textColor -> @color/[level_color]
+-->
