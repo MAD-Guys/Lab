@@ -1,4 +1,4 @@
-package it.polito.mad.sportapp.LocalDB
+package it.polito.mad.sportapp.localDB
 
 import androidx.room.*
 import it.polito.mad.sportapp.User

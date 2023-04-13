@@ -1,4 +1,4 @@
-package it.polito.mad.sportapp.LocalDB
+package it.polito.mad.sportapp.localDB
 
 import android.content.Context
 import androidx.room.Database
