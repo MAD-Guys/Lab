@@ -1,4 +1,4 @@
-package it.polito.mad.sportapp
+package it.polito.mad.sportapp.profile
 
 import android.Manifest
 import android.content.Intent
@@ -19,6 +19,7 @@ import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
 import es.dmoral.toasty.Toasty
+import it.polito.mad.sportapp.*
 
 class EditProfileActivity : AppCompatActivity() {
     // user info fields' temporary state

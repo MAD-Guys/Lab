@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/background_orange"
     android:baselineAligned="false"
-    tools:context=".ShowProfileActivity">
+    tools:context=".profile.ShowProfileActivity">
 
     <!-- Profile picture box
     (put a default length which will be programmatically overwritten at run time) -->

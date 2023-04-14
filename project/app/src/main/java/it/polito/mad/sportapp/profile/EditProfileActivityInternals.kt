@@ -1,4 +1,4 @@
-package it.polito.mad.sportapp
+package it.polito.mad.sportapp.profile
 
 import android.Manifest
 import android.content.Intent
@@ -14,6 +14,8 @@ import androidx.core.content.FileProvider
 import androidx.core.view.children
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.savePictureOnInternalStorage
 import org.json.JSONObject
 import java.io.File
 

@@ -1,4 +1,4 @@
-package it.polito.mad.sportapp
+package it.polito.mad.sportapp.profile
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +12,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import es.dmoral.toasty.Toasty
+import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.getPictureFromInternalStorage
+import it.polito.mad.sportapp.setProfilePictureSize
+import it.polito.mad.sportapp.showToasty
 import org.json.JSONObject
 
 class ShowProfileActivity : AppCompatActivity() {
