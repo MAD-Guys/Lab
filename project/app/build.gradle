@@ -24,6 +24,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            res.srcDirs =
+                    [
+                            'src/main/res_profile',
+                            'src/main/res_show_reservations',
+                            'src/main/res'
+                    ]
+        }
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -42,6 +52,7 @@ dependencies {
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'com.github.GrenderG:Toasty:1.5.2'
     implementation 'androidx.activity:activity-ktx:1.2.0-alpha06'
+    implementation 'com.github.npanigrahy:Custom-Calendar-View:v1.1'
     implementation 'com.vanniktech:android-image-cropper:4.5.0'
     implementation "androidx.room:room-runtime:2.5.0"
     implementation "androidx.room:room-ktx:2.5.0"
