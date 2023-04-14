@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <!-- Sports -->
+    <color name="pale_orange">#FFCA7A</color>
+    <color name="pale_green">#BDEA9A</color>
+    <color name="pale_blue">#6195E2</color>
+    <color name="pale_ametista">#D9C6E5</color>
+    <color name="pale_lighter_violet">#AFA6CF</color>
+    <color name="pale_lighter_blue">#A7D2EE</color>
+    <color name="pale_lighter_green">#A7EED2</color>
+    <color name="pale_gold_brown">#bea16e</color>
+    <color name="pale_lighter_red">#EEA7A7</color>
+    <color name="pale_lighter_yellow">#EEECA7</color>
+    <color name="pale_lighter_brown">#D2A7A7</color>
+    <color name="pale_lighter_grey">#D2D2D2</color>
+    <color name="pale_lighter_ametista">#E5DAD9</color>
+
+    <!-- edit view -->
+    <color name="edit_text_text_color">@color/light_grey</color>
+    <color name="edit_text_text_color_hint">@color/pale_lighter_grey</color>
+
+    <!-- -->
+    <color name="profile_picture_background">@color/background_blue</color>
+    <color name="button_text_color">#000000</color>
+
+    <!-- Chip colors -->
+    <color name="unselected_chip_border_color">@color/light_grey</color>
+    <color name="unselected_chip_text_color">#303030</color>
+    <color name="unselected_chip_color">@color/background_orange</color>
+    <color name="checked_icon_grey">#898986</color>
+
+    <!-- badge colors -->
+    <color name="pro_badge_grey">#424242</color>
+    <color name="expert_badge_blue">#003E76</color>
+    <color name="intermediate_badge_blue">#317AA4</color>
+    <color name="beginner_badge_blue">#67C0F3</color>
+
+</resources>
