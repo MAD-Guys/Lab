@@ -38,14 +38,14 @@
                 app:tint="@color/white" />
 
             <TextView
-                android:id="@+id/month_label"
+                android:id="@+id/month_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_medium"
-                android:paddingTop="3dp"
                 android:text="@string/default_month"
                 android:textColor="@color/white"
                 android:textSize="22sp"
+                android:paddingTop="3dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/next_month_button"
                 app:layout_constraintStart_toStartOf="@+id/previous_month_button"
@@ -81,7 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cv_dayViewResource="@layout/calendar_day_layout"
-            app:cv_outDateStyle="endOfGrid" />
+            app:cv_outDateStyle="endOfRow" />
 
         <!--<androidx.recyclerview.widget.RecyclerView
             android:id="@+id/calendar_recycler_view"
