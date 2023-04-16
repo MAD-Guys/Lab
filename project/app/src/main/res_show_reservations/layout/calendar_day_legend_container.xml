@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingVertical="12dp"
+    android:paddingTop="6dp"
+    android:paddingBottom="3dp"
     android:weightSum="7">
 
     <include layout="@layout/calendar_day_legend_text" />

@@ -5,12 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_orange"
+    android:background="@color/background_calendar"
     android:clickable="true"
     android:focusable="true"
     android:orientation="vertical"
     tools:context=".show_reservations.ShowReservationsActivity">
 
+    <!-- TODO: decide whether the status bar must be kept or not -->
+    <!-- App bar -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
@@ -25,6 +27,7 @@
             android:orientation="vertical"
             android:padding="10dp">
 
+            <!-- Previous month button -->
             <ImageView
                 android:id="@+id/previous_month_button"
                 android:layout_width="36dp"
@@ -38,6 +41,7 @@
                 app:srcCompat="@drawable/ic_chevron_left"
                 app:tint="@color/white" />
 
+            <!-- Month label -->
             <TextView
                 android:id="@+id/month_label"
                 android:layout_width="wrap_content"
@@ -53,6 +57,7 @@
                 app:layout_constraintStart_toStartOf="@+id/previous_month_button"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!-- Next month button -->
             <ImageView
                 android:id="@+id/next_month_button"
                 android:layout_width="36dp"
@@ -75,22 +80,27 @@
         android:layout_below="@id/app_bar_layout"
         android:orientation="vertical">
 
+        <!-- Calendar legend -->
         <include
             android:id="@+id/legend_container"
             layout="@layout/calendar_day_legend_container" />
 
+        <!-- Calendar view -->
         <com.kizitonwose.calendar.view.CalendarView
             android:id="@+id/calendar_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cv_dayViewResource="@layout/calendar_day_layout"
-            app:cv_outDateStyle="endOfGrid" />
+            app:cv_dayViewResource="@layout/calendar_day_container"
+            app:cv_outDateStyle="endOfGrid"
+            app:cv_scrollPaged="true" />
 
-        <!--<androidx.recyclerview.widget.RecyclerView
+        <!-- Calendar events -->
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/calendar_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false" />-->
+            android:nestedScrollingEnabled="false" />
+
     </LinearLayout>
 
     <!-- bottom navigation menu -->

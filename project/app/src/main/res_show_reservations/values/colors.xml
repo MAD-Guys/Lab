@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <color name="background_calendar">#FFF2DE</color>
+
+    <!-- Events -->
+
+    <color name="event_1">#F30000</color>
+    <color name="event_2">#F6EC00</color>
+    <color name="event_3">#008428</color>
+    <color name="event_4">#360FF7</color>
+    <color name="event_5">#810083</color>
+
+</resources>

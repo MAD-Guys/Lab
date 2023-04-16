@@ -11,6 +11,11 @@ class DayViewContainer(view: View, vm: ShowReservationsViewModel) : ViewContaine
 
     // day text view
     internal val textView: TextView = view.findViewById(R.id.calendar_day_text)
+
+    // day constraint layout
+    internal val constraintLayout: View = view.findViewById(R.id.day_layout)
+
+    // calendar day
     internal lateinit var day: CalendarDay
 
     init {
