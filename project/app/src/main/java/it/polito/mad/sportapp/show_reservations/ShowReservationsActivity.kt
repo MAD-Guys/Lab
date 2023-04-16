@@ -46,6 +46,8 @@ class ShowReservationsActivity : AppCompatActivity() {
         // initialize CalendarView from layout
         calendarView = findViewById(R.id.calendar_view)
         legendContainer = findViewById(R.id.legend_container)
+
+        // initialize month label
         monthLabel = findViewById(R.id.month_label)
 
         calendarInit()
@@ -109,17 +111,17 @@ class ShowReservationsActivity : AppCompatActivity() {
                         dayTextView.setTextColor(getColor(R.color.black))
                         dayTextView.background = null
                     }
+
+                    // mark selected date
+                    if (container.day.date == vm.selectedDate.value) {
+                        dayTextView.setTextColor(getColor(R.color.red))
+                        dayTextView.background =
+                            ResourcesCompat.getDrawable(resources, R.drawable.day_selected_bg, null)
+                    }
                 }
                 // set text color for out dates
                 else {
                     dayTextView.setTextColor(getColor(R.color.grey))
-                }
-
-                // mark selected date
-                if (container.day.date == vm.selectedDate.value) {
-                    dayTextView.setTextColor(getColor(R.color.red))
-                    dayTextView.background =
-                        ResourcesCompat.getDrawable(resources, R.drawable.day_selected_bg, null)
                 }
 
             }
@@ -127,16 +129,15 @@ class ShowReservationsActivity : AppCompatActivity() {
 
         // initialize current month live data variable
         vm.currentMonth.observe(this) { month ->
-            monthLabel.text = month.format(DateTimeFormatter.ofPattern("MMMM yyyy"))
+            val monthString = month.format(DateTimeFormatter.ofPattern("MMMM yyyy"))
+            monthLabel.text = capitalizeFirstLetter(monthString)
         }
 
         // initialize selected date live data variable
         vm.selectedDate.observe(this) { date ->
 
-            val monthToUpdate = YearMonth.from(date ?: LocalDate.now())
-
-            // update calendar month view with a valid date or with the current date
-            calendarView.notifyMonthChanged(monthToUpdate)
+            // update calendar
+            calendarView.notifyCalendarChanged()
         }
 
         // initialize days of week to monday
@@ -149,6 +150,11 @@ class ShowReservationsActivity : AppCompatActivity() {
                 val title = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
                 textView.text = title
             }
+
+        // attach month scroll listener
+        calendarView.monthScrollListener = { month ->
+            handleCurrentMonthChanged(month.yearMonth)
+        }
 
         // finalize calendar view initialization
         vm.currentMonth.value?.let {
@@ -165,7 +171,9 @@ class ShowReservationsActivity : AppCompatActivity() {
     private fun handleCurrentMonthChanged(month: YearMonth) {
         vm.setCurrentMonth(month)
         calendarView.smoothScrollToMonth(month)
-        calendarView.notifyMonthChanged(month)
+
+        // update calendar
+        calendarView.notifyCalendarChanged()
     }
 
     /* app menu */
@@ -175,7 +183,7 @@ class ShowReservationsActivity : AppCompatActivity() {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.show_reservations_menu, menu)
         // change app bar's title
-        supportActionBar?.title = "Reservations"
+        supportActionBar?.title = "Dashboard"
 
         return true
     }

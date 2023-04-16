@@ -1,3 +1,9 @@
 <resources>
 	<string name="app_name">MAD GUYS</string>
+
+	<!-- Bottom navigation menu -->
+	<string name="dashboard">Dashboard</string>
+	<string name="playgrounds">Playgrounds</string>
+	<string name="profile">Profile</string>
+
 </resources>

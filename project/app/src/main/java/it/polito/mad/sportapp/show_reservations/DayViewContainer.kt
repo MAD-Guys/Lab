@@ -32,8 +32,6 @@ class DayViewContainer(view: View, vm: ShowReservationsViewModel) : ViewContaine
                 } else {
                     vm.setSelectedDate(day.date)
                 }
-            } else {
-                vm.setSelectedDate(null)
             }
         }
     }

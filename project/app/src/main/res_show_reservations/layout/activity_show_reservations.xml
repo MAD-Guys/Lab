@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -15,6 +15,7 @@
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:background="@color/primary_orange"
         android:theme="@style/AppTheme.AppBarOverlay">
 
@@ -44,6 +45,7 @@
                 android:fontFamily="@font/poppins_medium"
                 android:paddingTop="3dp"
                 android:text="@string/default_month"
+                android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="22sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -70,6 +72,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/app_bar_layout"
         android:orientation="vertical">
 
         <include
@@ -90,4 +93,12 @@
             android:nestedScrollingEnabled="false" />-->
     </LinearLayout>
 
-</LinearLayout>
+    <!-- bottom navigation menu -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_navigation_menu" />
+
+</RelativeLayout>
