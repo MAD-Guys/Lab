@@ -1,14 +1,11 @@
 package it.polito.mad.sportapp.show_reservations
 
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
-import com.kizitonwose.calendar.view.CalendarView
 import com.kizitonwose.calendar.view.ViewContainer
 import it.polito.mad.sportapp.R
-import java.time.LocalDate
 
 class DayViewContainer(view: View, vm: ShowReservationsViewModel) : ViewContainer(view) {
 

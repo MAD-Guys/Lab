@@ -134,8 +134,7 @@ class ShowReservationsActivity : AppCompatActivity() {
         }
 
         // initialize selected date live data variable
-        vm.selectedDate.observe(this) { date ->
-
+        vm.selectedDate.observe(this) {
             // update calendar
             calendarView.notifyCalendarChanged()
         }
