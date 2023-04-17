@@ -3,6 +3,7 @@
 <resources>
 
     <color name="background_calendar">#FFF2DE</color>
+    <color name="out_dates_color">#E3F6FF</color>
 
     <!-- Events -->
 

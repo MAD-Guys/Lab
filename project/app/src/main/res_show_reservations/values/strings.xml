@@ -7,4 +7,8 @@
     <string name="previous_month_button_description">previous_month_button_description</string>
     <string name="next_month_button_description">next_month_button_description</string>
 
+    <!-- Sport event strings -->
+    <string name="info_icon_description">info icon description</string>
+    <string name="show_more_button">Show Details</string>
+
 </resources>

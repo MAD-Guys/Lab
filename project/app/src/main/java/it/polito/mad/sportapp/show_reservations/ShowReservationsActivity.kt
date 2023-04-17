@@ -1,5 +1,6 @@
 package it.polito.mad.sportapp.show_reservations
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -7,11 +8,25 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.view.CalendarView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.profile.ShowProfileActivity
+import it.polito.mad.sportapp.show_reservations.events_recycler_view.EventsAdapter
 
 class ShowReservationsActivity : AppCompatActivity() {
+
+    internal val eventsAdapter = EventsAdapter()
+
+    // generate events
+    internal val events = generateEvents().sortedBy {
+        it.time
+    }.groupBy {
+        it.time.toLocalDate()
+    }
+
+    private lateinit var recyclerView: RecyclerView
 
     // calendar view
     internal lateinit var calendarView: CalendarView
@@ -25,6 +40,7 @@ class ShowReservationsActivity : AppCompatActivity() {
     // show reservations view model
     internal val vm by viewModels<ShowReservationsViewModel>()
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_reservations)
@@ -39,6 +55,17 @@ class ShowReservationsActivity : AppCompatActivity() {
         monthLabel = findViewById(R.id.month_label)
 
         calendarInit()
+
+        // initialize RecyclerView from layout
+        recyclerView = findViewById(R.id.calendar_recycler_view)
+
+        recyclerView.apply {
+            layoutManager =
+                LinearLayoutManager(this@ShowReservationsActivity, RecyclerView.VERTICAL, false)
+            adapter = eventsAdapter
+        }
+
+        eventsAdapter.notifyDataSetChanged()
 
     }
 
