@@ -5,12 +5,4 @@
     <color name="background_calendar">#FFF2DE</color>
     <color name="out_dates_color">#E3F6FF</color>
 
-    <!-- Events -->
-
-    <color name="event_1">#F30000</color>
-    <color name="event_2">#F6EC00</color>
-    <color name="event_3">#008428</color>
-    <color name="event_4">#360FF7</color>
-    <color name="event_5">#810083</color>
-
 </resources>

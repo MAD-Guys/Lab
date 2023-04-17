@@ -46,7 +46,8 @@ internal fun AppCompatActivity.getDisplayMeasures(): Pair<Int, Int> {
 
 /**
  * Change profile picture size:
- * - set the height to 1/3 of the view (*excluding* the menu) in portrait view
+ * - set the height to 1/3 of the view (*excluding* the menu) in portrait
+ *   view
  * - set the width to 1/3 of the view in landscape view
  */
 internal fun AppCompatActivity.setProfilePictureSize(
@@ -153,29 +154,37 @@ internal fun clearStorageFiles(directory: File, regexp: String) {
 
 internal fun showToasty(type: String, context: Context, message: String) {
     when (type) {
-        "success" -> Toasty.custom(context, message,
+        "success" -> Toasty.custom(
+            context, message,
             ContextCompat.getDrawable(context, R.drawable.baseline_check_24),
             ContextCompat.getColor(context, R.color.toast_success),
             ContextCompat.getColor(context, R.color.white),
-            Toasty.LENGTH_SHORT, true, true).show()
+            Toasty.LENGTH_SHORT, true, true
+        ).show()
 
-        "error"   -> Toasty.custom(context, message,
+        "error" -> Toasty.custom(
+            context, message,
             ContextCompat.getDrawable(context, R.drawable.outline_close_24),
             ContextCompat.getColor(context, R.color.toast_error),
             ContextCompat.getColor(context, R.color.white),
-            Toasty.LENGTH_SHORT, true, true).show()
+            Toasty.LENGTH_SHORT, true, true
+        ).show()
 
-        "info"    -> Toasty.custom(context, message,
+        "info" -> Toasty.custom(
+            context, message,
             ContextCompat.getDrawable(context, R.drawable.outline_info_24),
             ContextCompat.getColor(context, R.color.toast_info),
             ContextCompat.getColor(context, R.color.white),
-            Toasty.LENGTH_SHORT, true, true).show()
+            Toasty.LENGTH_SHORT, true, true
+        ).show()
 
-        "warning" -> Toasty.custom(context, message,
+        "warning" -> Toasty.custom(
+            context, message,
             ContextCompat.getDrawable(context, R.drawable.baseline_warning_24),
             ContextCompat.getColor(context, R.color.toast_warning),
             ContextCompat.getColor(context, R.color.white),
-            Toasty.LENGTH_SHORT, true, true).show()
+            Toasty.LENGTH_SHORT, true, true
+        ).show()
     }
 }
 
@@ -413,7 +422,6 @@ fun Float.dpToPx(context: Context): Int {
 }
 
 
-
 fun Float.spToPx(context: Context): Int {
     return TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_SP,
@@ -424,5 +432,13 @@ fun Float.spToPx(context: Context): Int {
 
 fun Int.pxToDp(context: Context): Float {
     return this.toFloat() / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+}
+
+fun dpToPx(context: Context, dp: Float): Int {
+    return TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        dp,
+        context.resources.displayMetrics
+    ).roundToInt()
 }
 

@@ -1,6 +1,7 @@
 package it.polito.mad.sportapp.show_reservations
 
 import android.view.View
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
@@ -10,18 +11,14 @@ import java.time.LocalDate
 
 class DayViewContainer(view: View, vm: ShowReservationsViewModel, updater: (LocalDate?) -> Unit) : ViewContainer(view) {
 
-    // day constraint layout
-    internal val constraintLayout: View = view.findViewById(R.id.day_layout)
-
     // day relative layout
-    internal val relativeLayout: View = view.findViewById(R.id.day_container)
+    internal val relativeLayout = view.findViewById<RelativeLayout>(R.id.day_container)
 
     // day text view
     internal val textView: TextView = view.findViewById(R.id.calendar_day_text)
 
-    // manage events displayed on the day
-    internal val eventTopView  = view.findViewById<View>(R.id.fourth_event)
-    internal val eventBottomView = view.findViewById<View>(R.id.fifth_event)
+    // get last event displayed on the day
+    internal val eventBottomView = view.findViewById<View>(R.id.last_event_tag)
 
     // calendar day
     internal lateinit var day: CalendarDay

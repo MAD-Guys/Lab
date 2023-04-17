@@ -13,7 +13,7 @@
         android:id="@+id/event_date_text"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/green"
+        android:background="@color/primary_orange"
         android:gravity="center"
         android:lineSpacingExtra="2.5dp"
         android:textAllCaps="true"
@@ -38,7 +38,7 @@
 
     <!-- Info icon -->
     <FrameLayout
-        android:id="@+id/event_info_icon"
+        android:id="@+id/event_info_icon_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@id/event_date_text"
@@ -47,9 +47,10 @@
         app:layout_constraintTop_toTopOf="@id/event_date_text">
 
         <ImageView
+            android:id="@+id/event_info_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_gravity="center_vertical|end"
+            android:layout_gravity="center"
             android:contentDescription="@string/info_icon_description"
             app:srcCompat="@drawable/baseline_info_24"
             app:tint="@color/primary_orange" />
@@ -63,10 +64,10 @@
         android:layout_height="0dp"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@id/event_info_icon"
-        app:layout_constraintDimensionRatio="W,2:1"
-        app:layout_constraintStart_toEndOf="@id/event_info_icon"
-        app:layout_constraintTop_toTopOf="@id/event_info_icon">
+        app:layout_constraintBottom_toBottomOf="@id/event_info_icon_layout"
+        app:layout_constraintDimensionRatio="W,2.7:1"
+        app:layout_constraintStart_toEndOf="@id/event_info_icon_layout"
+        app:layout_constraintTop_toTopOf="@id/event_info_icon_layout">
 
         <!-- Sport name -->
         <TextView
@@ -78,12 +79,12 @@
             android:textAllCaps="true"
             android:textColor="@color/black"
             android:textSize="16sp"
-            tools:text="Beach Volley" />
+            tools:text="11-a-side Soccer" />
 
         <!-- Event Duration -->
         <TextView
             android:id="@+id/event_duration"
-            android:layout_width="match_parent"
+            android:layout_width="117dp"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
             android:gravity="center"
@@ -101,6 +102,7 @@
         android:text="@string/show_more_button"
         android:textAllCaps="false"
         android:textSize="11sp"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/item_layout"
