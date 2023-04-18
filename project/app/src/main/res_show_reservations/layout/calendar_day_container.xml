@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/day_layout"
     android:layout_width="match_parent"
@@ -11,7 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="1dp"
-        android:background="@color/white">
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="1dp">
 
         <!-- Day number -->
         <TextView
@@ -24,50 +28,20 @@
             android:layout_marginEnd="4dp"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="12sp"
+            android:textSize="15sp"
             tools:text="24" />
 
-        <!-- TODO: create these views at runtime. One for each scheduled event -->
-        <!-- Scheduled events labels
-        <View
-            android:id="@+id/first_event"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_above="@+id/second_event"
-            android:layout_marginBottom="2dp"
-            android:background="@color/event_1" />
-
-        <View
-            android:id="@+id/second_event"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_above="@+id/third_event"
-            android:layout_marginBottom="2dp"
-            android:background="@color/event_2" />
-
-        <View
-            android:id="@+id/third_event"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_above="@+id/fourth_event"
-            android:layout_marginBottom="2dp"
-            android:background="@color/event_3" />
-
-        <View
-            android:id="@+id/fourth_event"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_above="@+id/fifth_event"
-            android:layout_marginBottom="2dp"
-            android:background="@color/event_4" />
-
-        <View
-            android:id="@+id/fifth_event"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
+        <ImageView
+            android:id="@+id/event_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="2dp"
-            android:background="@color/event_5" />-->
+            android:layout_centerInParent="true"
+            android:contentDescription="@string/event_tag_content_description"
+            android:visibility="gone"
+            app:srcCompat="@drawable/baseline_lens_24"
+            app:tint="@color/event_tag_color"
+            android:translationY="-4dp"/>
 
     </RelativeLayout>
 

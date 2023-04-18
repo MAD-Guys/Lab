@@ -1,8 +1,8 @@
 package it.polito.mad.sportapp.show_reservations
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.children
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
@@ -39,46 +39,74 @@ internal fun ShowReservationsActivity.monthButtonsInit() {
     }
 }
 
+// event adapter for date
+@SuppressLint("NotifyDataSetChanged")
+fun ShowReservationsActivity.updateAdapterForDate(date: LocalDate?) {
+    eventsAdapter.events.clear()
+    eventsAdapter.events.addAll(events[date].orEmpty())
+    eventsAdapter.notifyDataSetChanged()
+}
+
 // initialize calendar information
 internal fun ShowReservationsActivity.calendarInit() {
 
     // bind days to the calendar recycler view
     calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
         // call only when a new container is needed.
-        override fun create(view: View) = DayViewContainer(view, vm)
+        override fun create(view: View) =
+            DayViewContainer(view, vm, updater = ::updateAdapterForDate)
 
         // call every time we need to reuse a container.
         override fun bind(container: DayViewContainer, data: CalendarDay) {
 
+            // day layouts and views
+            val dayRelativeLayout = container.relativeLayout
             val dayTextView = container.textView
-            val dayConstraintLayout = container.constraintLayout
-
-            container.day = data
-            dayTextView.text = data.date.dayOfMonth.toString()
+            val eventTag = container.eventTag
 
             // set visibility of day text view as visible
             dayTextView.visibility = View.VISIBLE
 
+            // set visibility of event tag as gone
+            eventTag.visibility = View.GONE
+
+            container.day = data
+            dayTextView.text = data.date.dayOfMonth.toString()
+
             if (container.day.position == DayPosition.MonthDate) {
+
+                val events = events[container.day.date]
+
+                // create views and display events tag
+                events?.let {
+                    eventTag.visibility = View.VISIBLE
+                }
+
+                // set background color for in dates
+                dayRelativeLayout.setBackgroundColor(getColor(R.color.white))
 
                 // mark current date
                 if (container.day.date == LocalDate.now()) {
-                    dayTextView.setTextColor(getColor(R.color.blue_200))
-                    dayConstraintLayout.setBackgroundResource(R.drawable.current_day_selected_bg)
+                    dayTextView.setTextColor(getColor(R.color.blue_500))
+                    dayRelativeLayout.setBackgroundResource(R.drawable.current_day_selected_bg)
                 } else {
                     dayTextView.setTextColor(getColor(R.color.black))
-                    dayConstraintLayout.background = null
                 }
 
                 // mark selected date
                 if (container.day.date == vm.selectedDate.value) {
                     dayTextView.setTextColor(getColor(R.color.red))
-                    dayConstraintLayout.setBackgroundResource(R.drawable.day_selected_bg)
+                    dayRelativeLayout.setBackgroundResource(R.drawable.day_selected_bg)
+
+                    // update events adapter with day, only if the selected date is in the displayed month
+                    if (YearMonth.from(vm.selectedDate.value) == vm.currentMonth.value) {
+                        updateAdapterForDate(container.day.date)
+                    }
                 }
             }
-            // set text color for out dates
+            // set background color for out dates
             else {
-                dayTextView.setTextColor(getColor(R.color.grey))
+                dayRelativeLayout.setBackgroundColor(getColor(R.color.out_dates_color))
             }
 
         }
@@ -127,6 +155,9 @@ internal fun ShowReservationsActivity.calendarInit() {
 internal fun ShowReservationsActivity.handleCurrentMonthChanged(month: YearMonth) {
     vm.setCurrentMonth(month)
     calendarView.smoothScrollToMonth(month)
+
+    //update event
+    updateAdapterForDate(null)
 
     // update calendar
     calendarView.notifyCalendarChanged()

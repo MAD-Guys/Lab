@@ -1,19 +1,29 @@
 package it.polito.mad.sportapp.show_reservations
 
 import android.view.View
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.view.ViewContainer
 import it.polito.mad.sportapp.R
+import java.time.LocalDate
 
-class DayViewContainer(view: View, vm: ShowReservationsViewModel) : ViewContainer(view) {
+internal class DayViewContainer(
+    view: View,
+    vm: ShowReservationsViewModel,
+    updater: (LocalDate?) -> Unit
+) : ViewContainer(view) {
+
+    // day relative layout
+    internal val relativeLayout = view.findViewById<RelativeLayout>(R.id.day_container)
 
     // day text view
     internal val textView: TextView = view.findViewById(R.id.calendar_day_text)
 
-    // day constraint layout
-    internal val constraintLayout: View = view.findViewById(R.id.day_layout)
+    // get event tag displayed on the day
+    internal val eventTag = view.findViewById<ImageView>(R.id.event_tag)
 
     // calendar day
     internal lateinit var day: CalendarDay
@@ -29,10 +39,12 @@ class DayViewContainer(view: View, vm: ShowReservationsViewModel) : ViewContaine
                 val currentSelection = vm.selectedDate.value
 
                 if (currentSelection == day.date) {
-                    // if the user clicks the same date, clear selection.
+                    // if the user clicks the same date, clear selection and events.
                     vm.setSelectedDate(null)
+                    updater(null)
                 } else {
                     vm.setSelectedDate(day.date)
+                    updater(day.date)
                 }
             }
         }
