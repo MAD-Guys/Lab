@@ -28,6 +28,7 @@ android {
         main {
             res.srcDirs =
                     [
+                            'src/main/res_reservation_details',
                             'src/main/res_show_reservations',
                             'src/main/res_profile',
                             'src/main/res'
@@ -60,6 +61,8 @@ dependencies {
     implementation 'com.vanniktech:android-image-cropper:4.5.0'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
     implementation 'com.kizitonwose.calendar:view:2.0.3'
+    implementation 'com.github.androidmads:QRGenerator:1.0.1'
+    implementation 'com.google.zxing:core:3.3.2'
     implementation "androidx.room:room-runtime:2.5.0"
     implementation "androidx.room:room-ktx:2.5.0"
     kapt "androidx.room:room-compiler:2.5.0"
