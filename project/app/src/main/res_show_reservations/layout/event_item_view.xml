@@ -13,7 +13,7 @@
         android:id="@+id/event_date_text"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/primary_orange"
+        android:background="@color/event_color"
         android:gravity="center"
         android:lineSpacingExtra="2.5dp"
         android:textAllCaps="true"
@@ -25,10 +25,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.143"
+        tools:ignore="TextContrastCheck"
         tools:text="THU\nJUN 30\n14:00" />
 
     <!--Colored view divider-->
     <View
+        android:id="@+id/view"
         android:layout_width="2dp"
         android:layout_height="0dp"
         android:background="@color/background_calendar"
@@ -36,38 +38,19 @@
         app:layout_constraintEnd_toEndOf="@id/event_date_text"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Info icon -->
-    <FrameLayout
-        android:id="@+id/event_info_icon_layout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/event_date_text"
-        app:layout_constraintDimensionRatio="W,1:1"
-        app:layout_constraintStart_toEndOf="@id/event_date_text"
-        app:layout_constraintTop_toTopOf="@id/event_date_text">
-
-        <ImageView
-            android:id="@+id/event_info_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center"
-            android:contentDescription="@string/info_icon_description"
-            app:srcCompat="@drawable/baseline_info_24"
-            app:tint="@color/primary_orange" />
-
-    </FrameLayout>
-
     <!-- Event information -->
     <LinearLayout
         android:id="@+id/item_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@id/event_info_icon_layout"
-        app:layout_constraintDimensionRatio="W,2.7:1"
-        app:layout_constraintStart_toEndOf="@id/event_info_icon_layout"
-        app:layout_constraintTop_toTopOf="@id/event_info_icon_layout">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/event_date_text"
+        app:layout_constraintTop_toTopOf="parent">
 
         <!-- Sport name -->
         <TextView
@@ -93,19 +76,5 @@
             tools:text="1 hour 30 minutes" />
 
     </LinearLayout>
-
-    <!-- Show Details button -->
-    <Button
-        android:id="@+id/show_details_button"
-        android:layout_width="110dp"
-        android:layout_height="39dp"
-        android:text="@string/show_more_button"
-        android:textAllCaps="false"
-        android:textSize="11sp"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/item_layout"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

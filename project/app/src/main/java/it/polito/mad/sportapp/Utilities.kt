@@ -19,12 +19,25 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import es.dmoral.toasty.Toasty
+import it.polito.mad.sportapp.show_reservations.ShowReservationsActivity
 import java.io.File
 import java.io.FileDescriptor
 import java.io.FileOutputStream
 import java.io.IOException
+import java.util.*
 import kotlin.math.abs
 import kotlin.math.roundToInt
+
+/* Locale utilities */
+
+// set default application locale
+internal fun setApplicationLocale(baseContext: Context, language: String, country: String) {
+    val locale = Locale(language, country)
+    Locale.setDefault(locale)
+    val config = baseContext.resources.configuration
+    config.setLocale(locale)
+    baseContext.createConfigurationContext(config)
+}
 
 /* Display utilities */
 

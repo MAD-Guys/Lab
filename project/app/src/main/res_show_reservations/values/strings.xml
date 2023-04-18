@@ -4,11 +4,10 @@
 
     <!-- Strings related to navigation app bar -->
     <string name="default_month">April 2023</string>
-    <string name="previous_month_button_description">previous_month_button_description</string>
-    <string name="next_month_button_description">next_month_button_description</string>
+    <string name="previous_month_button_description">previous month button description</string>
+    <string name="next_month_button_description">next month button description</string>
 
-    <!-- Sport event strings -->
-    <string name="info_icon_description">info icon description</string>
-    <string name="show_more_button">Show Details</string>
+    <!-- Event tag -->
+    <string name="event_tag_content_description">event tag content description</string>
 
 </resources>

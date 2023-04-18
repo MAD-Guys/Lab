@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.view.CalendarView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.profile.ShowProfileActivity
+import it.polito.mad.sportapp.setApplicationLocale
 import it.polito.mad.sportapp.show_reservations.events_recycler_view.EventsAdapter
 
 class ShowReservationsActivity : AppCompatActivity() {
@@ -45,6 +46,9 @@ class ShowReservationsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_reservations)
 
+        // set english as default language
+        setApplicationLocale(this, "en", "EN")
+
         monthButtonsInit()
 
         // initialize CalendarView from layout
@@ -76,7 +80,7 @@ class ShowReservationsActivity : AppCompatActivity() {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.show_reservations_menu, menu)
         // change app bar's title
-        supportActionBar?.title = "Dashboard"
+        supportActionBar?.title = "Reservations"
 
         return true
     }

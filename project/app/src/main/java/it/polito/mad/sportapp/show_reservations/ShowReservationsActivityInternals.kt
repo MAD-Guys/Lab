@@ -2,16 +2,13 @@ package it.polito.mad.sportapp.show_reservations
 
 import android.annotation.SuppressLint
 import android.view.View
-import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.annotation.ColorRes
 import androidx.core.view.children
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.view.MonthDayBinder
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.dpToPx
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -64,14 +61,14 @@ internal fun ShowReservationsActivity.calendarInit() {
 
             // day layouts and views
             val dayRelativeLayout = container.relativeLayout
-
             val dayTextView = container.textView
+            val eventTag = container.eventTag
 
             // set visibility of day text view as visible
             dayTextView.visibility = View.VISIBLE
 
-            val eventBottomView = container.eventBottomView
-            eventBottomView.background = null
+            // set visibility of event tag as gone
+            eventTag.visibility = View.GONE
 
             container.day = data
             dayTextView.text = data.date.dayOfMonth.toString()
@@ -80,29 +77,9 @@ internal fun ShowReservationsActivity.calendarInit() {
 
                 val events = events[container.day.date]
 
-                // create views and display events tags if any
+                // create views and display events tag
                 events?.let {
-                    if (it.size == 1) {
-                        eventBottomView.setBackgroundColor(getColor(events[0].color))
-                    } else {
-                        eventBottomView.setBackgroundColor(getColor(it.last().color))
-
-                        var idToAnchor: Int = eventBottomView.id
-
-                        //create events tags
-                        for (i in it.size - 2 downTo 0) {
-                            val sportTag = inflateDateSportTag(
-                                idToAnchor,
-                                it[i].color
-                            )
-
-                            // set the new anchor id
-                            idToAnchor = sportTag.id
-
-                            // add tag to the day relative layout
-                            dayRelativeLayout.addView(sportTag)
-                        }
-                    }
+                    eventTag.visibility = View.VISIBLE
                 }
 
                 // set background color for in dates
@@ -120,7 +97,11 @@ internal fun ShowReservationsActivity.calendarInit() {
                 if (container.day.date == vm.selectedDate.value) {
                     dayTextView.setTextColor(getColor(R.color.red))
                     dayRelativeLayout.setBackgroundResource(R.drawable.day_selected_bg)
-                    updateAdapterForDate(container.day.date)
+
+                    // update events adapter with day, only if the selected date is in the displayed month
+                    if (YearMonth.from(vm.selectedDate.value) == vm.currentMonth.value) {
+                        updateAdapterForDate(container.day.date)
+                    }
                 }
             }
             // set background color for out dates
@@ -168,32 +149,6 @@ internal fun ShowReservationsActivity.calendarInit() {
         calendarView.scrollToMonth(it)
     }
 
-}
-
-internal fun ShowReservationsActivity.inflateDateSportTag(
-    anchorPointId: Int,
-    @ColorRes color: Int
-): View {
-
-    // create the new view
-    val sportTag = View(this)
-
-    // set the id of the new view
-    sportTag.id = View.generateViewId()
-    val layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, dpToPx(this,2.0f))
-
-    // set the anchor point of the new view
-    layoutParams.addRule(RelativeLayout.ABOVE, anchorPointId)
-
-    // set margin bottom of the new view
-    layoutParams.bottomMargin = dpToPx(this, 2.0f)
-
-    sportTag.layoutParams = layoutParams
-
-    // set the background color of the new view
-    sportTag.setBackgroundColor(getColor(color))
-
-    return sportTag
 }
 
 // handle new selected month
