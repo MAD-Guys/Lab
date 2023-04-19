@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import es.dmoral.toasty.Toasty
-import it.polito.mad.sportapp.show_reservations.ShowReservationsActivity
 import java.io.File
 import java.io.FileDescriptor
 import java.io.FileOutputStream
@@ -433,7 +432,6 @@ fun Float.dpToPx(context: Context): Int {
         context.resources.displayMetrics
     ).toInt()
 }
-
 
 fun Float.spToPx(context: Context): Int {
     return TypedValue.applyDimension(

@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import java.time.LocalDate
 import java.time.YearMonth
 
+/* View Model related to the Show Reservations Activity */
+
 class ShowReservationsViewModel : ViewModel() {
 
     // mutable live data for the current month and the selected day

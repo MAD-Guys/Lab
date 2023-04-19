@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.show_reservations.Event
 
+/* Events Adapter */
+
 internal class EventsAdapter : RecyclerView.Adapter<EventsViewHolder>(){
 
     val events = mutableListOf<Event>()

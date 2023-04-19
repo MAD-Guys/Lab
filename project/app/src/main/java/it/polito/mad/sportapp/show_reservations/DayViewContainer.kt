@@ -10,6 +10,8 @@ import com.kizitonwose.calendar.view.ViewContainer
 import it.polito.mad.sportapp.R
 import java.time.LocalDate
 
+/* Day View Container */
+
 internal class DayViewContainer(
     view: View,
     vm: ShowReservationsViewModel,

@@ -16,6 +16,8 @@ import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.*
 
+/* Internals functions related to the Show Reservations Activity */
+
 // initialize month buttons
 internal fun ShowReservationsActivity.monthButtonsInit() {
 

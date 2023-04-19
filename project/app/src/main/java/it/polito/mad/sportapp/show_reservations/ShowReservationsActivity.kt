@@ -17,6 +17,8 @@ import it.polito.mad.sportapp.profile.ShowProfileActivity
 import it.polito.mad.sportapp.setApplicationLocale
 import it.polito.mad.sportapp.show_reservations.events_recycler_view.EventsAdapter
 
+/* Show Reservations Activity */
+
 class ShowReservationsActivity : AppCompatActivity() {
 
     internal val eventsAdapter = EventsAdapter()
