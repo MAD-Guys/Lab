@@ -3,6 +3,7 @@ package it.polito.mad.sportapp.show_reservations
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
@@ -89,6 +90,11 @@ class ShowReservationsActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         // detect which item has been selected and perform corresponding action
         R.id.show_profile_button -> handleShowProfileButton()
+        R.id.book_playground_button -> {
+            Log.d("ShowReservationsActivity", "Book playground button clicked! (not implemented yet)")
+
+            true
+        }
         else -> super.onOptionsItemSelected(item)
     }
 

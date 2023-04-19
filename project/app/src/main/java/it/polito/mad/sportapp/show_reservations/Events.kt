@@ -1,7 +1,5 @@
 package it.polito.mad.sportapp.show_reservations
 
-import androidx.annotation.ColorRes
-import it.polito.mad.sportapp.R
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -12,7 +10,9 @@ data class Event(
     val id: Int,
     val time: LocalDateTime,
     val sportName: String,
-    val sportDuration: String
+    val sportDuration: String,
+    val sportCenterName: String,
+    val sportPlaygroundName: String
 )
 
 // generate events
@@ -26,7 +26,9 @@ fun generateEvents(): List<Event> = buildList {
                 1,
                 date.atTime(14, 30),
                 "Padel",
-                "1h"
+                "1h",
+                "Sport Center 1",
+                "Playground 1"
             )
         )
         add(
@@ -34,7 +36,9 @@ fun generateEvents(): List<Event> = buildList {
                 2,
                 date.atTime(8, 30),
                 "Basket",
-                "30m"
+                "30m",
+                "Sport Center 2",
+                "Playground 2"
             )
         )
     }
@@ -45,7 +49,9 @@ fun generateEvents(): List<Event> = buildList {
                 3,
                 date.atTime(19, 0),
                 "Tennis",
-                "1h"
+                "1h",
+                "Sport Center 3",
+                "Playground 3"
             )
         )
     }
@@ -56,7 +62,9 @@ fun generateEvents(): List<Event> = buildList {
                 4,
                 date.atTime(15, 30),
                 "Padel",
-                "1h 30m"
+                "1h 30m",
+                "Sport Center 3",
+                "Playground 1"
             )
         )
     }
@@ -67,7 +75,9 @@ fun generateEvents(): List<Event> = buildList {
                 5,
                 date.atTime(14, 30),
                 "Padel",
-                "2h"
+                "2h",
+                "Sport Center 2",
+                "Playground 7"
             )
         )
 
@@ -76,7 +86,9 @@ fun generateEvents(): List<Event> = buildList {
                 6,
                 date.atTime(9, 30),
                 "Basket",
-                "1h 30m"
+                "1h 30m",
+                "Sport Center 1",
+                "Playground 3"
             )
         )
     }
@@ -87,18 +99,22 @@ fun generateEvents(): List<Event> = buildList {
                 7,
                 date.atTime(13, 15),
                 "Beach Volley",
-                "45m"
+                "45m",
+                "Sport Center 1",
+                "Playground 2"
             )
         )
     }
 
-    currentMonth.atDay(19).also { date ->
+    currentMonth.atDay(20).also { date ->
         add(
             Event(
                 8,
                 date.atTime(17, 0),
                 "11-a-side Soccer",
-                "30m"
+                "30m",
+                "Sport Center 2",
+                "Playground 4"
             )
         )
         add(
@@ -106,7 +122,9 @@ fun generateEvents(): List<Event> = buildList {
                 9,
                 date.atTime(21, 30),
                 "Basket",
-                "1h 30m"
+                "1h 30m",
+                "Sport Center 4",
+                "Playground 5"
             )
         )
         add(
@@ -114,7 +132,9 @@ fun generateEvents(): List<Event> = buildList {
                 10,
                 date.atTime(9, 45),
                 "Tennis",
-                "1h 45m"
+                "1h 45m",
+                "Sport Center 3",
+                "Playground 6"
             )
         )
     }
@@ -125,7 +145,9 @@ fun generateEvents(): List<Event> = buildList {
                 11,
                 date.atTime(11, 15),
                 "Table Tennis",
-                "45m"
+                "45m",
+                "Sport Center 1",
+                "Playground 1"
             )
         )
     }
@@ -136,7 +158,9 @@ fun generateEvents(): List<Event> = buildList {
                 12,
                 date.atTime(11, 0),
                 "Volleyball",
-                "1h 30m"
+                "1h 30m",
+                "Sport Center 2",
+                "Playground 2"
             )
         )
         add(
@@ -144,7 +168,9 @@ fun generateEvents(): List<Event> = buildList {
                 13,
                 date.atTime(17, 40),
                 "Tennis",
-                "1h"
+                "1h",
+                "Sport Center 3",
+                "Playground 5"
             )
         )
     }
@@ -155,7 +181,9 @@ fun generateEvents(): List<Event> = buildList {
                 14,
                 date.atTime(12, 0),
                 "Padel",
-                "1h"
+                "1h",
+                "Sport Center 1",
+                "Playground 8"
             )
         )
         add(
@@ -163,7 +191,9 @@ fun generateEvents(): List<Event> = buildList {
                 15,
                 date.atTime(10, 0),
                 "Basket",
-                "1h 30m"
+                "1h 30m",
+                "Sport Center 2",
+                "Playground 9"
             )
         )
     }
@@ -174,7 +204,9 @@ fun generateEvents(): List<Event> = buildList {
                 16,
                 date.atTime(19, 0),
                 "5-a-side Soccer",
-                "1h"
+                "1h",
+                "Sport Center 3",
+                "Playground 10"
             )
         )
     }

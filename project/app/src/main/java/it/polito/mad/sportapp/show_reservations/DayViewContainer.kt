@@ -44,7 +44,6 @@ internal class DayViewContainer(
                     updater(null)
                 } else {
                     vm.setSelectedDate(day.date)
-                    updater(day.date)
                 }
             }
         }

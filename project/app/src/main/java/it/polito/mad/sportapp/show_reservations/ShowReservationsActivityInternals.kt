@@ -73,40 +73,46 @@ internal fun ShowReservationsActivity.calendarInit() {
             container.day = data
             dayTextView.text = data.date.dayOfMonth.toString()
 
-            if (container.day.position == DayPosition.MonthDate) {
+            val currentDate = LocalDate.now()
 
-                val events = events[container.day.date]
+            if (data.position == DayPosition.MonthDate) {
 
-                // create views and display events tag
-                events?.let {
-                    eventTag.visibility = View.VISIBLE
-                }
+                val events = events[data.date]
 
-                // set background color for in dates
+                // set background color and text for in dates
                 dayRelativeLayout.setBackgroundColor(getColor(R.color.white))
+                dayTextView.setTextColor(getColor(R.color.black))
 
                 // mark current date
-                if (container.day.date == LocalDate.now()) {
+                if (data.date == currentDate) {
                     dayTextView.setTextColor(getColor(R.color.blue_500))
                     dayRelativeLayout.setBackgroundResource(R.drawable.current_day_selected_bg)
-                } else {
-                    dayTextView.setTextColor(getColor(R.color.black))
                 }
 
                 // mark selected date
-                if (container.day.date == vm.selectedDate.value) {
+                if (data.date != currentDate && data.date == vm.selectedDate.value) {
                     dayTextView.setTextColor(getColor(R.color.red))
                     dayRelativeLayout.setBackgroundResource(R.drawable.day_selected_bg)
+                }
 
-                    // update events adapter with day, only if the selected date is in the displayed month
-                    if (YearMonth.from(vm.selectedDate.value) == vm.currentMonth.value) {
-                        updateAdapterForDate(container.day.date)
+                // display events tags and events, if any
+                if (events != null) {
+                    eventTag.visibility = View.VISIBLE
+
+                    if (YearMonth.from(data.date) == vm.currentMonth.value && data.date == vm.selectedDate.value) {
+                        updateAdapterForDate(data.date)
+                    }
+                } else {
+                    if (YearMonth.from(data.date) == vm.currentMonth.value && data.date == vm.selectedDate.value) {
+                        updateAdapterForDate(null)
                     }
                 }
+
             }
-            // set background color for out dates
+            // set background color and text for out dates
             else {
                 dayRelativeLayout.setBackgroundColor(getColor(R.color.out_dates_color))
+                dayTextView.setTextColor(getColor(R.color.event_tag_color))
             }
 
         }

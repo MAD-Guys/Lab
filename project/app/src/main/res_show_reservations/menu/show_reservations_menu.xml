@@ -2,9 +2,17 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/book_playground_button"
+        android:icon="@drawable/baseline_calendar_month_24"
+        android:title="book_playground_button"
+        app:showAsAction="always" />
+
     <item
         android:id="@+id/show_profile_button"
-        android:title="show_profile_button"
         android:icon="@drawable/baseline_person_24_bottom_navigation_menu"
-        app:showAsAction="always"/>
+        android:title="show_profile_button"
+        app:showAsAction="always" />
+
 </menu>

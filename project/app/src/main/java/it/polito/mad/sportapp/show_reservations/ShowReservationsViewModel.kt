@@ -10,7 +10,7 @@ class ShowReservationsViewModel : ViewModel() {
 
     // mutable live data for the current month and the selected day
     private val _currentMonth = MutableLiveData<YearMonth>().also { it.value = YearMonth.now() }
-    private val _selectedDate = MutableLiveData<LocalDate>().also { it.value = null }
+    private val _selectedDate = MutableLiveData<LocalDate>().also { it.value = LocalDate.now() }
 
     // live data for the current month and the selected day
     val currentMonth: LiveData<YearMonth> = _currentMonth
@@ -21,9 +21,9 @@ class ShowReservationsViewModel : ViewModel() {
         _currentMonth.value = month
     }
 
-    // set a new selected date
+    // set a new selected date or the current date if date is null
     fun setSelectedDate(date: LocalDate?) {
-        _selectedDate.value = date
+        _selectedDate.value = date ?: LocalDate.now()
     }
 
 }
