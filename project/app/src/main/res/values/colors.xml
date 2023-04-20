@@ -21,6 +21,22 @@
     <color name="background_orange">#FAF9F3</color>
     <color name="background_blue">#D5F4FA</color>
 
+    <!-- Pale colors -->
+    <color name="pale_orange">#FFCA7A</color>
+    <color name="pale_lighter_orange">#FFDCA7</color>
+    <color name="pale_green">#BDEA9A</color>
+    <color name="pale_lighter_green">#A7EED2</color>
+    <color name="pale_blue">#6195E2</color>
+    <color name="pale_lighter_blue">#A7D2EE</color>
+    <color name="pale_ametista">#D9C6E5</color>
+    <color name="pale_lighter_ametista">#E5DAD9</color>
+    <color name="pale_lighter_violet">#AFA6CF</color>
+    <color name="pale_gold_brown">#bea16e</color>
+    <color name="pale_lighter_brown">#D2A7A7</color>
+    <color name="pale_lighter_red">#EEA7A7</color>
+    <color name="pale_lighter_yellow">#EEECA7</color>
+    <color name="pale_lighter_grey">#D2D2D2</color>
+
     <!-- Toasts -->
     <color name="toast_success">#8BC34A</color>
     <color name="toast_error">#EA473B</color>

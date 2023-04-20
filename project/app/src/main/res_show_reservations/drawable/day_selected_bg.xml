@@ -4,14 +4,14 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <solid android:color="@color/pale_lighter_red" />
+            <solid android:color="@color/pale_lighter_blue" />
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
             <stroke
                 android:width="2dp"
-                android:color="@color/red" />
+                android:color="@color/blue_500" />
         </shape>
     </item>
 </layer-list>

@@ -87,13 +87,13 @@ internal fun ShowReservationsActivity.calendarInit() {
 
                 // mark current date
                 if (data.date == currentDate) {
-                    dayTextView.setTextColor(getColor(R.color.blue_500))
+                    dayTextView.setTextColor(getColor(R.color.primary_orange))
                     dayRelativeLayout.setBackgroundResource(R.drawable.current_day_selected_bg)
                 }
 
                 // mark selected date
                 if (data.date != currentDate && data.date == vm.selectedDate.value) {
-                    dayTextView.setTextColor(getColor(R.color.red))
+                    dayTextView.setTextColor(getColor(R.color.blue_500))
                     dayRelativeLayout.setBackgroundResource(R.drawable.day_selected_bg)
                 }
 
@@ -169,4 +169,9 @@ internal fun ShowReservationsActivity.handleCurrentMonthChanged(month: YearMonth
 
     // update calendar
     calendarView.notifyCalendarChanged()
+}
+
+// capitalize the first letter of the string
+internal fun ShowReservationsActivity.capitalizeFirstLetter(string: String): String {
+    return string.substring(0, 1).uppercase() + string.substring(1).lowercase()
 }
