@@ -64,8 +64,8 @@ class ReservationDetailsActivity : AppCompatActivity() {
         reservationEndTime.text = vm.reservation.value?.getEndTime()?.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
         reservationSport.text = vm.reservation.value?.getSport()
         reservationPlayground.text = vm.reservation.value?.getPlaygroundName()
-        reservationSportCenter.text = vm.reservation.value?.getSportCenter()!!.name
-        reservationSportCenterAddress.text = vm.reservation.value?.getSportCenter()!!.location
+        //reservationSportCenter.text = vm.reservation.value?.getSportCenter()!!.name
+        //reservationSportCenterAddress.text = vm.reservation.value?.getSportCenter()!!.location
         reservationTotalPrice.text = "€ " + String.format("%.2f", vm.reservation.value?.getTotalPrice())
 
         //TODO: uncomment this block and delete noEquipmentMessage.visibility assignment when equipment list is available

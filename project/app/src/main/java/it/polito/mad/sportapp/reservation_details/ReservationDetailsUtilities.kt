@@ -2,11 +2,11 @@ package it.polito.mad.sportapp.reservation_details
 
 import android.graphics.Bitmap
 import android.widget.ImageView
-import it.polito.mad.sportapp.localDB.PlaygroundReservation
+//import it.polito.mad.sportapp.localDB.PlaygroundReservation
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
-import it.polito.mad.sportapp.localDB.Equipment
-import it.polito.mad.sportapp.localDB.SportCenter
+//import it.polito.mad.sportapp.localDB.Equipment
+//import it.polito.mad.sportapp.localDB.SportCenter
 import java.sql.Date
 import java.sql.Time
 import java.time.Instant
@@ -74,7 +74,7 @@ class MockReservationDetails : ReservationDetails{
         return "Campo 1"
     }
 
-    override fun getSportCenter(): SportCenter {
+    /*override fun getSportCenter(): SportCenter {
         return SportCenter(
             12,
             "POLI Sport",
@@ -83,14 +83,14 @@ class MockReservationDetails : ReservationDetails{
             "3456789012",
             "8:00",
             "22:00")
-    }
+    }*/
 
-    override fun getEquipment(): List<Equipment> {
+    /*override fun getEquipment(): List<Equipment> {
         return listOf<Equipment>(
             Equipment(888, "Ball", 1, 12, 5.50 as Float, 20),
             Equipment(999, "Shoes", 1, 12, 10 as Float, 4)
         )
-    }
+    }*/
 
     override fun getTotalPrice(): Float {
         return 25.50.toFloat()
