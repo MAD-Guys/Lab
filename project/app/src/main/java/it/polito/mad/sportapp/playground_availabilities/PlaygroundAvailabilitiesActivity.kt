@@ -22,6 +22,7 @@ class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
         // TODO
     }
 
+    /** Create the top bar menu */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // inflate the menu
         val inflater: MenuInflater = menuInflater
@@ -29,11 +30,11 @@ class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
 
         // change app bar's title
         supportActionBar?.title = "Playground availabilities"
-
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when(item.itemId) {
+        // detect user selection
         R.id.show_reservations_button -> navigateTo(ShowReservationsActivity::class.java)
         R.id.show_profile_button -> navigateTo(ShowProfileActivity::class.java)
         else -> super.onOptionsItemSelected(item)

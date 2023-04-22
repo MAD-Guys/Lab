@@ -28,7 +28,7 @@ data class PlaygroundSport(
     @ColumnInfo(name = "playground_name")
     val playgroundName: String,
     @ColumnInfo(name = "cost_per_hour")
-    val price: Float,
+    val pricePerHour: Float,
 )
 
 
