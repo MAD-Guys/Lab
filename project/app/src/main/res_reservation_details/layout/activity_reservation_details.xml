@@ -119,7 +119,9 @@
                         android:fontFamily="@font/poppins_medium"
                         android:text="Basket"
                         android:textColor="@color/black"
-                        android:textSize="24sp" />
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        />
 
                     <View
                         android:id="@+id/divider2"
@@ -192,6 +194,12 @@
                         android:gravity="center_horizontal"
                         android:textColor="@color/black"
                         android:textSize="24sp"/>
+
+                    <LinearLayout
+                        android:id="@+id/equipmentContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"/>
 
                     <TextView
                         android:id="@+id/noEquipmentMessage"

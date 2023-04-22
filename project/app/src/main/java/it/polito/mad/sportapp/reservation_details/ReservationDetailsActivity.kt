@@ -58,15 +58,15 @@ class ReservationDetailsActivity : AppCompatActivity() {
         reservationTotalPrice = findViewById(R.id.reservationPrice)
 
         // Initialize values
-        reservationNumber.text = "Reservation number: " + String.format("%010d", vm.reservation.value?.getId())
-        reservationDate.text = vm.reservation.value?.getDate()?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
-        reservationStartTime.text = vm.reservation.value?.getStartTime()?.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
-        reservationEndTime.text = vm.reservation.value?.getEndTime()?.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
-        reservationSport.text = vm.reservation.value?.getSport()
-        reservationPlayground.text = vm.reservation.value?.getPlaygroundName()
-        //reservationSportCenter.text = vm.reservation.value?.getSportCenter()!!.name
-        //reservationSportCenterAddress.text = vm.reservation.value?.getSportCenter()!!.location
-        reservationTotalPrice.text = "€ " + String.format("%.2f", vm.reservation.value?.getTotalPrice())
+        reservationNumber.text = "Reservation number: " + String.format("%010d", vm.reservation.value?.id)
+        reservationDate.text = vm.reservation.value?.date?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
+        reservationStartTime.text = vm.reservation.value?.startTime?.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
+        reservationEndTime.text = vm.reservation.value?.endTime?.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
+        reservationSport.text = vm.reservation.value?.sportName
+        reservationPlayground.text = vm.reservation.value?.playgroundName
+        reservationSportCenter.text = vm.reservation.value?.sportCenterName
+        reservationSportCenterAddress.text = vm.reservation.value?.location
+        reservationTotalPrice.text = "€ " + String.format("%.2f", vm.reservation.value?.totalPrice)
 
         //TODO: uncomment this block and delete noEquipmentMessage.visibility assignment when equipment list is available
         /*
@@ -99,6 +99,5 @@ class ReservationDetailsActivity : AppCompatActivity() {
             Uri.parse("https://www.google.com/maps/search/?api=1&query=$formattedAddress")
         )
         startActivity(intent)
-
     }
 }
