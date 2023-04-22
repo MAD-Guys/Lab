@@ -2,6 +2,7 @@ package it.polito.mad.sportapp
 
 import android.content.ContentResolver
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -54,6 +55,14 @@ internal fun AppCompatActivity.getDisplayMeasures(): Pair<Int, Int> {
         val displayWidth = metrics.widthPixels
         Pair(displayWidth, displayHeight)
     }
+}
+
+/* Navigation between Activities utilities */
+internal fun AppCompatActivity.navigateTo(activity: Class<*>): Boolean {
+    // Create Intent and launch Activity
+    val intent = Intent(this, activity)
+    startActivity(intent)
+    return true
 }
 
 /**

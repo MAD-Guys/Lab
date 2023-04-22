@@ -31,7 +31,7 @@ android {
                             'src/main/res_reservation_details',
                             'src/main/res_show_reservations',
                             'src/main/res_profile',
-                            'src/main/res'
+                            'src/main/res', 'src/main/res_playground_availabilities'
                     ]
         }
     }

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/playground_availabilities_button"
-        android:icon="@drawable/ic_baseline_search_24"
-        android:title="@string/playground_availabilities_button"
+        android:id="@+id/show_reservations_button"
+        android:icon="@drawable/baseline_calendar_month_24"
+        android:title="@string/show_reservations_button"
         app:showAsAction="always" />
 
     <item

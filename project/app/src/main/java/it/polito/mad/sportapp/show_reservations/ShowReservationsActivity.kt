@@ -1,7 +1,6 @@
 package it.polito.mad.sportapp.show_reservations
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -13,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.view.CalendarView
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.navigateTo
+import it.polito.mad.sportapp.playground_availabilities.PlaygroundAvailabilitiesActivity
 import it.polito.mad.sportapp.profile.ShowProfileActivity
 import it.polito.mad.sportapp.setApplicationLocale
 import it.polito.mad.sportapp.show_reservations.events_recycler_view.EventsAdapter
@@ -91,20 +92,8 @@ class ShowReservationsActivity : AppCompatActivity() {
     //TODO: create a bottom bar in order to delete the button
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         // detect which item has been selected and perform corresponding action
-        R.id.show_profile_button -> handleShowProfileButton()
-        R.id.book_playground_button -> {
-            Log.d("ShowReservationsActivity", "Book playground button clicked! (not implemented yet)")
-
-            true
-        }
+        R.id.show_profile_button -> navigateTo(ShowProfileActivity::class.java)
+        R.id.playground_availabilities_button -> navigateTo(PlaygroundAvailabilitiesActivity::class.java)
         else -> super.onOptionsItemSelected(item)
     }
-
-    private fun handleShowProfileButton(): Boolean {
-        val showProfileIntent = Intent(this, ShowProfileActivity::class.java)
-        startActivity(showProfileIntent)
-
-        return true
-    }
-
 }

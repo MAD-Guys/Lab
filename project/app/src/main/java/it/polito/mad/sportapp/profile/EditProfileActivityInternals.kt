@@ -140,7 +140,7 @@ internal fun EditProfileActivity.openCamera() {
     // Creating through a FileProvider the URI
     cameraUri = FileProvider.getUriForFile(
         this,
-        "it.polito.mad.lab2.fileprovider", imageFile
+        "it.polito.mad.sportapp.fileprovider", imageFile
     )
 
     val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)

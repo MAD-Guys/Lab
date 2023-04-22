@@ -2,6 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/show_reservations_button"
+        android:title="@string/show_reservations_button"
+        android:icon="@drawable/baseline_calendar_month_24"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/playground_availabilities_button"
+        android:title="@string/playground_availabilities_button"
+        android:icon="@drawable/ic_baseline_search_24"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/edit_button"
         android:title="@string/edit_button"
         android:icon="@drawable/baseline_edit_24"

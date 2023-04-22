@@ -1,6 +1,5 @@
 package it.polito.mad.sportapp.profile
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.view.ViewGroup
@@ -14,8 +13,11 @@ import com.google.android.material.chip.ChipGroup
 import es.dmoral.toasty.Toasty
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.getPictureFromInternalStorage
+import it.polito.mad.sportapp.navigateTo
+import it.polito.mad.sportapp.playground_availabilities.PlaygroundAvailabilitiesActivity
 import it.polito.mad.sportapp.setProfilePictureSize
 import it.polito.mad.sportapp.showToasty
+import it.polito.mad.sportapp.show_reservations.ShowReservationsActivity
 import org.json.JSONObject
 
 class ShowProfileActivity : AppCompatActivity() {
@@ -219,14 +221,9 @@ class ShowProfileActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         // detect which item has been selected and perform corresponding action
-        R.id.edit_button -> handleEditButton()
+        R.id.edit_button -> navigateTo(EditProfileActivity::class.java)
+        R.id.show_reservations_button -> navigateTo(ShowReservationsActivity::class.java)
+        R.id.playground_availabilities_button -> navigateTo(PlaygroundAvailabilitiesActivity::class.java)
         else -> super.onOptionsItemSelected(item)
-    }
-
-    private fun handleEditButton(): Boolean {
-        // Launching the EditProfileActivity
-        val editProfileIntent = Intent(this, EditProfileActivity::class.java)
-        startActivity(editProfileIntent)
-        return true
     }
 }
