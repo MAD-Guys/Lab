@@ -2,24 +2,20 @@ package it.polito.mad.sportapp.reservation_details
 
 import android.graphics.Bitmap
 import android.widget.ImageView
-//import it.polito.mad.sportapp.localDB.PlaygroundReservation
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
-//import it.polito.mad.sportapp.localDB.Equipment
-//import it.polito.mad.sportapp.localDB.SportCenter
-import java.sql.Date
+import it.polito.mad.sportapp.entities.EquipmentReservation
+import it.polito.mad.sportapp.localDB.DetailedReservation
 import java.sql.Time
 import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
 
 /*  QR CODE */
-fun reservationQRCode(r: ReservationDetails): Bitmap {
+fun reservationQRCode(r: DetailedReservation): Bitmap {
 
     lateinit var bitmap: Bitmap
     lateinit var qrEncoder: QRGEncoder
 
-    val text = "Reservation number " + String.format("%010d", r.getId()) + "\nUser: ${r.getUserName()}"
+    val text = "Reservation number " + String.format("%010d", r.id) + "\nUser: ${r.userId}"
 
     qrEncoder = QRGEncoder(text, null, QRGContents.Type.TEXT, 512)
 
@@ -39,60 +35,30 @@ fun reservationQRCode(r: ReservationDetails): Bitmap {
     return bitmap
 }
 
-fun setQRCodeView(reservation: ReservationDetails, imageView: ImageView){
+fun setQRCodeView(reservation: DetailedReservation, imageView: ImageView){
     val qrCode :Bitmap = reservationQRCode(reservation)
     imageView.setImageBitmap(qrCode)
 }
 
 /* MOCK RESERVATION DETAILS */
-class MockReservationDetails : ReservationDetails{
-    override fun getId(): Int {
-        return 123456
-    }
+fun mockReservationDetails() : DetailedReservation {
 
-    override fun getUserName(): String {
-        return "@johndoe"
-    }
+    val res = DetailedReservation(
+        123456,
+        27,
+        "POLI Sport",
+        "Corso Castelfidardo 54, Torino (TO)",
+        "Basketball",
+        "2023-04-18 15:00",
+        "2023-04-18 17:00",
+        "Campo 1",
+        25.50f
+    )
 
-    override fun getDate(): LocalDate {
-        return LocalDate.parse("2023-04-18")
-    }
+    res.equipments = mutableListOf(
+        EquipmentReservation(42, 123456, 66, 2, "timestamp", 5f),
+        EquipmentReservation(43, 123456, 68, 2, "timestamp", 5f)
+    )
 
-    override fun getStartTime(): LocalTime {
-        return  LocalTime.parse("15:00")
-    }
-
-    override fun getEndTime(): LocalTime {
-        return LocalTime.parse("17:00")
-    }
-
-    override fun getSport(): String {
-        return "Basketball"
-    }
-
-    override fun getPlaygroundName(): String {
-        return "Campo 1"
-    }
-
-    /*override fun getSportCenter(): SportCenter {
-        return SportCenter(
-            12,
-            "POLI Sport",
-            "Corso Castelfidardo 54, Torino (TO)",
-            "description",
-            "3456789012",
-            "8:00",
-            "22:00")
-    }*/
-
-    /*override fun getEquipment(): List<Equipment> {
-        return listOf<Equipment>(
-            Equipment(888, "Ball", 1, 12, 5.50 as Float, 20),
-            Equipment(999, "Shoes", 1, 12, 10 as Float, 4)
-        )
-    }*/
-
-    override fun getTotalPrice(): Float {
-        return 25.50.toFloat()
-    }
+    return  res
 }
