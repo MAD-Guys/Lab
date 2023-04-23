@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import it.polito.mad.sportapp.localDB.DetailedReservation
-import it.polito.mad.sportapp.model.Repository
 
 class ReservationDetailsViewModel : ViewModel() {
 

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import dagger.Provides
 import it.polito.mad.sportapp.entities.Equipment
 import it.polito.mad.sportapp.entities.EquipmentReservation
 import it.polito.mad.sportapp.entities.PlaygroundReservation
@@ -13,6 +14,7 @@ import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.UserSport
 import it.polito.mad.sportapp.localDB.dao.*
+import javax.inject.Singleton
 
 
 @Database(
@@ -41,7 +43,7 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
-        fun getInstance(context: Context): AppDatabase? = (INSTANCE ?: synchronized(this) {
+         fun getInstance(context: Context): AppDatabase? = (INSTANCE ?: synchronized(this) {
             val i = INSTANCE ?: Room.databaseBuilder(
                 context.applicationContext,
                 AppDatabase::class.java,
@@ -52,9 +54,8 @@ abstract class AppDatabase : RoomDatabase() {
 
         })!!
 
-        fun destroyInstance() {
-            INSTANCE = null
-        }
 
     }
+
 }
+
