@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="6dp"
+    android:paddingBottom="3dp"
+    android:weightSum="7">
+
+    <!-- Days of week -->
+    <include layout="@layout/calendar_header_day_text" />   <!-- MON -->
+    <include layout="@layout/calendar_header_day_text" />   <!-- TUE -->
+    <include layout="@layout/calendar_header_day_text" />   <!-- WED -->
+    <include layout="@layout/calendar_header_day_text" />   <!-- THU -->
+    <include layout="@layout/calendar_header_day_text" />   <!-- FRI -->
+    <include layout="@layout/calendar_header_day_text" />   <!-- SAT -->
+    <include layout="@layout/calendar_header_day_text" />   <!-- SUN -->
+
+</LinearLayout>

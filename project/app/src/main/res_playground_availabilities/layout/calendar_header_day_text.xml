@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/calendar_header_day_text"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:fontFamily="@font/poppins_medium"
+    android:gravity="center"
+    android:textAllCaps="true"
+    android:textColor="@color/black"
+    android:textSize="14sp"/>
