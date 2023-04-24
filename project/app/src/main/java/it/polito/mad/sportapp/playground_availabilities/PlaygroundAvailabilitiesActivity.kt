@@ -5,20 +5,22 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.viewModels
-import com.kizitonwose.calendar.core.CalendarMonth
+import com.kizitonwose.calendar.core.CalendarDay
+import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.view.CalendarView
-import com.kizitonwose.calendar.view.MonthHeaderFooterBinder
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.navigateTo
-import it.polito.mad.sportapp.playground_availabilities.calendar_utils.MonthViewContainer
 import it.polito.mad.sportapp.profile.ShowProfileActivity
 import it.polito.mad.sportapp.setApplicationLocale
 import it.polito.mad.sportapp.show_reservations.ShowReservationsActivity
+import it.polito.mad.sportapp.show_reservations.handleCurrentMonthChanged
 import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
@@ -30,9 +32,6 @@ class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playground_availabilities)
-
-        // set english as default language
-        setApplicationLocale(this, "en", "EN")
 
         /* retrieve the calendar view */
         calendarView = findViewById(R.id.calendar_view)
@@ -54,7 +53,53 @@ class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
         /* initialize calendar header */
         this.initCalendarHeader(daysOfWeek)
 
-        // TODO?
+        /* initialize month buttons */
+        val previousMonthButton = findViewById<ImageView>(R.id.previous_month_button)
+        val nextMonthButton = findViewById<ImageView>(R.id.next_month_button)
+
+        previousMonthButton.setOnClickListener {
+            viewModel.currentMonth.value?.let {
+                val previousMonth = it.minusMonths(1)
+                calendarView.smoothScrollToMonth(previousMonth)
+            }
+        }
+
+        nextMonthButton.setOnClickListener {
+            viewModel.currentMonth.value?.let {
+                val nextMonth = it.plusMonths(1)
+                calendarView.smoothScrollToMonth(nextMonth)
+            }
+        }
+
+        calendarView.monthScrollListener = { newMonth ->
+            viewModel.setCurrentMonth(newMonth.yearMonth)
+        }
+
+        /* months view model observers */
+        viewModel.currentMonth.observe(this) {
+            calendarView.smoothScrollToMonth(it)
+        }
+
+        /* month label changer */
+        val monthLabel = findViewById<TextView>(R.id.month_label)
+
+        viewModel.currentMonth.observe(this) {
+            monthLabel.text = capitalize(it.format(DateTimeFormatter.ofPattern("MMMM yyyy")))
+        }
+
+        /* dates view model observers */
+
+        viewModel.selectedDate.observe(this) {
+            calendarView.notifyDateChanged(it)
+        }
+
+        viewModel.previousSelectedDate.observe(this) {
+            calendarView.notifyDateChanged(it)
+        }
+
+
+
+        // TODO ?
 
     }
 
@@ -74,5 +119,10 @@ class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
         R.id.show_reservations_button -> navigateTo(ShowReservationsActivity::class.java)
         R.id.show_profile_button -> navigateTo(ShowProfileActivity::class.java)
         else -> super.onOptionsItemSelected(item)
+    }
+
+    /* utils */
+    private fun capitalize(str: String): String {
+        return str.substring(0,1).uppercase() + str.substring(1).lowercase()
     }
 }

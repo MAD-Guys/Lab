@@ -6,11 +6,14 @@ import android.widget.TextView
 import androidx.core.view.children
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.CalendarMonth
+import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.MonthHeaderFooterBinder
+import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.playground_availabilities.calendar_utils.DayViewContainer
 import it.polito.mad.sportapp.playground_availabilities.calendar_utils.MonthViewContainer
 import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -38,12 +41,25 @@ internal fun PlaygroundAvailabilitiesActivity.initCalendarHeader(daysOfWeek: Lis
 internal fun PlaygroundAvailabilitiesActivity.initCalendarDays() {
     calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
         override fun create(view: View) =
-            DayViewContainer(view, viewModel.selectedDate, viewModel::setSelectedDate)
+            DayViewContainer(this@initCalendarDays, view,
+                viewModel.selectedDate, viewModel::setSelectedDate)
 
         override fun bind(container: DayViewContainer, data: CalendarDay) {
-            // set the day
-            container.day = data
-            container.dayText.text = data.date.dayOfMonth.toString()
+            // set the date in the container
+            container.setDay(data)
+
+            if (data.position != DayPosition.MonthDate) {
+                container.setAsInOrOutDate()
+            }
+            else { // month date
+                val today = LocalDate.now()
+
+                when (data.date) {
+                    today -> container.setAsCurrentDate()
+                    viewModel.selectedDate.value -> container.setAsSelectedDate()
+                    else -> container.setAsUnselectedDate()
+                }
+            }
         }
     }
 }

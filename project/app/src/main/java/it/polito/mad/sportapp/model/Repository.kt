@@ -6,11 +6,16 @@ import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.SportCenter
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.DetailedReservation
+import it.polito.mad.sportapp.entities.PlaygroundSport
 import it.polito.mad.sportapp.localDB.dao.EquipmentDao
 import it.polito.mad.sportapp.localDB.dao.ReservationDao
 import it.polito.mad.sportapp.localDB.dao.SportCenterDao
 import it.polito.mad.sportapp.localDB.dao.SportDao
 import it.polito.mad.sportapp.localDB.dao.UserDao
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.YearMonth
+import java.util.Random
 import javax.inject.Inject
 
 
@@ -83,5 +88,104 @@ class Repository @Inject constructor(
         return equipmentDao.findBySportCenterIdAndSportId(sportCenterId, sportId)
     }
 
+    // * Playground methods *
+    data class DetailedPlaygroundSport(
+        val id: Int,
+        val playgroundId: Int,
+        val playgroundName: String,
+        val sportName: String,
+        val sportCenterName: String,
+        val pricePerHour: Float
+    )
 
+    /* Get the available playgrounds for each slot in the provided month */
+    fun getAvailablePlaygroundsIn(month: YearMonth, sport: Sport): Map<LocalDateTime, List<DetailedPlaygroundSport>> {
+        /* temporary hardcoded data */
+        val timeSlots = getRandomSlotsStartTimesIn(month, maxDaysOfMonth=20, maxSlots=15)
+        val playgroundSports = getRandomPlaygroundSports(sport.id)
+
+        return timeSlots.associateWith {
+            playgroundSports.asSequence().shuffled()
+                .take(Random().ints(1, 8).iterator().next())
+                .toList()
+        }
+    }
+
+
+    /* hardcoded data utilities (to be deleted) */
+
+    private fun getRandomSlotsStartTimesIn(
+        month: YearMonth, maxDaysOfMonth: Int, maxSlots: Int
+    ): List<LocalDateTime> {
+        val randomDaysOfMonth = Random().ints(
+            1,
+            month.lengthOfMonth() + 1
+        )
+
+        return buildList {
+            randomDaysOfMonth.limit(maxDaysOfMonth.toLong()).distinct().forEach { randomDay ->
+                val randomDate = month.atDay(randomDay)
+
+                // inspect random time slots in that date, starting from 9am to 21pm
+                randomDate.atTime(9, 0).let {
+                    val randomSlots = Random().longs(
+                        0,
+                        25
+                    )
+
+                    randomSlots.limit(maxSlots.toLong()).distinct().forEach { randomSlot ->
+                        val randomSlotStartTime = it.plusMinutes(30L * randomSlot)
+                        add(randomSlotStartTime)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getRandomPlaygroundSports(sportId: Int): List<DetailedPlaygroundSport> {
+        val prices = listOf(10.00, 15.00, 20.00, 25.00)
+        var nextId = 0
+        val random1or2Generator = Random().longs(1,3).iterator()
+        val randomSportCenterGenerator = Random().ints(0,3).iterator()
+        val randomPriceGenerator = Random().ints(0, 4)
+            .mapToDouble { index -> prices[index] }.iterator()
+        val playgroundIds = IntRange(0, 15)
+        val sports = listOf(
+            "basket",
+            "soccer11",
+            "soccer5",
+            "soccer8",
+            "tennis",
+            "tableTennis",
+            "volleyball",
+            "beachVolley",
+            "padel",
+            "miniGolf"
+        )
+
+        return buildList{
+            playgroundIds.forEach{ playgroundId ->
+                val randomSportIds = Random().ints(0, 11)
+
+                randomSportIds.limit(random1or2Generator.next()).distinct()
+                    .forEach { tempSportId ->
+                        val tempSportName = sports[tempSportId]
+                        val id = nextId++
+
+                        if(tempSportId == sportId) {
+                            add(
+                                DetailedPlaygroundSport(
+                                    id,
+                                    playgroundId,
+                                    "Playground $playgroundId",
+                                    tempSportName,
+                                    "Sport center ${randomSportCenterGenerator.next()}",
+                                    randomPriceGenerator.next().toFloat()
+                                )
+                            )
+                        }
+                    }
+            }
+        }
+    }
 }

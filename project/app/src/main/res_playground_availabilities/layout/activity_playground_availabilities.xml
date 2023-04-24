@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@color/background_calendar"
+    android:orientation="vertical"
+    android:clickable="true"
+    android:focusable="true"
+    tools:context=".playground_availabilities.PlaygroundAvailabilitiesActivity">
 
     <!-- Month bar -->
     <com.google.android.material.appbar.AppBarLayout
@@ -28,7 +33,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_chevron_left"
-                app:tint="@color/white" />
+                app:tint="@color/white"
+                tools:ignore="ImageContrastCheck,RedundantDescriptionCheck" />
 
             <!-- Month label -->
             <TextView
@@ -44,7 +50,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/next_month_button"
                 app:layout_constraintStart_toEndOf="@+id/previous_month_button"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="TextContrastCheck" />
 
             <!-- Next month button -->
             <ImageView
@@ -57,7 +64,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_chevron_right"
-                app:tint="@color/white" />
+                app:tint="@color/white"
+                tools:ignore="ImageContrastCheck,RedundantDescriptionCheck" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -75,5 +83,12 @@
         app:cv_monthHeaderResource="@layout/calendar_header"
         app:cv_outDateStyle="endOfGrid"
         app:cv_scrollPaged="true" />
+
+    <!-- Selected date slots' playground availabilities -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/playground_availabilities_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="false" />
 
 </LinearLayout>
