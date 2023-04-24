@@ -2,7 +2,6 @@ package it.polito.mad.sportapp.show_reservations
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
@@ -11,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.view.CalendarView
+import it.polito.mad.sportapp.events_list_view.EventsListViewActivity
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.navigateTo
 import it.polito.mad.sportapp.playground_availabilities.PlaygroundAvailabilitiesActivity
@@ -89,11 +89,11 @@ class ShowReservationsActivity : AppCompatActivity() {
         return true
     }
 
-    //TODO: create a bottom bar in order to delete the button
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         // detect which item has been selected and perform corresponding action
         R.id.show_profile_button -> navigateTo(ShowProfileActivity::class.java)
         R.id.playground_availabilities_button -> navigateTo(PlaygroundAvailabilitiesActivity::class.java)
+        R.id.list_view_button -> navigateTo(EventsListViewActivity::class.java)
         else -> super.onOptionsItemSelected(item)
     }
 }

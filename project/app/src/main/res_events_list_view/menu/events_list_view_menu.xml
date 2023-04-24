@@ -4,9 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/list_view_button"
-        android:icon="@drawable/baseline_format_list_bulleted_24"
-        android:title="@string/list_view_button"
+        android:id="@+id/show_reservations_button"
+        android:icon="@drawable/baseline_calendar_month_24"
+        android:title="@string/show_reservations_button"
         app:showAsAction="always" />
 
     <item

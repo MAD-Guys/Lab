@@ -1,4 +1,4 @@
-package it.polito.mad.sportapp.show_reservations.events_recycler_view
+package it.polito.mad.sportapp.events_list_view.events_list_recycler_view
 
 import android.content.Intent
 import android.view.View
@@ -12,7 +12,7 @@ import it.polito.mad.sportapp.show_reservations.*
 
 /* Event View Holder */
 
-internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+internal class EventsListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     private val itemLayout = view.findViewById<LinearLayout>(R.id.event_information_container)
     private val dateText = view.findViewById<TextView>(R.id.event_date_text)
