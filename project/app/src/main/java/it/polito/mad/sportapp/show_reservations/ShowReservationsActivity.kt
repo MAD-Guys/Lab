@@ -84,7 +84,7 @@ class ShowReservationsActivity : AppCompatActivity() {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.show_reservations_menu, menu)
         // change app bar's title
-        supportActionBar?.title = "Reservations"
+        supportActionBar?.title = "My Reservations"
 
         return true
     }

@@ -3,7 +3,7 @@ package it.polito.mad.sportapp.reservation_details
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import it.polito.mad.sportapp.localDB.DetailedReservation
+import it.polito.mad.sportapp.entities.DetailedReservation
 
 class ReservationDetailsViewModel : ViewModel() {
 

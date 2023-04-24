@@ -5,7 +5,7 @@ import it.polito.mad.sportapp.entities.PlaygroundReservation
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.SportCenter
 import it.polito.mad.sportapp.entities.User
-import it.polito.mad.sportapp.localDB.DetailedReservation
+import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.localDB.dao.EquipmentDao
 import it.polito.mad.sportapp.localDB.dao.ReservationDao
 import it.polito.mad.sportapp.localDB.dao.SportCenterDao

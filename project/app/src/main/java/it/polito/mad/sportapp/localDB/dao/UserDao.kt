@@ -1,7 +1,7 @@
 package it.polito.mad.sportapp.localDB.dao
 
 import androidx.room.*
-import it.polito.mad.sportapp.localDB.SportLevel
+import it.polito.mad.sportapp.entities.SportLevel
 import it.polito.mad.sportapp.entities.User
 
 @Dao

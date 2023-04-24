@@ -1,8 +1,7 @@
-package it.polito.mad.sportapp.localDB
+package it.polito.mad.sportapp.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Ignore
-import it.polito.mad.sportapp.entities.EquipmentReservation
 import java.time.LocalDate
 import java.time.LocalTime
 

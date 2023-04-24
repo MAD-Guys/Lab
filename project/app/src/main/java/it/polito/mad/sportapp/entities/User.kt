@@ -1,7 +1,6 @@
 package it.polito.mad.sportapp.entities
 
 import androidx.room.*
-import it.polito.mad.sportapp.localDB.SportLevel
 
 
 @Entity(tableName = "user", indices = [Index(value = ["username"], unique = true)] )

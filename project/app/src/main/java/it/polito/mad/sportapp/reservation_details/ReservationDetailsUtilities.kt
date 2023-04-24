@@ -5,9 +5,7 @@ import android.widget.ImageView
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import it.polito.mad.sportapp.entities.EquipmentReservation
-import it.polito.mad.sportapp.localDB.DetailedReservation
-import java.sql.Time
-import java.time.Instant
+import it.polito.mad.sportapp.entities.DetailedReservation
 
 /*  QR CODE */
 fun reservationQRCode(r: DetailedReservation): Bitmap {

@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import it.polito.mad.sportapp.localDB.DetailedReservation
+import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.entities.EquipmentReservation
 import it.polito.mad.sportapp.entities.PlaygroundReservation
 
@@ -38,7 +38,7 @@ interface ReservationDao {
                 "FROM sport AS S, playground_sport AS PS, playground_reservation as PR, sport_center AS SC " +
                 "WHERE PR.sport_id = S.id AND PR.playground_id = PS.id AND PR.sport_center_id = SC.id AND PR.id = :id"
     )
-    fun findDetailedReservationById(id: Int):DetailedReservation
+    fun findDetailedReservationById(id: Int): DetailedReservation
 
     @Query("SELECT * FROM equipment_reservation WHERE playground_reservation_id == :id")
     fun findEquipmentByReservationId(id: Int): List<EquipmentReservation>
