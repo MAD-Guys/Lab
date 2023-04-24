@@ -50,7 +50,7 @@
         android:gravity="center"
         android:orientation="vertical"
         android:paddingHorizontal="2dp"
-        android:paddingVertical="2.5dp"
+        android:paddingVertical="5dp"
         app:layout_constraintBottom_toBottomOf="@id/event_date_text"
         app:layout_constraintEnd_toStartOf="@id/event_duration"
         app:layout_constraintStart_toEndOf="@id/event_date_text"
@@ -64,7 +64,7 @@
             android:fontFamily="@font/poppins_bold"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="15sp"
+            android:textSize="16sp"
             tools:text="11-a-side Soccer" />
 
         <!-- Event more info -->
@@ -75,7 +75,7 @@
             android:fontFamily="@font/poppins_medium"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="14sp"
+            android:textSize="12sp"
             tools:text="Sport Center 1 - Playground 2" />
 
     </LinearLayout>
@@ -85,13 +85,14 @@
         android:id="@+id/event_duration"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:fontFamily="@font/poppins_bold"
+        android:layout_marginEnd="2dp"
+        android:fontFamily="@font/poppins_semibold"
         android:gravity="center"
-        android:hapticFeedbackEnabled="false"
-        android:padding="1dp"
+        android:includeFontPadding="false"
+        android:padding="5dp"
         android:textColor="@color/black"
-        android:textSize="14sp"
-        app:drawableStartCompat="@drawable/round_hourglass_bottom_24"
+        android:textSize="12sp"
+        app:drawableEndCompat="@drawable/round_hourglass_bottom_24"
         app:layout_constraintBottom_toBottomOf="@id/event_information_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/event_information_container"

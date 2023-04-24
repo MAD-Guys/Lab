@@ -42,6 +42,9 @@ internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         itemLayout.layoutParams.width = displayWidth / 14 * 9
         eventDuration.layoutParams.width = displayWidth / 14 * 3
 
+        // set item components background
+        eventDuration.setBackgroundResource(R.drawable.event_duration_box)
+
         // set item click listener
         itemLayout.setOnClickListener {
 
