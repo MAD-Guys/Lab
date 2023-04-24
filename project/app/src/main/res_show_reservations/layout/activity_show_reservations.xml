@@ -13,7 +13,6 @@
     android:orientation="vertical"
     tools:context=".show_reservations.ShowReservationsActivity">
 
-    <!-- TODO: decide whether the status bar must be kept or not -->
     <!-- App bar -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"

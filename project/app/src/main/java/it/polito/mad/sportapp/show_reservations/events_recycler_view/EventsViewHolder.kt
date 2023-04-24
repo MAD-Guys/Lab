@@ -24,6 +24,10 @@ internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     fun bind(event: Event) {
 
+        // get display width
+        val displayMetrics = itemView.context.resources.displayMetrics
+        val displayWidth = displayMetrics.widthPixels
+
         dateText.text = eventDateTimeFormatter.format(event.time)
 
         val eventInfo = "${event.sportCenterName} - ${event.sportPlaygroundName}"
@@ -33,11 +37,17 @@ internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         eventMoreInfo.text = eventInfo
         eventDuration.text = event.sportDuration
 
+        // set item components width
+        dateText.layoutParams.width = displayWidth / 7
+        itemLayout.layoutParams.width = displayWidth / 14 * 9
+        eventDuration.layoutParams.width = displayWidth / 14 * 3
+
         // set item click listener
         itemLayout.setOnClickListener {
 
             //create the intent
             val intent = Intent(it.context, ReservationDetailsActivity::class.java)
+            intent.putExtra("id_event", event.id)
 
             //start the Reservation Details Activity
             startActivity(it.context, intent, null)
