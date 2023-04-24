@@ -81,19 +81,19 @@ internal fun ShowReservationsActivity.calendarInit() {
 
                 val events = events[data.date]
 
-                // set background color and text for in dates
-                dayRelativeLayout.setBackgroundColor(getColor(R.color.white))
-                dayTextView.setTextColor(getColor(R.color.black))
+                // set background color and text for month dates
+                dayRelativeLayout.setBackgroundColor(getColor(R.color.month_date_background))
+                dayTextView.setTextColor(getColor(R.color.month_date_text_color))
 
                 // mark current date
                 if (data.date == currentDate) {
-                    dayTextView.setTextColor(getColor(R.color.primary_orange))
+                    dayTextView.setTextColor(getColor(R.color.current_date_text_color))
                     dayRelativeLayout.setBackgroundResource(R.drawable.current_day_selected_bg)
                 }
 
                 // mark selected date
                 if (data.date != currentDate && data.date == vm.selectedDate.value) {
-                    dayTextView.setTextColor(getColor(R.color.blue_500))
+                    dayTextView.setTextColor(getColor(R.color.selected_date_text_color))
                     dayRelativeLayout.setBackgroundResource(R.drawable.day_selected_bg)
                 }
 
@@ -113,8 +113,8 @@ internal fun ShowReservationsActivity.calendarInit() {
             }
             // set background color and text for out dates
             else {
-                dayRelativeLayout.setBackgroundColor(getColor(R.color.out_dates_color))
-                dayTextView.setTextColor(getColor(R.color.event_tag_color))
+                dayRelativeLayout.setBackgroundColor(getColor(R.color.out_date_background_color))
+                dayTextView.setTextColor(getColor(R.color.out_date_text_color))
             }
 
         }
