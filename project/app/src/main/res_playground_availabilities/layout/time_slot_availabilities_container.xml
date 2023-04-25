@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/time_slot_availabilities_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:baselineAligned="false"
+    android:background="@color/background_calendar">
+
+    <LinearLayout
+        android:id="@+id/time_slot_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingVertical="9sp"
+        android:paddingHorizontal="2sp"
+        android:background="@drawable/time_slot_bg"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/start_time_slot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="0.75sp"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="13sp"
+            android:text="11:00"
+            android:includeFontPadding="false"
+            android:textColor="@color/white" />
+        <TextView
+            android:id="@+id/end_time_slot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="0.75sp"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="13sp"
+            android:text="11:30"
+            android:includeFontPadding="false"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <HorizontalScrollView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="14">
+    <LinearLayout
+        android:id="@+id/available_playgrounds_container"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="@color/background_calendar">
+        <include layout="@layout/available_playground_item" />
+        <include layout="@layout/available_playground_item" />
+        <include layout="@layout/available_playground_item" />
+        <include layout="@layout/available_playground_item" />
+        <include layout="@layout/available_playground_item" />
+        <include layout="@layout/available_playground_item" />
+    </LinearLayout>
+    </HorizontalScrollView>
+</LinearLayout>

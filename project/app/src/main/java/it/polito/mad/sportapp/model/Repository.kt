@@ -89,14 +89,6 @@ class Repository @Inject constructor(
     }
 
     // * Playground methods *
-    data class DetailedPlaygroundSport(
-        val id: Int,
-        val playgroundId: Int,
-        val playgroundName: String,
-        val sportName: String,
-        val sportCenterName: String,
-        val pricePerHour: Float
-    )
 
     /* Get the available playgrounds for each slot in the provided month */
     fun getAvailablePlaygroundsIn(month: YearMonth, sport: Sport): Map<LocalDateTime, List<DetailedPlaygroundSport>> {
@@ -189,3 +181,12 @@ class Repository @Inject constructor(
         }
     }
 }
+
+data class DetailedPlaygroundSport(
+    val id: Int,
+    val playgroundId: Int,
+    val playgroundName: String,
+    val sportName: String,
+    val sportCenterName: String,
+    val pricePerHour: Float
+)

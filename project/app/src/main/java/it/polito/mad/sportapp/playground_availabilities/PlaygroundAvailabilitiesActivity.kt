@@ -8,18 +8,17 @@ import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
-import com.kizitonwose.calendar.core.CalendarDay
-import com.kizitonwose.calendar.core.DayPosition
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.view.CalendarView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.navigateTo
+import it.polito.mad.sportapp.playground_availabilities.recycler_view.PlaygroundAvailabilitiesAdapter
 import it.polito.mad.sportapp.profile.ShowProfileActivity
-import it.polito.mad.sportapp.setApplicationLocale
 import it.polito.mad.sportapp.show_reservations.ShowReservationsActivity
-import it.polito.mad.sportapp.show_reservations.handleCurrentMonthChanged
 import java.time.DayOfWeek
-import java.time.LocalDate
+import java.time.Duration
 import java.time.format.DateTimeFormatter
 
 
@@ -97,10 +96,13 @@ class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
             calendarView.notifyDateChanged(it)
         }
 
+        val playgroundAvailabilitiesRecyclerView = findViewById<RecyclerView>(R.id.playground_availabilities_rv)
 
-
-        // TODO ?
-
+        playgroundAvailabilitiesRecyclerView.apply {
+            layoutManager = LinearLayoutManager(
+                this@PlaygroundAvailabilitiesActivity, RecyclerView.VERTICAL, false)
+            adapter = PlaygroundAvailabilitiesAdapter(mapOf(), Duration.ofMinutes(30))
+        }
     }
 
     /** Create the top bar menu */
