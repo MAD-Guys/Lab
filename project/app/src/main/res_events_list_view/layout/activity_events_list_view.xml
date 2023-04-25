@@ -12,6 +12,7 @@
         android:id="@+id/events_list_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/background_calendar"
         android:nestedScrollingEnabled="false" />
 
 </LinearLayout>

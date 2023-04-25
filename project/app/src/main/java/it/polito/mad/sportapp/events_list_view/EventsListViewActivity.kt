@@ -13,7 +13,6 @@ import it.polito.mad.sportapp.events_list_view.events_list_recycler_view.EventsL
 import it.polito.mad.sportapp.navigateTo
 import it.polito.mad.sportapp.playground_availabilities.PlaygroundAvailabilitiesActivity
 import it.polito.mad.sportapp.profile.ShowProfileActivity
-import it.polito.mad.sportapp.show_reservations.ShowReservationsActivity
 import it.polito.mad.sportapp.show_reservations.generateEvents
 import java.time.LocalDate
 
@@ -44,11 +43,19 @@ class EventsListViewActivity : AppCompatActivity() {
             adapter = eventsListAdapter
         }
 
+        val currentDate = LocalDate.now()
+
         // add events to adapter
         eventsListAdapter.events.addAll(events.values.flatten())
 
+        val indexToScroll = if (events.containsKey(currentDate)) {
+            eventsListAdapter.events.indexOf(events[currentDate]?.first())
+        } else {
+            getNextEvent(currentDate)
+        }
+
         // scroll to current date event
-        eventsListView.layoutManager?.scrollToPosition(eventsListAdapter.events.indexOf(events[LocalDate.now()]?.first()))
+        eventsListView.layoutManager?.scrollToPosition(indexToScroll)
 
         eventsListAdapter.notifyDataSetChanged()
 
@@ -70,8 +77,22 @@ class EventsListViewActivity : AppCompatActivity() {
         // detect which item has been selected and perform corresponding action
         R.id.show_profile_button -> navigateTo(ShowProfileActivity::class.java)
         R.id.playground_availabilities_button -> navigateTo(PlaygroundAvailabilitiesActivity::class.java)
-        R.id.show_reservations_button -> navigateTo(ShowReservationsActivity::class.java)
+        R.id.show_reservations_button -> {
+            this.finish()
+            true
+        }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    // get index from the nearest current date event if the event with current day is not available
+    private fun getNextEvent(currentDate: LocalDate): Int {
+        val nextEvent = events.keys.find { it.isAfter(currentDate) }
+
+        return if (nextEvent != null) {
+            eventsListAdapter.events.indexOf(events[nextEvent]?.first())
+        } else {
+            eventsListAdapter.events.size - 1
+        }
     }
 
 }
