@@ -15,8 +15,7 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-class DatabaseModule {
-
+class DbModule {
     // DAO providers
     @Provides
     @Singleton
@@ -51,8 +50,7 @@ class DatabaseModule {
     // Database provider
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext appContext : Context): AppDatabase? {
+    fun provideDatabase(@ApplicationContext appContext : Context): AppDatabase {
         return AppDatabase.getInstance(appContext)
     }
-
 }

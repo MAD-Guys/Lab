@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.view.CalendarView
+import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.navigateTo
 import it.polito.mad.sportapp.playground_availabilities.recycler_view.PlaygroundAvailabilitiesAdapter
@@ -22,11 +23,12 @@ import java.time.Duration
 import java.time.format.DateTimeFormatter
 
 
+@AndroidEntryPoint
 class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
     internal lateinit var calendarView: CalendarView
 
     // View Model
-    internal val viewModel by viewModels<PlaygroundAvailabilitiesViewModel>()
+    internal val viewModel: PlaygroundAvailabilitiesViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

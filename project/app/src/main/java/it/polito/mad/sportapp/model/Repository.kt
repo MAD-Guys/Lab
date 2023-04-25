@@ -6,19 +6,19 @@ import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.SportCenter
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.DetailedReservation
-import it.polito.mad.sportapp.entities.PlaygroundSport
 import it.polito.mad.sportapp.localDB.dao.EquipmentDao
 import it.polito.mad.sportapp.localDB.dao.ReservationDao
 import it.polito.mad.sportapp.localDB.dao.SportCenterDao
 import it.polito.mad.sportapp.localDB.dao.SportDao
 import it.polito.mad.sportapp.localDB.dao.UserDao
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.util.Random
 import javax.inject.Inject
+import javax.inject.Singleton
 
 
+@Singleton
 class Repository @Inject constructor(
     private val userDao: UserDao,
     private val sportDao: SportDao,
@@ -91,7 +91,8 @@ class Repository @Inject constructor(
     // * Playground methods *
 
     /* Get the available playgrounds for each slot in the provided month */
-    fun getAvailablePlaygroundsIn(month: YearMonth, sport: Sport): Map<LocalDateTime, List<DetailedPlaygroundSport>> {
+    fun getAvailablePlaygroundsIn(month: YearMonth, sport: Sport)
+        : Map<LocalDateTime, List<DetailedPlaygroundSport>> {
         /* temporary hardcoded data */
         val timeSlots = getRandomSlotsStartTimesIn(month, maxDaysOfMonth=20, maxSlots=15)
         val playgroundSports = getRandomPlaygroundSports(sport.id)
