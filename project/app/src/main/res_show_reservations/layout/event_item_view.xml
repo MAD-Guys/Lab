@@ -36,7 +36,7 @@
             android:paddingVertical="1dp"
             android:textAllCaps="true"
             android:textColor="@color/white"
-            android:textSize="9sp"
+            android:textSize="10sp"
             tools:ignore="SmallSp,TextContrastCheck"
             tools:text="THU" />
 
@@ -50,7 +50,7 @@
             android:lineSpacingExtra="2.5dp"
             android:textAllCaps="true"
             android:textColor="@color/white"
-            android:textSize="18sp"
+            android:textSize="17sp"
             tools:ignore="TextContrastCheck"
             tools:text="14:00" />
 
@@ -65,7 +65,7 @@
             android:paddingVertical="1dp"
             android:textAllCaps="true"
             android:textColor="@color/white"
-            android:textSize="9sp"
+            android:textSize="10sp"
             tools:ignore="SmallSp,TextContrastCheck"
             tools:text="JUN 30" />
 

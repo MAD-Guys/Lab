@@ -38,7 +38,7 @@ class ShowReservationsViewModel @Inject constructor(
 
         // update current month
         this._currentMonth.value = month
-        //update previous month
+        // update previous month
         this._previousMonth.value = tempPreviousMonth
     }
 
