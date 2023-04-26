@@ -1,4 +1,4 @@
-package it.polito.mad.sportapp.show_reservations
+package it.polito.mad.sportapp
 
 import java.time.LocalDateTime
 import java.time.YearMonth

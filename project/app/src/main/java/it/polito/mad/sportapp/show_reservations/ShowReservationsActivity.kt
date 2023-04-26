@@ -13,6 +13,7 @@ import com.kizitonwose.calendar.view.CalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.events_list_view.EventsListViewActivity
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.generateEvents
 import it.polito.mad.sportapp.navigateTo
 import it.polito.mad.sportapp.playground_availabilities.PlaygroundAvailabilitiesActivity
 import it.polito.mad.sportapp.profile.ShowProfileActivity
@@ -25,6 +26,7 @@ import it.polito.mad.sportapp.show_reservations.events_recycler_view.EventsAdapt
 class ShowReservationsActivity : AppCompatActivity() {
 
     internal val eventsAdapter = EventsAdapter()
+    //internal lateinit var events: Map<LocalDate, List<DetailedReservations>>
 
     // generate events
     internal val events = generateEvents().sortedBy {
@@ -77,6 +79,15 @@ class ShowReservationsActivity : AppCompatActivity() {
 
         eventsAdapter.notifyDataSetChanged()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // update events list
+        // the invocation is in the onResume method because the list of events
+        // should be refreshed each time this activity is resumed
+        vm.getUserEventsFromDb()
     }
 
     /* app menu */

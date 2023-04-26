@@ -120,18 +120,20 @@ internal fun ShowReservationsActivity.calendarInit() {
         }
     }
 
+    /*
+    // initialize user events live data variable
+    vm.userEvents.observe(this) {
+        events = it
+        eventsAdapter.notifyDataSetChanged()
+    }*/
+
     // initialize current month live data variable
     vm.currentMonth.observe(this) {
         val monthString = it.format(DateTimeFormatter.ofPattern("MMMM yyyy"))
         monthLabel.text = capitalizeFirstLetter(monthString)
 
-        handleCurrentMonthChanged(it)
-
-        //update calendar
-        calendarView.notifyMonthChanged(it)
-    }
-
-    vm.previousMonth.observe(this) {
+        // scroll to new month
+        calendarView.smoothScrollToMonth(it)
 
         //update calendar
         calendarView.notifyMonthChanged(it)
@@ -174,14 +176,6 @@ internal fun ShowReservationsActivity.calendarInit() {
         calendarView.scrollToMonth(it)
     }
 
-}
-
-// handle new selected month
-internal fun ShowReservationsActivity.handleCurrentMonthChanged(month: YearMonth) {
-    calendarView.smoothScrollToMonth(month)
-
-    //update event
-    //updateAdapterForDate(null)
 }
 
 // capitalize the first letter of the string

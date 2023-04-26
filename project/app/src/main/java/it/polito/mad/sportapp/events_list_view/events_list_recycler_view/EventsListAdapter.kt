@@ -4,8 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.show_reservations.Event
-import it.polito.mad.sportapp.show_reservations.events_recycler_view.EventsViewHolder
+import it.polito.mad.sportapp.Event
 
 /* Events List Adapter */
 
