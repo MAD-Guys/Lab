@@ -13,19 +13,17 @@
 
     <LinearLayout
         android:id="@+id/event_date_time_container"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:background="@color/event_color"
         android:gravity="center"
         android:orientation="vertical"
+        android:paddingHorizontal="5dp"
         android:paddingVertical="5dp"
-        android:paddingEnd="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/view_divider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.143"
-        tools:ignore="RtlSymmetry">
+        app:layout_constraintTop_toTopOf="parent">
 
         <!-- Event day text -->
         <TextView
@@ -81,6 +79,7 @@
         android:background="@color/background_calendar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/event_date_time_container"
+        app:layout_constraintStart_toEndOf="@id/event_date_time_container"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Event information -->
