@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.view.CalendarView
+import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.events_list_view.EventsListViewActivity
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.navigateTo
@@ -20,6 +21,7 @@ import it.polito.mad.sportapp.show_reservations.events_recycler_view.EventsAdapt
 
 /* Show Reservations Activity */
 
+@AndroidEntryPoint
 class ShowReservationsActivity : AppCompatActivity() {
 
     internal val eventsAdapter = EventsAdapter()

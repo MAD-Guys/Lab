@@ -15,6 +15,8 @@ import it.polito.mad.sportapp.show_reservations.*
 internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     private val itemLayout = view.findViewById<LinearLayout>(R.id.event_information_container)
+    private val dayText = view.findViewById<TextView>(R.id.event_day_text)
+    private val timeText = view.findViewById<TextView>(R.id.event_time_text)
     private val dateText = view.findViewById<TextView>(R.id.event_date_text)
 
     // event information
@@ -28,7 +30,12 @@ internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val displayMetrics = itemView.context.resources.displayMetrics
         val displayWidth = displayMetrics.widthPixels
 
-        dateText.text = eventDateTimeFormatter.format(event.time)
+        // format event day, date and time
+        val eventDateTime = eventDateTimeFormatter.format(event.time).split(" ")
+
+        dayText.text = eventDateTime[0]
+        dateText.text = eventDateTime[1]
+        timeText.text = eventDateTime[2]
 
         val eventInfo = "${event.sportCenterName} - ${event.sportPlaygroundName}"
 

@@ -27,7 +27,7 @@ internal fun ShowReservationsActivity.monthButtonsInit() {
     previousMonthButton.setOnClickListener {
         calendarView.findFirstVisibleMonth()?.let { month ->
             val newMonth = month.yearMonth.minusMonths(1)
-            handleCurrentMonthChanged(newMonth)
+            vm.setCurrentMonth(newMonth)
         }
     }
 
@@ -36,7 +36,7 @@ internal fun ShowReservationsActivity.monthButtonsInit() {
     nextMonthButton.setOnClickListener {
         calendarView.findFirstVisibleMonth()?.let { month ->
             val newMonth = month.yearMonth.plusMonths(1)
-            handleCurrentMonthChanged(newMonth)
+            vm.setCurrentMonth(newMonth)
         }
     }
 }
@@ -124,12 +124,29 @@ internal fun ShowReservationsActivity.calendarInit() {
     vm.currentMonth.observe(this) { month ->
         val monthString = month.format(DateTimeFormatter.ofPattern("MMMM yyyy"))
         monthLabel.text = capitalizeFirstLetter(monthString)
+
+        handleCurrentMonthChanged(month)
+
+        //update calendar
+        calendarView.notifyMonthChanged(month)
+    }
+
+    vm.previousMonth.observe(this) {month ->
+
+        //update calendar
+        calendarView.notifyMonthChanged(month)
     }
 
     // initialize selected date live data variable
     vm.selectedDate.observe(this) {
-        // update calendar
-        calendarView.notifyCalendarChanged()
+        // update selected date
+        calendarView.notifyDateChanged(it)
+    }
+
+    // initialize previous selected date live data variable
+    vm.previousSelectedDate.observe(this) {
+        // update previous selected date
+        calendarView.notifyDateChanged(it)
     }
 
     // initialize days of week to monday
@@ -144,8 +161,8 @@ internal fun ShowReservationsActivity.calendarInit() {
         }
 
     // attach month scroll listener
-    calendarView.monthScrollListener = { month ->
-        handleCurrentMonthChanged(month.yearMonth)
+    calendarView.monthScrollListener = { newMonth ->
+        vm.setCurrentMonth(newMonth.yearMonth)
     }
 
     // finalize calendar view initialization
@@ -161,14 +178,10 @@ internal fun ShowReservationsActivity.calendarInit() {
 
 // handle new selected month
 internal fun ShowReservationsActivity.handleCurrentMonthChanged(month: YearMonth) {
-    vm.setCurrentMonth(month)
     calendarView.smoothScrollToMonth(month)
 
     //update event
     updateAdapterForDate(null)
-
-    // update calendar
-    calendarView.notifyCalendarChanged()
 }
 
 // capitalize the first letter of the string
