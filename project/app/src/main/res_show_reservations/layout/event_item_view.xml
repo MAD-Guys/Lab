@@ -19,11 +19,13 @@
         android:gravity="center"
         android:orientation="vertical"
         android:paddingVertical="5dp"
+        android:paddingEnd="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.143">
+        app:layout_constraintWidth_percent="0.143"
+        tools:ignore="RtlSymmetry">
 
         <!-- Event day text -->
         <TextView
