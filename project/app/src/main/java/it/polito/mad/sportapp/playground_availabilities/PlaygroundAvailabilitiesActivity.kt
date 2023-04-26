@@ -21,6 +21,7 @@ import it.polito.mad.sportapp.show_reservations.ShowReservationsActivity
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 
 @AndroidEntryPoint
@@ -85,7 +86,8 @@ class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
         val monthLabel = findViewById<TextView>(R.id.month_label)
 
         viewModel.currentMonth.observe(this) {
-            monthLabel.text = capitalize(it.format(DateTimeFormatter.ofPattern("MMMM yyyy")))
+            monthLabel.text = capitalize(
+                it.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH)))
         }
 
         /* dates view model observers */
@@ -103,7 +105,11 @@ class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
         playgroundAvailabilitiesRecyclerView.apply {
             layoutManager = LinearLayoutManager(
                 this@PlaygroundAvailabilitiesActivity, RecyclerView.VERTICAL, false)
-            adapter = PlaygroundAvailabilitiesAdapter(mapOf(), Duration.ofMinutes(30))
+            adapter = PlaygroundAvailabilitiesAdapter(
+                // TODO: filter by date
+                viewModel.availablePlaygrounds.value.orEmpty(),
+                Duration.ofMinutes(30)
+            )
         }
     }
 

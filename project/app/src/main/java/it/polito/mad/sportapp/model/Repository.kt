@@ -1,5 +1,7 @@
 package it.polito.mad.sportapp.model
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import it.polito.mad.sportapp.entities.Equipment
 import it.polito.mad.sportapp.entities.PlaygroundReservation
 import it.polito.mad.sportapp.entities.Sport
@@ -92,16 +94,18 @@ class Repository @Inject constructor(
 
     /* Get the available playgrounds for each slot in the provided month */
     fun getAvailablePlaygroundsIn(month: YearMonth, sport: Sport)
-        : Map<LocalDateTime, List<DetailedPlaygroundSport>> {
+        : MutableLiveData<Map<LocalDateTime, List<DetailedPlaygroundSport>>> {
         /* temporary hardcoded data */
         val timeSlots = getRandomSlotsStartTimesIn(month, maxDaysOfMonth=20, maxSlots=15)
         val playgroundSports = getRandomPlaygroundSports(sport.id)
 
-        return timeSlots.associateWith {
-            playgroundSports.asSequence().shuffled()
-                .take(Random().ints(1, 8).iterator().next())
-                .toList()
-        }
+        return MutableLiveData(
+                timeSlots.associateWith {
+                playgroundSports.asSequence().shuffled()
+                    .take(Random().ints(1, 8).iterator().next())
+                    .toList()
+            }
+        )
     }
 
 
@@ -158,14 +162,15 @@ class Repository @Inject constructor(
 
         return buildList{
             playgroundIds.forEach{ playgroundId ->
-                val randomSportIds = Random().ints(0, 11)
+                val randomSportIds = Random().ints(0, sports.size)
 
                 randomSportIds.limit(random1or2Generator.next()).distinct()
                     .forEach { tempSportId ->
                         val tempSportName = sports[tempSportId]
                         val id = nextId++
 
-                        if(tempSportId == sportId) {
+                        //if(tempSportId == sportId) {
+                        if(true) {
                             add(
                                 DetailedPlaygroundSport(
                                     id,

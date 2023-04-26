@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- time slots -->
+    <color name="time_slot_text">@color/white</color>
+    <color name="time_slot_background_color">#909090</color>
+    <color name="time_slot_border_color">#404040</color>
+
+    <!-- available playground item -->
+    <color name="available_playground_background_color">@color/white</color>
+    <color name="available_playground_border_color">#A0A0A0</color>
+    <color name="available_playground_text_color">@color/black</color>
+</resources>

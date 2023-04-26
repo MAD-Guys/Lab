@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- time slot -->
+    <dimen name="time_slot_box_padding_vertical">8sp</dimen>
+    <dimen name="time_slot_box_padding_horizontal">2sp</dimen>
+    <dimen name="time_slot_padding_vertical">1.75sp</dimen>
+    <dimen name="time_slot_text_size">12sp</dimen>
+    <dimen name="time_slot_border_size">0.5dp</dimen>
+
+    <!-- * available playground item * -->
+
+    <!-- border -->
+    <dimen name="available_playground_item_border_size">0.1dp</dimen>
+    <!-- margins -->
+    <dimen name="available_playground_text_margin_horizontal">13sp</dimen>
+    <dimen name="available_playground_price_per_hour_margin_top">2sp</dimen>
+    <!-- text sizes -->
+    <dimen name="available_playground_name_text_size">11sp</dimen>
+    <dimen name="available_playground_sport_center_text_size">9sp</dimen>
+    <dimen name="available_playground_price_per_hour_text_size">10sp</dimen>
+    <dimen name="available_playground_text_max_width">120sp</dimen>
+    <integer name="available_playground_name_max_length">20</integer>
+    <integer name="available_playground_sport_center_max_length">30</integer>
+
+
+
+</resources>

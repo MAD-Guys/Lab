@@ -4,14 +4,14 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <solid android:color="@color/time_slot_background_color" />
+            <solid android:color="@color/background_orange" />
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
             <stroke
-                android:width="@dimen/time_slot_border_size"
-                android:color="@color/time_slot_border_color" />
+                android:width="@dimen/available_playground_item_border_size"
+                android:color="@color/available_playground_border_color" />
         </shape>
     </item>
 </layer-list>

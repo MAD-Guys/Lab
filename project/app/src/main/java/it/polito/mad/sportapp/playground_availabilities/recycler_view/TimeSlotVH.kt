@@ -22,16 +22,19 @@ class TimeSlotVH(val view: View) : RecyclerView.ViewHolder(view) {
     }
 
     fun setAvailablePlaygrounds(availablePlaygrounds: List<DetailedPlaygroundSport>) {
-        availablePlaygroundsContainer.removeAllViews()  // clear
+        availablePlaygroundsContainer.removeAllViews()  // clear playgrounds
 
+        // transform each available playground object in a box view
         val availablePlaygroundBoxes = availablePlaygrounds.map { playground ->
             val playgroundBox = LayoutInflater.from(view.context).inflate(
                 R.layout.available_playground_item, availablePlaygroundsContainer, false)
 
+            // retrieve available playground' fields views
             val playgroundNameText = playgroundBox.findViewById<TextView>(R.id.playground_name)
             val sportCenterNameText = playgroundBox.findViewById<TextView>(R.id.sport_center_name)
             val pricePerHourText = playgroundBox.findViewById<TextView>(R.id.price_per_hour)
 
+            // set right information
             playgroundNameText.text = playground.playgroundName
             sportCenterNameText.text = playground.sportCenterName
             pricePerHourText.text = String.format("%.2f €/h", playground.pricePerHour)
@@ -39,6 +42,7 @@ class TimeSlotVH(val view: View) : RecyclerView.ViewHolder(view) {
             playgroundBox
         }
 
+        // push the playgrounds boxes into the container
         availablePlaygroundBoxes.forEach { availablePlaygroundsContainer.addView(it) }
     }
 }
