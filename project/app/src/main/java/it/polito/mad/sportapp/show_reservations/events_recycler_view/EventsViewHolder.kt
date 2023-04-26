@@ -31,7 +31,7 @@ internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val displayWidth = displayMetrics.widthPixels
 
         // format event day, date and time
-        val eventDateTime = eventDateTimeFormatter.format(event.time).split(" ")
+        val eventDateTime = eventDateTimeFormatter.format(event.time).split("\n")
 
         dayText.text = eventDateTime[0]
         dateText.text = eventDateTime[1]

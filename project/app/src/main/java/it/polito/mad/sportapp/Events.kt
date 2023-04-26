@@ -215,4 +215,4 @@ fun generateEvents(): List<Event> = buildList {
 
 // format event
 val eventDateTimeFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("EEE' 'dd MMM' 'HH:mm", Locale.ENGLISH)
+    DateTimeFormatter.ofPattern("EEE'\n'dd MMM'\n'HH:mm", Locale.ENGLISH)
