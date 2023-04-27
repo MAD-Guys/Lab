@@ -13,6 +13,7 @@ import it.polito.mad.sportapp.localDB.dao.ReservationDao
 import it.polito.mad.sportapp.localDB.dao.SportCenterDao
 import it.polito.mad.sportapp.localDB.dao.SportDao
 import it.polito.mad.sportapp.localDB.dao.UserDao
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.util.Random
@@ -66,6 +67,11 @@ class Repository @Inject constructor(
 
     fun getReservationBySportId(sportId: Int): List<DetailedReservation> {
         return reservationDao.findBySportId(sportId)
+    }
+
+    fun getReservationPerDateByUserId(userId : Int) : MutableLiveData<Map<LocalDate, List<DetailedReservation>>>{
+        val userReservations= reservationDao.findByUserId(userId)
+        return MutableLiveData(userReservations.sortedBy { LocalDateTime.parse(it.startDateTime) }.groupBy { it.date })
     }
 
     // Sport Center methods

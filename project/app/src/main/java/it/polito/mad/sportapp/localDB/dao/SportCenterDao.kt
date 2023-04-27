@@ -16,6 +16,4 @@ interface SportCenterDao {
     fun findById(id: Int): SportCenter
 
 
-
-
 }
