@@ -12,7 +12,7 @@ import java.time.LocalDate
 
 /* Day View Container */
 
-internal class DayViewContainer(
+internal class DayViewContainer (
     view: View,
     vm: ShowReservationsViewModel,
     updater: (LocalDate?) -> Unit

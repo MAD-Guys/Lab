@@ -1,6 +1,8 @@
 package it.polito.mad.sportapp.show_reservations
 
 import android.annotation.SuppressLint
+import android.os.Build
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.children
@@ -102,6 +104,9 @@ internal fun ShowReservationsActivity.calendarInit() {
                     eventTag.visibility = View.VISIBLE
 
                     if (YearMonth.from(data.date) == vm.currentMonth.value && data.date == vm.selectedDate.value) {
+
+                        // perform haptic feedback if the day clicked has at least one event
+                        performHapticFeedback(container.view)
                         updateAdapterForDate(data.date)
                     }
                 } else {
@@ -176,6 +181,17 @@ internal fun ShowReservationsActivity.calendarInit() {
         calendarView.scrollToMonth(it)
     }
 
+}
+
+// perform haptic feedback if android version is lower than 13
+internal fun performHapticFeedback(view: View) {
+
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        view.performHapticFeedback(
+            HapticFeedbackConstants.VIRTUAL_KEY,
+            HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
+        )
+    }
 }
 
 // capitalize the first letter of the string
