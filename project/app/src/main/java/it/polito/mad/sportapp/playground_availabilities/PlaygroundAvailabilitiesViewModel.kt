@@ -1,6 +1,5 @@
 package it.polito.mad.sportapp.playground_availabilities
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -46,8 +45,8 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
                     selectedSport.value ?: defaultSport
                 )
 
-    val availablePlaygrounds: LiveData<Map<LocalDateTime, List<DetailedPlaygroundSport>>> = _availablePlaygrounds
-
+    private val availablePlaygrounds:
+            LiveData<Map<LocalDateTime, List<DetailedPlaygroundSport>>> = _availablePlaygrounds
 
     fun setSelectedDate(newSelectedDate: LocalDate?) {
         val tempPreviousSelectedDate = this.selectedDate.value
@@ -60,5 +59,11 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
 
     fun setCurrentMonth(month: YearMonth) {
         _currentMonth.value = month
+    }
+
+    fun getAvailablePlaygroundsOnSelectedDate(): Map<LocalDateTime, List<DetailedPlaygroundSport>> {
+        return this.availablePlaygrounds.value.orEmpty().filterKeys {
+            it.toLocalDate() == this.selectedDate.value
+        }
     }
 }

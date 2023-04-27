@@ -17,8 +17,8 @@ class TimeSlotVH(val view: View) : RecyclerView.ViewHolder(view) {
         view.findViewById<LinearLayout>(R.id.available_playgrounds_container)
 
     fun setTimeSlotTimes(start: LocalDateTime, end: LocalDateTime) {
-        startTimeSlotText.text = start.format(DateTimeFormatter.ofPattern("HH:MM"))
-        endTimeSlotText.text = end.format(DateTimeFormatter.ofPattern("HH:MM"))
+        startTimeSlotText.text = start.format(DateTimeFormatter.ofPattern("HH:mm"))
+        endTimeSlotText.text = end.format(DateTimeFormatter.ofPattern("HH:mm"))
     }
 
     fun setAvailablePlaygrounds(availablePlaygrounds: List<DetailedPlaygroundSport>) {

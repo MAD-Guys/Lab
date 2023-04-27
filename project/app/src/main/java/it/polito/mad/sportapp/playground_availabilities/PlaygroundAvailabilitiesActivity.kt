@@ -1,5 +1,6 @@
 package it.polito.mad.sportapp.playground_availabilities
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -16,6 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.navigateTo
 import it.polito.mad.sportapp.playground_availabilities.recycler_view.PlaygroundAvailabilitiesAdapter
+import it.polito.mad.sportapp.playground_availabilities.recycler_view.TimeSlotVH
 import it.polito.mad.sportapp.profile.ShowProfileActivity
 import it.polito.mad.sportapp.show_reservations.ShowReservationsActivity
 import java.time.DayOfWeek
@@ -31,6 +33,10 @@ class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
     // View Model
     internal val viewModel: PlaygroundAvailabilitiesViewModel by viewModels()
 
+    // recycler view
+    private lateinit var playgroundAvailabilitiesAdapter: PlaygroundAvailabilitiesAdapter
+
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playground_availabilities)
@@ -100,16 +106,25 @@ class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
             calendarView.notifyDateChanged(it)
         }
 
+        // set up playgrounds availabilities recycler view
         val playgroundAvailabilitiesRecyclerView = findViewById<RecyclerView>(R.id.playground_availabilities_rv)
+        playgroundAvailabilitiesAdapter = PlaygroundAvailabilitiesAdapter(
+            viewModel.getAvailablePlaygroundsOnSelectedDate(),
+            Duration.ofMinutes(30)
+        )
 
         playgroundAvailabilitiesRecyclerView.apply {
             layoutManager = LinearLayoutManager(
                 this@PlaygroundAvailabilitiesActivity, RecyclerView.VERTICAL, false)
-            adapter = PlaygroundAvailabilitiesAdapter(
-                // TODO: filter by date
-                viewModel.availablePlaygrounds.value.orEmpty(),
-                Duration.ofMinutes(30)
-            )
+            adapter = playgroundAvailabilitiesAdapter
+        }
+
+        // selected date observer: change recycler view data
+        viewModel.selectedDate.observe(this) {
+            playgroundAvailabilitiesAdapter.playgroundAvailabilities =
+                viewModel.getAvailablePlaygroundsOnSelectedDate()
+
+            playgroundAvailabilitiesAdapter.notifyDataSetChanged()
         }
     }
 
