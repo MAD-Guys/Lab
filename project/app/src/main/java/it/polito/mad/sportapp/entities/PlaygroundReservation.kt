@@ -28,7 +28,7 @@ import java.time.LocalDateTime
 )
 data class PlaygroundReservation(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Int,
     @ColumnInfo(name = "playground_id", index = true)
     val playgroundId: Int,
     @ColumnInfo(name = "user_id", index = true)

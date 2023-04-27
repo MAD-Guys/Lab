@@ -1,6 +1,7 @@
 package it.polito.mad.sportapp.localDB.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import it.polito.mad.sportapp.entities.Sport
 
@@ -8,6 +9,12 @@ import it.polito.mad.sportapp.entities.Sport
 interface SportDao {
     @Query("SELECT * FROM sport")
     fun getAll(): List<Sport>
+
+    @Insert
+    fun insertAll(vararg sport: Sport)
+
+    @Insert
+    fun insert(sport: Sport)
 
 
 }

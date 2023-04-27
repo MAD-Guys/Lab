@@ -9,6 +9,7 @@ import it.polito.mad.sportapp.entities.SportCenter
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.localDB.dao.EquipmentDao
+import it.polito.mad.sportapp.localDB.dao.PlaygroundSportDao
 import it.polito.mad.sportapp.localDB.dao.ReservationDao
 import it.polito.mad.sportapp.localDB.dao.SportCenterDao
 import it.polito.mad.sportapp.localDB.dao.SportDao
@@ -27,7 +28,8 @@ class Repository @Inject constructor(
     private val sportDao: SportDao,
     private val sportCenterDao: SportCenterDao,
     private val equipmentDao: EquipmentDao,
-    private val reservationDao: ReservationDao
+    private val reservationDao: ReservationDao,
+    private val playgroundSportDao: PlaygroundSportDao
 ) {
 
     // User methods

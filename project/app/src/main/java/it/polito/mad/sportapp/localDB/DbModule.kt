@@ -8,6 +8,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.localDB.dao.EquipmentDao
+import it.polito.mad.sportapp.localDB.dao.PlaygroundSportDao
 import it.polito.mad.sportapp.localDB.dao.ReservationDao
 import it.polito.mad.sportapp.localDB.dao.SportCenterDao
 import it.polito.mad.sportapp.localDB.dao.SportDao
@@ -48,10 +49,19 @@ class DbModule {
         return appDatabase.reservationDao()
     }
 
+    @Provides
+    @Singleton
+    fun providePlaygroundSportDao(appDatabase: AppDatabase): PlaygroundSportDao {
+        return appDatabase.playgroundSportDao()
+    }
+
     // Database provider
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext appContext : Context): AppDatabase {
         return AppDatabase.getInstance(appContext)
     }
+
+
+
 }

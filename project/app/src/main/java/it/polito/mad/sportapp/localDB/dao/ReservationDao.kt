@@ -45,15 +45,13 @@ interface ReservationDao {
     @Query("SELECT * FROM equipment_reservation WHERE playground_reservation_id == :id")
     fun findEquipmentByReservationId(id: Int): List<EquipmentReservation>
 
-    @Query("SELECT PR.start_date_time , PR.end_date_time, PS.playground_id, PS.sport_id, SC.name AS sport_center_name, PS.playground_name, PS.cost_per_hour " +
+    @Query("SELECT PR.start_date_time , PR.end_date_time, PS.id AS playground_id, PS.sport_id, SC.name AS sport_center_name, PS.playground_name, PS.cost_per_hour " +
             "FROM playground_reservation AS PR, PLAYGROUND_SPORT AS PS, sport_center AS SC " +
             "WHERE PR.playground_id = PS.Id AND " +
             "SC.Id = PS.sport_center_id AND " +
             "PS.sport_id == :sportId AND " +
             "PR.start_date_time LIKE :date")
     fun findPlaygroundsBySportIdAndDate(sportId: Int, date: String): List<ReservationSportDate>
-
-
 
     @Insert
     fun insertAll(vararg playgroundReservations: PlaygroundReservation)
@@ -63,6 +61,8 @@ interface ReservationDao {
 
     @Delete
     fun delete(reservation: PlaygroundReservation)
+
+
 
 
 
