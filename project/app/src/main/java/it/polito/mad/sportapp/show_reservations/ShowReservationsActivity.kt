@@ -13,7 +13,6 @@ import com.kizitonwose.calendar.view.CalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.events_list_view.EventsListViewActivity
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.generateEvents
 import it.polito.mad.sportapp.navigateTo
 import it.polito.mad.sportapp.playground_availabilities.PlaygroundAvailabilitiesActivity
 import it.polito.mad.sportapp.profile.ShowProfileActivity
@@ -26,14 +25,6 @@ import it.polito.mad.sportapp.show_reservations.events_recycler_view.EventsAdapt
 class ShowReservationsActivity : AppCompatActivity() {
 
     internal val eventsAdapter = EventsAdapter()
-    //internal lateinit var events: Map<LocalDate, List<DetailedReservations>>
-
-    // generate events
-    internal val events = generateEvents().sortedBy {
-        it.time
-    }.groupBy {
-        it.time.toLocalDate()
-    }
 
     private lateinit var recyclerView: RecyclerView
 

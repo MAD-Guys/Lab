@@ -47,12 +47,14 @@ internal fun ShowReservationsActivity.monthButtonsInit() {
 @SuppressLint("NotifyDataSetChanged")
 fun ShowReservationsActivity.updateAdapterForDate(date: LocalDate?) {
     eventsAdapter.events.clear()
-    eventsAdapter.events.addAll(events[date].orEmpty())
+    eventsAdapter.events.addAll(vm.userEvents.value?.get(date).orEmpty())
     eventsAdapter.notifyDataSetChanged()
 }
 
 // initialize calendar information
 internal fun ShowReservationsActivity.calendarInit() {
+
+    val currentDate = LocalDate.now()
 
     // bind days to the calendar recycler view
     calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
@@ -77,11 +79,9 @@ internal fun ShowReservationsActivity.calendarInit() {
             container.day = data
             dayTextView.text = data.date.dayOfMonth.toString()
 
-            val currentDate = LocalDate.now()
-
             if (data.position == DayPosition.MonthDate) {
 
-                val events = events[data.date]
+                val events = vm.userEvents.value?.get(data.date)
 
                 // set background color and text for month dates
                 dayRelativeLayout.setBackgroundColor(getColor(R.color.month_date_background))
@@ -125,12 +125,17 @@ internal fun ShowReservationsActivity.calendarInit() {
         }
     }
 
-    /*
     // initialize user events live data variable
     vm.userEvents.observe(this) {
-        events = it
-        eventsAdapter.notifyDataSetChanged()
-    }*/
+        vm.selectedDate.value?.let { date ->
+
+            if (date != currentDate) {
+                updateAdapterForDate(date)
+            } else {
+                updateAdapterForDate(currentDate)
+            }
+        }
+    }
 
     // initialize current month live data variable
     vm.currentMonth.observe(this) {

@@ -8,11 +8,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
-import it.polito.mad.sportapp.Event
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.eventDateTimeFormatter
+import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.reservation_details.ReservationDetailsActivity
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 /* Event View Holder */
 
@@ -30,29 +31,31 @@ internal class EventsListViewHolder(view: View) : RecyclerView.ViewHolder(view) 
     private val eventMoreInfo = view.findViewById<TextView>(R.id.event_more_info)
     private val eventDuration = view.findViewById<TextView>(R.id.event_duration)
 
-    fun bind(event: Event) {
+    fun bind(event: DetailedReservation) {
 
-        if(event.time.toLocalDate() == LocalDate.now()) {
-            containerLayout.setBackgroundColor(getColor(itemView.context, R.color.current_item_highlighted))
+        if (event.date == LocalDate.now()) {
+            containerLayout.setBackgroundColor(
+                getColor(
+                    itemView.context,
+                    R.color.current_item_highlighted
+                )
+            )
         }
 
         // get display width
         val displayMetrics = itemView.context.resources.displayMetrics
         val displayWidth = displayMetrics.widthPixels
 
-        // format event day, date and time
-        val eventDateTime = eventDateTimeFormatter.format(event.time).split("\n")
+        dayText.text = DateTimeFormatter.ofPattern("EEE", Locale.ENGLISH).format(event.date)
+        dateText.text = DateTimeFormatter.ofPattern("dd MMM", Locale.ENGLISH).format(event.date)
+        timeText.text = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH).format(event.startTime)
 
-        dayText.text = eventDateTime[0]
-        dateText.text = eventDateTime[1]
-        timeText.text = eventDateTime[2]
-
-        val eventInfo = "${event.sportCenterName} - ${event.sportPlaygroundName}"
+        val eventInfo = "${event.sportCenterName} - ${event.playgroundName}"
 
         // set event information
         sportName.text = event.sportName
         eventMoreInfo.text = eventInfo
-        eventDuration.text = event.sportDuration
+        eventDuration.text = event.duration.toString()
 
         // set item components width
         dateText.layoutParams.width = displayWidth / 7

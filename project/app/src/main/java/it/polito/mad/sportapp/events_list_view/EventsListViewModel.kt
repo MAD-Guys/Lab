@@ -13,17 +13,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EventsListViewModel @Inject constructor(
-    repository: Repository
+    private val repository: Repository
 ) : ViewModel() {
 
     // mutable live data for the user events
-    private val _userEvents = MutableLiveData<Map<LocalDate, List<DetailedReservation>>>()
+    private var _userEvents = MutableLiveData<Map<LocalDate, List<DetailedReservation>>>()
 
     val userEvents: LiveData<Map<LocalDate, List<DetailedReservation>>> = _userEvents
 
     fun getUserEventsFromDb() {
-        // get events from database
-        //_userEvents.value = repository.getDetailedReservationByUserId(1)
+        // get user events from database
+        val dbThread = Thread() {
+            _userEvents.postValue(repository.getReservationPerDateByUserId(1).value)
+        }
+
+        // start db thread
+        dbThread.start()
     }
 
 }
