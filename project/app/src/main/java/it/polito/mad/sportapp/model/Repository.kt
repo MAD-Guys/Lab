@@ -59,10 +59,10 @@ class Repository @Inject constructor(
         return reservationDao.getAll()
     }
 
-    fun getDetailedReservationById(id: Int): DetailedReservation {
+    fun getDetailedReservationById(id: Int): MutableLiveData<DetailedReservation> {
         val reservation = reservationDao.findDetailedReservationById(id)
         reservation.equipments = reservationDao.findEquipmentByReservationId(id)
-        return reservation
+        return MutableLiveData(reservation)
     }
 
     fun getReservationBySportId(sportId: Int): List<DetailedReservation> {
