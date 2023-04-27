@@ -6,9 +6,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import it.polito.mad.sportapp.Event
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.eventDateTimeFormatter
 import it.polito.mad.sportapp.reservation_details.ReservationDetailsActivity
-import it.polito.mad.sportapp.show_reservations.*
 
 /* Event View Holder */
 
