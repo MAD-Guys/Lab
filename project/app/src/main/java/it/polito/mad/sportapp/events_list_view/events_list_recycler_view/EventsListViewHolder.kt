@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.DetailedReservation
+import it.polito.mad.sportapp.formatDuration
 import it.polito.mad.sportapp.reservation_details.ReservationDetailsActivity
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -55,7 +56,7 @@ internal class EventsListViewHolder(view: View) : RecyclerView.ViewHolder(view) 
         // set event information
         sportName.text = event.sportName
         eventMoreInfo.text = eventInfo
-        eventDuration.text = event.duration.toString()
+        eventDuration.text = formatDuration(event.duration)
 
         // set item components width
         dateText.layoutParams.width = displayWidth / 7
