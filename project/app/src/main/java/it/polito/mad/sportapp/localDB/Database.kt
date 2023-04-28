@@ -53,7 +53,7 @@ abstract class AppDatabase : RoomDatabase() {
                 Executors.newSingleThreadExecutor().execute {
                     INSTANCE.let {
                         it?.userDao()
-                            ?.insert(User(1, "John", "Doe", "johndoe", "Male", 25, "Turin", "Bio"))
+                            ?.insert(User(0, "John", "Doe", "johndoe", "Male", 25, "Turin", "Bio"))
                         it?.sportCenterDao()?.insertAllSportCenter(
                             SportCenter(
                                 0,
@@ -65,7 +65,7 @@ abstract class AppDatabase : RoomDatabase() {
                                 "20:00:00"
                             ),
                             SportCenter(
-                                1,
+                                0,
                                 "Sport Center 2",
                                 "Via Roma 2",
                                 "Cool",
@@ -75,16 +75,16 @@ abstract class AppDatabase : RoomDatabase() {
                             )
                         )
                         it?.sportDao()?.insertAll(
-                            Sport(1, "Tennis", 4),
-                            Sport(2, "Basketball", 7),
-                            Sport(3, "11-a-side-soccer", 11),
-                            Sport(4, "Volleyball", 12)
+                            Sport(0, "Tennis", 4),
+                            Sport(0, "Basketball", 7),
+                            Sport(0, "11-a-side-soccer", 11),
+                            Sport(0, "Volleyball", 12)
                         )
                         it?.playgroundSportDao()?.insertAll(
                             PlaygroundSport(0, 1, 1, "Playground 1", 12.0F),
-                            PlaygroundSport(1, 1, 2, "Playground 2", 12.0F),
-                            PlaygroundSport(2, 1, 3, "Playground 3", 12.0F),
-                            PlaygroundSport(3, 1, 4, "Playground 4", 12.0F)
+                            PlaygroundSport(0, 2, 1, "Playground 1 ", 12.0F),
+                            PlaygroundSport(0, 3, 2, "Playground 3", 12.0F),
+                            PlaygroundSport(0, 4, 2, "Playground 4", 12.0F)
                         )
                         it?.reservationDao()?.insertAll(
                             PlaygroundReservation(
@@ -93,20 +93,31 @@ abstract class AppDatabase : RoomDatabase() {
                                 1,
                                 1,
                                 1,
-                                "2022-04-30T018:00:00",
-                                "2022-04-30T018:00:00",
-                                "2022-04-25T018:00:00",
+                                "2023-04-30T18:00:00",
+                                "2023-04-30T18:30:00",
+                                "2023-04-25T18:00:00",
                                 22.5F
                             ),
                             PlaygroundReservation(
-                                1,
-                                2,
-                                1,
-                                2,
                                 0,
-                                "2022-04-29T018:00:00",
-                                "2022-04-29T018:00:00",
-                                "2022-04-25T018:00:00",
+                                2,
+                                1,
+                                2,
+                                1,
+                                "2023-04-29T18:00:00",
+                                "2023-04-29T19:00:00",
+                                "2023-04-25T18:00:00",
+                                22.5F
+                            ),
+                            PlaygroundReservation(
+                                0,
+                                1,
+                                1,
+                                3,
+                                2,
+                                "2023-04-29T18:00:00",
+                                "2023-04-29T19:30:00",
+                                "2023-04-28T18:00:00",
                                 22.5F
                             )
                         )
