@@ -33,13 +33,13 @@ fun reservationQRCode(r: DetailedReservation): Bitmap {
     return bitmap
 }
 
-fun setQRCodeView(reservation: DetailedReservation, imageView: ImageView){
-    val qrCode :Bitmap = reservationQRCode(reservation)
+fun setQRCodeView(reservation: DetailedReservation, imageView: ImageView) {
+    val qrCode: Bitmap = reservationQRCode(reservation)
     imageView.setImageBitmap(qrCode)
 }
 
 /* MOCK RESERVATION DETAILS */
-fun mockReservationDetails() : DetailedReservation {
+fun mockReservationDetails(): DetailedReservation {
 
     val res = DetailedReservation(
         123456,
@@ -47,8 +47,8 @@ fun mockReservationDetails() : DetailedReservation {
         "POLI Sport",
         "Corso Castelfidardo 54, Torino (TO)",
         "Basketball",
-        "2023-04-18 15:00",
-        "2023-04-18 17:00",
+        "2023-04-18 15:00:00",
+        "2023-04-18 17:00:00",
         "Campo 1",
         25.50f
     )
@@ -58,5 +58,5 @@ fun mockReservationDetails() : DetailedReservation {
         EquipmentReservation(43, 123456, 68, 2, "timestamp", 5f)
     )
 
-    return  res
+    return res
 }

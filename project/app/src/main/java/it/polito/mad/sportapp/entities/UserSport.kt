@@ -13,7 +13,6 @@ import androidx.room.*
             entity = Sport::class,
             parentColumns = ["id"],
             childColumns = ["sport_id"])],
-    indices = [Index(value = ["user_id", "sport_id"], unique = true)]
 )
 data class UserSport(
     @PrimaryKey(autoGenerate = true)

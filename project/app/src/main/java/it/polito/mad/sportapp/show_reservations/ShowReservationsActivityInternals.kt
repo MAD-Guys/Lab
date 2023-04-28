@@ -128,8 +128,6 @@ internal fun ShowReservationsActivity.calendarInit() {
     // initialize user events live data variable
     vm.userEvents.observe(this) {
 
-        dbTextView.text = it.values.flatten()[0].playgroundName
-
         vm.selectedDate.value?.let { date ->
 
             if (date != currentDate) {
@@ -139,7 +137,7 @@ internal fun ShowReservationsActivity.calendarInit() {
             }
         }
 
-        //calendarView.notifyMonthChanged(vm.currentMonth.value!!)
+        calendarView.notifyMonthChanged(vm.currentMonth.value!!)
     }
 
     // initialize current month live data variable
