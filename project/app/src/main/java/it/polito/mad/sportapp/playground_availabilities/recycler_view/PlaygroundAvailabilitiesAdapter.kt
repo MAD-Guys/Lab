@@ -12,16 +12,15 @@ class PlaygroundAvailabilitiesAdapter(
     playgroundAvailabilities: Map<LocalDateTime, List<DetailedPlaygroundSport>>,
     private val slotDuration: Duration) : RecyclerView.Adapter<TimeSlotVH>()
 {
+    // ordered list of all the slots
+    private var timeSlots = playgroundAvailabilities.keys.toList().sorted()
+
     // map containing slots and their corresponding available playgrounds
     var playgroundAvailabilities = playgroundAvailabilities
         set(newValue) {
             field = newValue
             timeSlots = newValue.keys.toList().sorted() // also update the slots
         }
-
-    // ordered list of all the slots
-    private var timeSlots = playgroundAvailabilities.keys.toList().sorted()
-
 
     override fun getItemCount(): Int {
         return playgroundAvailabilities.size

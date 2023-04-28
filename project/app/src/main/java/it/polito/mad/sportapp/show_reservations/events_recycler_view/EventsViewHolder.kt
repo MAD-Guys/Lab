@@ -7,14 +7,19 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.entities.DetailedReservation
+import it.polito.mad.sportapp.formatDuration
 import it.polito.mad.sportapp.reservation_details.ReservationDetailsActivity
-import it.polito.mad.sportapp.show_reservations.*
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 /* Event View Holder */
 
 internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     private val itemLayout = view.findViewById<LinearLayout>(R.id.event_information_container)
+    private val dayText = view.findViewById<TextView>(R.id.event_day_text)
+    private val timeText = view.findViewById<TextView>(R.id.event_time_text)
     private val dateText = view.findViewById<TextView>(R.id.event_date_text)
 
     // event information
@@ -22,20 +27,22 @@ internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val eventMoreInfo = view.findViewById<TextView>(R.id.event_more_info)
     private val eventDuration = view.findViewById<TextView>(R.id.event_duration)
 
-    fun bind(event: Event) {
+    fun bind(event: DetailedReservation) {
 
         // get display width
         val displayMetrics = itemView.context.resources.displayMetrics
         val displayWidth = displayMetrics.widthPixels
 
-        dateText.text = eventDateTimeFormatter.format(event.time)
+        dayText.text = DateTimeFormatter.ofPattern("EEE", Locale.ENGLISH).format(event.date)
+        dateText.text = DateTimeFormatter.ofPattern("dd MMM", Locale.ENGLISH).format(event.date)
+        timeText.text = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH).format(event.startTime)
 
-        val eventInfo = "${event.sportCenterName} - ${event.sportPlaygroundName}"
+        val eventInfo = "${event.sportCenterName} - ${event.playgroundName}"
 
         // set event information
         sportName.text = event.sportName
         eventMoreInfo.text = eventInfo
-        eventDuration.text = event.sportDuration
+        eventDuration.text = formatDuration(event.duration)
 
         // set item components width
         dateText.layoutParams.width = displayWidth / 7
@@ -57,5 +64,4 @@ internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
 
     }
-
 }

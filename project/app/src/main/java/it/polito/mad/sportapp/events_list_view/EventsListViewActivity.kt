@@ -6,33 +6,33 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.events_list_view.events_list_recycler_view.EventsListAdapter
 import it.polito.mad.sportapp.navigateTo
 import it.polito.mad.sportapp.playground_availabilities.PlaygroundAvailabilitiesActivity
 import it.polito.mad.sportapp.profile.ShowProfileActivity
-import it.polito.mad.sportapp.show_reservations.generateEvents
 import java.time.LocalDate
 
+@AndroidEntryPoint
 class EventsListViewActivity : AppCompatActivity() {
 
     private val eventsListAdapter = EventsListAdapter()
 
-    // generate events
-    internal val events = generateEvents().sortedBy {
-        it.time
-    }.groupBy {
-        it.time.toLocalDate()
-    }
-
     private lateinit var eventsListView: RecyclerView
+
+    // events view model
+    private val vm by viewModels<EventsListViewModel>()
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_events_list_view)
+
+        val currentDate = LocalDate.now()
 
         // initialize RecyclerView from layout
         eventsListView = findViewById(R.id.events_list_recycler_view)
@@ -43,22 +43,35 @@ class EventsListViewActivity : AppCompatActivity() {
             adapter = eventsListAdapter
         }
 
-        val currentDate = LocalDate.now()
+        vm.userEvents.observe(this) {
+            eventsListAdapter.events.clear()
 
-        // add events to adapter
-        eventsListAdapter.events.addAll(events.values.flatten())
-
-        val indexToScroll = if (events.containsKey(currentDate)) {
-            eventsListAdapter.events.indexOf(events[currentDate]?.first())
-        } else {
-            getNextEvent(currentDate)
+            // add events to the adapter
+            eventsListAdapter.events.addAll(it.values.flatten())
+            eventsListAdapter.notifyDataSetChanged()
+            scrollToCurrentDate(currentDate)
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // update events list
+        // the invocation is in the onResume method because the list of events
+        // should be refreshed each time this activity is resumed
+        vm.getUserEventsFromDb()
+    }
+
+    // scroll to the current date event
+    private fun scrollToCurrentDate (date: LocalDate) {
+        val indexToScroll = if (vm.userEvents.value?.containsKey(date) == true) {
+            eventsListAdapter.events.indexOf(vm.userEvents.value?.get(date)?.first())
+        } else {
+            getNextEvent(date)
+        }
         // scroll to current date event
         eventsListView.layoutManager?.scrollToPosition(indexToScroll)
-
-        eventsListAdapter.notifyDataSetChanged()
-
     }
 
     /* app menu */
@@ -86,10 +99,10 @@ class EventsListViewActivity : AppCompatActivity() {
 
     // get index from the nearest current date event if the event with current day is not available
     private fun getNextEvent(currentDate: LocalDate): Int {
-        val nextEvent = events.keys.find { it.isAfter(currentDate) }
+        val nextEvent = vm.userEvents.value?.keys?.find { it.isAfter(currentDate) }
 
         return if (nextEvent != null) {
-            eventsListAdapter.events.indexOf(events[nextEvent]?.first())
+            eventsListAdapter.events.indexOf(vm.userEvents.value?.get(nextEvent)?.first())
         } else {
             eventsListAdapter.events.size - 1
         }

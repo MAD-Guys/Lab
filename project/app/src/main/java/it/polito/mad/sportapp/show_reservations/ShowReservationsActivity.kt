@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.view.CalendarView
+import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.events_list_view.EventsListViewActivity
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.navigateTo
@@ -20,16 +21,10 @@ import it.polito.mad.sportapp.show_reservations.events_recycler_view.EventsAdapt
 
 /* Show Reservations Activity */
 
+@AndroidEntryPoint
 class ShowReservationsActivity : AppCompatActivity() {
 
     internal val eventsAdapter = EventsAdapter()
-
-    // generate events
-    internal val events = generateEvents().sortedBy {
-        it.time
-    }.groupBy {
-        it.time.toLocalDate()
-    }
 
     private lateinit var recyclerView: RecyclerView
 
@@ -75,6 +70,15 @@ class ShowReservationsActivity : AppCompatActivity() {
 
         eventsAdapter.notifyDataSetChanged()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // update events list
+        // the invocation is in the onResume method because the list of events
+        // should be refreshed each time this activity is resumed
+        vm.getUserEventsFromDb()
     }
 
     /* app menu */

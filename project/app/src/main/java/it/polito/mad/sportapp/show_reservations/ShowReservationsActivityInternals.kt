@@ -1,6 +1,8 @@
 package it.polito.mad.sportapp.show_reservations
 
 import android.annotation.SuppressLint
+import android.os.Build
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.children
@@ -27,7 +29,7 @@ internal fun ShowReservationsActivity.monthButtonsInit() {
     previousMonthButton.setOnClickListener {
         calendarView.findFirstVisibleMonth()?.let { month ->
             val newMonth = month.yearMonth.minusMonths(1)
-            handleCurrentMonthChanged(newMonth)
+            vm.setCurrentMonth(newMonth)
         }
     }
 
@@ -36,7 +38,7 @@ internal fun ShowReservationsActivity.monthButtonsInit() {
     nextMonthButton.setOnClickListener {
         calendarView.findFirstVisibleMonth()?.let { month ->
             val newMonth = month.yearMonth.plusMonths(1)
-            handleCurrentMonthChanged(newMonth)
+            vm.setCurrentMonth(newMonth)
         }
     }
 }
@@ -45,12 +47,14 @@ internal fun ShowReservationsActivity.monthButtonsInit() {
 @SuppressLint("NotifyDataSetChanged")
 fun ShowReservationsActivity.updateAdapterForDate(date: LocalDate?) {
     eventsAdapter.events.clear()
-    eventsAdapter.events.addAll(events[date].orEmpty())
+    eventsAdapter.events.addAll(vm.userEvents.value?.get(date).orEmpty())
     eventsAdapter.notifyDataSetChanged()
 }
 
 // initialize calendar information
 internal fun ShowReservationsActivity.calendarInit() {
+
+    val currentDate = LocalDate.now()
 
     // bind days to the calendar recycler view
     calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
@@ -75,11 +79,9 @@ internal fun ShowReservationsActivity.calendarInit() {
             container.day = data
             dayTextView.text = data.date.dayOfMonth.toString()
 
-            val currentDate = LocalDate.now()
-
             if (data.position == DayPosition.MonthDate) {
 
-                val events = events[data.date]
+                val events = vm.userEvents.value?.get(data.date)
 
                 // set background color and text for month dates
                 dayRelativeLayout.setBackgroundColor(getColor(R.color.month_date_background))
@@ -102,6 +104,9 @@ internal fun ShowReservationsActivity.calendarInit() {
                     eventTag.visibility = View.VISIBLE
 
                     if (YearMonth.from(data.date) == vm.currentMonth.value && data.date == vm.selectedDate.value) {
+
+                        // perform haptic feedback if the day clicked has at least one event
+                        performHapticFeedback(container.view)
                         updateAdapterForDate(data.date)
                     }
                 } else {
@@ -120,16 +125,40 @@ internal fun ShowReservationsActivity.calendarInit() {
         }
     }
 
+    // initialize user events live data variable
+    vm.userEvents.observe(this) {
+        vm.selectedDate.value?.let { date ->
+
+            if (date != currentDate) {
+                updateAdapterForDate(date)
+            } else {
+                updateAdapterForDate(currentDate)
+            }
+        }
+    }
+
     // initialize current month live data variable
-    vm.currentMonth.observe(this) { month ->
-        val monthString = month.format(DateTimeFormatter.ofPattern("MMMM yyyy"))
+    vm.currentMonth.observe(this) {
+        val monthString = it.format(DateTimeFormatter.ofPattern("MMMM yyyy"))
         monthLabel.text = capitalizeFirstLetter(monthString)
+
+        // scroll to new month
+        calendarView.smoothScrollToMonth(it)
+
+        //update calendar
+        calendarView.notifyMonthChanged(it)
     }
 
     // initialize selected date live data variable
     vm.selectedDate.observe(this) {
-        // update calendar
-        calendarView.notifyCalendarChanged()
+        // update selected date
+        calendarView.notifyDateChanged(it)
+    }
+
+    // initialize previous selected date live data variable
+    vm.previousSelectedDate.observe(this) {
+        // update previous selected date
+        calendarView.notifyDateChanged(it)
     }
 
     // initialize days of week to monday
@@ -144,8 +173,8 @@ internal fun ShowReservationsActivity.calendarInit() {
         }
 
     // attach month scroll listener
-    calendarView.monthScrollListener = { month ->
-        handleCurrentMonthChanged(month.yearMonth)
+    calendarView.monthScrollListener = { newMonth ->
+        vm.setCurrentMonth(newMonth.yearMonth)
     }
 
     // finalize calendar view initialization
@@ -159,16 +188,15 @@ internal fun ShowReservationsActivity.calendarInit() {
 
 }
 
-// handle new selected month
-internal fun ShowReservationsActivity.handleCurrentMonthChanged(month: YearMonth) {
-    vm.setCurrentMonth(month)
-    calendarView.smoothScrollToMonth(month)
+// perform haptic feedback if android version is lower than 13
+internal fun performHapticFeedback(view: View) {
 
-    //update event
-    updateAdapterForDate(null)
-
-    // update calendar
-    calendarView.notifyCalendarChanged()
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        view.performHapticFeedback(
+            HapticFeedbackConstants.VIRTUAL_KEY,
+            HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
+        )
+    }
 }
 
 // capitalize the first letter of the string

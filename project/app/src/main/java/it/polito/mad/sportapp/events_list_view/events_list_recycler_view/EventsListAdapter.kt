@@ -4,14 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.show_reservations.Event
-import it.polito.mad.sportapp.show_reservations.events_recycler_view.EventsViewHolder
+import it.polito.mad.sportapp.Event
+import it.polito.mad.sportapp.entities.DetailedReservation
 
 /* Events List Adapter */
 
 internal class EventsListAdapter : RecyclerView.Adapter<EventsListViewHolder>(){
 
-    val events = mutableListOf<Event>()
+    val events = mutableListOf<DetailedReservation>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventsListViewHolder {
         val v = LayoutInflater.from(parent.context)

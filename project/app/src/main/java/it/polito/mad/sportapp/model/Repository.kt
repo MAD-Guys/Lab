@@ -1,5 +1,7 @@
 package it.polito.mad.sportapp.model
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import it.polito.mad.sportapp.entities.Equipment
 import it.polito.mad.sportapp.entities.PlaygroundReservation
 import it.polito.mad.sportapp.entities.Sport
@@ -7,10 +9,12 @@ import it.polito.mad.sportapp.entities.SportCenter
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.localDB.dao.EquipmentDao
+import it.polito.mad.sportapp.localDB.dao.PlaygroundSportDao
 import it.polito.mad.sportapp.localDB.dao.ReservationDao
 import it.polito.mad.sportapp.localDB.dao.SportCenterDao
 import it.polito.mad.sportapp.localDB.dao.SportDao
 import it.polito.mad.sportapp.localDB.dao.UserDao
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.util.Random
@@ -24,7 +28,8 @@ class Repository @Inject constructor(
     private val sportDao: SportDao,
     private val sportCenterDao: SportCenterDao,
     private val equipmentDao: EquipmentDao,
-    private val reservationDao: ReservationDao
+    private val reservationDao: ReservationDao,
+    private val playgroundSportDao: PlaygroundSportDao
 ) {
 
     // User methods
@@ -56,14 +61,19 @@ class Repository @Inject constructor(
         return reservationDao.getAll()
     }
 
-    fun getDetailedReservationById(id: Int): DetailedReservation {
+    fun getDetailedReservationById(id: Int): MutableLiveData<DetailedReservation> {
         val reservation = reservationDao.findDetailedReservationById(id)
         reservation.equipments = reservationDao.findEquipmentByReservationId(id)
-        return reservation
+        return MutableLiveData(reservation)
     }
 
     fun getReservationBySportId(sportId: Int): List<DetailedReservation> {
         return reservationDao.findBySportId(sportId)
+    }
+
+    fun getReservationPerDateByUserId(userId : Int) : MutableLiveData<Map<LocalDate, List<DetailedReservation>>>{
+        val userReservations= reservationDao.findByUserId(userId)
+        return MutableLiveData(userReservations.sortedBy { LocalDateTime.parse(it.startDateTime) }.groupBy { it.date })
     }
 
     // Sport Center methods
@@ -92,16 +102,18 @@ class Repository @Inject constructor(
 
     /* Get the available playgrounds for each slot in the provided month */
     fun getAvailablePlaygroundsIn(month: YearMonth, sport: Sport)
-        : Map<LocalDateTime, List<DetailedPlaygroundSport>> {
+        : MutableLiveData<Map<LocalDateTime, List<DetailedPlaygroundSport>>> {
         /* temporary hardcoded data */
         val timeSlots = getRandomSlotsStartTimesIn(month, maxDaysOfMonth=20, maxSlots=15)
         val playgroundSports = getRandomPlaygroundSports(sport.id)
 
-        return timeSlots.associateWith {
-            playgroundSports.asSequence().shuffled()
-                .take(Random().ints(1, 8).iterator().next())
-                .toList()
-        }
+        return MutableLiveData(
+                timeSlots.associateWith {
+                playgroundSports.asSequence().shuffled()
+                    .take(Random().ints(1, 8).iterator().next())
+                    .toList()
+            }
+        )
     }
 
 
@@ -158,14 +170,15 @@ class Repository @Inject constructor(
 
         return buildList{
             playgroundIds.forEach{ playgroundId ->
-                val randomSportIds = Random().ints(0, 11)
+                val randomSportIds = Random().ints(0, sports.size)
 
                 randomSportIds.limit(random1or2Generator.next()).distinct()
                     .forEach { tempSportId ->
                         val tempSportName = sports[tempSportId]
                         val id = nextId++
 
-                        if(tempSportId == sportId) {
+                        //if(tempSportId == sportId) {
+                        if(true) {
                             add(
                                 DetailedPlaygroundSport(
                                     id,

@@ -1,60 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/time_slot_availabilities_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="1dp"
     android:orientation="horizontal"
     android:baselineAligned="false"
     android:background="@color/background_calendar">
 
+    <!-- time slot -->
     <LinearLayout
         android:id="@+id/time_slot_box"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:paddingVertical="9sp"
-        android:paddingHorizontal="2sp"
+        android:paddingVertical="@dimen/time_slot_box_padding_vertical"
+        android:paddingHorizontal="@dimen/time_slot_box_padding_horizontal"
         android:background="@drawable/time_slot_bg"
         android:gravity="center">
         <TextView
             android:id="@+id/start_time_slot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingVertical="0.75sp"
+            android:paddingVertical="@dimen/time_slot_padding_vertical"
             android:fontFamily="@font/poppins_medium"
-            android:textSize="13sp"
-            android:text="11:00"
+            android:textSize="@dimen/time_slot_text_size"
+            android:text="@string/default_start_time_slot"
             android:includeFontPadding="false"
-            android:textColor="@color/white" />
+            android:textColor="@color/time_slot_text" />
         <TextView
             android:id="@+id/end_time_slot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingVertical="0.75sp"
+            android:paddingVertical="@dimen/time_slot_padding_vertical"
             android:fontFamily="@font/poppins_medium"
-            android:textSize="13sp"
-            android:text="11:30"
+            android:textSize="@dimen/time_slot_text_size"
+            android:text="@string/default_end_time_slot"
             android:includeFontPadding="false"
-            android:textColor="@color/white" />
+            android:textColor="@color/time_slot_text" />
     </LinearLayout>
 
+    <!-- Available playgrounds container (horizontal scrolling) -->
     <HorizontalScrollView
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="14">
-    <LinearLayout
-        android:id="@+id/available_playgrounds_container"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:background="@color/background_calendar">
-        <include layout="@layout/available_playground_item" />
-        <include layout="@layout/available_playground_item" />
-        <include layout="@layout/available_playground_item" />
-        <include layout="@layout/available_playground_item" />
-        <include layout="@layout/available_playground_item" />
-        <include layout="@layout/available_playground_item" />
-    </LinearLayout>
+        android:layout_weight="7.5"
+        android:scrollbars="none"
+        android:background="@drawable/available_playgrounds_container_bg">
+        <LinearLayout
+            android:id="@+id/available_playgrounds_container"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            tools:ignore="VisualLintBounds">
+
+            <!-- Available playgrounds -->
+            <include layout="@layout/available_playground_item" />
+            <include layout="@layout/available_playground_item" />
+            <include layout="@layout/available_playground_item" />
+            <include layout="@layout/available_playground_item" />
+            <include layout="@layout/available_playground_item" />
+            <include layout="@layout/available_playground_item" />
+
+        </LinearLayout>
     </HorizontalScrollView>
 </LinearLayout>

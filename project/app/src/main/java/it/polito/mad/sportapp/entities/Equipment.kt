@@ -17,7 +17,7 @@ import androidx.room.*
 )
 data class Equipment(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Int,
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "sport_id", index = true)

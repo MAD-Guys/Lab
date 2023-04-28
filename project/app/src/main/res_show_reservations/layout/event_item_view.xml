@@ -11,24 +11,65 @@
     android:layout_margin="1dp"
     android:background="@color/white">
 
-    <!-- Event text -->
-    <TextView
-        android:id="@+id/event_date_text"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/event_date_time_container"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:background="@color/event_color"
         android:gravity="center"
-        android:lineSpacingExtra="2.5dp"
-        android:textAllCaps="true"
-        android:textColor="@color/white"
-        android:textSize="12sp"
+        android:orientation="vertical"
+        android:paddingHorizontal="3dp"
+        android:paddingVertical="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/view_divider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.143"
-        tools:ignore="TextContrastCheck"
-        tools:text="THU\nJUN 30\n14:00" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Event day text -->
+        <TextView
+            android:id="@+id/event_day_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="2.5dp"
+            android:paddingVertical="1dp"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            tools:ignore="SmallSp,TextContrastCheck"
+            tools:text="THU" />
+
+        <!-- Event time text -->
+        <TextView
+            android:id="@+id/event_time_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="2.5dp"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            tools:ignore="TextContrastCheck"
+            tools:text="14:00" />
+
+        <!-- Event date text -->
+        <TextView
+            android:id="@+id/event_date_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="2.5dp"
+            android:paddingVertical="1dp"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            tools:ignore="SmallSp,TextContrastCheck"
+            tools:text="JUN 30" />
+
+    </LinearLayout>
 
     <!--Colored view divider-->
     <View
@@ -37,7 +78,8 @@
         android:layout_height="0dp"
         android:background="@color/background_calendar"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/event_date_text"
+        app:layout_constraintEnd_toEndOf="@id/event_date_time_container"
+        app:layout_constraintStart_toEndOf="@id/event_date_time_container"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Event information -->
@@ -51,10 +93,10 @@
         android:orientation="vertical"
         android:paddingHorizontal="2dp"
         android:paddingVertical="5dp"
-        app:layout_constraintBottom_toBottomOf="@id/event_date_text"
+        app:layout_constraintBottom_toBottomOf="@id/event_date_time_container"
         app:layout_constraintEnd_toStartOf="@id/event_duration"
-        app:layout_constraintStart_toEndOf="@id/event_date_text"
-        app:layout_constraintTop_toTopOf="@id/event_date_text">
+        app:layout_constraintStart_toEndOf="@id/event_date_time_container"
+        app:layout_constraintTop_toTopOf="@id/event_date_time_container">
 
         <!-- Event sport name -->
         <TextView
