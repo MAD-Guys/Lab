@@ -46,12 +46,7 @@ data class PlaygroundReservation(
     val timestamp: String,
     @ColumnInfo(name = "total_price")
     val totalPrice: Float,
-) {
-    @Ignore
-    val duration = LocalTime.parse(endDateTime.substring(11, 19)).minute - LocalTime.parse(
-        startDateTime.substring(11, 19)
-    ).minute
-}
+)
 
 
 

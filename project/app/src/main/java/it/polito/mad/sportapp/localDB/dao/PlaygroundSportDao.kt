@@ -9,6 +9,9 @@ import it.polito.mad.sportapp.entities.PlaygroundSport
 interface PlaygroundSportDao {
 
     @Insert
+    fun insert(playgroundSport: PlaygroundSport)
+
+    @Insert
     fun insertAll(vararg playgroundSports: PlaygroundSport)
 
 }
