@@ -71,9 +71,10 @@ class Repository @Inject constructor(
         return reservationDao.findBySportId(sportId)
     }
 
-    fun getReservationPerDateByUserId(userId : Int) : MutableLiveData<Map<LocalDate, List<DetailedReservation>>>{
-        val userReservations= reservationDao.findByUserId(userId)
-        return MutableLiveData(userReservations.sortedBy { LocalDateTime.parse(it.startDateTime) }.groupBy { it.date })
+    fun getReservationPerDateByUserId(userId: Int): Map<LocalDate, List<DetailedReservation>> {
+        val userReservations = reservationDao.findByUserId(userId)
+        return userReservations.sortedBy { LocalDateTime.parse(it.startDateTime) }
+            .groupBy { it.date }
     }
 
     // Sport Center methods
@@ -102,13 +103,13 @@ class Repository @Inject constructor(
 
     /* Get the available playgrounds for each slot in the provided month */
     fun getAvailablePlaygroundsIn(month: YearMonth, sport: Sport)
-        : MutableLiveData<Map<LocalDateTime, List<DetailedPlaygroundSport>>> {
+            : MutableLiveData<Map<LocalDateTime, List<DetailedPlaygroundSport>>> {
         /* temporary hardcoded data */
-        val timeSlots = getRandomSlotsStartTimesIn(month, maxDaysOfMonth=20, maxSlots=15)
+        val timeSlots = getRandomSlotsStartTimesIn(month, maxDaysOfMonth = 20, maxSlots = 15)
         val playgroundSports = getRandomPlaygroundSports(sport.id)
 
         return MutableLiveData(
-                timeSlots.associateWith {
+            timeSlots.associateWith {
                 playgroundSports.asSequence().shuffled()
                     .take(Random().ints(1, 8).iterator().next())
                     .toList()
@@ -150,8 +151,8 @@ class Repository @Inject constructor(
     private fun getRandomPlaygroundSports(sportId: Int): List<DetailedPlaygroundSport> {
         val prices = listOf(10.00, 15.00, 20.00, 25.00)
         var nextId = 0
-        val random1or2Generator = Random().longs(1,3).iterator()
-        val randomSportCenterGenerator = Random().ints(0,3).iterator()
+        val random1or2Generator = Random().longs(1, 3).iterator()
+        val randomSportCenterGenerator = Random().ints(0, 3).iterator()
         val randomPriceGenerator = Random().ints(0, 4)
             .mapToDouble { index -> prices[index] }.iterator()
         val playgroundIds = IntRange(0, 15)
@@ -168,8 +169,8 @@ class Repository @Inject constructor(
             "miniGolf"
         )
 
-        return buildList{
-            playgroundIds.forEach{ playgroundId ->
+        return buildList {
+            playgroundIds.forEach { playgroundId ->
                 val randomSportIds = Random().ints(0, sports.size)
 
                 randomSportIds.limit(random1or2Generator.next()).distinct()
@@ -178,7 +179,7 @@ class Repository @Inject constructor(
                         val id = nextId++
 
                         //if(tempSportId == sportId) {
-                        if(true) {
+                        if (true) {
                             add(
                                 DetailedPlaygroundSport(
                                     id,

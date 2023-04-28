@@ -23,8 +23,8 @@ class EventsListViewModel @Inject constructor(
 
     fun getUserEventsFromDb() {
         // get user events from database
-        val dbThread = Thread() {
-            _userEvents.postValue(repository.getReservationPerDateByUserId(1).value)
+        val dbThread = Thread {
+            _userEvents.postValue(repository.getReservationPerDateByUserId(1))
         }
 
         // start db thread

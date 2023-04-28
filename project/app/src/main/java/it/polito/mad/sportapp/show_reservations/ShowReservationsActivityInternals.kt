@@ -127,6 +127,7 @@ internal fun ShowReservationsActivity.calendarInit() {
 
     // initialize user events live data variable
     vm.userEvents.observe(this) {
+
         vm.selectedDate.value?.let { date ->
 
             if (date != currentDate) {
