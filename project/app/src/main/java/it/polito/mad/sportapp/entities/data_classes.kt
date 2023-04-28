@@ -40,14 +40,14 @@ data class DetailedReservation(
     @Ignore
     var date: LocalDate = LocalDate.parse(startDateTime.substring(0,10))
     @Ignore
-    var startTime: LocalTime = LocalTime.parse(startDateTime.substring(11,16))
+    var startTime: LocalTime = LocalTime.parse(startDateTime.substring(11,19))
     @Ignore
-    var endTime: LocalTime = LocalTime.parse(endDateTime.substring(11,16))
+    var endTime: LocalTime = LocalTime.parse(endDateTime.substring(11,19))
     @Ignore
     var equipments: List<EquipmentReservation> = listOf()
     @Ignore
-    val duration = LocalDateTime.parse(endDateTime.substring(11, 16)).minute - LocalDateTime.parse(
-        startDateTime.substring(11, 16)
+    val duration = LocalTime.parse(endDateTime.substring(11, 19)).minute - LocalTime.parse(
+        startDateTime.substring(11, 19)
     ).minute
 }
 
@@ -71,9 +71,9 @@ data class ReservationSportDate(
     @Ignore
     var date: LocalDate = LocalDate.parse(startDateTime.substring(0,10))
     @Ignore
-    var startTime: LocalTime = LocalTime.parse(startDateTime.substring(11,16))
+    var startTime: LocalTime = LocalTime.parse(startDateTime.substring(11,19))
     @Ignore
-    var endTime: LocalTime = LocalTime.parse(endDateTime.substring(11,16))
+    var endTime: LocalTime = LocalTime.parse(endDateTime.substring(11,19))
     @Ignore
     var equipments: List<EquipmentReservation> = listOf()
 }
