@@ -102,6 +102,15 @@
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false" />
 
+        <TextView
+            android:id="@+id/db_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="ciao"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textColor="@color/black" />
+
     </LinearLayout>
 
 </RelativeLayout>

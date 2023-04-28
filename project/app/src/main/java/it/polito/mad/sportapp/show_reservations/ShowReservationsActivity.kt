@@ -24,6 +24,8 @@ import it.polito.mad.sportapp.show_reservations.events_recycler_view.EventsAdapt
 @AndroidEntryPoint
 class ShowReservationsActivity : AppCompatActivity() {
 
+    internal lateinit var dbTextView: TextView
+
     internal val eventsAdapter = EventsAdapter()
 
     private lateinit var recyclerView: RecyclerView
@@ -56,6 +58,8 @@ class ShowReservationsActivity : AppCompatActivity() {
 
         // initialize month label
         monthLabel = findViewById(R.id.month_label)
+
+        dbTextView = findViewById(R.id.db_text)
 
         calendarInit()
 
