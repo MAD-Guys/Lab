@@ -80,11 +80,14 @@ abstract class AppDatabase : RoomDatabase() {
                             Sport(0, "11-a-side-soccer", 11),
                             Sport(0, "Volleyball", 12)
                         )
-                        it?.playgroundSportDao()?.insertAll(
-                            PlaygroundSport(0, 1, 1, "Playground 1", 12.0F),
-                            PlaygroundSport(0, 2, 1, "Playground 1 ", 12.0F),
-                            PlaygroundSport(0, 3, 2, "Playground 3", 12.0F),
-                            PlaygroundSport(0, 4, 2, "Playground 4", 12.0F)
+                        it?.playgroundSportDao()?.insert(
+                            PlaygroundSport(0, 1, 1, "Playground 1", 12.0F))
+                        it?.playgroundSportDao()?.insert(
+                            PlaygroundSport(0, 1, 1, "Playground 1 ", 12.0F))
+                        it?.playgroundSportDao()?.insert(
+                            PlaygroundSport(0, 2, 2, "Playground 3", 12.0F))
+                        it?.playgroundSportDao()?.insert(
+                            PlaygroundSport(0, 2, 2, "Playground 4", 12.0F)
                         )
                         it?.reservationDao()?.insertAll(
                             PlaygroundReservation(

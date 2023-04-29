@@ -2,6 +2,7 @@ package it.polito.mad.sportapp.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Ignore
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -26,7 +27,7 @@ data class DetailedReservation(
     @ColumnInfo(name = "address")
     val location: String,
     @ColumnInfo(name = "sport_name")
-    val sportName : String,
+    val sportName: String,
     @ColumnInfo(name = "start_date_time")
     val startDateTime: String,
     @ColumnInfo(name = "end_date_time")
@@ -35,20 +36,25 @@ data class DetailedReservation(
     val playgroundName: String,
     @ColumnInfo(name = "total_price")
     val totalPrice: Float,
-)
-{
+) {
     @Ignore
-    var date: LocalDate = LocalDate.parse(startDateTime.substring(0,10))
+    var date: LocalDate = LocalDate.parse(startDateTime.substring(0, 10))
+
     @Ignore
-    var startTime: LocalTime = LocalTime.parse(startDateTime.substring(11,19))
+    var startTime: LocalTime = LocalTime.parse(startDateTime.substring(11, 19))
+
     @Ignore
-    var endTime: LocalTime = LocalTime.parse(endDateTime.substring(11,19))
+    var endTime: LocalTime = LocalTime.parse(endDateTime.substring(11, 19))
+
     @Ignore
     var equipments: List<EquipmentReservation> = listOf()
+
     @Ignore
-    val duration = LocalTime.parse(endDateTime.substring(11, 19)).minute - LocalTime.parse(
-        startDateTime.substring(11, 19)
-    ).minute
+    val duration = Duration.between(
+        LocalTime.parse(startDateTime.substring(11, 19)), LocalTime.parse(
+            endDateTime.substring(11, 19)
+        )
+    ).toMinutes()
 }
 
 data class ReservationSportDate(
@@ -66,14 +72,16 @@ data class ReservationSportDate(
     val sportCenterName: String,
     @ColumnInfo(name = "cost_per_hour")
     val costPerHour: Float,
-)
-{
+) {
     @Ignore
-    var date: LocalDate = LocalDate.parse(startDateTime.substring(0,10))
+    var date: LocalDate = LocalDate.parse(startDateTime.substring(0, 10))
+
     @Ignore
-    var startTime: LocalTime = LocalTime.parse(startDateTime.substring(11,19))
+    var startTime: LocalTime = LocalTime.parse(startDateTime.substring(11, 19))
+
     @Ignore
-    var endTime: LocalTime = LocalTime.parse(endDateTime.substring(11,19))
+    var endTime: LocalTime = LocalTime.parse(endDateTime.substring(11, 19))
+
     @Ignore
     var equipments: List<EquipmentReservation> = listOf()
 }

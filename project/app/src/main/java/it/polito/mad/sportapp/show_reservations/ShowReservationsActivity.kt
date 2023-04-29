@@ -24,6 +24,7 @@ import it.polito.mad.sportapp.show_reservations.events_recycler_view.EventsAdapt
 @AndroidEntryPoint
 class ShowReservationsActivity : AppCompatActivity() {
 
+
     internal val eventsAdapter = EventsAdapter()
 
     private lateinit var recyclerView: RecyclerView
@@ -43,7 +44,9 @@ class ShowReservationsActivity : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        vm.getUserEventsFromDb()
         setContentView(R.layout.activity_show_reservations)
+
 
         // set english as default language
         setApplicationLocale(this, "en", "EN")
@@ -56,6 +59,7 @@ class ShowReservationsActivity : AppCompatActivity() {
 
         // initialize month label
         monthLabel = findViewById(R.id.month_label)
+
 
         calendarInit()
 
