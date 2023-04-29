@@ -34,14 +34,10 @@ class ReservationDetailsActivity : AppCompatActivity() {
     private lateinit var equipment : LinearLayout
     private lateinit var editButton: ImageButton
     private lateinit var reservationTotalPrice : TextView
-
-    private lateinit var popupMenu: PopupMenu
-
+    private lateinit var deleteButton : Button
 
     // view model
     private val vm by viewModels<ReservationDetailsViewModel>()
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +63,10 @@ class ReservationDetailsActivity : AppCompatActivity() {
             toEditView()
         }
 
+        deleteButton.setOnClickListener {
+            startDialog()
+        }
+
 
 
 
@@ -74,7 +74,9 @@ class ReservationDetailsActivity : AppCompatActivity() {
 
     }
 
-
+    private fun startDialog() {
+        Toast.makeText(this, "DELETE!", Toast.LENGTH_SHORT).show()
+    }
 
 
     private fun retrieveViews() {
@@ -91,6 +93,7 @@ class ReservationDetailsActivity : AppCompatActivity() {
         reservationTotalPrice = findViewById(R.id.reservationPrice)
         equipment = findViewById(R.id.equipmentContainer)
         editButton = findViewById(R.id.editButton)
+        deleteButton = findViewById(R.id.button_delete_reservation)
     }
 
     private fun initializeValues() {

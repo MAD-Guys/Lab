@@ -43,7 +43,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="32dp"
                         android:layout_marginBottom="16dp"
                         tools:srcCompat="@tools:sample/avatars" />
 
@@ -128,7 +128,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_weight="1"
-                        android:background="?android:attr/listDivider" />
+                        android:background="?android:attr/listDivider"
+                        android:layout_marginVertical="16dp"
+                        />
 
                     <TextView
                         android:id="@+id/reservationPlaygroundName"
@@ -184,7 +186,9 @@
                         android:id="@+id/divider3"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="?android:attr/listDivider" />
+                        android:background="?android:attr/listDivider"
+                        android:layout_marginVertical="16dp"
+                        />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -240,19 +244,18 @@
                                 android:backgroundTint="#00FFFFFF"
                                 android:paddingStart="8dp"
                                 android:src="@drawable/baseline_edit_32"
-                                android:tint="@color/button_text_color"
                                 android:layout_gravity="center_vertical"
-                                />
+                                app:tint="@color/button_text_color" />
 
                     </LinearLayout>
-
-                    
 
                     <View
                         android:id="@+id/divider4"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="?android:attr/listDivider" />
+                        android:background="?android:attr/listDivider"
+                        android:layout_marginVertical="16dp"
+                        />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -281,6 +284,30 @@
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/button_delete_reservation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp"
+                android:layout_marginHorizontal="16dp"
+                android:backgroundTint="@color/primary_orange"
+                android:fontFamily="@font/poppins_bold"
+                android:paddingTop="10.5dp"
+                android:paddingBottom="10.5dp"
+                android:text="Delete reservation"
+                android:textAllCaps="false"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/button_text_color"
+                android:textSize="20sp"
+                android:includeFontPadding="false"
+                android:textAlignment="center"
+                app:icon="@drawable/baseline_delete_24"
+                android:contentDescription="@string/add_friend_button_description"
+                app:iconGravity="textStart"
+                app:iconTint="@color/button_text_color"
+                android:layout_gravity="center_horizontal"
+                />
         </LinearLayout>
     </ScrollView>
 
