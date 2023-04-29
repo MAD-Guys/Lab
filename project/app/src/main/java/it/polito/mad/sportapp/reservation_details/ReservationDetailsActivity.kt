@@ -16,6 +16,7 @@ import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.Equipment
 import it.polito.mad.sportapp.events_list_view.EventsListViewActivity
 import it.polito.mad.sportapp.navigateTo
+import it.polito.mad.sportapp.showToasty
 import it.polito.mad.sportapp.show_reservations.ShowReservationsActivity
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -70,27 +71,7 @@ class ReservationDetailsActivity : AppCompatActivity() {
         deleteButton.setOnClickListener {
             startDialog()
         }
-
-
-
-
-
-
     }
-
-    private fun startDialog() {
-        AlertDialog.Builder(this)
-            .setMessage("Are you sure to delete this reservation?")
-            .setPositiveButton("YES") { _,_ ->
-                if(vm.deleteReservation()) Toast.makeText(this, "DELETED!", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, ShowReservationsActivity::class.java)
-                startActivity(intent)
-            }
-            .setNegativeButton("NO") { d,_ -> d.cancel() }
-            .create()
-            .show()
-    }
-
 
     private fun retrieveViews() {
         reservationNumber = findViewById(R.id.reservationNumber)
@@ -144,9 +125,6 @@ class ReservationDetailsActivity : AppCompatActivity() {
     private fun toEditView() {
         val intent = Intent(this, EditEquipmentActivity::class.java)
         startActivity(intent)
-
-        //val newFragment = SetQuantitiesDialogFragment(vm)
-        //newFragment.show(supportFragmentManager, "quantities")
     }
 
     private fun handleDirectionsButton(address: String) {
@@ -157,5 +135,18 @@ class ReservationDetailsActivity : AppCompatActivity() {
             Uri.parse("https://www.google.com/maps/search/?api=1&query=$formattedAddress")
         )
         startActivity(intent)
+    }
+
+    private fun startDialog() {
+        AlertDialog.Builder(this)
+            .setMessage("Are you sure to delete this reservation?")
+            .setPositiveButton("YES") { _,_ ->
+                if(vm.deleteReservation()) showToasty("success", this, "Reservation correctly deleted")
+                val intent = Intent(this, ShowReservationsActivity::class.java)
+                startActivity(intent)
+            }
+            .setNegativeButton("NO") { d,_ -> d.cancel() }
+            .create()
+            .show()
     }
 }
