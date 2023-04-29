@@ -214,41 +214,6 @@
                         android:visibility="gone"
                         />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_gravity="center_horizontal"
-                        >
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-
-                            >
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Add new Equipment"
-                                android:fontFamily="@font/poppins_medium"
-                                android:gravity="center_horizontal"
-                                android:textSize="16sp"
-                                android:textStyle="italic"
-                                android:layout_gravity="center_vertical"
-                                />
-
-                            <ImageButton
-                                android:id="@+id/addButton"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="#FFFFFF"
-                                android:backgroundTint="#00FFFFFF"
-                                android:paddingStart="8dp"
-                                android:src="@drawable/baseline_add_circle_24" />
-
-                        </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -259,7 +224,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="or update the quantity"
+                                android:text="Add new Equipment or \n update the quantity"
                                 android:fontFamily="@font/poppins_medium"
                                 android:gravity="center_horizontal"
                                 android:textSize="16sp"
@@ -274,10 +239,11 @@
                                 android:background="#FFFFFF"
                                 android:backgroundTint="#00FFFFFF"
                                 android:paddingStart="8dp"
-                                android:src="@drawable/baseline_edit_24"
-                                android:tint="@color/button_text_color" />
+                                android:src="@drawable/baseline_edit_32"
+                                android:tint="@color/button_text_color"
+                                android:layout_gravity="center_vertical"
+                                />
 
-                        </LinearLayout>
                     </LinearLayout>
 
                     

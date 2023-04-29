@@ -3,15 +3,16 @@ package it.polito.mad.sportapp.reservation_details
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.view.MenuItem
+import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.entities.Equipment
+import it.polito.mad.sportapp.events_list_view.EventsListViewActivity
+import it.polito.mad.sportapp.navigateTo
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -31,13 +32,16 @@ class ReservationDetailsActivity : AppCompatActivity() {
     private lateinit var directionsButton : ImageButton
     private lateinit var noEquipmentMessage : TextView
     private lateinit var equipment : LinearLayout
-    private lateinit var addButton: ImageButton
     private lateinit var editButton: ImageButton
     private lateinit var reservationTotalPrice : TextView
+
+    private lateinit var popupMenu: PopupMenu
 
 
     // view model
     private val vm by viewModels<ReservationDetailsViewModel>()
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,30 +56,53 @@ class ReservationDetailsActivity : AppCompatActivity() {
 
         // Initialize values
         initializeValues()
-
         initializeEquipment()
 
-        //TODO: uncomment this block and delete noEquipmentMessage.visibility assignment when equipment list is available
-        /*
-        if(
-            vm.reservation.value != null
-            && vm.reservation.value!!.getEquipment() != null
-            && !vm.reservation.value!!.getEquipment()!!.isEmpty()
-        ) {
-            //TODO: initialize equipment list
-        } else {
-            noEquipmentMessage.visibility = TextView.VISIBLE
-        }
-        */ noEquipmentMessage.visibility = TextView.VISIBLE
-        
         // add link to Google Maps
-        directionsButton.setOnClickListener { 
+        directionsButton.setOnClickListener {
             handleDirectionsButton(reservationSportCenterAddress.text.toString())
         }
 
+        editButton.setOnClickListener {
+            toEditView()
+        }
 
 
 
+
+
+
+    }
+
+
+
+
+    private fun retrieveViews() {
+        reservationNumber = findViewById(R.id.reservationNumber)
+        reservationDate = findViewById(R.id.reservationDate)
+        reservationStartTime = findViewById(R.id.reservationStartTime)
+        reservationEndTime = findViewById(R.id.reservationEndTime)
+        reservationSport = findViewById(R.id.reservationSport)
+        reservationPlayground = findViewById(R.id.reservationPlaygroundName)
+        reservationSportCenter = findViewById(R.id.reservationSportCenter)
+        reservationSportCenterAddress = findViewById(R.id.reservationAddress)
+        directionsButton = findViewById(R.id.directionsButton)
+        noEquipmentMessage = findViewById(R.id.noEquipmentMessage)
+        reservationTotalPrice = findViewById(R.id.reservationPrice)
+        equipment = findViewById(R.id.equipmentContainer)
+        editButton = findViewById(R.id.editButton)
+    }
+
+    private fun initializeValues() {
+        reservationNumber.text = "Reservation number: " + String.format("%010d", vm.reservation.value?.id)
+        reservationDate.text = vm.reservation.value?.date?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
+        reservationStartTime.text = vm.reservation.value?.startTime?.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
+        reservationEndTime.text = vm.reservation.value?.endTime?.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
+        reservationSport.text = vm.reservation.value?.sportName
+        reservationPlayground.text = vm.reservation.value?.playgroundName
+        reservationSportCenter.text = vm.reservation.value?.sportCenterName
+        reservationSportCenterAddress.text = vm.reservation.value?.location
+        reservationTotalPrice.text = "€ " + String.format("%.2f", vm.reservation.value?.totalPrice)
     }
 
     private fun initializeEquipment() {
@@ -93,34 +120,17 @@ class ReservationDetailsActivity : AppCompatActivity() {
 
                 equipment.addView(row, index)
             }
+        } else {
+            noEquipmentMessage.visibility = TextView.VISIBLE
         }
     }
 
-    private fun initializeValues() {
-        reservationNumber.text = "Reservation number: " + String.format("%010d", vm.reservation.value?.id)
-        reservationDate.text = vm.reservation.value?.date?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
-        reservationStartTime.text = vm.reservation.value?.startTime?.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
-        reservationEndTime.text = vm.reservation.value?.endTime?.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
-        reservationSport.text = vm.reservation.value?.sportName
-        reservationPlayground.text = vm.reservation.value?.playgroundName
-        reservationSportCenter.text = vm.reservation.value?.sportCenterName
-        reservationSportCenterAddress.text = vm.reservation.value?.location
-        reservationTotalPrice.text = "€ " + String.format("%.2f", vm.reservation.value?.totalPrice)
-    }
+    private fun toEditView() {
+        val intent = Intent(this, EditEquipmentActivity::class.java)
+        startActivity(intent)
 
-    private fun retrieveViews() {
-        reservationNumber = findViewById(R.id.reservationNumber)
-        reservationDate = findViewById(R.id.reservationDate)
-        reservationStartTime = findViewById(R.id.reservationStartTime)
-        reservationEndTime = findViewById(R.id.reservationEndTime)
-        reservationSport = findViewById(R.id.reservationSport)
-        reservationPlayground = findViewById(R.id.reservationPlaygroundName)
-        reservationSportCenter = findViewById(R.id.reservationSportCenter)
-        reservationSportCenterAddress = findViewById(R.id.reservationAddress)
-        directionsButton = findViewById(R.id.directionsButton)
-        noEquipmentMessage = findViewById(R.id.noEquipmentMessage)
-        reservationTotalPrice = findViewById(R.id.reservationPrice)
-        equipment = findViewById(R.id.equipmentContainer)
+        //val newFragment = SetQuantitiesDialogFragment(vm)
+        //newFragment.show(supportFragmentManager, "quantities")
     }
 
     private fun handleDirectionsButton(address: String) {
