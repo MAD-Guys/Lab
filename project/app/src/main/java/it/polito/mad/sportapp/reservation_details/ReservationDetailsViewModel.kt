@@ -1,5 +1,7 @@
 package it.polito.mad.sportapp.reservation_details
 
+import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,6 +20,11 @@ class ReservationDetailsViewModel  @Inject constructor(
         it.value = mockReservationDetails()
     }
     val reservation :LiveData<DetailedReservation> = _reservation
+
+    fun deleteReservation(): Boolean {
+        println("DELETE RESERVATION!")
+        return true
+    }
 
 }
 

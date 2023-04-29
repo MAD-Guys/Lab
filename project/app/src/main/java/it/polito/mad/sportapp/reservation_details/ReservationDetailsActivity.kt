@@ -6,13 +6,17 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.*
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.Equipment
 import it.polito.mad.sportapp.events_list_view.EventsListViewActivity
 import it.polito.mad.sportapp.navigateTo
+import it.polito.mad.sportapp.show_reservations.ShowReservationsActivity
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -75,7 +79,16 @@ class ReservationDetailsActivity : AppCompatActivity() {
     }
 
     private fun startDialog() {
-        Toast.makeText(this, "DELETE!", Toast.LENGTH_SHORT).show()
+        AlertDialog.Builder(this)
+            .setMessage("Are you sure to delete this reservation?")
+            .setPositiveButton("YES") { _,_ ->
+                if(vm.deleteReservation()) Toast.makeText(this, "DELETED!", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, ShowReservationsActivity::class.java)
+                startActivity(intent)
+            }
+            .setNegativeButton("NO") { d,_ -> d.cancel() }
+            .create()
+            .show()
     }
 
 
