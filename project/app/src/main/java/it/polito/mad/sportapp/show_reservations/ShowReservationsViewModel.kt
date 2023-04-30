@@ -36,7 +36,7 @@ class ShowReservationsViewModel @Inject constructor(
 
         // get user events from database
         val dbThread = Thread {
-            _userEvents.postValue(repository.getReservationPerDateByUserId(1))
+            this._userEvents.postValue(repository.getReservationPerDateByUserId(1))
         }
 
         // start db thread
