@@ -61,10 +61,10 @@ class Repository @Inject constructor(
         return reservationDao.getAll()
     }
 
-    fun getDetailedReservationById(id: Int): MutableLiveData<DetailedReservation> {
+    fun getDetailedReservationById(id: Int): DetailedReservation {
         val reservation = reservationDao.findDetailedReservationById(id)
         reservation.equipments = reservationDao.findEquipmentByReservationId(id)
-        return MutableLiveData(reservation)
+        return reservation
     }
 
     fun getReservationBySportId(sportId: Int): List<DetailedReservation> {
@@ -91,12 +91,33 @@ class Repository @Inject constructor(
     }
 
     // Equipment methods
-    fun getEquipmentBySportCenterId(sportCenterId: Int): List<Equipment> {
-        return equipmentDao.findBySportCenterId(sportCenterId)
-    }
+
 
     fun getEquipmentBySportCenterIdAndSportId(sportCenterId: Int, sportId: Int): List<Equipment> {
         return equipmentDao.findBySportCenterIdAndSportId(sportCenterId, sportId)
+    }
+
+    fun updateEquipment(equipmentId : Int, add : Boolean, playgroundReservationId: Int) {
+        val price = equipmentDao.findPriceById(equipmentId)
+
+        if (add) {
+            equipmentDao.reduceAvailability(equipmentId)
+            equipmentDao.increaseQuantity(equipmentId, playgroundReservationId, price)
+            reservationDao.increasePrice(playgroundReservationId, price)
+        }
+        else {
+            equipmentDao.increaseAvailability(equipmentId)
+            equipmentDao.reduceQuantity(equipmentId, playgroundReservationId, price)
+            reservationDao.reducePrice(playgroundReservationId, price)
+        }
+    }
+
+    fun deleteReservation(reservation: DetailedReservation){
+        reservationDao.deleteById(reservation.id)
+        reservation.equipments.forEach {
+            equipmentDao.deleteReservation(it.equipmentId, it.playgroundReservationId)
+        }
+
     }
 
     // * Playground methods *

@@ -17,7 +17,7 @@ import androidx.room.*
 data class UserSport(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
-    @ColumnInfo(name = "user_id")
+    @ColumnInfo(name = "user_id", index = true)
     val userId: Int,
     @ColumnInfo(name = "sport_id", index = true)
     val sportId: Int,

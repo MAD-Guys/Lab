@@ -59,8 +59,15 @@ interface ReservationDao {
     @Insert
     fun insert(playgroundReservation: PlaygroundReservation)
 
-    @Delete
-    fun delete(reservation: PlaygroundReservation)
 
+
+    @Query("UPDATE playground_reservation SET total_price = total_price + :price WHERE id LIKE :reservationId")
+    fun increasePrice(reservationId: Int, price: Float)
+
+    @Query("UPDATE playground_reservation SET total_price = total_price - :price WHERE id LIKE :reservationId")
+    fun reducePrice(reservationId: Int, price: Float)
+
+    @Query("DELETE FROM playground_reservation WHERE id LIKE :reservationId")
+    fun deleteById(reservationId: Int)
 
 }
