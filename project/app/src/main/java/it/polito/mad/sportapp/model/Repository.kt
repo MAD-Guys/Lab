@@ -8,6 +8,7 @@ import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.SportCenter
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.DetailedReservation
+import it.polito.mad.sportapp.entities.EquipmentReservation
 import it.polito.mad.sportapp.localDB.dao.EquipmentDao
 import it.polito.mad.sportapp.localDB.dao.PlaygroundSportDao
 import it.polito.mad.sportapp.localDB.dao.ReservationDao
@@ -96,6 +97,20 @@ class Repository @Inject constructor(
     fun getEquipmentBySportCenterIdAndSportId(sportCenterId: Int, sportId: Int): List<Equipment> {
         return equipmentDao.findBySportCenterIdAndSportId(sportCenterId, sportId)
     }
+
+    fun addEquipmentReservation(equipment: Equipment){
+        val equipmentReservation = EquipmentReservation(
+            id = 0,
+            equipmentId = equipment.id,
+            playgroundReservationId = 0,
+            quantity = 0,
+            totalPrice = equipment.price,
+            timestamp = LocalDateTime.now().toString()
+        )
+        equipmentDao.insertEquipmentReservation(equipmentReservation)
+    }
+
+
 
     fun updateEquipment(equipmentId : Int, add : Boolean, playgroundReservationId: Int) {
         val price = equipmentDao.findPriceById(equipmentId)
