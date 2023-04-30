@@ -6,11 +6,10 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import it.polito.mad.sportapp.entities.Equipment
+import it.polito.mad.sportapp.entities.EquipmentReservation
 
 @Dao
 interface EquipmentDao {
-    @Query("SELECT * FROM equipment")
-    fun getAll(): List<Equipment>
 
 
     @Query("SELECT * FROM equipment WHERE sport_center_id LIKE :sportCenterId AND availability > 0")
@@ -20,10 +19,10 @@ interface EquipmentDao {
     fun findBySportCenterIdAndSportId(sportCenterId: Int, sportId: Int): List<Equipment>
 
     @Insert
-    fun insert(equipment: Equipment)
+    fun insertEquipmentReservation(equipmentReservation: EquipmentReservation)
 
-    @Insert
-    fun insertAll(vararg equipment: Equipment)
+
+
 
     @Query("UPDATE equipment SET availability = availability - 1 WHERE id LIKE :equipmentId")
     fun reduceAvailability(equipmentId: Int)
