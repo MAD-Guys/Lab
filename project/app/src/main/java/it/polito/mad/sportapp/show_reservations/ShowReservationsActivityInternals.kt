@@ -11,7 +11,6 @@ import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.view.MonthDayBinder
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.showToasty
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -129,10 +128,8 @@ internal fun ShowReservationsActivity.calendarInit() {
     // initialize user events live data variable
     vm.userEvents.observe(this) {
 
-        showToasty("info", this, "userEvents changed")
-
+        // show events for the selected date if any
         vm.selectedDate.value?.let { date ->
-
             if (date != currentDate) {
                 updateAdapterForDate(date)
             } else {

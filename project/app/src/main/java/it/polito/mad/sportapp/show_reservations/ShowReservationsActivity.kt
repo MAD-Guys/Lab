@@ -45,16 +45,17 @@ class ShowReservationsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //get events from db
-        vm.getUserEventsFromDb()
-
         // set content view with activity layout
         setContentView(R.layout.activity_show_reservations)
 
         // configure toasts appearance
         Toasty.Config.getInstance()
             .allowQueue(true) // optional (prevents several Toastys from queuing)
-            .setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 100) // optional (set toast gravity, offsets are optional)
+            .setGravity(
+                Gravity.TOP or Gravity.CENTER_HORIZONTAL,
+                0,
+                100
+            ) // optional (set toast gravity, offsets are optional)
             .supportDarkTheme(true) // optional (whether to support dark theme or not)
             .setRTL(true) // optional (icon is on the right)
             .apply() // required

@@ -114,9 +114,9 @@
             android:id="@+id/event_more_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="10dp"
             android:fontFamily="@font/poppins_medium"
             android:gravity="center"
+            android:paddingHorizontal="8dp"
             android:textColor="@color/black"
             android:textSize="12sp"
             tools:text="PlayHard Sports Arena - Tennis Court 2" />
