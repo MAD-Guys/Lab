@@ -462,3 +462,17 @@ fun dpToPx(context: Context, dp: Float): Int {
     ).roundToInt()
 }
 
+/* time utilities */
+
+internal fun formatDuration(duration: Long): String {
+
+    val hours = duration / 60
+    val minutes = duration % 60
+
+    return when {
+        duration < 60L -> "$duration" + "m"
+        minutes == 0L -> "$hours" + "h"
+        else -> "$hours" + "h" + " $minutes" + "m"
+    }
+}
+

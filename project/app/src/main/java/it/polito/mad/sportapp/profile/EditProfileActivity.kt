@@ -18,7 +18,6 @@ import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
-import es.dmoral.toasty.Toasty
 import it.polito.mad.sportapp.*
 
 class EditProfileActivity : AppCompatActivity() {
@@ -44,7 +43,7 @@ class EditProfileActivity : AppCompatActivity() {
         Pair("beachVolley", Sport("beachVolley",false, Level.NO_LEVEL)),
         Pair("padel",       Sport("padel",      false, Level.NO_LEVEL)),
         Pair("miniGolf",    Sport("miniGolf",   false, Level.NO_LEVEL)),
-        // * added to deal with a nosense ChipGroup bug inherent to the last Chip *
+        // * added to deal with a no-sense ChipGroup bug inherent to the last Chip *
         Pair("pad",         Sport("pad",        false, Level.NO_LEVEL))
     )
 
@@ -139,18 +138,6 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
-
-        // configure toasts appearance
-        Toasty.Config.getInstance()
-            .allowQueue(true) // optional (prevents several Toastys from queuing)
-            .setGravity(
-                Gravity.TOP or Gravity.CENTER_HORIZONTAL,
-                0,
-                100
-            ) // optional (set toast gravity, offsets are optional)
-            .supportDarkTheme(true) // optional (whether to support dark theme or not)
-            .setRTL(true) // optional (icon is on the right)
-            .apply() // required
 
         // initialize the EditText views
         firstName = findViewById(R.id.edit_first_name)

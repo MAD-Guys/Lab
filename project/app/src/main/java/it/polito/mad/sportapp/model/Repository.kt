@@ -1,16 +1,21 @@
 package it.polito.mad.sportapp.model
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import it.polito.mad.sportapp.entities.Equipment
 import it.polito.mad.sportapp.entities.PlaygroundReservation
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.SportCenter
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.DetailedReservation
+import it.polito.mad.sportapp.entities.EquipmentReservation
 import it.polito.mad.sportapp.localDB.dao.EquipmentDao
+import it.polito.mad.sportapp.localDB.dao.PlaygroundSportDao
 import it.polito.mad.sportapp.localDB.dao.ReservationDao
 import it.polito.mad.sportapp.localDB.dao.SportCenterDao
 import it.polito.mad.sportapp.localDB.dao.SportDao
 import it.polito.mad.sportapp.localDB.dao.UserDao
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.util.Random
@@ -24,7 +29,8 @@ class Repository @Inject constructor(
     private val sportDao: SportDao,
     private val sportCenterDao: SportCenterDao,
     private val equipmentDao: EquipmentDao,
-    private val reservationDao: ReservationDao
+    private val reservationDao: ReservationDao,
+    private val playgroundSportDao: PlaygroundSportDao
 ) {
 
     // User methods
@@ -66,6 +72,12 @@ class Repository @Inject constructor(
         return reservationDao.findBySportId(sportId)
     }
 
+    fun getReservationPerDateByUserId(userId: Int): Map<LocalDate, List<DetailedReservation>> {
+        val userReservations = reservationDao.findByUserId(userId)
+        return userReservations.sortedBy { LocalDateTime.parse(it.startDateTime) }
+            .groupBy { it.date }
+    }
+
     // Sport Center methods
     fun getAllSportCenter(): List<SportCenter> {
         return sportCenterDao.getAll()
@@ -80,12 +92,47 @@ class Repository @Inject constructor(
     }
 
     // Equipment methods
-    fun getEquipmentBySportCenterId(sportCenterId: Int): List<Equipment> {
-        return equipmentDao.findBySportCenterId(sportCenterId)
-    }
+
 
     fun getEquipmentBySportCenterIdAndSportId(sportCenterId: Int, sportId: Int): List<Equipment> {
         return equipmentDao.findBySportCenterIdAndSportId(sportCenterId, sportId)
+    }
+
+    fun addEquipmentReservation(equipment: Equipment){
+        val equipmentReservation = EquipmentReservation(
+            id = 0,
+            equipmentId = equipment.id,
+            playgroundReservationId = 0,
+            quantity = 0,
+            totalPrice = equipment.price,
+            timestamp = LocalDateTime.now().toString()
+        )
+        equipmentDao.insertEquipmentReservation(equipmentReservation)
+    }
+
+
+
+    fun updateEquipment(equipmentId : Int, add : Boolean, playgroundReservationId: Int) {
+        val price = equipmentDao.findPriceById(equipmentId)
+
+        if (add) {
+            equipmentDao.reduceAvailability(equipmentId)
+            equipmentDao.increaseQuantity(equipmentId, playgroundReservationId, price)
+            reservationDao.increasePrice(playgroundReservationId, price)
+        }
+        else {
+            equipmentDao.increaseAvailability(equipmentId)
+            equipmentDao.reduceQuantity(equipmentId, playgroundReservationId, price)
+            reservationDao.reducePrice(playgroundReservationId, price)
+        }
+    }
+
+    fun deleteReservation(reservation: DetailedReservation){
+        reservationDao.deleteById(reservation.id)
+        reservation.equipments.forEach {
+            equipmentDao.deleteReservation(it.equipmentId, it.playgroundReservationId)
+        }
+
     }
 
     // * Playground methods *

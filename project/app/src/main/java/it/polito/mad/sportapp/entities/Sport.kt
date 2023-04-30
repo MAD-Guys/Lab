@@ -5,7 +5,7 @@ import androidx.room.*
 @Entity(tableName = "sport")
 data class Sport(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Int,
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "max_players")

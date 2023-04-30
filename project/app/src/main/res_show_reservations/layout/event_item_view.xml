@@ -91,7 +91,7 @@
         android:focusable="true"
         android:gravity="center"
         android:orientation="vertical"
-        android:paddingHorizontal="2dp"
+        android:paddingHorizontal="5dp"
         android:paddingVertical="5dp"
         app:layout_constraintBottom_toBottomOf="@id/event_date_time_container"
         app:layout_constraintEnd_toStartOf="@id/event_duration"
@@ -116,9 +116,10 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_medium"
             android:gravity="center"
+            android:paddingHorizontal="8dp"
             android:textColor="@color/black"
             android:textSize="12sp"
-            tools:text="Sport Center 1 - Playground 2" />
+            tools:text="PlayHard Sports Arena - Tennis Court 2" />
 
     </LinearLayout>
 

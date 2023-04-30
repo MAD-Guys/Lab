@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.view.CalendarView
 import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
 import it.polito.mad.sportapp.events_list_view.EventsListViewActivity
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.generateEvents
 import it.polito.mad.sportapp.navigateTo
 import it.polito.mad.sportapp.playground_availabilities.PlaygroundAvailabilitiesActivity
 import it.polito.mad.sportapp.profile.ShowProfileActivity
@@ -26,14 +26,6 @@ import it.polito.mad.sportapp.show_reservations.events_recycler_view.EventsAdapt
 class ShowReservationsActivity : AppCompatActivity() {
 
     internal val eventsAdapter = EventsAdapter()
-    //internal lateinit var events: Map<LocalDate, List<DetailedReservations>>
-
-    // generate events
-    internal val events = generateEvents().sortedBy {
-        it.time
-    }.groupBy {
-        it.time.toLocalDate()
-    }
 
     private lateinit var recyclerView: RecyclerView
 
@@ -52,7 +44,21 @@ class ShowReservationsActivity : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // set content view with activity layout
         setContentView(R.layout.activity_show_reservations)
+
+        // configure toasts appearance
+        Toasty.Config.getInstance()
+            .allowQueue(true) // optional (prevents several Toastys from queuing)
+            .setGravity(
+                Gravity.TOP or Gravity.CENTER_HORIZONTAL,
+                0,
+                100
+            ) // optional (set toast gravity, offsets are optional)
+            .supportDarkTheme(true) // optional (whether to support dark theme or not)
+            .setRTL(true) // optional (icon is on the right)
+            .apply() // required
 
         // set english as default language
         setApplicationLocale(this, "en", "EN")

@@ -11,27 +11,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.events_list_view.events_list_recycler_view.EventsListAdapter
 import it.polito.mad.sportapp.navigateTo
 import it.polito.mad.sportapp.playground_availabilities.PlaygroundAvailabilitiesActivity
 import it.polito.mad.sportapp.profile.ShowProfileActivity
-import it.polito.mad.sportapp.generateEvents
 import java.time.LocalDate
 
 @AndroidEntryPoint
 class EventsListViewActivity : AppCompatActivity() {
 
     private val eventsListAdapter = EventsListAdapter()
-
-    private lateinit var userEvents: Map<LocalDate, List<DetailedReservation>>
-
-    // generate events
-    internal val events = generateEvents().sortedBy {
-        it.time
-    }.groupBy {
-        it.time.toLocalDate()
-    }
 
     private lateinit var eventsListView: RecyclerView
 
@@ -55,17 +44,13 @@ class EventsListViewActivity : AppCompatActivity() {
         }
 
         vm.userEvents.observe(this) {
-            userEvents = it
+            eventsListAdapter.events.clear()
+
+            // add events to the adapter
+            eventsListAdapter.events.addAll(it.values.flatten())
             eventsListAdapter.notifyDataSetChanged()
             scrollToCurrentDate(currentDate)
         }
-
-        // add events to the adapter
-        eventsListAdapter.events.addAll(events.values.flatten())
-
-        scrollToCurrentDate(currentDate)
-
-        eventsListAdapter.notifyDataSetChanged()
 
     }
 
@@ -80,8 +65,8 @@ class EventsListViewActivity : AppCompatActivity() {
 
     // scroll to the current date event
     private fun scrollToCurrentDate (date: LocalDate) {
-        val indexToScroll = if (events.containsKey(date)) {
-            eventsListAdapter.events.indexOf(events[date]?.first())
+        val indexToScroll = if (vm.userEvents.value?.containsKey(date) == true) {
+            eventsListAdapter.events.indexOf(vm.userEvents.value?.get(date)?.first())
         } else {
             getNextEvent(date)
         }
@@ -114,10 +99,10 @@ class EventsListViewActivity : AppCompatActivity() {
 
     // get index from the nearest current date event if the event with current day is not available
     private fun getNextEvent(currentDate: LocalDate): Int {
-        val nextEvent = events.keys.find { it.isAfter(currentDate) }
+        val nextEvent = vm.userEvents.value?.keys?.find { it.isAfter(currentDate) }
 
         return if (nextEvent != null) {
-            eventsListAdapter.events.indexOf(events[nextEvent]?.first())
+            eventsListAdapter.events.indexOf(vm.userEvents.value?.get(nextEvent)?.first())
         } else {
             eventsListAdapter.events.size - 1
         }

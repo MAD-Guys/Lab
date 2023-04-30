@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import es.dmoral.toasty.Toasty
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.getPictureFromInternalStorage
 import it.polito.mad.sportapp.navigateTo
@@ -46,14 +45,6 @@ class ShowProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
-
-        // configure toasts appearance
-        Toasty.Config.getInstance()
-            .allowQueue(true) // optional (prevents several Toastys from queuing)
-            .setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 100) // optional (set toast gravity, offsets are optional)
-            .supportDarkTheme(true) // optional (whether to support dark theme or not)
-            .setRTL(true) // optional (icon is on the right)
-            .apply() // required
 
         // retrieve user info and picture views
         firstName = findViewById(R.id.first_name)
@@ -115,7 +106,7 @@ class ShowProfileActivity : AppCompatActivity() {
         sportChips = HashMap()
         sportData = HashMap()
 
-        // retieve and clean sports container
+        // retrieve and clean sports container
         val sportsContainer = findViewById<ChipGroup>(R.id.sports_container)
         sportsContainer.removeAllViews()
 

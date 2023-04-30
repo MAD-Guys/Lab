@@ -17,7 +17,7 @@ import androidx.room.*
 )
 data class EquipmentReservation(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Int,
     @ColumnInfo(name = "playground_reservation_id", index = true)
     val playgroundReservationId: Int,
     @ColumnInfo(name = "equipment_id", index = true)

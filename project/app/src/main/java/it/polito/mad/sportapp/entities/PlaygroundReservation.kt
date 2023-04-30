@@ -2,6 +2,7 @@ package it.polito.mad.sportapp.entities
 
 import androidx.room.*
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 @Entity(
     tableName = "playground_reservation",
@@ -28,7 +29,7 @@ import java.time.LocalDateTime
 )
 data class PlaygroundReservation(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Int,
     @ColumnInfo(name = "playground_id", index = true)
     val playgroundId: Int,
     @ColumnInfo(name = "user_id", index = true)
@@ -45,12 +46,7 @@ data class PlaygroundReservation(
     val timestamp: String,
     @ColumnInfo(name = "total_price")
     val totalPrice: Float,
-) {
-    @Ignore
-    val duration = LocalDateTime.parse(endDateTime.substring(11, 16)).minute - LocalDateTime.parse(
-        startDateTime.substring(11, 16)
-    ).minute
-}
+)
 
 
 

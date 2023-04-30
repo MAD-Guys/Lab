@@ -13,12 +13,11 @@ import androidx.room.*
             entity = Sport::class,
             parentColumns = ["id"],
             childColumns = ["sport_id"])],
-    indices = [Index(value = ["user_id", "sport_id"], unique = true)]
 )
 data class UserSport(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-    @ColumnInfo(name = "user_id")
+    val id: Int,
+    @ColumnInfo(name = "user_id", index = true)
     val userId: Int,
     @ColumnInfo(name = "sport_id", index = true)
     val sportId: Int,
