@@ -15,9 +15,12 @@ import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.UserSport
 import it.polito.mad.sportapp.localDB.dao.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import javax.inject.Singleton
+import kotlin.random.Random
 
 
 @Database(
@@ -108,70 +111,35 @@ abstract class AppDatabase : RoomDatabase() {
                             PlaygroundSport(0, 2, 2, "Table Tennis Arena", 12.0F)
                         )
                         it?.playgroundSportDao()?.insert(
+                            PlaygroundSport(0, 5, 2, "TFootball", 12.0F)
+                        )
+                        it?.playgroundSportDao()?.insert(
                             PlaygroundSport(0, 2, 3, "Table Magic", 12.0F)
                         )
                         it?.playgroundSportDao()?.insert(
                             PlaygroundSport(0, 3, 4, "Table Magic", 12.0F)
                         )
-                        it?.reservationDao()?.insertAll(
-                            PlaygroundReservation(
-                                0,
-                                1,
-                                1,
-                                1,
-                                1,
-                                "2023-04-30T18:00:00",
-                                "2023-04-30T18:30:00",
-                                "2023-04-25T18:00:00",
-                                22.5F
-                            ), PlaygroundReservation(
-                                0,
-                                2,
-                                1,
-                                1,
-                                1,
-                                "2023-04-29T18:00:00",
-                                "2023-04-29T19:00:00",
-                                "2023-04-25T18:00:00",
-                                22.5F
-                            ), PlaygroundReservation(
-                                0,
-                                3,
-                                1,
-                                2,
-                                2,
-                                "2023-04-29T18:00:00",
-                                "2023-04-29T19:30:00",
-                                "2023-04-28T18:00:00",
-                                22.5F
-                            ),
-                            PlaygroundReservation(
-                                0,
-                                4,
-                                1,
-                                2,
-                                3,
-                                "2023-04-30T19:00:00",
-                                "2023-04-30T20:30:00",
-                                "2023-04-28T18:00:00",
-                                55.50F
-                            ),
-                            PlaygroundReservation(
-                                0,
-                                5,
-                                1,
-                                3,
-                                4,
-                                "2023-05-05T08:30:00",
-                                "2023-05-05T09:30:00",
-                                "2023-04-28T18:00:00",
-                                50F
-                            )
+                        it?.playgroundSportDao()?.insert(
+                            PlaygroundSport(0, 4, 4, "BasketBall Dream", 12.0F)
                         )
+
+                        it?.reservationDao()
+                            ?.insertAll(*generatePlaygroundReservation(1, 1, 1).toTypedArray())
+                        it?.reservationDao()
+                            ?.insertAll(*generatePlaygroundReservation(6, 4, 4).toTypedArray())
+                        it?.reservationDao()
+                            ?.insertAll(*generatePlaygroundReservation(3, 2, 2).toTypedArray())
+                        it?.reservationDao()
+                            ?.insertAll(*generatePlaygroundReservation(4, 5, 2).toTypedArray())
+                        it?.reservationDao()
+                            ?.insertAll(*generatePlaygroundReservation(5, 3, 4).toTypedArray())
                     }
                 }
             }
         }
+
+
+
 
         fun getInstance(context: Context): AppDatabase = (INSTANCE ?: synchronized(this) {
             val i = INSTANCE ?: Room.databaseBuilder(
@@ -183,4 +151,48 @@ abstract class AppDatabase : RoomDatabase() {
         })!!
     }
 }
+
+// Generate a list of playground reservations for a given playground INFO
+fun generatePlaygroundReservation(
+    playgroundId: Int,
+    sportId: Int,
+    sportCenterId: Int
+): List<PlaygroundReservation> {
+    val playgroundReservationList = mutableListOf<PlaygroundReservation>()
+    val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+    for (i in 1..31) {
+        val slotDurationMinutes = when (Random.nextInt(3)) {
+            0 -> 30 // Half an hour
+            1 -> 60 // An hour
+            else -> 90 // An hour and a half
+        }
+        val randomHour = Random.nextInt(8, 20) // Random hour between 8 and 20
+        val startDateTime = LocalDateTime.of(
+            2023,
+            5,
+            i,
+            randomHour,
+            0
+        )
+        val endDateTime = startDateTime.plusMinutes(slotDurationMinutes.toLong())
+        playgroundReservationList.add(
+            PlaygroundReservation(
+                0,
+                playgroundId,
+                1,
+                sportId,
+                sportCenterId,
+                startDateTime.format(formatter),
+                endDateTime.format(formatter),
+                LocalDateTime.now().format(formatter),
+                35.5F
+            )
+        )
+    }
+
+
+
+    return playgroundReservationList
+}
+
 
