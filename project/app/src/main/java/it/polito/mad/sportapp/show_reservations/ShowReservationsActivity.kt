@@ -83,8 +83,6 @@ class ShowReservationsActivity : AppCompatActivity() {
             adapter = eventsAdapter
         }
 
-        eventsAdapter.notifyDataSetChanged()
-
     }
 
     override fun onResume() {
@@ -93,7 +91,7 @@ class ShowReservationsActivity : AppCompatActivity() {
         // update events list
         // the invocation is in the onResume method because the list of events
         // should be refreshed each time this activity is resumed
-        vm.getUserEventsFromDb()
+        vm.loadEventsFromDb()
     }
 
     /* app menu */

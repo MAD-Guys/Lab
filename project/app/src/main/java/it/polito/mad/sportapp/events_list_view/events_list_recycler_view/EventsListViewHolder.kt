@@ -34,11 +34,19 @@ internal class EventsListViewHolder(view: View) : RecyclerView.ViewHolder(view) 
 
     fun bind(event: DetailedReservation) {
 
+        // set item background color
         if (event.date == LocalDate.now()) {
             containerLayout.setBackgroundColor(
                 getColor(
                     itemView.context,
                     R.color.current_item_highlighted
+                )
+            )
+        } else {
+            containerLayout.setBackgroundColor(
+                getColor(
+                    itemView.context,
+                    R.color.white
                 )
             )
         }
