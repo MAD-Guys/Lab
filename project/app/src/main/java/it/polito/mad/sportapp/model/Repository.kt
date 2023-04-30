@@ -31,18 +31,10 @@ class Repository @Inject constructor(
     private val playgroundSportDao: PlaygroundSportDao
 ) {
     // User methods
-    fun getAllUsers(): List<User> {
-        return userDao.getAll()
-    }
-
     fun getUserWithSportLevel(id: Int): User {
         val user = userDao.findById(id)
         user.sportLevel = userDao.findSportByUserId(id)
         return user
-    }
-
-    fun insertUser(user: User) {
-        userDao.insert(user)
     }
 
     fun updateUser(user: User) {
@@ -65,8 +57,12 @@ class Repository @Inject constructor(
         return reservation
     }
 
-    fun getReservationBySportId(sportId: Int): List<DetailedReservation> {
+    fun getDetailedReservationBySportId(sportId: Int): List<DetailedReservation> {
         return reservationDao.findBySportId(sportId)
+    }
+
+    fun insertReservation(reservation: PlaygroundReservation) {
+        reservationDao.insert(reservation)
     }
 
     fun getReservationPerDateByUserId(userId: Int): Map<LocalDate, List<DetailedReservation>> {
