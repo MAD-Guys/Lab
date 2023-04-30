@@ -1,5 +1,6 @@
 package it.polito.mad.sportapp.playground_availabilities
 
+import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -9,13 +10,13 @@ import com.kizitonwose.calendar.core.CalendarMonth
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.MonthHeaderFooterBinder
-import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.playground_availabilities.calendar_utils.DayViewContainer
 import it.polito.mad.sportapp.playground_availabilities.calendar_utils.MonthViewContainer
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
+import kotlin.math.min
 
 
 internal fun PlaygroundAvailabilitiesActivity.initCalendarHeader(daysOfWeek: List<DayOfWeek>) {
@@ -60,6 +61,27 @@ internal fun PlaygroundAvailabilitiesActivity.initCalendarDays() {
                     else -> container.setAsUnselectedDate()
                 }
             }
+
+            // compute the availability percentage on that date to color it properly
+            val availabilityPercentage = getAvailabilityPercentageOf(data.date)
+
+            val colorRange = 110.0f
+            val gbValue = (255.0f - colorRange*(1.0f - availabilityPercentage)).toInt()
+
+            val availabilityColor = Color.rgb(255, gbValue, gbValue)
+
+            container.setAvailabilityTagColor(availabilityColor)
         }
     }
 }
+
+/** Compute availability percentage as the percentage of slots with at least one available playground */
+private fun PlaygroundAvailabilitiesActivity.getAvailabilityPercentageOf(date: LocalDate): Float {
+    val availablePlaygrounds = viewModel.getAvailablePlaygroundsOn(date)
+
+    val slotsWithAtLeastOneAvailability = availablePlaygrounds.count { it.value.isNotEmpty() }
+    val maxNumOfSlotsPerDay = 25
+
+    return min(1.0f, slotsWithAtLeastOneAvailability.toFloat() / maxNumOfSlotsPerDay.toFloat())
+}
+

@@ -18,28 +18,33 @@
         android:orientation="vertical"
         android:paddingVertical="@dimen/time_slot_box_padding_vertical"
         android:paddingHorizontal="@dimen/time_slot_box_padding_horizontal"
+        android:layout_marginEnd="@dimen/time_slot_box_margin_end"
         android:background="@drawable/time_slot_bg"
         android:gravity="center">
+
         <TextView
             android:id="@+id/start_time_slot"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingVertical="@dimen/time_slot_padding_vertical"
+            android:layout_height="match_parent"
             android:fontFamily="@font/poppins_medium"
-            android:textSize="@dimen/time_slot_text_size"
-            android:text="@string/default_start_time_slot"
             android:includeFontPadding="false"
-            android:textColor="@color/time_slot_text" />
+            android:paddingVertical="@dimen/time_slot_padding_vertical"
+            android:text="@string/default_start_time_slot"
+            android:textColor="@color/time_slot_text"
+            android:textSize="@dimen/time_slot_text_size"
+            tools:ignore="TextContrastCheck" />
+
         <TextView
             android:id="@+id/end_time_slot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingVertical="@dimen/time_slot_padding_vertical"
             android:fontFamily="@font/poppins_medium"
-            android:textSize="@dimen/time_slot_text_size"
-            android:text="@string/default_end_time_slot"
             android:includeFontPadding="false"
-            android:textColor="@color/time_slot_text" />
+            android:paddingVertical="@dimen/time_slot_padding_vertical"
+            android:text="@string/default_end_time_slot"
+            android:textColor="@color/time_slot_text"
+            android:textSize="@dimen/time_slot_text_size"
+            tools:ignore="TextContrastCheck" />
     </LinearLayout>
 
     <!-- Available playgrounds container (horizontal scrolling) -->

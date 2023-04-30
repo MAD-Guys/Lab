@@ -1,7 +1,5 @@
 package it.polito.mad.sportapp.model
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import it.polito.mad.sportapp.entities.Equipment
 import it.polito.mad.sportapp.entities.PlaygroundReservation
 import it.polito.mad.sportapp.entities.Sport
@@ -93,19 +91,19 @@ class Repository @Inject constructor(
     // * Playground methods *
 
     /* Get the available playgrounds for each slot in the provided month */
-    fun getAvailablePlaygroundsIn(month: YearMonth, sport: Sport)
-        : MutableLiveData<Map<LocalDateTime, List<DetailedPlaygroundSport>>> {
+    fun getAvailablePlaygroundsPerSlotIn(month: YearMonth, sport: Sport)
+        : Map<LocalDateTime, List<DetailedPlaygroundSport>> {
         /* temporary hardcoded data */
         val timeSlots = getRandomSlotsStartTimesIn(month, maxDaysOfMonth=20, maxSlots=15)
         val playgroundSports = getRandomPlaygroundSports(sport.id)
 
-        return MutableLiveData(
-                timeSlots.associateWith {
-                playgroundSports.asSequence().shuffled()
-                    .take(Random().ints(1, 8).iterator().next())
-                    .toList()
-            }
-        )
+        val availablePlaygroundsPerSlot = timeSlots.associateWith {
+            playgroundSports.asSequence().shuffled()
+                .take(Random().ints(1, 8).iterator().next())
+                .toList()
+        }
+
+        return availablePlaygroundsPerSlot
     }
 
 

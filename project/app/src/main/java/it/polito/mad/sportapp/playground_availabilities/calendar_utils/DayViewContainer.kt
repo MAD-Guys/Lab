@@ -2,6 +2,7 @@ package it.polito.mad.sportapp.playground_availabilities.calendar_utils
 
 import android.content.Context
 import android.view.View
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.lifecycle.LiveData
@@ -21,6 +22,7 @@ class DayViewContainer(
     private val daySquare = view as RelativeLayout
     private val dayText = view.findViewById<TextView>(R.id.calendar_day_text)
     private lateinit var day : CalendarDay
+    private val availabilityTag = view.findViewById<ImageView>(R.id.availability_tag)
 
     init {
         daySquare.setOnClickListener {
@@ -45,6 +47,7 @@ class DayViewContainer(
     fun setAsInOrOutDate() {
         daySquare.setBackgroundColor(context.getColor(R.color.out_date_background_color))
         dayText.setTextColor(context.getColor(R.color.out_date_text_color))
+        availabilityTag.visibility = ImageView.GONE
     }
 
     fun setAsCurrentDate() {
@@ -60,5 +63,9 @@ class DayViewContainer(
     fun setAsUnselectedDate() {
         daySquare.setBackgroundColor(context.getColor(R.color.month_date_background))
         dayText.setTextColor(context.getColor(R.color.month_date_text_color))
+    }
+
+    fun setAvailabilityTagColor(color: Int) {
+        availabilityTag.setColorFilter(color)
     }
 }

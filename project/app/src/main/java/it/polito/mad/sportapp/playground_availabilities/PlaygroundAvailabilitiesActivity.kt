@@ -17,7 +17,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.navigateTo
 import it.polito.mad.sportapp.playground_availabilities.recycler_view.PlaygroundAvailabilitiesAdapter
-import it.polito.mad.sportapp.playground_availabilities.recycler_view.TimeSlotVH
 import it.polito.mad.sportapp.profile.ShowProfileActivity
 import it.polito.mad.sportapp.show_reservations.ShowReservationsActivity
 import java.time.DayOfWeek
@@ -79,27 +78,50 @@ class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
             }
         }
 
+        // change selected month if user swipes to another month
         calendarView.monthScrollListener = { newMonth ->
             viewModel.setCurrentMonth(newMonth.yearMonth)
         }
 
         /* months view model observers */
-        viewModel.currentMonth.observe(this) {
-            calendarView.smoothScrollToMonth(it)
-        }
 
-        /* month label changer */
         val monthLabel = findViewById<TextView>(R.id.month_label)
 
-        viewModel.currentMonth.observe(this) {
+        viewModel.currentMonth.observe(this) { newMonth ->
+            // change month view
+            calendarView.smoothScrollToMonth(newMonth)
+
+            // change month label
             monthLabel.text = capitalize(
-                it.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH)))
+                newMonth.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH)))
+
+            // retrieve new playground availabilities for the current month
+            viewModel.updatePlaygroundAvailabilities(newMonth)
+        }
+
+        /* playground availabilities observer to change dates' colors */
+        viewModel.availablePlaygroundsPerSlot.observe(this) {
+            calendarView.notifyMonthChanged(viewModel.currentMonth.value ?: viewModel.defaultMonth)
         }
 
         /* dates view model observers */
+        val selectedDateLabel = findViewById<TextView>(R.id.selected_date_label)
 
         viewModel.selectedDate.observe(this) {
+            // update calendar selected date
             calendarView.notifyDateChanged(it)
+
+            // update selected date label
+            selectedDateLabel.text = it.format(
+                DateTimeFormatter.ofPattern("EEEE, d MMMM y", Locale.ENGLISH))
+
+            // update recycler view data
+            playgroundAvailabilitiesAdapter.selectedDate = it
+            playgroundAvailabilitiesAdapter.playgroundAvailabilities =
+                viewModel.getAvailablePlaygroundsOnSelectedDate()
+
+            // update time slots view
+            playgroundAvailabilitiesAdapter.notifyDataSetChanged()
         }
 
         viewModel.previousSelectedDate.observe(this) {
@@ -110,6 +132,7 @@ class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
         val playgroundAvailabilitiesRecyclerView = findViewById<RecyclerView>(R.id.playground_availabilities_rv)
         playgroundAvailabilitiesAdapter = PlaygroundAvailabilitiesAdapter(
             viewModel.getAvailablePlaygroundsOnSelectedDate(),
+            viewModel.selectedDate.value ?: viewModel.defaultDate,
             Duration.ofMinutes(30)
         )
 
@@ -117,14 +140,6 @@ class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(
                 this@PlaygroundAvailabilitiesActivity, RecyclerView.VERTICAL, false)
             adapter = playgroundAvailabilitiesAdapter
-        }
-
-        // selected date observer: change recycler view data
-        viewModel.selectedDate.observe(this) {
-            playgroundAvailabilitiesAdapter.playgroundAvailabilities =
-                viewModel.getAvailablePlaygroundsOnSelectedDate()
-
-            playgroundAvailabilitiesAdapter.notifyDataSetChanged()
         }
     }
 

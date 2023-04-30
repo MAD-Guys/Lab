@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/no_available_playgrounds_box"
+    android:layout_width="match_parent"
+    android:layout_height="60sp"
+    android:layout_margin="1dp"
+    android:background="@drawable/available_playgrounds_container_bg">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/no_available_playgrounds_alert"
+        android:textSize="@dimen/no_available_playgrounds_text_size"
+        android:fontFamily="@font/poppins_medium"
+        android:textAlignment="center"
+        android:includeFontPadding="false"
+        android:textColor="@color/available_playground_text_color"/>
+</RelativeLayout>

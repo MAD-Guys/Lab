@@ -4,13 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.model.DetailedPlaygroundSport
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class TimeSlotVH(val view: View) : RecyclerView.ViewHolder(view) {
+class TimeSlotVH(val view: View) : AbstractTimeSlotVH(view) {
     private val startTimeSlotText = view.findViewById<TextView>(R.id.start_time_slot)
     private val endTimeSlotText = view.findViewById<TextView>(R.id.end_time_slot)
     private val availablePlaygroundsContainer =

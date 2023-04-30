@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="selected_date_text">Giggino data</string>
+
     <!-- time slots -->
     <string name="default_start_time_slot">11:00</string>
     <string name="default_end_time_slot">11:30</string>
@@ -8,4 +10,8 @@
     <string name="default_playground_name">Playground A</string>
     <string name="default_sport_center_name">Sport Center 2</string>
     <string name="default_price_per_hour">20 €/h</string>
+
+    <!-- no available playgrounds -->
+    <string name="no_available_playgrounds_alert">No available playgrounds for the selected date</string>
+
 </resources>
