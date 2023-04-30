@@ -1,7 +1,5 @@
 package it.polito.mad.sportapp.model
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import it.polito.mad.sportapp.entities.Equipment
 import it.polito.mad.sportapp.entities.PlaygroundReservation
 import it.polito.mad.sportapp.entities.Sport
@@ -32,7 +30,6 @@ class Repository @Inject constructor(
     private val reservationDao: ReservationDao,
     private val playgroundSportDao: PlaygroundSportDao
 ) {
-
     // User methods
     fun getAllUsers(): List<User> {
         return userDao.getAll()
@@ -91,8 +88,7 @@ class Repository @Inject constructor(
         return sportCenterDao.findByName(name)
     }
 
-    // Equipment methods
-
+    // * Equipment methods *
 
     fun getEquipmentBySportCenterIdAndSportId(sportCenterId: Int, sportId: Int): List<Equipment> {
         return equipmentDao.findBySportCenterIdAndSportId(sportCenterId, sportId)
@@ -109,8 +105,6 @@ class Repository @Inject constructor(
         )
         equipmentDao.insertEquipmentReservation(equipmentReservation)
     }
-
-
 
     fun updateEquipment(equipmentId : Int, add : Boolean, playgroundReservationId: Int) {
         val price = equipmentDao.findPriceById(equipmentId)
@@ -152,7 +146,6 @@ class Repository @Inject constructor(
 
         return availablePlaygroundsPerSlot
     }
-
 
     /* hardcoded data utilities (to be deleted) */
 
