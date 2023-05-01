@@ -29,7 +29,8 @@ data class EquipmentReservation(
     @ColumnInfo(name = "total_price")
     val totalPrice: Float,
 )
+{
+    @Ignore
+    var equipmentName: String = ""
 
-
-
-
+}
