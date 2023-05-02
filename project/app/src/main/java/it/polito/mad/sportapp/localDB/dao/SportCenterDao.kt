@@ -19,6 +19,8 @@ interface SportCenterDao {
     fun findById(id: Int): SportCenter
 
 
+
+
     //Useful queries to populate the database
     @Insert
     fun insertAllSportCenter(vararg sportCenters: SportCenter)

@@ -61,7 +61,7 @@ data class DetailedReservation(
     ).toMinutes()
 }
 
-data class ReservationSportDate(
+data class DetailedReservationForAvailablePlaygrounds(
     @ColumnInfo(name = "start_date_time")
     val startDateTime: String,
     @ColumnInfo(name = "end_date_time")
@@ -74,18 +74,38 @@ data class ReservationSportDate(
     val playgroundName: String,
     @ColumnInfo(name = "sport_center_name")
     val sportCenterName: String,
-    @ColumnInfo(name = "cost_per_hour")
-    val costPerHour: Float,
+    @ColumnInfo(name = "price_per_hour")
+    val pricePerHour: Float,
 ) {
     @Ignore
     var date: LocalDate = LocalDate.parse(startDateTime.substring(0, 10))
 
     @Ignore
-    var startTime: LocalTime = LocalTime.parse(startDateTime.substring(11, 19))
+    var startLocalDateTime: LocalDateTime = LocalDateTime.parse(startDateTime)
 
     @Ignore
-    var endTime: LocalTime = LocalTime.parse(endDateTime.substring(11, 19))
+    var endLocalDateTime: LocalDateTime = LocalDateTime.parse(endDateTime)
+}
 
+data class DetailedPlayground(
+    @ColumnInfo(name = "sport_id", index = true)
+    val sportId: Int,
+    @ColumnInfo(name = "sport_center_name", index = true)
+    val sportCenterName: String,
+    @ColumnInfo(name = "playground_name")
+    val playgroundName: String,
+    @ColumnInfo(name = "cost_per_hour")
+    val pricePerHour: Float,
+    @ColumnInfo(name = "opening_hour")
+    val openingHours: String,
+    @ColumnInfo(name = "closing_hour")
+    val closingHours: String,
+    @ColumnInfo(name = "playground_id")
+    val playgroundId: Int,
+)
+{
     @Ignore
-    var equipments: List<EquipmentReservation> = listOf()
+    val openingTime: LocalTime = LocalTime.parse(openingHours)
+    @Ignore
+    val closingTime: LocalTime = LocalTime.parse(closingHours)
 }

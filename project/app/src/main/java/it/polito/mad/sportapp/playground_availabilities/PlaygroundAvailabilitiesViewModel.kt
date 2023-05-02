@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.Sport
-import it.polito.mad.sportapp.model.DetailedPlaygroundSport
+import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
 import it.polito.mad.sportapp.model.Repository
 import java.time.Duration
 import java.time.LocalDate

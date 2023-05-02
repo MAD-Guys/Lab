@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.model.DetailedPlaygroundSport
+import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
 import java.lang.Exception
 import java.time.Duration
 import java.time.LocalDate

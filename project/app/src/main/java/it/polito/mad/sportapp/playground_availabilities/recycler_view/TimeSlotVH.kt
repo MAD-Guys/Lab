@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.model.DetailedPlaygroundSport
+import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
