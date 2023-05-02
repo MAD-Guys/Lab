@@ -99,17 +99,17 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
 
     private fun getPlaygroundAvailabilitiesForCurrentMonthAndSport()
         : Map<LocalDateTime, List<DetailedPlaygroundSport>> {
-        val currentMonthAvailabilities = repository.getAvailablePlaygroundsPerSlotIn(
+        val currentMonthAvailabilities = repository.getAvailablePlaygroundsPerSlot(
             currentMonth.value ?: defaultMonth,
             selectedSport.value
         )
 
-        val previousMonthAvailabilities = repository.getAvailablePlaygroundsPerSlotIn(
+        val previousMonthAvailabilities = repository.getAvailablePlaygroundsPerSlot(
             currentMonth.value?.minusMonths(1) ?: defaultMonth,
             selectedSport.value
         )
 
-        val nextMonthAvailabilities = repository.getAvailablePlaygroundsPerSlotIn(
+        val nextMonthAvailabilities = repository.getAvailablePlaygroundsPerSlot(
             currentMonth.value?.plusMonths(1) ?: defaultMonth,
             selectedSport.value
         )

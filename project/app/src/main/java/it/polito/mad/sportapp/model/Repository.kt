@@ -112,6 +112,7 @@ class Repository @Inject constructor(
             totalPrice = equipment.price,
             timestamp = LocalDateTime.now().toString(),
         )
+        reservationDao.increasePrice(playgroundReservationId, equipment.price * quantity)
         equipmentDao.insertEquipmentReservation(equipmentReservation)
     }
 
@@ -164,8 +165,11 @@ class Repository @Inject constructor(
 
     // * Playground methods *
 
-    fun getAvailablePlaygroundsPerSlot(month: YearMonth, sport: Sport)
+    fun getAvailablePlaygroundsPerSlot(month: YearMonth, sport: Sport?)
             : Map<LocalDateTime, List<DetailedPlaygroundSport>> {
+        if (sport == null) {
+            return mapOf()
+        }
         // * retrieve, for each timeslot in the month, the busy playgrounds *
 
         val busyPlaygrounds = reservationDao.findPlaygroundsBySportIdAndDate(
