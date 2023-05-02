@@ -91,6 +91,7 @@
             android:id="@+id/calendar_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="1dp"
             app:cv_dayViewResource="@layout/calendar_day_container"
             app:cv_outDateStyle="endOfGrid"
             app:cv_scrollPaged="true" />

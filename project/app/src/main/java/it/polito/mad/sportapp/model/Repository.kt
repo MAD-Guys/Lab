@@ -16,6 +16,7 @@ import it.polito.mad.sportapp.localDB.dao.UserDao
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -140,11 +141,11 @@ class Repository @Inject constructor(
     // * Playground methods *
 
     /* Get the available playgrounds for each slot in the provided month */
-    fun getAvailablePlaygroundsPerSlotIn(month: YearMonth, sport: Sport)
+    fun getAvailablePlaygroundsPerSlotIn(month: YearMonth, sport: Sport?)
         : Map<LocalDateTime, List<DetailedPlaygroundSport>> {
         /* temporary hardcoded data */
         val timeSlots = getRandomSlotsStartTimesIn(month, maxDaysOfMonth=20, maxSlots=15)
-        val playgroundSports = getRandomPlaygroundSports(sport.id)
+        val playgroundSports = getRandomPlaygroundSports(sport?.id)
 
         val availablePlaygroundsPerSlot = timeSlots.associateWith {
             playgroundSports.asSequence().shuffled()
@@ -185,7 +186,7 @@ class Repository @Inject constructor(
         }
     }
 
-    private fun getRandomPlaygroundSports(sportId: Int): List<DetailedPlaygroundSport> {
+    private fun getRandomPlaygroundSports(sportId: Int?): List<DetailedPlaygroundSport> {
         val prices = listOf(10.00, 15.00, 20.00, 25.00)
         var nextId = 0
         val random1or2Generator = Random().longs(1,3).iterator()
@@ -208,14 +209,13 @@ class Repository @Inject constructor(
 
         return buildList{
             playgroundIds.forEach{ playgroundId ->
-                val randomSportIds = Random().ints(0, sports.size)
+                val randomSportIds = Random().ints(1, sports.size+1)
 
                 randomSportIds.limit(random1or2Generator.next()).distinct()
                     .forEach { tempSportId ->
                         val id = nextId++
 
-                        //if(tempSportId == sportId) {
-                        if(true) {
+                        if(sportId == null || tempSportId == sportId) {
                             add(
                                 DetailedPlaygroundSport(
                                     id,

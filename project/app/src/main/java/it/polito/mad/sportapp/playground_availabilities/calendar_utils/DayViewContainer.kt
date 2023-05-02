@@ -66,6 +66,11 @@ class DayViewContainer(
     }
 
     fun setAvailabilityTagColor(color: Int) {
+        availabilityTag.visibility = ImageView.VISIBLE
         availabilityTag.setColorFilter(color)
+    }
+
+    fun hideTag() {
+        availabilityTag.visibility = ImageView.GONE
     }
 }
