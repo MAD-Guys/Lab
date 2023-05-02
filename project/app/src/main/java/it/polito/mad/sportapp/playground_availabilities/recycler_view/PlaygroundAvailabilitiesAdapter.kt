@@ -21,7 +21,7 @@ class PlaygroundAvailabilitiesAdapter(
 
     internal var playgroundAvailabilities = playgroundAvailabilities
         set(value) {
-            field = value
+            field = value.mapValues { (_, playgrounds) -> playgrounds.filter { it.available } }
             timeSlots = value.keys.toList().sorted()
         }
 

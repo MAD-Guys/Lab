@@ -229,7 +229,7 @@ class Repository @Inject constructor(
         }
             .groupBy { it.first }
             .mapValues { (_, pairList) ->
-                pairList.map { (slot, detailedPlayground) -> detailedPlayground }
+                pairList.map { (_, detailedPlayground) -> detailedPlayground }
             }
 
         val availablePlaygroundsPerSlot = busyPlaygroundsPerSlot

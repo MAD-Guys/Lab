@@ -85,6 +85,8 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
 
         val availablePlaygrounds = this.availablePlaygroundsPerSlot.value.orEmpty().filterKeys {
             it.toLocalDate() == date
+        }.mapValues {
+            (_, playgrounds) -> playgrounds.filter { it.available }
         }
 
         // fill with missing slots
@@ -92,9 +94,10 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
     }
 
     fun updatePlaygroundAvailabilitiesForCurrentMonthAndSport() {
-        val newAvailabilities = this.getPlaygroundAvailabilitiesForCurrentMonthAndSport()
-
-        this._availablePlaygroundsPerSlot.value = newAvailabilities
+        Thread {
+            val newAvailabilities = this.getPlaygroundAvailabilitiesForCurrentMonthAndSport()
+            this._availablePlaygroundsPerSlot.postValue(newAvailabilities)
+        }.start()
     }
 
     private fun getPlaygroundAvailabilitiesForCurrentMonthAndSport()
