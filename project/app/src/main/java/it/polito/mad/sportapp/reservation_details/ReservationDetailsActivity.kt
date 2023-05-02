@@ -3,21 +3,14 @@ package it.polito.mad.sportapp.reservation_details
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.MenuItem
+import android.view.Menu
+import android.view.MenuInflater
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.DetailedReservation
-import it.polito.mad.sportapp.entities.Equipment
-import it.polito.mad.sportapp.events_list_view.EventsListViewActivity
-import it.polito.mad.sportapp.navigateTo
 import it.polito.mad.sportapp.showToasty
 import it.polito.mad.sportapp.show_reservations.ShowReservationsActivity
 import java.time.format.DateTimeFormatter
@@ -27,23 +20,23 @@ import java.time.format.FormatStyle
 class ReservationDetailsActivity : AppCompatActivity() {
 
     //views
-    private lateinit var qrCode : ImageView
-    private lateinit var reservationNumber : TextView
-    private lateinit var reservationDate : TextView
-    private lateinit var reservationStartTime : TextView
-    private lateinit var reservationEndTime : TextView
-    private lateinit var reservationSport : TextView
-    private lateinit var reservationPlayground : TextView
-    private lateinit var reservationSportCenter : TextView
-    private lateinit var reservationSportCenterAddress : TextView
-    private lateinit var directionsButton : ImageButton
-    private lateinit var noEquipmentMessage : TextView
-    private lateinit var equipment : LinearLayout
+    private lateinit var qrCode: ImageView
+    private lateinit var reservationNumber: TextView
+    private lateinit var reservationDate: TextView
+    private lateinit var reservationStartTime: TextView
+    private lateinit var reservationEndTime: TextView
+    private lateinit var reservationSport: TextView
+    private lateinit var reservationPlayground: TextView
+    private lateinit var reservationSportCenter: TextView
+    private lateinit var reservationSportCenterAddress: TextView
+    private lateinit var directionsButton: ImageButton
+    private lateinit var noEquipmentMessage: TextView
+    private lateinit var equipment: LinearLayout
     private lateinit var editButton: ImageButton
-    private lateinit var reservationTotalPrice : TextView
-    private lateinit var deleteButton : Button
+    private lateinit var reservationTotalPrice: TextView
+    private lateinit var deleteButton: Button
 
-    private var eventId : Int = -1
+    private var eventId: Int = -1
 
     // view model
     private val vm by viewModels<ReservationDetailsViewModel>()
@@ -79,7 +72,7 @@ class ReservationDetailsActivity : AppCompatActivity() {
         }
 
         vm.reservation.observe(this) {
-            if(vm.reservation.value != null) {
+            if (vm.reservation.value != null) {
                 setQRCodeView(vm.reservation.value!!, qrCode)
                 initializeValues()
                 initializeEquipment()
@@ -90,9 +83,19 @@ class ReservationDetailsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        if(eventId != -1)
+        if (eventId != -1)
             vm.getReservationFromDb(eventId)
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // inflate and render the menu
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.reservations_details_menu, menu)
+        // change app bar's title
+        supportActionBar?.title = "Reservation Details"
+
+        return true
     }
 
     private fun retrieveViews() {
@@ -113,10 +116,14 @@ class ReservationDetailsActivity : AppCompatActivity() {
     }
 
     private fun initializeValues() {
-        reservationNumber.text = "Reservation number: " + String.format("%010d", vm.reservation.value?.id)
-        reservationDate.text = vm.reservation.value?.date?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
-        reservationStartTime.text = vm.reservation.value?.startTime?.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
-        reservationEndTime.text = vm.reservation.value?.endTime?.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
+        reservationNumber.text =
+            "Reservation number: " + String.format("%010d", vm.reservation.value?.id)
+        reservationDate.text =
+            vm.reservation.value?.date?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
+        reservationStartTime.text =
+            vm.reservation.value?.startTime?.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
+        reservationEndTime.text =
+            vm.reservation.value?.endTime?.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
         reservationSport.text = vm.reservation.value?.sportName
         reservationPlayground.text = vm.reservation.value?.playgroundName
         reservationSportCenter.text = vm.reservation.value?.sportCenterName
@@ -126,9 +133,13 @@ class ReservationDetailsActivity : AppCompatActivity() {
 
     private fun initializeEquipment() {
         equipment.removeAllViewsInLayout()
-        if(vm.reservation.value?.equipments != null && vm.reservation.value?.equipments!!.isNotEmpty()) {
-            for ((index, e) in vm.reservation.value?.equipments!!.withIndex() ){
-                var row = layoutInflater.inflate(R.layout.equipment_row, equipment, false)
+
+        if (vm.reservation.value?.equipments != null && vm.reservation.value?.equipments!!.isNotEmpty()) {
+
+            noEquipmentMessage.visibility = TextView.GONE
+
+            for ((index, e) in vm.reservation.value?.equipments!!.withIndex()) {
+                val row = layoutInflater.inflate(R.layout.equipment_row, equipment, false)
                 row.id = index
                 val equipmentName = row.findViewById<TextView>(R.id.equipmentName)
                 val equipmentQuantity = row.findViewById<TextView>(R.id.equipmentQuantity)
@@ -164,12 +175,16 @@ class ReservationDetailsActivity : AppCompatActivity() {
     private fun startDialog() {
         AlertDialog.Builder(this)
             .setMessage("Are you sure to delete this reservation?")
-            .setPositiveButton("YES") { _,_ ->
-                if(vm.deleteReservation()) showToasty("success", this, "Reservation correctly deleted")
+            .setPositiveButton("YES") { _, _ ->
+                if (vm.deleteReservation()) showToasty(
+                    "success",
+                    this,
+                    "Reservation correctly deleted"
+                )
                 val intent = Intent(this, ShowReservationsActivity::class.java)
                 startActivity(intent)
             }
-            .setNegativeButton("NO") { d,_ -> d.cancel() }
+            .setNegativeButton("NO") { d, _ -> d.cancel() }
             .create()
             .show()
     }
