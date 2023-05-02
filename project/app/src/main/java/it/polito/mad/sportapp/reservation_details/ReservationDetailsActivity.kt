@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -96,6 +97,15 @@ class ReservationDetailsActivity : AppCompatActivity() {
         supportActionBar?.title = "Reservation Details"
 
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        // detect which item has been selected and perform corresponding action
+        R.id.equipment_back_button -> {
+            this.finish()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     private fun retrieveViews() {
