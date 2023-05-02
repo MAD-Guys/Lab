@@ -19,7 +19,6 @@ class ShowReservationsViewModel @Inject constructor(
 
     // mutable live data for the user events
     private var _userEvents = MutableLiveData<Map<LocalDate, List<DetailedReservation>>>()
-
     val userEvents: LiveData<Map<LocalDate, List<DetailedReservation>>> = _userEvents
 
     // mutable live data for the current month, the selected date and the previous selected date
@@ -36,7 +35,8 @@ class ShowReservationsViewModel @Inject constructor(
 
         // get user events from database
         val dbThread = Thread {
-            this._userEvents.postValue(repository.getReservationPerDateByUserId(1))
+            val userReservations = repository.getReservationPerDateByUserId(1)
+            this._userEvents.postValue(userReservations)
         }
 
         // start db thread
