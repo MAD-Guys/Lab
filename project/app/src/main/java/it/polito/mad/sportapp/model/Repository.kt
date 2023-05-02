@@ -1,7 +1,6 @@
 package it.polito.mad.sportapp.model
 
 import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
-import it.polito.mad.sportapp.entities.DetailedReservationForAvailablePlaygrounds
 import it.polito.mad.sportapp.entities.Equipment
 import it.polito.mad.sportapp.entities.PlaygroundReservation
 import it.polito.mad.sportapp.entities.Sport
@@ -19,7 +18,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.YearMonth
-import java.time.format.DateTimeFormatter
 import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -58,7 +56,7 @@ class Repository @Inject constructor(
     fun getDetailedReservationById(id: Int): DetailedReservation {
         val reservation = reservationDao.findDetailedReservationById(id)
         reservation.equipments = equipmentDao.findEquipmentReservationByPlaygroundId(id)
-        reservation.equipments.forEach() {
+        reservation.equipments.forEach {
             it.equipmentName = equipmentDao.findEquipmentNameById(it.equipmentId)
         }
         if (reservation.equipments.isNullOrEmpty()) {
