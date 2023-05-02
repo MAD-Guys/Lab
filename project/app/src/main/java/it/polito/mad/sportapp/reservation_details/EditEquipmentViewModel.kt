@@ -24,14 +24,12 @@ class EditEquipmentViewModel @Inject constructor(
     //items to display in the "available equipments" section: remove the items already selected
 
     private val _tempAvailableEquipment = MutableLiveData<MutableList<Equipment>>()
-
     val tempAvailableEquipment: MutableLiveData<MutableList<Equipment>> = _tempAvailableEquipment
 
     private val _tempSelectedEquipment = MutableLiveData<MutableList<EquipmentReservation>>()
+    val tempSelectedEquipment: MutableLiveData<MutableList<EquipmentReservation>> = _tempSelectedEquipment
     private var isSelectedEquipmentInitialized = false
 
-    val tempSelectedEquipment: MutableLiveData<MutableList<EquipmentReservation>> =
-        _tempSelectedEquipment
 
     var tempPrice: MutableLiveData<Float> = MutableLiveData<Float>()
     private val dirty: MutableSet<Int> = mutableSetOf()
@@ -84,11 +82,10 @@ class EditEquipmentViewModel @Inject constructor(
     fun initSelectedEquipments() {
         if (
             !isSelectedEquipmentInitialized
-            && _reservation.value?.equipments?.isNotEmpty() == true
+            && _reservation.value!!.equipments.isNotEmpty()
         ) {
-            _tempSelectedEquipment.postValue(
+            _tempSelectedEquipment.value =
                 _reservation.value?.equipments?.toMutableList() ?: mutableListOf()
-            )
         }
         isSelectedEquipmentInitialized = true
     }

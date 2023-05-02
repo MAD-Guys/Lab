@@ -31,11 +31,6 @@ class ShowReservationsViewModel @Inject constructor(
     val selectedDate: LiveData<LocalDate> = _selectedDate
     val previousSelectedDate: LiveData<LocalDate> = _previousSelectedDate
 
-    // initialize user events with data from database
-    init {
-        loadEventsFromDb()
-    }
-
     fun loadEventsFromDb() {
 
         // get user events from database

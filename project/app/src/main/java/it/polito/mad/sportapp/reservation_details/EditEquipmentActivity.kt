@@ -1,6 +1,5 @@
 package it.polito.mad.sportapp.reservation_details
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -78,7 +77,6 @@ class EditEquipmentActivity : AppCompatActivity() {
 
         if (eventId != -1)
             vm.getReservationFromDb(eventId)
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -97,7 +95,6 @@ class EditEquipmentActivity : AppCompatActivity() {
             this.finish()
             true
         }
-
         else -> super.onOptionsItemSelected(item)
     }
 
@@ -200,9 +197,7 @@ class EditEquipmentActivity : AppCompatActivity() {
 
     private fun initButtons() {
         cancelButton.setOnClickListener {
-            val intent = Intent(this, ReservationDetailsActivity::class.java)
-            intent.putExtra("id_event", eventId)
-            startActivity(intent)
+            this.finish()
         }
 
         saveButton.setOnClickListener {
