@@ -26,6 +26,9 @@ interface EquipmentDao {
     @Insert
     fun insertEquipmentReservation(equipmentReservation: EquipmentReservation)
 
+    @Insert
+    fun insertEquipment(equipment : Equipment)
+
     @Query ("SELECT name FROM equipment WHERE id == :equipmentId")
     fun findEquipmentNameById(equipmentId: Int): String
 

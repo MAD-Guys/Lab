@@ -57,6 +57,9 @@ class Repository @Inject constructor(
         reservation.equipments.forEach(){
             it.equipmentName = equipmentDao.findEquipmentNameById(it.equipmentId)
         }
+        if(reservation.equipments.isNullOrEmpty()) {
+            reservation.equipments = listOf()
+        }
         return reservation
     }
 
@@ -89,8 +92,8 @@ class Repository @Inject constructor(
 
     // * Equipment methods *
 
-    fun getEquipmentBySportCenterIdAndSportId(sportCenterId: Int, sportId: Int): List<Equipment> {
-        return equipmentDao.findBySportCenterIdAndSportId(sportCenterId, sportId)
+    fun getEquipmentBySportCenterIdAndSportId(sportCenterId: Int, sportId: Int): MutableList<Equipment> {
+        return equipmentDao.findBySportCenterIdAndSportId(sportCenterId, sportId).toMutableList()
     }
 
     fun addEquipmentReservation(equipment: Equipment, quantity:Int, playgroundReservationId: Int){

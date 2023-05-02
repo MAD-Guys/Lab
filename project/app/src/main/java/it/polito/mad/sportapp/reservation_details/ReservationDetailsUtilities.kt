@@ -6,6 +6,7 @@ import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import it.polito.mad.sportapp.entities.EquipmentReservation
 import it.polito.mad.sportapp.entities.DetailedReservation
+import it.polito.mad.sportapp.entities.Equipment
 
 /*  QR CODE */
 fun reservationQRCode(r: DetailedReservation): Bitmap {
@@ -44,6 +45,8 @@ fun mockReservationDetails(): DetailedReservation {
     val res = DetailedReservation(
         123456,
         27,
+        1,
+        1,
         "POLI Sport",
         "Corso Castelfidardo 54, Torino (TO)",
         "Basketball",
@@ -59,4 +62,13 @@ fun mockReservationDetails(): DetailedReservation {
     )
 
     return res
+}
+
+fun mockAvailableEquipment(): MutableList<Equipment> {
+    return mutableListOf(
+        Equipment(27, "Ball", 1, 1, 3.99f, 7),
+        Equipment(29, "Bottle", 1, 1, 1.99f, 17),
+        Equipment(66, "Shoes", 1, 1, 2.5f, 5),
+        Equipment(68, "Towel", 1, 1,  2.5f, 12)
+    )
 }
