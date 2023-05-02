@@ -85,8 +85,6 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
 
         val availablePlaygrounds = this.availablePlaygroundsPerSlot.value.orEmpty().filterKeys {
             it.toLocalDate() == date
-        }.mapValues {
-            (_, playgrounds) -> playgrounds.filter { it.available }
         }
 
         // fill with missing slots

@@ -266,7 +266,9 @@ internal fun PlaygroundAvailabilitiesActivity.setupAvailablePlaygroundsRecyclerV
 
 /** Compute availability percentage as the percentage of slots with at least one available playground */
 private fun PlaygroundAvailabilitiesActivity.getAvailabilityPercentageOf(date: LocalDate): Float {
-    val availablePlaygrounds = viewModel.getAvailablePlaygroundsOn(date)
+    val availablePlaygrounds = viewModel.getAvailablePlaygroundsOn(date).mapValues {
+        (_, playgrounds) -> playgrounds.filter { it.available }
+    }
 
     val slotsWithAtLeastOneAvailability = availablePlaygrounds.count { it.value.isNotEmpty() }
     val maxNumOfSlotsPerDay = 25

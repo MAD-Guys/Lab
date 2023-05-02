@@ -26,7 +26,10 @@ class TimeSlotVH(val view: View) : AbstractTimeSlotVH(view) {
         // transform each available playground object in a box view
         val availablePlaygroundBoxes = availablePlaygrounds.map { playground ->
             val playgroundBox = LayoutInflater.from(view.context).inflate(
-                R.layout.available_playground_item, availablePlaygroundsContainer, false)
+                if(playground.available) R.layout.available_playground_item else R.layout.unavailable_playground_item,
+                availablePlaygroundsContainer,
+                false
+            )
 
             // retrieve available playground' fields views
             val playgroundNameText = playgroundBox.findViewById<TextView>(R.id.playground_name)
