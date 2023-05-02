@@ -17,11 +17,16 @@ import javax.inject.Inject
 class PlaygroundAvailabilitiesViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
-    private val defaultSport = Sport(0, "Basket", 10)
     internal val defaultDate = LocalDate.now()
     internal val defaultMonth = YearMonth.now()
 
     // selected sport
+    val sports = mutableListOf<Sport>().also {
+        Thread {
+            it.addAll(repository.getAllSports())
+        }.start()
+    }
+    private val defaultSport = Sport(0, "Basket", 10)
     private val _selectedSport = MutableLiveData(defaultSport)
     val selectedSport: LiveData<Sport> = _selectedSport // TODO
 

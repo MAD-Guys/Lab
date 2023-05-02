@@ -212,7 +212,6 @@ class Repository @Inject constructor(
 
                 randomSportIds.limit(random1or2Generator.next()).distinct()
                     .forEach { tempSportId ->
-                        val tempSportName = sports[tempSportId]
                         val id = nextId++
 
                         //if(tempSportId == sportId) {
@@ -222,7 +221,7 @@ class Repository @Inject constructor(
                                     id,
                                     playgroundId,
                                     "Playground $playgroundId",
-                                    tempSportName,
+                                    tempSportId,
                                     "Sport center ${randomSportCenterGenerator.next()}",
                                     randomPriceGenerator.next().toFloat()
                                 )
@@ -238,7 +237,7 @@ data class DetailedPlaygroundSport(
     val id: Int,
     val playgroundId: Int,
     val playgroundName: String,
-    val sportName: String,
+    val sportId: Int,
     val sportCenterName: String,
     val pricePerHour: Float
 )

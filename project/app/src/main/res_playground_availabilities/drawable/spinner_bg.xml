@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingMode="stack"
+    android:paddingStart="0dp"
+    android:paddingEnd="48dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp">
+    <item>
+        <shape>
+            <solid android:color="@color/selected_sport_spinner_background_color" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <stroke
+                android:width="@dimen/selected_sport_spinner_border_size"
+                android:color="@color/selected_sport_spinner_border_color"/>
+        </shape>
+    </item>
+    <item
+        android:gravity="end|fill_vertical"
+        android:width="40dp"
+        android:drawable="@drawable/spinner_arrow_ripple" />
+    <item
+        android:drawable="@drawable/spinner_arrow"
+        android:gravity="end|center_vertical"
+        android:width="24dp"
+        android:height="24dp"
+        android:end="8dp" />
+</layer-list>

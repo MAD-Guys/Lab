@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- selected sport spinner -->
+    <dimen name="selected_sport_spinner_border_size">0.5dp</dimen>
+
     <!-- time slot -->
     <dimen name="time_slot_box_padding_vertical">7sp</dimen>
     <dimen name="time_slot_box_padding_horizontal">2sp</dimen>
@@ -24,7 +27,7 @@
     <integer name="available_playground_name_max_length">20</integer>
     <integer name="available_playground_sport_center_max_length">30</integer>
     <dimen name="no_available_playgrounds_text_size">11sp</dimen>
-    <dimen name="selected_date_label_text_size">12sp</dimen>
 
+    <dimen name="selected_date_label_text_size">12sp</dimen>
 
 </resources>

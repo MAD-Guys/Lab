@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="default_calendar_date_background_color">#FFFFFF</color>
+    <!-- sport spinner -->
+    <color name="selected_sport_spinner_background_color">@color/pale_lighter_blue</color>
+    <color name="selected_sport_spinner_border_color">@color/time_slot_border_color</color>
 
+    <!-- calendar -->
+    <color name="default_calendar_date_background_color">#FFFFFF</color>
 
     <!-- time slots -->
     <color name="time_slot_text">@color/white</color>

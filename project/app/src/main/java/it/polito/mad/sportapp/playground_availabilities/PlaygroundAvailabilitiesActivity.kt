@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.ImageView
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -82,6 +83,10 @@ class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
         calendarView.monthScrollListener = { newMonth ->
             viewModel.setCurrentMonth(newMonth.yearMonth)
         }
+
+        /* initialize selected sport spinner */
+        val selectedSportSpinner = findViewById<Spinner>(R.id.selected_sport_spinner)
+        // TODO
 
         /* months view model observers */
 
