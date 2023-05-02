@@ -156,6 +156,7 @@ class EditEquipmentActivity : AppCompatActivity() {
     private fun initButtons() {
         cancelButton.setOnClickListener {
             val intent = Intent(this, ReservationDetailsActivity::class.java)
+            intent.putExtra("id_event", eventId)
             startActivity(intent)
         }
 
