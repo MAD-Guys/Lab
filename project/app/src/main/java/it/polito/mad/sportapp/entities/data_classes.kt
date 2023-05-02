@@ -22,6 +22,10 @@ data class DetailedReservation(
     val id: Int,
     @ColumnInfo(name = "user_id")
     val userId: Int,
+    @ColumnInfo(name = "sport_center_id")
+    val sportCenterId: Int,
+    @ColumnInfo(name = "sport_id")
+    val sportId: Int,
     @ColumnInfo(name = "sport_center_name")
     val sportCenterName: String,
     @ColumnInfo(name = "address")

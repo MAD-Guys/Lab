@@ -65,10 +65,11 @@ fun generatePlaygroundReservation(
     val playgroundReservationList = mutableListOf<PlaygroundReservation>()
     val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
     for (i in 1..31) {
-        val slotDurationMinutes = when (Random.nextInt(3)) {
+        val slotDurationMinutes = when (Random.nextInt(4)) {
             0 -> 30 // Half an hour
             1 -> 60 // An hour
-            else -> 90 // An hour and a half
+            2 -> 90 // An hour and a half
+            else -> 120 // Two hours
         }
         val randomHour = Random.nextInt(8, 20) // Random hour between 8 and 20
         val startDateTime = LocalDateTime.of(

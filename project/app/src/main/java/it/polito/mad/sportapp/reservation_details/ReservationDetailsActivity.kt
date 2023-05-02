@@ -9,10 +9,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.entities.Equipment
 import it.polito.mad.sportapp.events_list_view.EventsListViewActivity
 import it.polito.mad.sportapp.navigateTo
@@ -41,12 +43,16 @@ class ReservationDetailsActivity : AppCompatActivity() {
     private lateinit var reservationTotalPrice : TextView
     private lateinit var deleteButton : Button
 
+    private var eventId : Int = -1
+
     // view model
     private val vm by viewModels<ReservationDetailsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reservation_details)
+
+        eventId = intent.getIntExtra("id_event", -1)
 
         // Generate QR code
         qrCode = findViewById(R.id.QR_code)
@@ -71,6 +77,22 @@ class ReservationDetailsActivity : AppCompatActivity() {
         deleteButton.setOnClickListener {
             startDialog()
         }
+
+        vm.reservation.observe(this) {
+            if(vm.reservation.value != null) {
+                setQRCodeView(vm.reservation.value!!, qrCode)
+                initializeValues()
+                initializeEquipment()
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if(eventId != -1)
+            vm.getReservationFromDb(eventId)
+
     }
 
     private fun retrieveViews() {
@@ -103,6 +125,7 @@ class ReservationDetailsActivity : AppCompatActivity() {
     }
 
     private fun initializeEquipment() {
+        equipment.removeAllViewsInLayout()
         if(vm.reservation.value?.equipments != null && vm.reservation.value?.equipments!!.isNotEmpty()) {
             for ((index, e) in vm.reservation.value?.equipments!!.withIndex() ){
                 var row = layoutInflater.inflate(R.layout.equipment_row, equipment, false)
@@ -111,7 +134,7 @@ class ReservationDetailsActivity : AppCompatActivity() {
                 val equipmentQuantity = row.findViewById<TextView>(R.id.equipmentQuantity)
                 val equipmentPrice = row.findViewById<TextView>(R.id.equipmentPrice)
 
-                equipmentName.text = "Equipment ${e.equipmentId}"
+                equipmentName.text = e.equipmentName
                 equipmentQuantity.text = String.format("%d", e.quantity)
                 equipmentPrice.text = String.format("%.2f", e.totalPrice)
 
@@ -124,6 +147,7 @@ class ReservationDetailsActivity : AppCompatActivity() {
 
     private fun toEditView() {
         val intent = Intent(this, EditEquipmentActivity::class.java)
+        intent.putExtra("id_event", eventId)
         startActivity(intent)
     }
 

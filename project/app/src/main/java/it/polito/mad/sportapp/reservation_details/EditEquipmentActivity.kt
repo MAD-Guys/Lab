@@ -23,29 +23,53 @@ class EditEquipmentActivity : AppCompatActivity() {
     private lateinit var cancelButton: Button
     private lateinit var saveButton: Button
 
+    private var eventId : Int = -1
+
     private val vm by viewModels<EditEquipmentViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_equipment)
 
-        val selectedEquipmentObserver = Observer<MutableList<EquipmentReservation>> {
-            loadSelectedEquipment()
-            selectedEquipmentContainer.requestLayout()
-        }
-        val availableEquipmentObserver = Observer<MutableList<Equipment>> {
-            loadAvailableEquipment()
-            availableEquipmentContainer.requestLayout()
-        }
-        val priceObserver  = Observer<Float> {
-                updatedPrice -> newPrice.text = String.format("%.2f", updatedPrice)
-        }
+        eventId = intent.getIntExtra("id_event", -1)
 
-        initViews()
+        //initViews()
 
-        vm.tempSelectedEquipment.observe(this, selectedEquipmentObserver)
-        vm.tempAvailableEquipment.observe(this, availableEquipmentObserver)
-        vm.tempPrice.observe(this, priceObserver)
+        vm.reservation.observe(this) {
+            if(vm.reservation.value != null) {
+                if(vm.reservation.value != null) {
+                    vm.getEquipmentFromDb(vm.reservation.value!!)
+                    initViews()
+                    initButtons()
+                }
+            }
+        }
+        vm.tempSelectedEquipment.observe(this) {
+            if(vm.reservation.value != null) {
+                loadSelectedEquipment()
+                selectedEquipmentContainer.requestLayout()
+            }
+        }
+        vm.tempAvailableEquipment.observe(this) {
+            if(vm.reservation.value != null) {
+                loadAvailableEquipment()
+                availableEquipmentContainer.requestLayout()
+            }
+        }
+        vm.tempPrice.observe(this) {
+                updatedPrice ->
+            if(vm.reservation.value != null) {
+                newPrice.text = String.format("%.2f", updatedPrice)
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if(eventId != -1)
+            vm.getReservationFromDb(eventId)
+
     }
 
     private fun initViews() {
@@ -66,7 +90,7 @@ class EditEquipmentActivity : AppCompatActivity() {
 
     private fun loadAvailableEquipment() {
         availableEquipmentContainer.removeAllViewsInLayout()
-        if(vm.tempAvailableEquipment != null) {
+        if(vm.tempAvailableEquipment.value != null) {
             for ((index, e) in vm.tempAvailableEquipment.value!!.withIndex()) {
 
                 var row = layoutInflater.inflate(
@@ -94,7 +118,7 @@ class EditEquipmentActivity : AppCompatActivity() {
     }
 
     private fun loadSelectedEquipment() {
-        if(vm.tempSelectedEquipment != null && vm.tempSelectedEquipment.value!!.isNotEmpty()) {
+        if(vm.tempSelectedEquipment.value != null && vm.tempSelectedEquipment.value!!.isNotEmpty()) {
             selectedEquipmentContainer.removeAllViewsInLayout()
             for ((index, e) in vm.reservation.value?.equipments!!.withIndex() ){
                 var row = layoutInflater.inflate(R.layout.selected_equipment, selectedEquipmentContainer, false)
@@ -103,7 +127,7 @@ class EditEquipmentActivity : AppCompatActivity() {
                 val equipmentQuantity = row.findViewById<TextView>(R.id.equipmentQuantity)
                 val equipmentPrice = row.findViewById<TextView>(R.id.equipmentPrice)
 
-                equipmentName.text = "Equipment ${e.equipmentId}"  //TODO Add equipment name
+                equipmentName.text = e.equipmentName
                 equipmentQuantity.text = String.format("%d", e.quantity)
                 equipmentPrice.text = String.format("%.2f", e.totalPrice)
 
@@ -139,6 +163,7 @@ class EditEquipmentActivity : AppCompatActivity() {
             vm.saveEquipment()
             showToasty("success", this, "Information correctly saved!")
             val intent = Intent(this, ReservationDetailsActivity::class.java)
+            intent.putExtra("id_event", eventId)
             startActivity(intent)
         }
     }
