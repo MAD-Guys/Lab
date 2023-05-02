@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import it.polito.mad.sportapp.entities.Equipment
 import it.polito.mad.sportapp.entities.EquipmentReservation
 import it.polito.mad.sportapp.entities.PlaygroundReservation
@@ -45,8 +46,14 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext, AppDatabase::class.java, "sportapp.db"
                 ).createFromAsset(
                     "database/sportapp.db"
-                )
-                .build()
+                )/*.addCallback(object : RoomDatabase.Callback() {
+                    override fun onCreate(db: SupportSQLiteDatabase) {
+                        super.onCreate(db)
+                        initDb(INSTANCE)
+                    }
+                })*/
+
+                    .build()
 
             INSTANCE = i
             INSTANCE
@@ -177,11 +184,14 @@ private fun initDb(INSTANCE: AppDatabase?) {
             it?.playgroundSportDao()?.insert(
                 PlaygroundSport(0, 4, 4, "BasketBall Dream", 12.0F)
             )
+            it?.equipmentDao()?.insertEquipment(
+                Equipment(0, "Ball", 4, 4,2f,5)
+            )
 
             it?.reservationDao()
                 ?.insertAll(*generatePlaygroundReservation(1, 1, 1).toTypedArray())
             it?.reservationDao()
-                ?.insertAll(*generatePlaygroundReservation(6, 4, 4).toTypedArray())
+                ?.insertAll(*generatePlaygroundReservation(7, 4, 4).toTypedArray())
             it?.reservationDao()
                 ?.insertAll(*generatePlaygroundReservation(3, 2, 2).toTypedArray())
             it?.reservationDao()
