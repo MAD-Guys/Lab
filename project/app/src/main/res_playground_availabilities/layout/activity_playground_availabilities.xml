@@ -72,8 +72,9 @@
     <!-- Sport selection -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_margin="2dp"
+        android:layout_height="33dp"
+        android:layout_marginHorizontal="1dp"
+        android:layout_marginVertical="3dp"
         tools:ignore="TextSizeCheck">
 
         <Spinner
@@ -81,17 +82,21 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textAlignment="center"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
             android:background="@drawable/spinner_bg"
             android:hapticFeedbackEnabled="true"
             tools:ignore="TouchTargetSizeCheck" />
 
-        <!-- (for future use) -->
+        <!-- (for future use)
         <Spinner
             android:id="@+id/selected_sport_center_spinner"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:visibility="invisible" />
+        -->
     </LinearLayout>
 
     <!-- Calendar -->
@@ -99,6 +104,7 @@
         android:id="@+id/calendar_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="1dp"
         app:cv_dayViewResource="@layout/playground_availabilities_calendar_day_container"
         app:cv_monthHeaderResource="@layout/calendar_header"
         app:cv_outDateStyle="endOfGrid"

@@ -12,22 +12,14 @@ import it.polito.mad.sportapp.model.Repository
 import javax.inject.Inject
 
 @HiltViewModel
-class ReservationDetailsViewModel  @Inject constructor(
+class ReservationDetailsViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
 
-/*
-    private val _reservation = MutableLiveData<DetailedReservation>().also {
-        it.value = mockReservationDetails()
-    }
+    private var _reservation = MutableLiveData<DetailedReservation>()
+    val reservation: LiveData<DetailedReservation> = _reservation
 
- */
-
-
-    private var  _reservation = MutableLiveData<DetailedReservation>()
-    val reservation :LiveData<DetailedReservation> = _reservation
-
-    fun getReservationFromDb(reservationId : Int) {
+    fun getReservationFromDb(reservationId: Int) {
 
         // get reservation from database
         val dbThread = Thread {
@@ -39,8 +31,15 @@ class ReservationDetailsViewModel  @Inject constructor(
     }
 
     fun deleteReservation(): Boolean {
-        println("DELETE RESERVATION!")
-        //repository.deleteReservationById(_reservation.value.id)
+
+        // delete reservation in database
+        val dbThread = Thread {
+            repository.deleteReservation(_reservation.value!!)
+        }
+
+        // start db thread
+        dbThread.start()
+
         return true
     }
 

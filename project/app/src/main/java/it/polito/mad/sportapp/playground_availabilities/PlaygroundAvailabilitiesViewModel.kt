@@ -20,15 +20,19 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
     internal val defaultDate = LocalDate.now()
     internal val defaultMonth = YearMonth.now()
 
-    // selected sport
-    val sports = mutableListOf<Sport>().also {
+    // all sports
+    private val _sports = MutableLiveData<List<Sport>>().also {
+        // call the db from a secondary thread
         Thread {
-            it.addAll(repository.getAllSports())
+            val allSports = repository.getAllSports().sortedBy { it.name }
+            it.postValue(allSports)
         }.start()
     }
-    private val defaultSport = Sport(0, "Basket", 10)
-    private val _selectedSport = MutableLiveData(defaultSport)
-    val selectedSport: LiveData<Sport> = _selectedSport // TODO
+    val sports: LiveData<List<Sport>> = _sports
+
+    // selected sport
+    private val _selectedSport = MutableLiveData<Sport?>()
+    val selectedSport: LiveData<Sport?> = _selectedSport
 
     // previous selected date
     private val _previousSelectedDate = MutableLiveData<LocalDate>()
@@ -43,8 +47,7 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
     val currentMonth: LiveData<YearMonth> = _currentMonth
 
     // hardcoded slot duration
-    private val slotDuration: Duration = Duration.ofMinutes(30)
-
+    internal val slotDuration: Duration = Duration.ofMinutes(30)
 
     // available playgrounds ***for current sport and month***
     private var _availablePlaygroundsPerSlot:
@@ -52,10 +55,7 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
                 MutableLiveData(
                     // retrieve initial playgrounds availabilities from the repository,
                     // for current month and default sport
-                    repository.getAvailablePlaygroundsPerSlotIn(
-                        currentMonth.value ?: defaultMonth,
-                        selectedSport.value ?: defaultSport
-                    )
+                    this.getPlaygroundAvailabilitiesForCurrentMonthAndSport()
                 )
 
 
@@ -91,11 +91,41 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
         return fillWithMissingTimeSlots(availablePlaygrounds)
     }
 
-    fun updatePlaygroundAvailabilities(newMonth: YearMonth) {
-        this._availablePlaygroundsPerSlot.value = repository.getAvailablePlaygroundsPerSlotIn(
-            newMonth,
-            selectedSport.value ?: defaultSport
+    fun updatePlaygroundAvailabilitiesForCurrentMonthAndSport() {
+        val newAvailabilities = this.getPlaygroundAvailabilitiesForCurrentMonthAndSport()
+
+        this._availablePlaygroundsPerSlot.value = newAvailabilities
+    }
+
+    private fun getPlaygroundAvailabilitiesForCurrentMonthAndSport()
+        : Map<LocalDateTime, List<DetailedPlaygroundSport>> {
+        val currentMonthAvailabilities = repository.getAvailablePlaygroundsPerSlotIn(
+            currentMonth.value ?: defaultMonth,
+            selectedSport.value
         )
+
+        val previousMonthAvailabilities = repository.getAvailablePlaygroundsPerSlotIn(
+            currentMonth.value?.minusMonths(1) ?: defaultMonth,
+            selectedSport.value
+        )
+
+        val nextMonthAvailabilities = repository.getAvailablePlaygroundsPerSlotIn(
+            currentMonth.value?.plusMonths(1) ?: defaultMonth,
+            selectedSport.value
+        )
+
+        val allAvailabilities = mutableMapOf<LocalDateTime, List<DetailedPlaygroundSport>>().also {
+            it.putAll(currentMonthAvailabilities)
+            it.putAll(previousMonthAvailabilities)
+            it.putAll(nextMonthAvailabilities)
+        }
+
+        return allAvailabilities
+    }
+
+    /* selected sport */
+    fun setSelectedSport(selectedSport: Sport?) {
+        this._selectedSport.value = selectedSport
     }
 
     private fun fillWithMissingTimeSlots(

@@ -19,6 +19,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -163,7 +164,6 @@ class Repository @Inject constructor(
 
     // * Playground methods *
 
-    /* Get the available playgrounds for each slot in the provided month */
     fun getAvailablePlaygroundsPerSlot(month: YearMonth, sport: Sport)
             : Map<LocalDateTime, List<DetailedPlaygroundSport>> {
         // * retrieve, for each timeslot in the month, the busy playgrounds *
@@ -255,45 +255,11 @@ class Repository @Inject constructor(
         return availablePlaygroundsPerSlot
     }
 
-
-        /*
-        val availablePlaygroundsPerSlot = mutableMapOf<LocalDateTime, List<ReservationSportDate>>()
-        val slots = mutableListOf<LocalDateTime>()
-        for (day in 1..month.lengthOfMonth()) {
-            for (hour in 8..21) {
-                slots.add(LocalDateTime.of(month.atDay(day), LocalTime.of(hour, 0)))
-            }
-        }
-        //Here I create a map with busy playgrounds for each slot
-        val busyPlaygroundsPerSlot = mutableMapOf<LocalDateTime, List<ReservationSportDate>>()
-        for (slot in slots) {
-            val busyPlaygroundsList = mutableListOf<ReservationSportDate>()
-            for (playground in busyPlaygrounds) {
-                if (slot.isEqual(LocalDateTime.parse(playground.startDateTime))
-                ) {
-                    busyPlaygroundsList.add(playground)
-                }
-            }
-            busyPlaygroundsPerSlot[slot] = busyPlaygroundsList
-        }
-
-        // Now starting from the busy playgrounds map I create the available playgrounds map
-
-
-
-
-        return availablePlaygroundsPerSlot
-
-
-
-
-        */
-
-
-    fun getAvailablePlaygroundsPerSlotIn(month: YearMonth, sport: Sport)
-            : Map<LocalDateTime, List<DetailedPlaygroundSport>> {
+    /* Get the available playgrounds for each slot in the provided month */
+    fun getAvailablePlaygroundsPerSlotInRandom(month: YearMonth, sport: Sport)
+        : Map<LocalDateTime, List<DetailedPlaygroundSport>> {
         /* temporary hardcoded data */
-        val timeSlots = getRandomSlotsStartTimesIn(month, maxDaysOfMonth = 20, maxSlots = 15)
+        val timeSlots = getRandomSlotsStartTimesIn(month, maxDaysOfMonth=20, maxSlots=15)
         val playgroundSports = getRandomPlaygroundSports(sport.id)
 
         val availablePlaygroundsPerSlot = timeSlots.associateWith {
@@ -335,7 +301,7 @@ class Repository @Inject constructor(
         }
     }
 
-    private fun getRandomPlaygroundSports(sportId: Int): List<DetailedPlaygroundSport> {
+    private fun getRandomPlaygroundSports(sportId: Int?): List<DetailedPlaygroundSport> {
         val prices = listOf(10.00, 15.00, 20.00, 25.00)
         var nextId = 0
         val random1or2Generator = Random().longs(1, 3).iterator()
@@ -356,22 +322,23 @@ class Repository @Inject constructor(
             "miniGolf"
         )
 
-        return buildList {
-            playgroundIds.forEach { playgroundId ->
-                val randomSportIds = Random().ints(0, sports.size)
+        return buildList{
+            playgroundIds.forEach{ playgroundId ->
+                val randomSportIds = Random().ints(1, sports.size+1)
 
                 randomSportIds.limit(random1or2Generator.next()).distinct()
                     .forEach { tempSportId ->
+                        val id = nextId++
 
-                        //if(tempSportId == sportId) {
-                        if (true) {
+                        if(sportId == null || tempSportId == sportId) {
                             add(
                                 DetailedPlaygroundSport(
                                     playgroundId,
                                     "Playground $playgroundId",
                                     tempSportId,
                                     "Sport center ${randomSportCenterGenerator.next()}",
-                                    randomPriceGenerator.next().toFloat()
+                                    randomPriceGenerator.next().toFloat(),
+                                    true
                                 )
                             )
                         }

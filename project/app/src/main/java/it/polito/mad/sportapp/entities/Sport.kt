@@ -9,6 +9,10 @@ data class Sport(
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "max_players")
-    val maxPlayers: Int,
-)
+    val maxPlayers: Int
+) {
+    override fun toString(): String {
+        return name
+    }
+}
 
