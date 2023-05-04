@@ -4,18 +4,23 @@ import android.content.Intent
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.formatDuration
 import it.polito.mad.sportapp.reservation_details.ReservationDetailsActivity
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 /* Event View Holder */
 
 internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+    private val containerLayout = view.findViewById<ConstraintLayout>(R.id.event_item_container)
 
     private val itemLayout = view.findViewById<LinearLayout>(R.id.event_information_container)
     private val dayText = view.findViewById<TextView>(R.id.event_day_text)
@@ -28,6 +33,23 @@ internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val eventDuration = view.findViewById<TextView>(R.id.event_duration)
 
     fun bind(event: DetailedReservation) {
+
+        // set item background color
+        if (event.date.isBefore(LocalDate.now())) {
+            containerLayout.setBackgroundColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    R.color.past_event_color
+                )
+            )
+        } else {
+            containerLayout.setBackgroundColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    R.color.white
+                )
+            )
+        }
 
         // get display width
         val displayMetrics = itemView.context.resources.displayMetrics

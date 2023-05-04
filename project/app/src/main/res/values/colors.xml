@@ -35,6 +35,7 @@
     <color name="pale_lighter_brown">#D2A7A7</color>
     <color name="pale_lighter_red">#EEA7A7</color>
     <color name="pale_lighter_yellow">#EEECA7</color>
+    <color name="pale_grey">#A7A7A7</color>
     <color name="pale_lighter_grey">#D2D2D2</color>
 
     <!-- Toasts -->

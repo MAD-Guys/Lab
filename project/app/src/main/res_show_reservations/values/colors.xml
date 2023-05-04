@@ -17,9 +17,9 @@
     <color name="out_date_background_color">#E3F6FF</color>
     <color name="out_date_text_color">@color/event_tag_color</color>
 
-
     <!-- Event colors -->
     <color name="event_color">#9A9A9A</color>
     <color name="event_tag_color">#9A9A9A</color>
+    <color name="past_event_color">#D6D6D6</color>
 
 </resources>
