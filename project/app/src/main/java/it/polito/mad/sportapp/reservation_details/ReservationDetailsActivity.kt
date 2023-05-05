@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.showToasty
-import it.polito.mad.sportapp.show_reservations.ShowReservationsActivity
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -191,8 +190,8 @@ class ReservationDetailsActivity : AppCompatActivity() {
                     this,
                     "Reservation correctly deleted"
                 )
-                val intent = Intent(this, ShowReservationsActivity::class.java)
-                startActivity(intent)
+                //val intent = Intent(this, ShowReservationsActivity::class.java)
+                //startActivity(intent)
             }
             .setNegativeButton("NO") { d, _ -> d.cancel() }
             .create()

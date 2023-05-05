@@ -3,10 +3,12 @@ package it.polito.mad.sportapp.reservation_details
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.model.Repository
 import javax.inject.Inject
 
+@HiltViewModel
 class ReservationDetailsFragmentViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {

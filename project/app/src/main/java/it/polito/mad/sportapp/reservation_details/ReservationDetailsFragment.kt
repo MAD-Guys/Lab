@@ -2,31 +2,25 @@ package it.polito.mad.sportapp.reservation_details
 
 import android.content.Intent
 import android.net.Uri
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.showToasty
-import it.polito.mad.sportapp.show_reservations.ShowReservationsActivity
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-class ReservationDetailsFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = ReservationDetailsFragment()
-    }
-
-    private lateinit var viewModel: ReservationDetailsFragmentViewModel
+@AndroidEntryPoint
+class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_details) {
 
     //views
     private lateinit var qrCode: ImageView
@@ -45,13 +39,25 @@ class ReservationDetailsFragment : Fragment() {
     private lateinit var reservationTotalPrice: TextView
     private lateinit var deleteButton: Button
 
+    private lateinit var bottomNavigationBar: View
+
+    private val viewModel by viewModels<ReservationDetailsFragmentViewModel>()
+
     private var eventId: Int = -1
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        // get activity action bar
+        val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+        bottomNavigationBar = (requireActivity() as AppCompatActivity).findViewById(R.id.bottom_navigation_menu)
+
+        // change app bar's title
+        actionBar?.title = "Reservation Details"
+        bottomNavigationBar.visibility = View.GONE
+
+        // Retrieve event id
+        eventId = arguments?.getInt("id_event") ?: -1
 
         // Generate QR code
         qrCode = requireView().findViewById(R.id.QR_code)
@@ -84,25 +90,17 @@ class ReservationDetailsFragment : Fragment() {
                 initializeEquipment()
             }
         }
-        return inflater.inflate(R.layout.fragment_reservation_details, container, false)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this)[ReservationDetailsFragmentViewModel::class.java]
-        // TODO: Use the ViewModel
-
-        //TODO: How to retrieve the id number?
-        eventId = 1
-        //eventId = intent.getIntExtra("id_event", -1)
-
-
     }
 
     override fun onResume() {
         super.onResume()
         if (eventId != -1)
             viewModel.getReservationFromDb(eventId)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        bottomNavigationBar.visibility = View.VISIBLE
     }
 
     private fun retrieveViews() {
@@ -128,14 +126,23 @@ class ReservationDetailsFragment : Fragment() {
         reservationDate.text =
             viewModel.reservation.value?.date?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
         reservationStartTime.text =
-            viewModel.reservation.value?.startTime?.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
+            viewModel.reservation.value?.startTime?.format(
+                DateTimeFormatter.ofLocalizedTime(
+                    FormatStyle.SHORT
+                )
+            )
         reservationEndTime.text =
-            viewModel.reservation.value?.endTime?.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
+            viewModel.reservation.value?.endTime?.format(
+                DateTimeFormatter.ofLocalizedTime(
+                    FormatStyle.SHORT
+                )
+            )
         reservationSport.text = viewModel.reservation.value?.sportName
         reservationPlayground.text = viewModel.reservation.value?.playgroundName
         reservationSportCenter.text = viewModel.reservation.value?.sportCenterName
         reservationSportCenterAddress.text = viewModel.reservation.value?.location
-        reservationTotalPrice.text = "€ " + String.format("%.2f", viewModel.reservation.value?.totalPrice)
+        reservationTotalPrice.text =
+            "€ " + String.format("%.2f", viewModel.reservation.value?.totalPrice)
     }
 
     private fun initializeEquipment() {
@@ -189,8 +196,8 @@ class ReservationDetailsFragment : Fragment() {
                     requireContext(),
                     "Reservation correctly deleted"
                 )
-                val intent = Intent(requireContext(), ShowReservationsActivity::class.java)
-                startActivity(intent)
+                //val intent = Intent(requireContext(), ShowReservationsActivity::class.java)
+                //startActivity(intent)
             }
             .setNegativeButton("NO") { d, _ -> d.cancel() }
             .create()

@@ -23,17 +23,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.sportapp"
         tools:targetApi="31">
+
         <activity
-            android:name=".EditEquipmentActivity"
-            android:exported="false" />
-        <activity
-            android:name=".events_list_view.EventsListViewActivity"
-            android:exported="false" />
-        <activity
-            android:name=".playground_availabilities.PlaygroundAvailabilitiesActivity"
-            android:exported="false" />
-        <activity
-            android:name=".show_reservations.ShowReservationsActivity"
+            android:name=".SportAppActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,6 +33,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".events_list_view.EventsListViewActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".playground_availabilities.PlaygroundAvailabilitiesActivity"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -55,14 +55,19 @@
         <activity
             android:name=".profile.EditProfileActivity"
             android:exported="false" />
+
         <activity
             android:name=".profile.ShowProfileActivity"
             android:exported="true" />
+
         <activity
             android:name=".reservation_details.ReservationDetailsActivity"
             android:exported="true" />
-        <activity android:name=".reservation_details.EditEquipmentActivity"
+
+        <activity
+            android:name=".reservation_details.EditEquipmentActivity"
             android:exported="true" />
+
     </application>
 
 </manifest>

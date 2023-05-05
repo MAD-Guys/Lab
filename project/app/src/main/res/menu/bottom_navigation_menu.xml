@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="@string/reservations"
+        android:id="@+id/calendar"
+        android:icon="@drawable/baseline_calendar_month_24"/>
+    <item
+        android:title="@string/playgrounds"
+        android:id="@+id/users"
+        android:icon="@drawable/baseline_stadium_24"/>
+    <item
+        android:title="@string/profile"
+        android:id="@+id/profile"
+        android:icon="@drawable/baseline_person_24_bottom_navigation_menu"/>
+</menu>

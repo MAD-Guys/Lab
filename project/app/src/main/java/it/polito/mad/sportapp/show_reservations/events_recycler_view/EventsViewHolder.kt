@@ -1,17 +1,16 @@
 package it.polito.mad.sportapp.show_reservations.events_recycler_view
 
-import android.content.Intent
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
+import androidx.core.os.bundleOf
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.formatDuration
-import it.polito.mad.sportapp.reservation_details.ReservationDetailsActivity
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -77,12 +76,12 @@ internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         // set item click listener
         itemLayout.setOnClickListener {
 
-            //create the intent
-            val intent = Intent(it.context, ReservationDetailsActivity::class.java)
-            intent.putExtra("id_event", event.id)
+            val navController = Navigation.findNavController(itemView)
 
-            //start the Reservation Details Activity
-            startActivity(it.context, intent, null)
+            val bundle = bundleOf("id_event" to event.id)
+
+            // navigate to reservation details fragment
+            navController.navigate(R.id.action_showReservationsFragment_to_reservationDetailsFragment, bundle)
         }
 
     }

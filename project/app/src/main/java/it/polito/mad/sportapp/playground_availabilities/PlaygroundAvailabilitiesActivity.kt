@@ -15,7 +15,6 @@ import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.navigateTo
 import it.polito.mad.sportapp.playground_availabilities.recycler_view.PlaygroundAvailabilitiesAdapter
 import it.polito.mad.sportapp.profile.ShowProfileActivity
-import it.polito.mad.sportapp.show_reservations.ShowReservationsActivity
 
 
 @AndroidEntryPoint
@@ -71,7 +70,7 @@ class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when(item.itemId) {
         // detect user selection
-        R.id.show_reservations_button -> navigateTo(ShowReservationsActivity::class.java)
+        //R.id.show_reservations_button -> navigateTo(ShowReservationsActivity::class.java)
         R.id.show_profile_button -> navigateTo(ShowProfileActivity::class.java)
         else -> super.onOptionsItemSelected(item)
     }

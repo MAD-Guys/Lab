@@ -16,7 +16,6 @@ import it.polito.mad.sportapp.navigateTo
 import it.polito.mad.sportapp.playground_availabilities.PlaygroundAvailabilitiesActivity
 import it.polito.mad.sportapp.setProfilePictureSize
 import it.polito.mad.sportapp.showToasty
-import it.polito.mad.sportapp.show_reservations.ShowReservationsActivity
 import org.json.JSONObject
 
 class ShowProfileActivity : AppCompatActivity() {
@@ -213,7 +212,7 @@ class ShowProfileActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         // detect which item has been selected and perform corresponding action
         R.id.edit_button -> navigateTo(EditProfileActivity::class.java)
-        R.id.show_reservations_button -> navigateTo(ShowReservationsActivity::class.java)
+        //R.id.show_reservations_button -> navigateTo(ShowReservationsActivity::class.java)
         R.id.playground_availabilities_button -> navigateTo(PlaygroundAvailabilitiesActivity::class.java)
         else -> super.onOptionsItemSelected(item)
     }

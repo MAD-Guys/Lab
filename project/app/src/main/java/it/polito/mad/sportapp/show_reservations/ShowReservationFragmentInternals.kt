@@ -5,6 +5,7 @@ import android.os.Build
 import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.ContextCompat.getColor
 import androidx.core.view.children
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
@@ -16,15 +17,15 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
-import java.util.*
+import java.util.Locale
 
 /* Internals functions related to the Show Reservations Activity */
 
 // initialize month buttons
-internal fun ShowReservationsActivity.monthButtonsInit() {
+internal fun ShowReservationsFragment.monthButtonsInit() {
 
     // initialize previous / next month buttons and their listeners
-    previousMonthButton = findViewById(R.id.previous_month_button)
+    previousMonthButton = requireView().findViewById(R.id.previous_month_button)
 
     previousMonthButton.setOnClickListener {
         calendarView.findFirstVisibleMonth()?.let { month ->
@@ -33,7 +34,7 @@ internal fun ShowReservationsActivity.monthButtonsInit() {
         }
     }
 
-    nextMonthButton = findViewById(R.id.next_month_button)
+    nextMonthButton = requireView().findViewById(R.id.next_month_button)
 
     nextMonthButton.setOnClickListener {
         calendarView.findFirstVisibleMonth()?.let { month ->
@@ -45,14 +46,14 @@ internal fun ShowReservationsActivity.monthButtonsInit() {
 
 // event adapter for date
 @SuppressLint("NotifyDataSetChanged")
-fun ShowReservationsActivity.updateAdapterForDate(date: LocalDate?) {
+fun ShowReservationsFragment.updateAdapterForDate(date: LocalDate?) {
     eventsAdapter.events.clear()
     eventsAdapter.events.addAll(vm.userEvents.value?.get(date).orEmpty())
     eventsAdapter.notifyDataSetChanged()
 }
 
 // initialize calendar information
-internal fun ShowReservationsActivity.calendarInit() {
+internal fun ShowReservationsFragment.calendarInit() {
 
     val currentDate = LocalDate.now()
 
@@ -84,18 +85,18 @@ internal fun ShowReservationsActivity.calendarInit() {
                 val events = vm.userEvents.value?.get(data.date)
 
                 // set background color and text for month dates
-                dayRelativeLayout.setBackgroundColor(getColor(R.color.month_date_background))
-                dayTextView.setTextColor(getColor(R.color.month_date_text_color))
+                dayRelativeLayout.setBackgroundColor(getColor(context!!, R.color.month_date_background))
+                dayTextView.setTextColor(getColor(context!!, R.color.month_date_text_color))
 
                 // mark current date
                 if (data.date == currentDate) {
-                    dayTextView.setTextColor(getColor(R.color.current_date_text_color))
+                    dayTextView.setTextColor(getColor(context!!, R.color.current_date_text_color))
                     dayRelativeLayout.setBackgroundResource(R.drawable.current_day_selected_bg)
                 }
 
                 // mark selected date
                 if (data.date != currentDate && data.date == vm.selectedDate.value) {
-                    dayTextView.setTextColor(getColor(R.color.selected_date_text_color))
+                    dayTextView.setTextColor(getColor(context!!, R.color.selected_date_text_color))
                     dayRelativeLayout.setBackgroundResource(R.drawable.day_selected_bg)
                 }
 
@@ -118,8 +119,8 @@ internal fun ShowReservationsActivity.calendarInit() {
             }
             // set background color and text for out dates
             else {
-                dayRelativeLayout.setBackgroundColor(getColor(R.color.out_date_background_color))
-                dayTextView.setTextColor(getColor(R.color.out_date_text_color))
+                dayRelativeLayout.setBackgroundColor(getColor(context!!, R.color.out_date_background_color))
+                dayTextView.setTextColor(getColor(context!!, R.color.out_date_text_color))
             }
 
         }
@@ -150,6 +151,8 @@ internal fun ShowReservationsActivity.calendarInit() {
 
         //update calendar
         calendarView.notifyMonthChanged(it)
+        calendarView.notifyMonthChanged(it.minusMonths(1))
+        calendarView.notifyMonthChanged(it.plusMonths(1))
     }
 
     // initialize selected date live data variable
