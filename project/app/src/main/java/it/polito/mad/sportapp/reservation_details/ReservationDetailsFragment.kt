@@ -16,6 +16,8 @@ import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.showToasty
+import java.time.LocalDate
+import java.time.chrono.ChronoLocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -143,6 +145,11 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         reservationSportCenterAddress.text = viewModel.reservation.value?.location
         reservationTotalPrice.text =
             "€ " + String.format("%.2f", viewModel.reservation.value?.totalPrice)
+
+        val currentDate = LocalDate.now()
+        if(viewModel.reservation.value?.date?.isBefore(currentDate) == false){
+            deleteButton.visibility = Button.VISIBLE
+        }
     }
 
     private fun initializeEquipment() {
