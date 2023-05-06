@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".playground_details.PlaygroundDetailsFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/playgroundImage"
+                android:layout_width="match_parent"
+                android:layout_height="256dp"
+                tools:src="@tools:sample/backgrounds/scenic" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="16dp"
+                >
+
+                <LinearLayout
+                    android:id="@+id/playgroundInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <RatingBar
+                        android:id="@+id/overallRating"
+                        style="@style/Widget.AppCompat.RatingBar.Indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:isIndicator="true"
+                        android:progressTint="@color/primary_orange"
+                        android:rating="3.5" />
+
+
+                    <TextView
+                        android:id="@+id/playgroundName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:includeFontPadding="false"
+                        android:text="Playground 1"
+                        android:textColor="@color/black"
+                        android:textSize="32sp"
+                        android:textStyle="bold"
+                        android:paddingTop="8dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/sportCenterName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:includeFontPadding="false"
+                        android:text="Awesome Sport Center"
+                        android:textColor="@color/light_grey"
+                        android:textSize="24sp"
+                        android:paddingBottom="8dp"
+                        />
+
+                    <!-- Address -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4sp"
+                        android:orientation="horizontal">
+
+                        <!-- icon -->
+                        <ImageView
+                            android:id="@+id/location_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:contentDescription="@string/image_location_content_description"
+                            app:srcCompat="@drawable/baseline_location_on_24" />
+
+                        <TextView
+                            android:id="@+id/playgroundAddress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="4sp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
+                            android:text="Via Roma 1, Turin"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/default_text_size"
+                            tools:ignore="HardcodedText" />
+                    </LinearLayout>
+
+                    <!-- Opening time -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4sp"
+                        android:orientation="horizontal">
+
+                        <!-- icon -->
+                        <ImageView
+                            android:id="@+id/time_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:contentDescription="@string/image_location_content_description"
+                            app:srcCompat="@drawable/baseline_access_time_24"
+                            app:tint="@color/black" />
+
+                        <TextView
+                            android:id="@+id/playgroundOpeningTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="4sp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
+                            android:text="9:00"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/default_text_size"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="4sp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
+                            android:text="-"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/default_text_size"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/playgroundClosingTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="4sp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
+                            android:text="19:00"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/default_text_size"
+                            tools:ignore="HardcodedText" />
+                    </LinearLayout>
+
+                    <!-- Price -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4sp"
+                        android:orientation="horizontal">
+
+                        <!-- icon -->
+                        <ImageView
+                            android:id="@+id/price_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            app:srcCompat="@drawable/baseline_euro_symbol_24" />
+
+                        <TextView
+                            android:id="@+id/playgroundPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="4sp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
+                            android:text="20"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/default_text_size"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="4sp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
+                            android:text="€/h"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/default_text_size"
+                            tools:ignore="HardcodedText" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <!-- Directions Button -->
+                        <Button
+                            android:id="@+id/buttonAddReservation"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="10sp"
+                            android:layout_marginEnd="8sp"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/primary_orange"
+                            android:contentDescription="Add reservation"
+                            android:fontFamily="@font/poppins_bold"
+                            android:includeFontPadding="false"
+                            android:paddingTop="10.5dp"
+                            android:paddingBottom="10.5dp"
+                            android:text="Book now"
+                            android:textAlignment="center"
+                            android:textAllCaps="false"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                            android:textColor="@color/button_text_color"
+                            android:textSize="18sp"
+                            app:icon="@drawable/baseline_post_add_24"
+                            app:iconGravity="textStart"
+                            app:iconTint="@color/button_text_color" />
+
+                        <Button
+                            android:id="@+id/buttonDirections"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="10sp"
+                            android:layout_marginStart="8sp"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/secondary_blue"
+                            android:contentDescription="Search on Google Maps"
+                            android:fontFamily="@font/poppins_bold"
+                            android:includeFontPadding="false"
+                            android:paddingTop="10.5dp"
+                            android:paddingBottom="10.5dp"
+                            android:text="Directions"
+                            android:textAlignment="center"
+                            android:textAllCaps="false"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textColor="@color/button_text_color"
+                            android:textSize="18sp"
+                            app:icon="@drawable/baseline_directions_24"
+                            app:iconGravity="textStart"
+                            app:iconTint="@color/button_text_color"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/button_add_friend"
+                            app:layout_constraintTop_toBottomOf="@+id/user_location_wrapper" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider"
+                        android:layout_marginVertical="8dp"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/sportSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Sport title -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8sp"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:includeFontPadding="false"
+                        android:text="@string/sports_title"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/section_title_text_size" />
+
+                    <HorizontalScrollView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:id="@+id/playgroundSportsContainer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <!-- add sports programmatically here -->
+
+                        </LinearLayout>
+                    </HorizontalScrollView>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider"
+                        android:layout_marginVertical="8dp"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/reviewSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Review title -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8sp"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:includeFontPadding="false"
+                        android:text="Reviews"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/section_title_text_size" />
+
+                    <!-- Quality -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4sp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="4sp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
+                            android:text="Quality: "
+                            android:textColor="@color/black"
+                            android:textSize="20sp"
+                            tools:ignore="HardcodedText" />
+
+                        <RatingBar
+                            android:id="@+id/overallQualityRatingBar"
+                            style="@style/Widget.AppCompat.RatingBar.Indicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:progressTint="@color/primary_orange"
+                            android:rating="4.5" />
+
+                    </LinearLayout>
+
+                    <!-- Facilities -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4sp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="4sp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
+                            android:text="Facilities: "
+                            android:textColor="@color/black"
+                            android:textSize="20sp"
+                            tools:ignore="HardcodedText" />
+
+                        <RatingBar
+                            android:id="@+id/overallFacilitiesRatingBar"
+                            style="@style/Widget.AppCompat.RatingBar.Indicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:progressTint="@color/primary_orange"
+                            android:rating="2.5" />
+                    </LinearLayout>
+
+                    <!-- Your review -->
+                    <androidx.fragment.app.FragmentContainerView
+                        android:id="@+id/yourReviewContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp"
+                        />
+
+                    <!-- Reviews list -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Sports -->
+
+            <!-- Reviews -->
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>
