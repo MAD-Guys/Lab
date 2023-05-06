@@ -3,11 +3,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:title="@string/reservations"
-        android:id="@+id/calendar"
+        android:id="@+id/reservations"
         android:icon="@drawable/baseline_calendar_month_24"/>
     <item
         android:title="@string/playgrounds"
-        android:id="@+id/users"
+        android:id="@+id/playgrounds"
         android:icon="@drawable/baseline_stadium_24"/>
     <item
         android:title="@string/profile"

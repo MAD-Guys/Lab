@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:clickable="true"
     android:focusable="true"
-    tools:context=".playground_availabilities.PlaygroundAvailabilitiesActivity">
+    tools:context=".playground_availabilities.PlaygroundAvailabilitiesFragment">
 
     <!-- Month bar -->
     <com.google.android.material.appbar.AppBarLayout

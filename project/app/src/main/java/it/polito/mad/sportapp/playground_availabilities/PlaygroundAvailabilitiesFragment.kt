@@ -2,23 +2,20 @@ package it.polito.mad.sportapp.playground_availabilities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import androidx.activity.viewModels
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.kizitonwose.calendar.view.CalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.Sport
-import it.polito.mad.sportapp.navigateTo
 import it.polito.mad.sportapp.playground_availabilities.recycler_view.PlaygroundAvailabilitiesAdapter
-import it.polito.mad.sportapp.profile.ShowProfileActivity
 
 
 @AndroidEntryPoint
-class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
+class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabilities_view) {
     internal lateinit var calendarView: CalendarView
 
     // View Model
@@ -31,9 +28,14 @@ class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
     // recycler view adapter
     internal lateinit var playgroundAvailabilitiesAdapter: PlaygroundAvailabilitiesAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_playground_availabilities)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // retrieve activity action bar
+        val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+
+        // change bar's title
+        actionBar?.title = "Playground availabilities"
 
         /* initialize calendar view */
         this.initCalendar()
@@ -56,24 +58,4 @@ class PlaygroundAvailabilitiesActivity : AppCompatActivity() {
         /* playgrounds availabilities recycler view */
         this.setupAvailablePlaygroundsRecyclerView()
     }
-
-    /** Create the top bar menu */
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // inflate the menu
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.playground_availabilities_menu, menu)
-
-        // change app bar's title
-        supportActionBar?.title = "Playground availabilities"
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when(item.itemId) {
-        // detect user selection
-        //R.id.show_reservations_button -> navigateTo(ShowReservationsActivity::class.java)
-        R.id.show_profile_button -> navigateTo(ShowProfileActivity::class.java)
-        else -> super.onOptionsItemSelected(item)
-    }
-
-
 }

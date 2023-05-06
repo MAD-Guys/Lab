@@ -13,7 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.events_list_view.events_list_recycler_view.EventsListAdapter
 import it.polito.mad.sportapp.navigateTo
-import it.polito.mad.sportapp.playground_availabilities.PlaygroundAvailabilitiesActivity
+import it.polito.mad.sportapp.playground_availabilities.PlaygroundAvailabilitiesFragment
 import it.polito.mad.sportapp.profile.ShowProfileActivity
 import java.time.LocalDate
 
@@ -89,7 +89,7 @@ class EventsListViewActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         // detect which item has been selected and perform corresponding action
         R.id.show_profile_button -> navigateTo(ShowProfileActivity::class.java)
-        R.id.playground_availabilities_button -> navigateTo(PlaygroundAvailabilitiesActivity::class.java)
+        R.id.playground_availabilities_button -> navigateTo(PlaygroundAvailabilitiesFragment::class.java)
         R.id.show_reservations_button -> {
             this.finish()
             true

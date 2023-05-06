@@ -13,7 +13,7 @@ import com.google.android.material.chip.ChipGroup
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.getPictureFromInternalStorage
 import it.polito.mad.sportapp.navigateTo
-import it.polito.mad.sportapp.playground_availabilities.PlaygroundAvailabilitiesActivity
+import it.polito.mad.sportapp.playground_availabilities.PlaygroundAvailabilitiesFragment
 import it.polito.mad.sportapp.setProfilePictureSize
 import it.polito.mad.sportapp.showToasty
 import org.json.JSONObject
@@ -213,7 +213,7 @@ class ShowProfileActivity : AppCompatActivity() {
         // detect which item has been selected and perform corresponding action
         R.id.edit_button -> navigateTo(EditProfileActivity::class.java)
         //R.id.show_reservations_button -> navigateTo(ShowReservationsActivity::class.java)
-        R.id.playground_availabilities_button -> navigateTo(PlaygroundAvailabilitiesActivity::class.java)
+        R.id.playground_availabilities_button -> navigateTo(PlaygroundAvailabilitiesFragment::class.java)
         else -> super.onOptionsItemSelected(item)
     }
 }

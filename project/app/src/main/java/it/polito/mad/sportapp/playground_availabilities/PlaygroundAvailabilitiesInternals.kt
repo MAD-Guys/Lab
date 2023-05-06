@@ -30,9 +30,9 @@ import kotlin.math.min
 
 
 /* calendar init functions */
-internal fun PlaygroundAvailabilitiesActivity.initCalendar() {
+internal fun PlaygroundAvailabilitiesFragment.initCalendar() {
     /* retrieve the calendar view */
-    calendarView = findViewById(R.id.calendar_view)
+    calendarView = requireView().findViewById(R.id.calendar_view)
 
     val daysOfWeek = daysOfWeek(firstDayOfWeek=DayOfWeek.MONDAY)
 
@@ -52,7 +52,7 @@ internal fun PlaygroundAvailabilitiesActivity.initCalendar() {
     }
 }
 
-private fun PlaygroundAvailabilitiesActivity.initCalendarHeader(daysOfWeek: List<DayOfWeek>) {
+private fun PlaygroundAvailabilitiesFragment.initCalendarHeader(daysOfWeek: List<DayOfWeek>) {
     /* initialize calendar header with days of week */
     calendarView.monthHeaderBinder = object : MonthHeaderFooterBinder<MonthViewContainer> {
         override fun create(view: View) = MonthViewContainer(view as ViewGroup)
@@ -72,10 +72,10 @@ private fun PlaygroundAvailabilitiesActivity.initCalendarHeader(daysOfWeek: List
     }
 }
 
-private fun PlaygroundAvailabilitiesActivity.initCalendarDays() {
+private fun PlaygroundAvailabilitiesFragment.initCalendarDays() {
     calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
         override fun create(view: View) =
-            DayViewContainer(this@initCalendarDays, view,
+            DayViewContainer(requireContext(), view,
                 viewModel.selectedDate, viewModel::setSelectedDate)
 
         override fun bind(container: DayViewContainer, data: CalendarDay) {
@@ -110,9 +110,9 @@ private fun PlaygroundAvailabilitiesActivity.initCalendarDays() {
     }
 }
 
-internal fun PlaygroundAvailabilitiesActivity.initCalendarMonthButtons() {
-    val previousMonthButton = findViewById<ImageView>(R.id.previous_month_button)
-    val nextMonthButton = findViewById<ImageView>(R.id.next_month_button)
+internal fun PlaygroundAvailabilitiesFragment.initCalendarMonthButtons() {
+    val previousMonthButton = requireView().findViewById<ImageView>(R.id.previous_month_button)
+    val nextMonthButton = requireView().findViewById<ImageView>(R.id.next_month_button)
 
     previousMonthButton.setOnClickListener {
         viewModel.currentMonth.value?.let {
@@ -135,10 +135,10 @@ internal fun PlaygroundAvailabilitiesActivity.initCalendarMonthButtons() {
 }
 
 /* selected sport spinner */
-internal fun PlaygroundAvailabilitiesActivity.initSelectedSportSpinner() {
+internal fun PlaygroundAvailabilitiesFragment.initSelectedSportSpinner() {
     // create the spinner adapter
     selectedSportSpinnerAdapter = ArrayAdapter(
-        this,
+        requireContext(),
         android.R.layout.simple_spinner_item,
         viewModel.sports.value ?: mutableListOf()
     ).also {
@@ -146,7 +146,7 @@ internal fun PlaygroundAvailabilitiesActivity.initSelectedSportSpinner() {
     }
 
     // mount the adapter in the selected sport spinner
-    selectedSportSpinner = findViewById(R.id.selected_sport_spinner)
+    selectedSportSpinner = requireView().findViewById(R.id.selected_sport_spinner)
     selectedSportSpinner.adapter = selectedSportSpinnerAdapter
 
     // specify the spinner callback to call at each user selection
@@ -166,9 +166,9 @@ internal fun PlaygroundAvailabilitiesActivity.initSelectedSportSpinner() {
 
 /* observers init functions */
 @SuppressLint("NotifyDataSetChanged")
-internal fun PlaygroundAvailabilitiesActivity.initMonthAndDateObservers() {
+internal fun PlaygroundAvailabilitiesFragment.initMonthAndDateObservers() {
     /* months view model observers */
-    val monthLabel = findViewById<TextView>(R.id.month_label)
+    val monthLabel = requireView().findViewById<TextView>(R.id.month_label)
 
     viewModel.currentMonth.observe(this) { newMonth ->
         // change month view
@@ -183,7 +183,7 @@ internal fun PlaygroundAvailabilitiesActivity.initMonthAndDateObservers() {
     }
 
     /* dates view model observers */
-    val selectedDateLabel = findViewById<TextView>(R.id.selected_date_label)
+    val selectedDateLabel = requireView().findViewById<TextView>(R.id.selected_date_label)
 
     viewModel.selectedDate.observe(this) {
         // update calendar selected date
@@ -208,7 +208,7 @@ internal fun PlaygroundAvailabilitiesActivity.initMonthAndDateObservers() {
 }
 
 @SuppressLint("NotifyDataSetChanged")
-internal fun PlaygroundAvailabilitiesActivity.initAvailablePlaygroundsObserver() {
+internal fun PlaygroundAvailabilitiesFragment.initAvailablePlaygroundsObserver() {
     /* playground availabilities observer to change dates' colors */
     viewModel.availablePlaygroundsPerSlot.observe(this) {
         // update calendar dates' dots
@@ -223,7 +223,7 @@ internal fun PlaygroundAvailabilitiesActivity.initAvailablePlaygroundsObserver()
     }
 }
 
-internal fun PlaygroundAvailabilitiesActivity.initSelectedSportObservers() {
+internal fun PlaygroundAvailabilitiesFragment.initSelectedSportObservers() {
     // sports observer
     viewModel.sports.observe(this) {
         // add new sports list
@@ -244,8 +244,9 @@ internal fun PlaygroundAvailabilitiesActivity.initSelectedSportObservers() {
 }
 
 /* Playground availabilities recycler view */
-internal fun PlaygroundAvailabilitiesActivity.setupAvailablePlaygroundsRecyclerView() {
-    val playgroundAvailabilitiesRecyclerView = findViewById<RecyclerView>(R.id.playground_availabilities_rv)
+internal fun PlaygroundAvailabilitiesFragment.setupAvailablePlaygroundsRecyclerView() {
+    val playgroundAvailabilitiesRecyclerView =
+        requireView().findViewById<RecyclerView>(R.id.playground_availabilities_rv)
 
     // init adapter
     playgroundAvailabilitiesAdapter = PlaygroundAvailabilitiesAdapter(
@@ -257,7 +258,7 @@ internal fun PlaygroundAvailabilitiesActivity.setupAvailablePlaygroundsRecyclerV
     // init recycler view
     playgroundAvailabilitiesRecyclerView.apply {
         layoutManager = LinearLayoutManager(
-            this@setupAvailablePlaygroundsRecyclerView, RecyclerView.VERTICAL, false)
+            requireContext(), RecyclerView.VERTICAL, false)
         adapter = playgroundAvailabilitiesAdapter
     }
 }
@@ -265,7 +266,7 @@ internal fun PlaygroundAvailabilitiesActivity.setupAvailablePlaygroundsRecyclerV
 /* utils */
 
 /** Compute availability percentage as the percentage of slots with at least one available playground */
-private fun PlaygroundAvailabilitiesActivity.getAvailabilityPercentageOf(date: LocalDate): Float {
+private fun PlaygroundAvailabilitiesFragment.getAvailabilityPercentageOf(date: LocalDate): Float {
     val availablePlaygrounds = viewModel.getAvailablePlaygroundsOn(date).mapValues {
         (_, playgrounds) -> playgrounds.filter { it.available }
     }

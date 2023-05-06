@@ -39,7 +39,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".playground_availabilities.PlaygroundAvailabilitiesActivity"
+            android:name=".playground_availabilities.PlaygroundAvailabilitiesFragment"
             android:exported="false" />
 
         <provider

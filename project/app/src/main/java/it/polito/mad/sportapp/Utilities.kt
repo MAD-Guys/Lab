@@ -14,6 +14,7 @@ import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.WindowMetrics
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -474,5 +475,19 @@ internal fun formatDuration(duration: Long): String {
         minutes == 0L -> "$hours" + "h"
         else -> "$hours" + "h" + " $minutes" + "m"
     }
+}
+
+internal fun toastyInit() {
+    // configure toasts appearance
+    Toasty.Config.getInstance()
+        .allowQueue(true) // optional (prevents several Toastys from queuing)
+        .setGravity(
+            Gravity.TOP or Gravity.CENTER_HORIZONTAL,
+            0,
+            100
+        ) // optional (set toast gravity, offsets are optional)
+        .supportDarkTheme(true) // optional (whether to support dark theme or not)
+        .setRTL(true) // optional (icon is on the right)
+        .apply() // required
 }
 

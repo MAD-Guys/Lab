@@ -24,6 +24,11 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         // set sport app content view
         setContentView(R.layout.activity_sport_app)
 
+        // set english as default language
+        setApplicationLocale(this, "en", "EN")
+
+        /* bottom bar */
+
         // initialize bottom navigation view
         bottomNavigationView = findViewById(R.id.bottom_navigation_menu)
 
@@ -33,45 +38,37 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
                     .findFragmentById(R.id.fragment_container_view) as NavHostFragment
                 ).navController
 
-        // configure toasts appearance
-        Toasty.Config.getInstance()
-            .allowQueue(true) // optional (prevents several Toastys from queuing)
-            .setGravity(
-                Gravity.TOP or Gravity.CENTER_HORIZONTAL,
-                0,
-                100
-            ) // optional (set toast gravity, offsets are optional)
-            .supportDarkTheme(true) // optional (whether to support dark theme or not)
-            .setRTL(true) // optional (icon is on the right)
-            .apply() // required
-
-        // set english as default language
-        setApplicationLocale(this, "en", "EN")
-
         // set bottom navigation bar listener
         bottomNavigationView.setOnItemSelectedListener(this)
+
+        // configure toasts appearance
+        toastyInit()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-
         when (item.itemId) {
-            R.id.calendar -> {
+            R.id.reservations -> {
                 navController.navigate(R.id.showReservationsFragment)
-                bottomNavigationView.visibility = NavigationBarView.VISIBLE
             }
 
-            R.id.users -> {}
+            R.id.playgrounds -> {
+                navController.navigate(R.id.playgroundAvailabilitiesFragment)
+            }
 
-            R.id.profile -> {}
+            R.id.profile -> {
+                // TODO
+            }
+            else -> throw Exception("An unexpected bottom bar item has been pressed")
         }
 
+        bottomNavigationView.visibility = NavigationBarView.VISIBLE
+
         return true
-    }
+ }
 
     /* app menu */
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-
         // inflate and render the menu
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.sport_app_menu, menu)
