@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".playground_details.PlaygroundDetailsFragment">
+    tools:context=".playground_details.PlaygroundDetailsFragment"
+   >
 
     <ScrollView
         android:layout_width="match_parent"
@@ -26,8 +27,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingHorizontal="16dp"
-                android:paddingTop="16dp"
-                >
+                android:paddingTop="16dp">
 
                 <LinearLayout
                     android:id="@+id/playgroundInfo"
@@ -56,8 +56,7 @@
                         android:textColor="@color/black"
                         android:textSize="32sp"
                         android:textStyle="bold"
-                        android:paddingTop="8dp"
-                        />
+                        android:paddingTop="8dp" />
 
                     <TextView
                         android:id="@+id/sportCenterName"
@@ -68,8 +67,7 @@
                         android:text="Awesome Sport Center"
                         android:textColor="@color/light_grey"
                         android:textSize="24sp"
-                        android:paddingBottom="8dp"
-                        />
+                        android:paddingBottom="8dp" />
 
                     <!-- Address -->
                     <LinearLayout
@@ -203,7 +201,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <!-- Directions Button -->
+
                         <Button
                             android:id="@+id/buttonAddReservation"
                             android:layout_width="0dp"
@@ -227,6 +225,7 @@
                             app:iconGravity="textStart"
                             app:iconTint="@color/button_text_color" />
 
+                        <!-- Directions Button -->
                         <Button
                             android:id="@+id/buttonDirections"
                             android:layout_width="0dp"
@@ -258,8 +257,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="?android:attr/listDivider"
-                        android:layout_marginVertical="8dp"
-                        />
+                        android:layout_marginVertical="8dp" />
 
                 </LinearLayout>
 
@@ -299,8 +297,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="?android:attr/listDivider"
-                        android:layout_marginVertical="8dp"
-                        />
+                        android:layout_marginVertical="8dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -382,13 +379,12 @@
                         android:id="@+id/yourReviewContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingVertical="8dp"
-                        />
+                        android:paddingVertical="8dp" />
 
                     <!-- Reviews list -->
                     <androidx.recyclerview.widget.RecyclerView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="wrap_content" />
 
 
                 </LinearLayout>
