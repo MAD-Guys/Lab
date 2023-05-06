@@ -69,6 +69,36 @@
                         android:textSize="24sp"
                         android:paddingBottom="8dp" />
 
+                    <!-- Sport -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4sp"
+                        android:orientation="horizontal">
+
+                        <!-- icon -->
+                        <ImageView
+                            android:id="@+id/sport_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:contentDescription="@string/image_location_content_description"
+                            app:srcCompat="@drawable/baseline_sports_24" />
+
+                        <TextView
+                            android:id="@+id/playgroundSport"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="4sp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
+                            android:text="Basketball"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/default_text_size"
+                            tools:ignore="HardcodedText" />
+                    </LinearLayout>
+
                     <!-- Address -->
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -259,45 +289,6 @@
                         android:background="?android:attr/listDivider"
                         android:layout_marginVertical="8dp" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/sportSection"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <!-- Sport title -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8sp"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:includeFontPadding="false"
-                        android:text="@string/sports_title"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/section_title_text_size" />
-
-                    <HorizontalScrollView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                        <LinearLayout
-                            android:id="@+id/playgroundSportsContainer"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <!-- add sports programmatically here -->
-
-                        </LinearLayout>
-                    </HorizontalScrollView>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="?android:attr/listDivider"
-                        android:layout_marginVertical="8dp" />
                 </LinearLayout>
 
                 <LinearLayout
