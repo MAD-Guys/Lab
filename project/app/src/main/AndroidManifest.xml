@@ -34,14 +34,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".events_list_view.EventsListViewActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".playground_availabilities.PlaygroundAvailabilitiesFragment"
-            android:exported="false" />
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="it.polito.mad.sportapp.fileprovider"

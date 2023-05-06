@@ -3,7 +3,6 @@ package it.polito.mad.sportapp.reservation_details
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
@@ -12,12 +11,15 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.showToasty
 import java.time.LocalDate
-import java.time.chrono.ChronoLocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -41,6 +43,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
     private lateinit var reservationTotalPrice: TextView
     private lateinit var deleteButton: Button
 
+    private lateinit var navController: NavController
     private lateinit var bottomNavigationBar: View
 
     private val viewModel by viewModels<ReservationDetailsFragmentViewModel>()
@@ -52,11 +55,19 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
 
         // get activity action bar
         val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
-        bottomNavigationBar = (requireActivity() as AppCompatActivity).findViewById(R.id.bottom_navigation_menu)
+
+        // get bottom navigation bar
+        bottomNavigationBar =
+            (requireActivity() as AppCompatActivity).findViewById(R.id.bottom_navigation_menu)
 
         // change app bar's title
         actionBar?.title = "Reservation Details"
+
+        // hide bottom navigation bar
         bottomNavigationBar.visibility = View.GONE
+
+        // initialize navigation controller
+        navController = Navigation.findNavController(view)
 
         // Retrieve event id
         eventId = arguments?.getInt("id_event") ?: -1
@@ -102,6 +113,8 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
 
     override fun onPause() {
         super.onPause()
+
+        // show bottom navigation bar
         bottomNavigationBar.visibility = View.VISIBLE
     }
 
@@ -147,7 +160,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
             "€ " + String.format("%.2f", viewModel.reservation.value?.totalPrice)
 
         val currentDate = LocalDate.now()
-        if(viewModel.reservation.value?.date?.isBefore(currentDate) == false){
+        if (viewModel.reservation.value?.date?.isBefore(currentDate) == false) {
             deleteButton.visibility = Button.VISIBLE
         }
     }
@@ -198,17 +211,34 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         AlertDialog.Builder(requireContext())
             .setMessage("Are you sure to delete this reservation?")
             .setPositiveButton("YES") { _, _ ->
-                if (viewModel.deleteReservation()) showToasty(
-                    "success",
-                    requireContext(),
-                    "Reservation correctly deleted"
-                )
-                //val intent = Intent(requireContext(), ShowReservationsActivity::class.java)
-                //startActivity(intent)
+                if (viewModel.deleteReservation()) {
+
+                    when(getCallerFragment()) {
+                        R.id.eventsListFragment -> {
+                            navController.navigate(R.id.action_reservationDetailsFragment_to_eventsListFragment)
+                        }
+                        R.id.showReservationsFragment -> {
+                            navController.navigate(R.id.action_reservationDetailsFragment_to_showReservationsFragment)
+                        }
+                    }
+
+                    showToasty(
+                        "success",
+                        requireContext(),
+                        "Reservation correctly deleted"
+                    )
+                }
             }
             .setNegativeButton("NO") { d, _ -> d.cancel() }
             .create()
             .show()
+    }
+
+    // get the caller fragment
+    private fun getCallerFragment(): Int {
+        val fm: FragmentManager = requireActivity().supportFragmentManager
+        val count = fm.backStackEntryCount - 1
+        return fm.getBackStackEntryAt(count).id
     }
 
 }

@@ -64,6 +64,8 @@ fun mockReservationDetails(): DetailedReservation {
     return res
 }
 
+
+
 fun mockAvailableEquipment(): MutableList<Equipment> {
     return mutableListOf(
         Equipment(27, "Ball", 1, 1, 3.99f, 7),

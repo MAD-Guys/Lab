@@ -9,7 +9,7 @@ import it.polito.mad.sportapp.model.Repository
 import java.time.LocalDate
 import javax.inject.Inject
 
-/* View Model related to the Events List Activity */
+/* View Model related to the Events List Fragment */
 
 @HiltViewModel
 class EventsListViewModel @Inject constructor(

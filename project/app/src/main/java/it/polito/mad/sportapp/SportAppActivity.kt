@@ -1,16 +1,15 @@
 package it.polito.mad.sportapp
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.navigation.NavigationBarView
 import dagger.hilt.android.AndroidEntryPoint
-import es.dmoral.toasty.Toasty
 
 @AndroidEntryPoint
 class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener {
@@ -43,6 +42,9 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
 
         // configure toasts appearance
         toastyInit()
+
+        // configure menu
+        menuInit()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -58,21 +60,36 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
             R.id.profile -> {
                 // TODO
             }
+
             else -> throw Exception("An unexpected bottom bar item has been pressed")
         }
 
         bottomNavigationView.visibility = NavigationBarView.VISIBLE
 
         return true
- }
+    }
 
     /* app menu */
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        // inflate and render the menu
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.sport_app_menu, menu)
+    private fun menuInit() {
+        // add menu items without overriding methods in the Activity
+        addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // inflate the menu
+                menuInflater.inflate(R.menu.sport_app_menu, menu)
+            }
 
-        return super.onCreateOptionsMenu(menu)
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.events_list_button -> {
+                        navController.navigate(R.id.action_showReservationsFragment_to_eventsListFragment)
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+        })
     }
+
 }

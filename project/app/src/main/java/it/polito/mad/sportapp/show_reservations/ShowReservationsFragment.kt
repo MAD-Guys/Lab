@@ -8,6 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.view.CalendarView
@@ -27,6 +29,9 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
     internal lateinit var legendContainer: ViewGroup
     internal lateinit var monthLabel: TextView
 
+    // navigation controller
+    internal lateinit var navController: NavController
+
     // month buttons
     internal lateinit var previousMonthButton: ImageView
     internal lateinit var nextMonthButton: ImageView
@@ -42,6 +47,12 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
 
         // change app bar's title
         actionBar?.title = "My Reservations"
+
+        // initialize navigation controller
+        navController = Navigation.findNavController(view)
+
+        // initialize menu
+        menuInit()
 
         monthButtonsInit()
 
@@ -67,7 +78,7 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
     override fun onResume() {
         super.onResume()
 
-        // update events lis
+        // update events list
         // the invocation is in the onResume method because the list of events
         // should be refreshed each time this activity is resumed
         vm.loadEventsFromDb()

@@ -3,10 +3,16 @@ package it.polito.mad.sportapp.show_reservations
 import android.annotation.SuppressLint
 import android.os.Build
 import android.view.HapticFeedbackConstants
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat.getColor
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.children
+import androidx.lifecycle.Lifecycle
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
@@ -127,7 +133,7 @@ internal fun ShowReservationsFragment.calendarInit() {
     }
 
     // initialize user events live data variable
-    vm.userEvents.observe(this) {
+    vm.userEvents.observe(viewLifecycleOwner) {
 
         // show events for the selected date if any
         vm.selectedDate.value?.let { date ->
@@ -142,7 +148,7 @@ internal fun ShowReservationsFragment.calendarInit() {
     }
 
     // initialize current month live data variable
-    vm.currentMonth.observe(this) {
+    vm.currentMonth.observe(viewLifecycleOwner) {
         val monthString = it.format(DateTimeFormatter.ofPattern("MMMM yyyy"))
         monthLabel.text = capitalizeFirstLetter(monthString)
 
@@ -156,13 +162,13 @@ internal fun ShowReservationsFragment.calendarInit() {
     }
 
     // initialize selected date live data variable
-    vm.selectedDate.observe(this) {
+    vm.selectedDate.observe(viewLifecycleOwner) {
         // update selected date
         calendarView.notifyDateChanged(it)
     }
 
     // initialize previous selected date live data variable
-    vm.previousSelectedDate.observe(this) {
+    vm.previousSelectedDate.observe(viewLifecycleOwner) {
         // update previous selected date
         calendarView.notifyDateChanged(it)
     }
@@ -192,6 +198,29 @@ internal fun ShowReservationsFragment.calendarInit() {
         calendarView.scrollToMonth(it)
     }
 
+}
+
+// manage menu item selection
+internal fun ShowReservationsFragment.menuInit() {
+    val menuHost: MenuHost = requireActivity()
+
+    menuHost.addMenuProvider(object : MenuProvider {
+        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+            menuInflater.inflate(R.menu.events_list_view_menu, menu)
+        }
+
+        override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+            // handle the menu selection
+            return when (menuItem.itemId) {
+                R.id.events_list_button -> {
+                    navController.navigate(R.id.action_showReservationsFragment_to_eventsListFragment)
+                    true
+                }
+
+                else -> false
+            }
+        }
+    }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 }
 
 // perform haptic feedback if android version is lower than 13
