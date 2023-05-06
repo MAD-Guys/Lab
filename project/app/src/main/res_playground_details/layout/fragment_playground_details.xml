@@ -366,24 +366,23 @@
                     </LinearLayout>
 
                     <!-- Your review -->
-                    <androidx.fragment.app.FragmentContainerView
+                    <LinearLayout
                         android:id="@+id/yourReviewContainer"
+
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingVertical="8dp" />
+                        android:paddingVertical="16dp"
+                        android:orientation="vertical" />
 
                     <!-- Reviews list -->
                     <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/reviews_recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
 
                 </LinearLayout>
             </LinearLayout>
-
-            <!-- Sports -->
-
-            <!-- Reviews -->
 
 
         </LinearLayout>
