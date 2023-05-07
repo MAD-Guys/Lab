@@ -1,4 +1,4 @@
-package it.polito.mad.sportapp.events_list_view
+package it.polito.mad.sportapp.show_reservations.events_list_view
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.events_list_view.events_list_recycler_view.EventsListAdapter
+import it.polito.mad.sportapp.show_reservations.events_list_view.events_list_recycler_view.EventsListAdapter
 import java.time.LocalDate
 
 @AndroidEntryPoint

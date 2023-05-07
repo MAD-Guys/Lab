@@ -1,4 +1,4 @@
-package it.polito.mad.sportapp.show_reservations.events_recycler_view
+package it.polito.mad.sportapp.show_reservations.calendar_view.events_recycler_view
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

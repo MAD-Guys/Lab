@@ -1,4 +1,4 @@
-package it.polito.mad.sportapp.events_list_view
+package it.polito.mad.sportapp.show_reservations.events_list_view
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

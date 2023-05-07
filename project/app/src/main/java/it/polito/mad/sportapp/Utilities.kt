@@ -20,6 +20,7 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import es.dmoral.toasty.Toasty
 import java.io.File
 import java.io.FileDescriptor
@@ -43,7 +44,7 @@ internal fun setApplicationLocale(baseContext: Context, language: String, countr
 /* Display utilities */
 
 /** Returns display width and display height */
-internal fun AppCompatActivity.getDisplayMeasures(): Pair<Int, Int> {
+internal fun FragmentActivity.getDisplayMeasures(): Pair<Int, Int> {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         val metrics: WindowMetrics = windowManager.currentWindowMetrics
         val displayHeight = metrics.bounds.height()
@@ -72,7 +73,7 @@ internal fun AppCompatActivity.navigateTo(activity: Class<*>): Boolean {
  *   view
  * - set the width to 1/3 of the view in landscape view
  */
-internal fun AppCompatActivity.setProfilePictureSize(
+internal fun FragmentActivity.setProfilePictureSize(
     menuHeight: Int, profilePictureContainer: ConstraintLayout,
     backgroundProfilePicture: ImageView, profilePicture: ImageView
 ) {

@@ -1,4 +1,4 @@
-package it.polito.mad.sportapp.events_list_view.events_list_recycler_view
+package it.polito.mad.sportapp.show_reservations.events_list_view.events_list_recycler_view
 
 import android.view.View
 import android.widget.LinearLayout
@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.formatDuration
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale

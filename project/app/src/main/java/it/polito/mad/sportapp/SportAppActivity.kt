@@ -52,8 +52,7 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
             true
         }
         R.id.profile -> {
-            // TODO
-            // navController.navigate(R.id.showProfileFragment)
+            navController.navigate(R.id.showProfileFragment)
             true
         }
         else -> false

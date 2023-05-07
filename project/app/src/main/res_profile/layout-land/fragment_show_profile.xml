@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_orange"
-    android:baselineAligned="false"
-    tools:context=".profile.ShowProfileActivity">
+    android:baselineAligned="false">
 
     <!-- Profile picture box
     (put a default length which will be programmatically overwritten at run time) -->
@@ -23,18 +22,18 @@
             android:layout_height="match_parent"
             android:contentDescription="@string/background_profile_picture"
             android:scaleType="centerCrop"
+            android:visibility="visible"
             app:srcCompat="@drawable/background_user_profile_picture"
-            tools:ignore="ImageContrastCheck"
-            android:visibility="visible"/>
+            tools:ignore="ImageContrastCheck" />
         <!-- profile picture -->
         <ImageView
             android:id="@+id/profile_picture"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:contentDescription="@string/profile_picture"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:contentDescription="@string/profile_picture"
             app:srcCompat="@drawable/user_profile_picture_noaplha"
             tools:ignore="ImageContrastCheck" />
 
@@ -43,8 +42,8 @@
     <!-- Profile information -->
     <ScrollView
         android:layout_width="0dp"
-        android:layout_weight="2"
         android:layout_height="wrap_content"
+        android:layout_weight="2"
         android:paddingHorizontal="16dp"
         android:scrollbars="none">
 
@@ -58,37 +57,37 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_marginBottom="4dp"
                 android:baselineAligned="false"
-                android:layout_marginBottom="4dp">
+                android:orientation="horizontal">
 
                 <!-- full name and username wrapper -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:layout_gravity="top"
                     android:layout_weight="5"
-                    android:layout_gravity="top">
+                    android:orientation="vertical">
                     <!-- full name wrapper -->
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:flexWrap="wrap"
+                        app:alignContent="stretch"
                         app:alignItems="stretch"
-                        app:alignContent="stretch">
+                        app:flexWrap="wrap">
                         <!-- first name -->
                         <TextView
                             android:id="@+id/first_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginEnd="5sp"
                             android:fontFamily="@font/poppins_semibold"
                             android:includeFontPadding="false"
                             android:text="@string/first_name"
                             android:textColor="@color/black"
                             android:textSize="30sp"
-                            android:textStyle="bold"
 
-                            android:layout_marginEnd="5sp"/>
+                            android:textStyle="bold" />
                         <!-- last name -->
                         <TextView
                             android:id="@+id/last_name"
@@ -98,9 +97,8 @@
                             android:includeFontPadding="false"
                             android:text="@string/last_name"
                             android:textColor="@color/black"
-                            android:textStyle="bold"
                             android:textSize="30sp"
-                            />
+                            android:textStyle="bold" />
                     </com.google.android.flexbox.FlexboxLayout>
 
                     <!-- username wrapper -->
@@ -124,12 +122,12 @@
                             android:id="@+id/username"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/poppins_medium"
                             android:includeFontPadding="false"
                             android:text="@string/username"
                             android:textColor="@color/light_grey"
                             android:textSize="@dimen/default_text_size"
-                            android:autoSizeTextType="uniform"
                             tools:ignore="UnusedAttribute" />
                     </LinearLayout>
                 </LinearLayout>
@@ -137,16 +135,16 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
                     android:layout_weight="4"
-                    android:orientation="vertical"
-                    android:layout_gravity="bottom">
+                    android:orientation="vertical">
                     <!-- gender, age, location info wrapper -->
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:layout_gravity="start|center_vertical"
-                        android:layout_marginStart="5sp">
+                        android:layout_marginStart="5sp"
+                        android:orientation="vertical">
                         <!-- User sex and age information -->
                         <LinearLayout
                             android:id="@+id/user_sex_and_age_wrapper"
@@ -237,17 +235,17 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_gravity="center"
                         android:layout_marginTop="5sp"
+                        android:orientation="horizontal"
                         android:visibility="gone">
                         <!-- Add Friend Button -->
                         <Button
                             android:id="@+id/button_add_friend"
                             android:layout_width="0dp"
                             android:layout_height="60sp"
-                            android:layout_weight="1"
                             android:layout_marginEnd="12sp"
+                            android:layout_weight="1"
                             android:contentDescription="@string/add_friend_button_description"
                             android:paddingTop="10.5sp"
                             android:paddingBottom="10.5sp"
@@ -297,12 +295,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8sp"
                     android:fontFamily="@font/poppins_semibold"
+                    android:includeFontPadding="false"
                     android:text="@string/sports_title"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/section_title_text_size"
-                    android:includeFontPadding="false"
-                    android:layout_marginBottom="8sp"/>
+                    android:textSize="@dimen/section_title_text_size" />
 
                 <!-- Sports Pills -->
                 <com.google.android.material.chip.ChipGroup
@@ -335,12 +333,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8sp"
                     android:fontFamily="@font/poppins_semibold"
+                    android:includeFontPadding="false"
                     android:text="@string/bio_title"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/section_title_text_size"
-                    android:includeFontPadding="false"
-                    android:layout_marginBottom="8sp"/>
+                    android:textSize="@dimen/section_title_text_size" />
 
                 <!-- bio -->
                 <TextView
@@ -348,10 +346,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
                     android:text="@string/user_bio"
                     android:textColor="@color/black"
                     android:textSize="@dimen/default_text_size"
-                    android:includeFontPadding="false"
                     tools:ignore="VisualLintLongText" />
 
             </LinearLayout>
@@ -360,4 +358,3 @@
 
 
 </LinearLayout>
-
