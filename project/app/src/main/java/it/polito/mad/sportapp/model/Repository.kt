@@ -8,9 +8,11 @@ import it.polito.mad.sportapp.entities.SportCenter
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.entities.EquipmentReservation
+import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.localDB.dao.EquipmentDao
 import it.polito.mad.sportapp.localDB.dao.PlaygroundSportDao
 import it.polito.mad.sportapp.localDB.dao.ReservationDao
+import it.polito.mad.sportapp.localDB.dao.ReviewDao
 import it.polito.mad.sportapp.localDB.dao.SportCenterDao
 import it.polito.mad.sportapp.localDB.dao.SportDao
 import it.polito.mad.sportapp.localDB.dao.UserDao
@@ -18,6 +20,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,7 +33,8 @@ class Repository @Inject constructor(
     private val sportCenterDao: SportCenterDao,
     private val equipmentDao: EquipmentDao,
     private val reservationDao: ReservationDao,
-    private val playgroundSportDao: PlaygroundSportDao
+    private val playgroundSportDao: PlaygroundSportDao,
+    private val reviewDao: ReviewDao
 ) {
     // User methods
     fun getUserWithSportLevel(id: Int): User {
@@ -46,6 +50,34 @@ class Repository @Inject constructor(
     // Sport methods
     fun getAllSports(): List<Sport> {
         return sportDao.getAll()
+    }
+
+
+    // Review methods
+    fun getAllReviewsByPlaygroundId(id: Int): List<Review> {
+        val reviews = reviewDao.findByPlaygroundId(id)
+         reviews.forEach {
+            it.username = userDao.findUsernameById(it.userId)
+        }
+        return reviews
+    }
+
+    fun getReviewByUserIdAndPlaygroundId(userId: Int, playgroundId: Int): Review {
+        val review = reviewDao.findByUserIdAndPlaygroundId(userId, playgroundId)
+        review.username = userDao.findUsernameById(userId)
+        return review
+    }
+
+    fun insertReview(review: Review) {
+        val isoFormat = DateTimeFormatter.ISO_DATE_TIME
+        review.lastUpdate = LocalDateTime.now().format(isoFormat).toString()
+        review.timestamp = LocalDateTime.now().format(isoFormat).toString()
+        reviewDao.insert(review)
+    }
+
+    fun updateReview(review: Review) {
+        review.lastUpdate = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME).toString()
+        reviewDao.update(review)
     }
 
     // Reservation methods

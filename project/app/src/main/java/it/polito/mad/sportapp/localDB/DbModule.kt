@@ -10,6 +10,7 @@ import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.localDB.dao.EquipmentDao
 import it.polito.mad.sportapp.localDB.dao.PlaygroundSportDao
 import it.polito.mad.sportapp.localDB.dao.ReservationDao
+import it.polito.mad.sportapp.localDB.dao.ReviewDao
 import it.polito.mad.sportapp.localDB.dao.SportCenterDao
 import it.polito.mad.sportapp.localDB.dao.SportDao
 import it.polito.mad.sportapp.localDB.dao.UserDao
@@ -53,6 +54,12 @@ class DbModule {
     @Singleton
     fun providePlaygroundSportDao(appDatabase: AppDatabase): PlaygroundSportDao {
         return appDatabase.playgroundSportDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideReviewDao(appDatabase: AppDatabase): ReviewDao {
+        return appDatabase.reviewDao()
     }
 
     // Database provider

@@ -9,6 +9,7 @@ import it.polito.mad.sportapp.entities.Equipment
 import it.polito.mad.sportapp.entities.EquipmentReservation
 import it.polito.mad.sportapp.entities.PlaygroundReservation
 import it.polito.mad.sportapp.entities.PlaygroundSport
+import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.entities.SportCenter
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.User
@@ -20,7 +21,7 @@ import kotlin.random.Random
 
 
 @Database(
-    entities = [User::class, Sport::class, SportCenter::class, UserSport::class, PlaygroundSport::class, PlaygroundReservation::class, Equipment::class, EquipmentReservation::class],
+    entities = [User::class, Sport::class, SportCenter::class, UserSport::class, PlaygroundSport::class, PlaygroundReservation::class, Equipment::class, EquipmentReservation::class, Review::class],
     version = 1,
     exportSchema = false
 )
@@ -34,6 +35,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun reservationDao(): ReservationDao // PlaygroundDB
 
     abstract fun playgroundSportDao(): PlaygroundSportDao // PlaygroundSportDB
+
+    abstract fun reviewDao(): ReviewDao // ReviewDB
 
 
     companion object {
