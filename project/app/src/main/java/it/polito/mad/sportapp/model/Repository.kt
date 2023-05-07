@@ -186,11 +186,13 @@ class Repository @Inject constructor(
     }
 
     fun deleteReservation(reservation: DetailedReservation) {
-        reservationDao.deleteById(reservation.id)
+        // * first, delete associated equipments *
         reservation.equipments.forEach {
             equipmentDao.deleteReservation(it.equipmentId, it.playgroundReservationId)
         }
 
+        // * then, delete the reservation *
+        reservationDao.deleteById(reservation.id)
     }
 
     // * Playground methods *

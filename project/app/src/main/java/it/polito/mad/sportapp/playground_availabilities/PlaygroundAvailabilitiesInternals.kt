@@ -171,9 +171,6 @@ internal fun PlaygroundAvailabilitiesFragment.initMonthAndDateObservers() {
     val monthLabel = requireView().findViewById<TextView>(R.id.month_label)
 
     viewModel.currentMonth.observe(this) { newMonth ->
-        // change month view
-        calendarView.smoothScrollToMonth(newMonth)
-
         // change month label
         monthLabel.text = capitalize(
             newMonth.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH)))

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.navigation.NavigationBarView
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,7 +27,7 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         /* bottom bar */
 
         // initialize bottom navigation view
-        bottomNavigationView = findViewById(R.id.bottom_navigation_menu)
+        bottomNavigationView = findViewById(R.id.bottom_navigation_bar)
 
         // initialize navigation controller
         navController = (
@@ -41,52 +42,26 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         toastyInit()
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-
-        val previousFragment = navController.previousBackStackEntry?.destination?.id
-
-        when(item.itemId) {
-            R.id.reservations -> {
-                if (previousFragment == R.id.playgroundAvailabilitiesFragment)
-                    navController.navigate(R.id.action_playgroundAvailabilitiesFragment_to_showReservationsFragment)
-                else
-                    navController.navigate(R.id.showReservationsFragment)
-            }
-
-            R.id.playgrounds -> {
-                if (previousFragment == R.id.showReservationsFragment)
-                    navController.navigate(R.id.action_showReservationsFragment_to_playgroundAvailabilitiesFragment)
-                else
-                    navController.navigate(R.id.playgroundAvailabilitiesFragment)
-            }
-
-            // TODO: uncomment and substitute with the show profile fragment and action
-            /*(item.itemId == R.id.reservations && previousFragment == R.id.showProfileFragment) -> {
-                navController.navigate(R.id.action_showProfileFragment_to_showReservationsFragment)
-            }*/
-
-            // TODO: uncomment and substitute with the show profile fragment and action
-            /*(item.itemId == R.id.playgrounds && previousFragment == R.id.showProfileFragment) -> {
-                navController.navigate(R.id.action_showProfileFragment_to_playgroundAvailabilitiesFragment)
-            }*/
-
-            /*
-            (item.itemId == R.id.profile && previousFragment == R.id.showReservationsFragment) -> {
-                navController.navigate(R.id.action_showReservationsFragment_to_showProfileFragment)
-            }
-
-            (item.itemId == R.id.profile && previousFragment == R.id.playgroundAvailabilitiesFragment) -> {
-                navController.navigate(R.id.action_playgroundAvailabilitiesFragment_to_showProfileFragment)
-            }*/
-
-            else -> throw Exception("An unexpected bottom bar item has been pressed")
+    override fun onNavigationItemSelected(item: MenuItem): Boolean = when(item.itemId) {
+        R.id.reservations -> {
+            navController.navigate(R.id.showReservationsFragment)
+            true
         }
-
-        bottomNavigationView.visibility = NavigationBarView.VISIBLE
-
-        return true
+        R.id.playgrounds -> {
+            navController.navigate(R.id.playgroundAvailabilitiesFragment)
+            true
+        }
+        R.id.profile -> {
+            // TODO
+            // navController.navigate(R.id.showProfileFragment)
+            true
+        }
+        else -> false
     }
 
-
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.fragment_container_view)
+        return navController.navigateUp() || super.onSupportNavigateUp()
+    }
 
 }

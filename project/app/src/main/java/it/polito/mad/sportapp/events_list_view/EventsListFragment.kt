@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,13 +45,13 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
 
         // get bottom navigation bar
         bottomNavigationBar =
-            (requireActivity() as AppCompatActivity).findViewById(R.id.bottom_navigation_menu)
+            (requireActivity() as AppCompatActivity).findViewById(R.id.bottom_navigation_bar)
 
         // hide bottom navigation bar
         bottomNavigationBar.visibility = View.GONE
 
         // initialize navigation controller
-        navController = Navigation.findNavController(view)
+        navController = findNavController()
 
         // menu initialization
         menuInit()
@@ -86,13 +86,6 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         vm.getUserEventsFromDb()
     }
 
-    override fun onPause() {
-        super.onPause()
-
-        // show bottom navigation bar
-        bottomNavigationBar.visibility = View.VISIBLE
-    }
-
     // manage menu item selection
     private fun menuInit() {
         val menuHost: MenuHost = requireActivity()
@@ -112,7 +105,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                 // handle the menu selection
                 return when (menuItem.itemId) {
                     R.id.show_reservations_button -> {
-                        navController.navigate(R.id.action_eventsListFragment_to_showReservationsFragment)
+                        navController.navigateUp()
                         true
                     }
 

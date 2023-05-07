@@ -11,86 +11,42 @@
         android:name="it.polito.mad.sportapp.show_reservations.ShowReservationsFragment"
         android:label="ShowReservationsFragment">
         <action
-            android:id="@+id/action_showReservationsFragment_to_playgroundAvailabilitiesFragment"
-            app:destination="@id/playgroundAvailabilitiesFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:popUpTo="@id/showReservationsFragment" />
-        <action
             android:id="@+id/action_showReservationsFragment_to_eventsListFragment"
             app:destination="@id/eventsListFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:enterAnim="@anim/reservations_list_slide_in_from_bottom"
+            app:popExitAnim="@anim/reservations_list_slide_out_to_bottom"
             app:popUpTo="@id/showReservationsFragment" />
         <action
             android:id="@+id/action_showReservationsFragment_to_reservationDetailsFragment"
             app:destination="@id/reservationDetailsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:enterAnim="@anim/reservation_details_slide_in_from_right"
+            app:exitAnim="@anim/reservations_slide_out_to_left"
+            app:popEnterAnim="@anim/reservations_slide_in_from_left"
+            app:popExitAnim="@anim/reservation_details_slide_out_to_right"
             app:popUpTo="@id/showReservationsFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/reservationDetailsFragment"
         android:name="it.polito.mad.sportapp.reservation_details.ReservationDetailsFragment"
-        android:label="ReservationDetailsFragment">
-        <action
-            android:id="@+id/action_reservationDetailsFragment_to_showReservationsFragment"
-            app:destination="@id/showReservationsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:popUpTo="@id/reservationDetailsFragment" />
-        <action
-            android:id="@+id/action_reservationDetailsFragment_to_eventsListFragment"
-            app:destination="@id/eventsListFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:popUpTo="@id/reservationDetailsFragment" />
-    </fragment>
+        android:label="ReservationDetailsFragment"/>
 
     <fragment
         android:id="@+id/playgroundAvailabilitiesFragment"
         android:name="it.polito.mad.sportapp.playground_availabilities.PlaygroundAvailabilitiesFragment"
         android:label="playground_availabilities_view"
-        tools:layout="@layout/playground_availabilities_view">
-        <action
-            android:id="@+id/action_playgroundAvailabilitiesFragment_to_showReservationsFragment"
-            app:destination="@id/showReservationsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:popUpTo="@id/playgroundAvailabilitiesFragment" />
-    </fragment>
+        tools:layout="@layout/playground_availabilities_view"/>
     <fragment
         android:id="@+id/eventsListFragment"
         android:name="it.polito.mad.sportapp.events_list_view.EventsListFragment"
         android:label="EventsListFragment" >
         <action
-            android:id="@+id/action_eventsListFragment_to_showReservationsFragment"
-            app:destination="@id/showReservationsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:popUpTo="@id/eventsListFragment" />
-        <action
             android:id="@+id/action_eventsListFragment_to_reservationDetailsFragment"
             app:destination="@id/reservationDetailsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:enterAnim="@anim/reservation_details_slide_in_from_right"
+            app:exitAnim="@anim/reservations_slide_out_to_left"
+            app:popEnterAnim="@anim/reservations_slide_in_from_left"
+            app:popExitAnim="@anim/reservation_details_slide_out_to_right"
             app:popUpTo="@id/eventsListFragment" />
     </fragment>
 

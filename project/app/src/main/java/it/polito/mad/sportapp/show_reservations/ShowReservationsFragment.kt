@@ -10,7 +10,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.view.CalendarView
@@ -50,7 +50,7 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
         actionBar = (requireActivity() as AppCompatActivity).supportActionBar
 
         // initialize navigation controller
-        navController = Navigation.findNavController(view)
+        navController = findNavController()
 
         // initialize menu
         menuInit()
@@ -74,6 +74,13 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
                 LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = eventsAdapter
         }
+
+        // get bottom navigation bar
+        val bottomNavigationBar: View =
+            (requireActivity() as AppCompatActivity).findViewById(R.id.bottom_navigation_bar)
+
+        // show bottom navigation bar
+        bottomNavigationBar.visibility = View.VISIBLE
     }
 
     override fun onResume() {

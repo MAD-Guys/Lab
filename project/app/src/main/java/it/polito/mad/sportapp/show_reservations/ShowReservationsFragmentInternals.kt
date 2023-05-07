@@ -36,7 +36,7 @@ internal fun ShowReservationsFragment.monthButtonsInit() {
     previousMonthButton.setOnClickListener {
         calendarView.findFirstVisibleMonth()?.let { month ->
             val newMonth = month.yearMonth.minusMonths(1)
-            vm.setCurrentMonth(newMonth)
+            calendarView.smoothScrollToMonth(newMonth)
         }
     }
 
@@ -45,7 +45,7 @@ internal fun ShowReservationsFragment.monthButtonsInit() {
     nextMonthButton.setOnClickListener {
         calendarView.findFirstVisibleMonth()?.let { month ->
             val newMonth = month.yearMonth.plusMonths(1)
-            vm.setCurrentMonth(newMonth)
+            calendarView.smoothScrollToMonth(newMonth)
         }
     }
 }
@@ -60,7 +60,6 @@ fun ShowReservationsFragment.updateAdapterForDate(date: LocalDate?) {
 
 // initialize calendar information
 internal fun ShowReservationsFragment.calendarInit() {
-
     val currentDate = LocalDate.now()
 
     // bind days to the calendar recycler view
@@ -162,9 +161,6 @@ internal fun ShowReservationsFragment.calendarInit() {
         val monthString = it.format(DateTimeFormatter.ofPattern("MMMM yyyy"))
         monthLabel.text = capitalizeFirstLetter(monthString)
 
-        // scroll to new month
-        calendarView.smoothScrollToMonth(it)
-
         //update calendar
         calendarView.notifyMonthChanged(it)
         calendarView.notifyMonthChanged(it.minusMonths(1))
@@ -207,7 +203,6 @@ internal fun ShowReservationsFragment.calendarInit() {
         calendarView.setup(startMonth, endMonth, daysOfWeek.first())
         calendarView.scrollToMonth(it)
     }
-
 }
 
 // manage menu item selection

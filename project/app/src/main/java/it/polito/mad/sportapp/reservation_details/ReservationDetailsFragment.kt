@@ -19,14 +19,12 @@ import androidx.navigation.Navigation
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.showToasty
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @AndroidEntryPoint
 class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_details) {
-
-    //views
     private lateinit var qrCode: ImageView
     private lateinit var reservationNumber: TextView
     private lateinit var reservationDate: TextView
@@ -57,8 +55,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
 
         // get bottom navigation bar
-        bottomNavigationBar =
-            (requireActivity() as AppCompatActivity).findViewById(R.id.bottom_navigation_menu)
+        bottomNavigationBar = requireActivity().findViewById(R.id.bottom_navigation_bar)
 
         // change app bar's title
         actionBar?.title = "Reservation Details"
@@ -80,7 +77,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         retrieveViews()
 
         // Initialize values
-        initializeValues()
+        // initializeValues()
         initializeEquipment()
 
         // add link to Google Maps
@@ -97,10 +94,19 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         }
 
         viewModel.reservation.observe(viewLifecycleOwner) {
-            if (viewModel.reservation.value != null) {
-                setQRCodeView(viewModel.reservation.value!!, qrCode)
+            val reservation = viewModel.reservation.value
+
+            if (reservation != null) {
+                setQRCodeView(reservation, qrCode)
                 initializeValues()
                 initializeEquipment()
+
+                // show delete reservation button only if the reservation starts in the future
+                val currentDateTime = LocalDateTime.now()
+
+                if (currentDateTime.isBefore(reservation.startLocalDateTime)) {
+                    deleteButton.visibility = Button.VISIBLE
+                }
             }
         }
     }
@@ -109,13 +115,6 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         super.onResume()
         if (eventId != -1)
             viewModel.getReservationFromDb(eventId)
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        // show bottom navigation bar
-        bottomNavigationBar.visibility = View.VISIBLE
     }
 
     private fun retrieveViews() {
@@ -159,11 +158,6 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         reservationSportCenterAddress.text = viewModel.reservation.value?.location
         reservationTotalPrice.text =
             "€ " + String.format("%.2f", viewModel.reservation.value?.totalPrice)
-
-        val currentDate = LocalDate.now()
-        if (viewModel.reservation.value?.date?.isBefore(currentDate) == false) {
-            deleteButton.visibility = Button.VISIBLE
-        }
     }
 
     private fun initializeEquipment() {
@@ -213,22 +207,20 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
             .setMessage("Are you sure to delete this reservation?")
             .setPositiveButton("YES") { _, _ ->
                 if (viewModel.deleteReservation()) {
-
                     // find and navigate to the previous (caller) fragment
-                    when (navController.previousBackStackEntry?.destination?.id) {
-                        R.id.eventsListFragment -> {
-                            navController.navigate(R.id.action_reservationDetailsFragment_to_eventsListFragment)
-                        }
-
-                        R.id.showReservationsFragment -> {
-                            navController.navigate(R.id.action_reservationDetailsFragment_to_showReservationsFragment)
-                        }
-                    }
+                    navController.popBackStack()
 
                     showToasty(
                         "success",
                         requireContext(),
                         "Reservation correctly deleted"
+                    )
+                }
+                else {
+                    showToasty(
+                        "error",
+                        requireContext(),
+                        "An unexpected error occurred during delete reservation"
                     )
                 }
             }

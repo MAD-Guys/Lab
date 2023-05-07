@@ -12,6 +12,7 @@ import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.formatDuration
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -34,7 +35,7 @@ internal class EventsListViewHolder(view: View) : RecyclerView.ViewHolder(view) 
     fun bind(event: DetailedReservation) {
 
         // set item background color
-        if (event.date == LocalDate.now()) {
+        if (event.startLocalDateTime.isBefore(LocalDateTime.now())) {
             containerLayout.setBackgroundColor(
                 getColor(
                     itemView.context,

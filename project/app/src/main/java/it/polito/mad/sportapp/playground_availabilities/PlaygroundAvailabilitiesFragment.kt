@@ -52,10 +52,14 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
         /* playground availabilities observer to change dates' colors */
         this.initAvailablePlaygroundsObserver()
 
-        // selected sport observers -> change playgrounds shown
+        /* selected sport observers -> change playgrounds shown */
         this.initSelectedSportObservers()
 
         /* playgrounds availabilities recycler view */
         this.setupAvailablePlaygroundsRecyclerView()
+
+        // show bottom bar
+        val bottomBar = requireActivity().findViewById<View>(R.id.bottom_navigation_bar)
+        bottomBar.visibility = View.VISIBLE
     }
 }

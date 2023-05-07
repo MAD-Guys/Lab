@@ -17,8 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.playground_details.reviews_recycler_view.ReviewAdapter
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details) {
 
@@ -67,7 +65,7 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
         // get activity action bar
         val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
         bottomNavigationBar =
-            (requireActivity() as AppCompatActivity).findViewById(R.id.bottom_navigation_menu)
+            (requireActivity() as AppCompatActivity).findViewById(R.id.bottom_navigation_bar)
 
         // change app bar's title
         actionBar?.title = "Playground Details"
