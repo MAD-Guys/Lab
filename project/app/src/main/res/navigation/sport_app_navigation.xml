@@ -49,5 +49,9 @@
             app:popExitAnim="@anim/reservation_details_slide_out_to_right"
             app:popUpTo="@id/eventsListFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/showProfileFragment"
+        android:name="it.polito.mad.sportapp.profile.ShowProfileFragment"
+        android:label="ShowProfileFragment" />
 
 </navigation>

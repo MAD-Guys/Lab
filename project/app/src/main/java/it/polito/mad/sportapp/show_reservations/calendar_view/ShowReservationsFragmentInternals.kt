@@ -92,21 +92,21 @@ internal fun ShowReservationsFragment.calendarInit() {
                 // set background color and text for month dates
                 dayRelativeLayout.setBackgroundColor(
                     getColor(
-                        context!!,
+                        requireContext(),
                         R.color.month_date_background
                     )
                 )
-                dayTextView.setTextColor(getColor(context!!, R.color.month_date_text_color))
+                dayTextView.setTextColor(getColor(requireContext(), R.color.month_date_text_color))
 
                 // mark current date
                 if (data.date == currentDate) {
-                    dayTextView.setTextColor(getColor(context!!, R.color.current_date_text_color))
+                    dayTextView.setTextColor(getColor(requireContext(), R.color.current_date_text_color))
                     dayRelativeLayout.setBackgroundResource(R.drawable.current_day_selected_bg)
                 }
 
                 // mark selected date
                 if (data.date != currentDate && data.date == vm.selectedDate.value) {
-                    dayTextView.setTextColor(getColor(context!!, R.color.selected_date_text_color))
+                    dayTextView.setTextColor(getColor(requireContext(), R.color.selected_date_text_color))
                     dayRelativeLayout.setBackgroundResource(R.drawable.day_selected_bg)
                 }
 
@@ -131,11 +131,11 @@ internal fun ShowReservationsFragment.calendarInit() {
             else {
                 dayRelativeLayout.setBackgroundColor(
                     getColor(
-                        context!!,
+                        requireContext(),
                         R.color.out_date_background_color
                     )
                 )
-                dayTextView.setTextColor(getColor(context!!, R.color.out_date_text_color))
+                dayTextView.setTextColor(getColor(requireContext(), R.color.out_date_text_color))
             }
 
         }

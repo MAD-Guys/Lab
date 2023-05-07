@@ -49,10 +49,6 @@
             android:exported="false" />
 
         <activity
-            android:name=".profile.ShowProfileActivity"
-            android:exported="true" />
-
-        <activity
             android:name=".reservation_details.ReservationDetailsActivity"
             android:exported="true" />
 
