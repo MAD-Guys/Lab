@@ -1,4 +1,4 @@
-package it.polito.mad.sportapp.show_reservations
+package it.polito.mad.sportapp.show_reservations.calendar_view
 
 import android.annotation.SuppressLint
 import android.os.Build

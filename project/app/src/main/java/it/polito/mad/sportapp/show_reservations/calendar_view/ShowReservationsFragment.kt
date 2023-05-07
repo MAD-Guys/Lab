@@ -1,4 +1,4 @@
-package it.polito.mad.sportapp.show_reservations
+package it.polito.mad.sportapp.show_reservations.calendar_view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.view.CalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.show_reservations.events_recycler_view.EventsAdapter
+import it.polito.mad.sportapp.show_reservations.calendar_view.events_recycler_view.EventsAdapter
 
 @AndroidEntryPoint
 class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {

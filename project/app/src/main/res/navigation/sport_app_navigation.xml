@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/showReservationsFragment"
-        android:name="it.polito.mad.sportapp.show_reservations.ShowReservationsFragment"
+        android:name="it.polito.mad.sportapp.show_reservations.calendar_view.ShowReservationsFragment"
         android:label="ShowReservationsFragment">
         <action
             android:id="@+id/action_showReservationsFragment_to_eventsListFragment"
@@ -38,7 +38,7 @@
         tools:layout="@layout/playground_availabilities_view"/>
     <fragment
         android:id="@+id/eventsListFragment"
-        android:name="it.polito.mad.sportapp.events_list_view.EventsListFragment"
+        android:name="it.polito.mad.sportapp.show_reservations.events_list_view.EventsListFragment"
         android:label="EventsListFragment" >
         <action
             android:id="@+id/action_eventsListFragment_to_reservationDetailsFragment"

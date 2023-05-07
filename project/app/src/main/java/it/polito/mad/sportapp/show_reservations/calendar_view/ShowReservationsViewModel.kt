@@ -1,11 +1,10 @@
-package it.polito.mad.sportapp.show_reservations
+package it.polito.mad.sportapp.show_reservations.calendar_view
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.DetailedReservation
-import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.model.Repository
 import java.time.LocalDate
 import java.time.YearMonth
