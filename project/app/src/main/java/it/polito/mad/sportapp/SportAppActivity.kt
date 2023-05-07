@@ -48,18 +48,36 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.reservations -> {
-                navController.navigate(R.id.showReservationsFragment)
+
+        val previousFragment = navController.previousBackStackEntry?.destination?.id
+
+        when {
+            (item.itemId == R.id.reservations && previousFragment == R.id.playgroundAvailabilitiesFragment) -> {
+                navController.navigate(R.id.action_playgroundAvailabilitiesFragment_to_showReservationsFragment)
             }
 
-            R.id.playgrounds -> {
-                navController.navigate(R.id.playgroundAvailabilitiesFragment)
+            // TODO: uncomment and substitute with the show profile fragment and action
+            /*(item.itemId == R.id.reservations && previousFragment == R.id.showProfileFragment) -> {
+                navController.navigate(R.id.action_showProfileFragment_to_showReservationsFragment)
+            }*/
+
+            (item.itemId == R.id.playgrounds && previousFragment == R.id.showReservationsFragment) -> {
+                navController.navigate(R.id.action_showReservationsFragment_to_playgroundAvailabilitiesFragment)
             }
 
-            R.id.profile -> {
-                // TODO
+            // TODO: uncomment and substitute with the show profile fragment and action
+            /*(item.itemId == R.id.playgrounds && previousFragment == R.id.showProfileFragment) -> {
+                navController.navigate(R.id.action_showProfileFragment_to_playgroundAvailabilitiesFragment)
+            }*/
+
+            /*
+            (item.itemId == R.id.profile && previousFragment == R.id.showReservationsFragment) -> {
+                navController.navigate(R.id.action_showReservationsFragment_to_showProfileFragment)
             }
+
+            (item.itemId == R.id.profile && previousFragment == R.id.playgroundAvailabilitiesFragment) -> {
+                navController.navigate(R.id.action_playgroundAvailabilitiesFragment_to_showProfileFragment)
+            }*/
 
             else -> throw Exception("An unexpected bottom bar item has been pressed")
         }

@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -27,6 +28,8 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     private val eventsListAdapter = EventsListAdapter()
 
     private lateinit var eventsListView: RecyclerView
+
+    private var actionBar: ActionBar? = null
     private lateinit var bottomNavigationBar: View
     private lateinit var navController: NavController
 
@@ -38,14 +41,11 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         super.onViewCreated(view, savedInstanceState)
 
         // get activity action bar
-        val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+        actionBar = (requireActivity() as AppCompatActivity).supportActionBar
 
         // get bottom navigation bar
         bottomNavigationBar =
             (requireActivity() as AppCompatActivity).findViewById(R.id.bottom_navigation_menu)
-
-        // change app bar's title
-        actionBar?.title = "My Reservations"
 
         // hide bottom navigation bar
         bottomNavigationBar.visibility = View.GONE
@@ -99,7 +99,13 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
 
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.events_list_view_menu, menu)
+                menuInflater.inflate(R.menu.sport_app_menu, menu)
+
+                // change app bar's title
+                actionBar?.title = "My Reservations"
+
+                // change visibility of the show reservations menu item
+                menu.findItem(R.id.show_reservations_button).isVisible = true
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {

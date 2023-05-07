@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
@@ -29,6 +30,9 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
     internal lateinit var legendContainer: ViewGroup
     internal lateinit var monthLabel: TextView
 
+    // action bar
+    internal var actionBar: ActionBar? = null
+
     // navigation controller
     internal lateinit var navController: NavController
 
@@ -43,10 +47,7 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
         super.onViewCreated(view, savedInstanceState)
 
         // get activity action bar
-        val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
-
-        // change app bar's title
-        actionBar?.title = "My Reservations"
+        actionBar = (requireActivity() as AppCompatActivity).supportActionBar
 
         // initialize navigation controller
         navController = Navigation.findNavController(view)

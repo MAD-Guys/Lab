@@ -11,22 +11,28 @@
         android:name="it.polito.mad.sportapp.show_reservations.ShowReservationsFragment"
         android:label="ShowReservationsFragment">
         <action
-            android:id="@+id/action_showReservationsFragment_to_reservationDetailsFragment"
-            app:destination="@id/reservationDetailsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popUpTo="@id/showReservationsFragment" />
-        <action
             android:id="@+id/action_showReservationsFragment_to_playgroundAvailabilitiesFragment"
             app:destination="@id/playgroundAvailabilitiesFragment"
-            app:enterAnim="@android:anim/slide_in_left"
+            app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/showReservationsFragment" />
         <action
             android:id="@+id/action_showReservationsFragment_to_eventsListFragment"
             app:destination="@id/eventsListFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/showReservationsFragment" />
+        <action
+            android:id="@+id/action_showReservationsFragment_to_reservationDetailsFragment"
+            app:destination="@id/reservationDetailsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/showReservationsFragment" />
     </fragment>
 
@@ -39,12 +45,16 @@
             app:destination="@id/showReservationsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
-            app:popUpTo="@id/showReservationsFragment" />
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/reservationDetailsFragment" />
         <action
             android:id="@+id/action_reservationDetailsFragment_to_eventsListFragment"
             app:destination="@id/eventsListFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/reservationDetailsFragment" />
     </fragment>
 
@@ -58,6 +68,8 @@
             app:destination="@id/showReservationsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/playgroundAvailabilitiesFragment" />
     </fragment>
     <fragment
@@ -69,12 +81,16 @@
             app:destination="@id/showReservationsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/eventsListFragment" />
         <action
             android:id="@+id/action_eventsListFragment_to_reservationDetailsFragment"
             app:destination="@id/reservationDetailsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/eventsListFragment" />
     </fragment>
 

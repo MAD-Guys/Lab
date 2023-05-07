@@ -91,7 +91,12 @@ internal fun ShowReservationsFragment.calendarInit() {
                 val events = vm.userEvents.value?.get(data.date)
 
                 // set background color and text for month dates
-                dayRelativeLayout.setBackgroundColor(getColor(context!!, R.color.month_date_background))
+                dayRelativeLayout.setBackgroundColor(
+                    getColor(
+                        context!!,
+                        R.color.month_date_background
+                    )
+                )
                 dayTextView.setTextColor(getColor(context!!, R.color.month_date_text_color))
 
                 // mark current date
@@ -125,7 +130,12 @@ internal fun ShowReservationsFragment.calendarInit() {
             }
             // set background color and text for out dates
             else {
-                dayRelativeLayout.setBackgroundColor(getColor(context!!, R.color.out_date_background_color))
+                dayRelativeLayout.setBackgroundColor(
+                    getColor(
+                        context!!,
+                        R.color.out_date_background_color
+                    )
+                )
                 dayTextView.setTextColor(getColor(context!!, R.color.out_date_text_color))
             }
 
@@ -206,7 +216,13 @@ internal fun ShowReservationsFragment.menuInit() {
 
     menuHost.addMenuProvider(object : MenuProvider {
         override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-            menuInflater.inflate(R.menu.events_list_view_menu, menu)
+            menuInflater.inflate(R.menu.sport_app_menu, menu)
+
+            // change app bar's title
+            actionBar?.title = "My Reservations"
+
+            // change visibility of events list menu item
+            menu.getItem(R.id.events_list_button).isVisible = true
         }
 
         override fun onMenuItemSelected(menuItem: MenuItem): Boolean {

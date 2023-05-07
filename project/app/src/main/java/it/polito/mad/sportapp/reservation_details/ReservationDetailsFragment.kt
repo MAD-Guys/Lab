@@ -1,5 +1,6 @@
 package it.polito.mad.sportapp.reservation_details
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -12,7 +13,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -135,6 +135,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         deleteButton = requireView().findViewById(R.id.button_delete_reservation)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun initializeValues() {
         reservationNumber.text =
             "Reservation number: " + String.format("%010d", viewModel.reservation.value?.id)
@@ -213,10 +214,12 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
             .setPositiveButton("YES") { _, _ ->
                 if (viewModel.deleteReservation()) {
 
-                    when(getCallerFragment()) {
+                    // find and navigate to the previous (caller) fragment
+                    when (navController.previousBackStackEntry?.destination?.id) {
                         R.id.eventsListFragment -> {
                             navController.navigate(R.id.action_reservationDetailsFragment_to_eventsListFragment)
                         }
+
                         R.id.showReservationsFragment -> {
                             navController.navigate(R.id.action_reservationDetailsFragment_to_showReservationsFragment)
                         }
@@ -232,13 +235,6 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
             .setNegativeButton("NO") { d, _ -> d.cancel() }
             .create()
             .show()
-    }
-
-    // get the caller fragment
-    private fun getCallerFragment(): Int {
-        val fm: FragmentManager = requireActivity().supportFragmentManager
-        val count = fm.backStackEntryCount - 1
-        return fm.getBackStackEntryAt(count).id
     }
 
 }
