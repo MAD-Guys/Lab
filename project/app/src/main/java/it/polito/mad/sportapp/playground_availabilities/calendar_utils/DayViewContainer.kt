@@ -16,7 +16,7 @@ class DayViewContainer(
     private val context: Context,
     view: View,
     selectedDateLiveData: LiveData<LocalDate>,
-    setSelectedDate: (LocalDate?) -> Unit
+    setSelectedDate: (LocalDate?) -> Unit,
 ) : ViewContainer(view)
 {
     private val daySquare = view as RelativeLayout
@@ -66,7 +66,7 @@ class DayViewContainer(
     }
 
     fun setAvailabilityTagColor(color: Int) {
-        // availabilityTag.visibility = ImageView.VISIBLE
+        availabilityTag.visibility = ImageView.VISIBLE
         availabilityTag.setColorFilter(color)
     }
 

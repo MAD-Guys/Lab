@@ -75,12 +75,8 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
             adapter = eventsAdapter
         }
 
-        // get bottom navigation bar
-        val bottomNavigationBar: View =
-            (requireActivity() as AppCompatActivity).findViewById(R.id.bottom_navigation_bar)
-
-        // show bottom navigation bar
-        bottomNavigationBar.visibility = View.VISIBLE
+        /* bottom bar */
+        this.setupBottomBar()
     }
 
     override fun onResume() {

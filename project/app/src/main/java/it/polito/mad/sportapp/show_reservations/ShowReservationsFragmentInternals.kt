@@ -13,6 +13,7 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.children
 import androidx.lifecycle.Lifecycle
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
@@ -232,6 +233,16 @@ internal fun ShowReservationsFragment.menuInit() {
             }
         }
     }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+}
+
+// bottom bar setup
+internal fun ShowReservationsFragment.setupBottomBar() {
+    // show bottom navigation bar
+    val bottomNavigationBar: BottomNavigationView = requireActivity().findViewById(R.id.bottom_navigation_bar)
+    bottomNavigationBar.visibility = View.VISIBLE
+
+    // set the right button
+    bottomNavigationBar.menu.findItem(R.id.reservations).isChecked = true
 }
 
 // perform haptic feedback if android version is lower than 13

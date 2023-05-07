@@ -1,7 +1,6 @@
 package it.polito.mad.sportapp.playground_availabilities
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -11,14 +10,12 @@ import android.widget.TextView
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.kizitonwose.calendar.core.CalendarDay
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.kizitonwose.calendar.core.CalendarMonth
-import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
-import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.MonthHeaderFooterBinder
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.playground_availabilities.calendar_utils.DayViewContainer
+import it.polito.mad.sportapp.playground_availabilities.calendar_utils.CalendarDayBinder
 import it.polito.mad.sportapp.playground_availabilities.calendar_utils.MonthViewContainer
 import it.polito.mad.sportapp.playground_availabilities.recycler_view.PlaygroundAvailabilitiesAdapter
 import java.time.DayOfWeek
@@ -73,41 +70,16 @@ private fun PlaygroundAvailabilitiesFragment.initCalendarHeader(daysOfWeek: List
 }
 
 private fun PlaygroundAvailabilitiesFragment.initCalendarDays() {
-    calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
-        override fun create(view: View) =
-            DayViewContainer(requireContext(), view,
-                viewModel.selectedDate, viewModel::setSelectedDate)
+    // create and initialize day binder
+    val calendarDayBinder = CalendarDayBinder(
+        requireContext(),
+        viewModel.selectedDate,
+        viewModel::setSelectedDate,
+        this::getAvailabilityPercentageOf
+    )
 
-        override fun bind(container: DayViewContainer, data: CalendarDay) {
-            // set the date in the container
-            container.setDay(data)
-
-            // hide tag
-            container.hideTag()
-
-            if (data.position != DayPosition.MonthDate) {
-                container.setAsInOrOutDate()
-            }
-            else { // month date
-                val today = LocalDate.now()
-
-                when (data.date) {
-                    today -> container.setAsCurrentDate()
-                    viewModel.selectedDate.value -> container.setAsSelectedDate()
-                    else -> container.setAsUnselectedDate()
-                }
-
-                // compute the availability percentage on that date to color it properly
-                val availabilityPercentage = getAvailabilityPercentageOf(data.date)
-
-                // if this day is completely full (no existing available playgrounds), show a red dot
-                if (availabilityPercentage == 0.0f) {
-                    val notAvailableColor = Color.rgb(255, 80, 80)    // red
-                    container.setAvailabilityTagColor(notAvailableColor)
-                }
-            }
-        }
-    }
+    // attach day binder to the calendar view
+    calendarView.dayBinder = calendarDayBinder
 }
 
 internal fun PlaygroundAvailabilitiesFragment.initCalendarMonthButtons() {
@@ -208,8 +180,16 @@ internal fun PlaygroundAvailabilitiesFragment.initMonthAndDateObservers() {
 internal fun PlaygroundAvailabilitiesFragment.initAvailablePlaygroundsObserver() {
     /* playground availabilities observer to change dates' colors */
     viewModel.availablePlaygroundsPerSlot.observe(this) {
-        // update calendar dates' dots
-        calendarView.notifyMonthChanged(viewModel.currentMonth.value ?: viewModel.defaultMonth)
+        // * update calendar dates' dots *
+
+        // update current, previous and next months
+        val currentMonth = viewModel.currentMonth.value ?: viewModel.defaultMonth
+        val previousMonth = currentMonth.minusMonths(1)
+        val nextMonth = currentMonth.plusMonths(1)
+
+        calendarView.notifyMonthChanged(currentMonth)
+        calendarView.notifyMonthChanged(previousMonth)
+        calendarView.notifyMonthChanged(nextMonth)
 
         // update recycler view data
         playgroundAvailabilitiesAdapter.playgroundAvailabilities =
@@ -225,9 +205,6 @@ internal fun PlaygroundAvailabilitiesFragment.initSelectedSportObservers() {
     viewModel.sports.observe(this) {
         // add new sports list
         selectedSportSpinnerAdapter.addAll(it)
-
-        // update sport options once they are retrieved from the db
-        // selectedSportSpinnerAdapter.notifyDataSetChanged()
 
         // select first sport option
         selectedSportSpinner.setSelection(0)
@@ -258,6 +235,16 @@ internal fun PlaygroundAvailabilitiesFragment.setupAvailablePlaygroundsRecyclerV
             requireContext(), RecyclerView.VERTICAL, false)
         adapter = playgroundAvailabilitiesAdapter
     }
+}
+
+/* bottom bar */
+internal fun PlaygroundAvailabilitiesFragment.setupBottomBar() {
+    // show bottom bar
+    val bottomBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation_bar)
+    bottomBar.visibility = View.VISIBLE
+
+    // set the right selected button
+    bottomBar.menu.findItem(R.id.playgrounds).isChecked = true
 }
 
 /* utils */

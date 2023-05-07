@@ -58,8 +58,7 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
         /* playgrounds availabilities recycler view */
         this.setupAvailablePlaygroundsRecyclerView()
 
-        // show bottom bar
-        val bottomBar = requireActivity().findViewById<View>(R.id.bottom_navigation_bar)
-        bottomBar.visibility = View.VISIBLE
+        /* bottom bar */
+        this.setupBottomBar()
     }
 }

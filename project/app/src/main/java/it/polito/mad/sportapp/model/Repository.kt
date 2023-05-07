@@ -91,7 +91,7 @@ class Repository @Inject constructor(
         reservation.equipments.forEach {
             it.equipmentName = equipmentDao.findEquipmentNameById(it.equipmentId)
         }
-        if (reservation.equipments.isNullOrEmpty()) {
+        if (reservation.equipments.isEmpty()) {
             reservation.equipments = listOf()
         }
         return reservation
@@ -198,9 +198,9 @@ class Repository @Inject constructor(
     // * Playground methods *
 
     fun getAvailablePlaygroundsPerSlot(month: YearMonth, sport: Sport?)
-            : Map<LocalDateTime, List<DetailedPlaygroundSport>> {
+            : MutableMap<LocalDate, MutableMap<LocalDateTime, MutableList<DetailedPlaygroundSport>>> {
         if (sport == null) {
-            return mapOf()
+            return mutableMapOf()
         }
         // * retrieve, for each timeslot in the month, the busy playgrounds *
 
@@ -209,67 +209,84 @@ class Repository @Inject constructor(
             month.toString()
         )
 
-        val busyPlaygroundsPerSlot = busyPlaygrounds.flatMap {
-            var slotStart = it.startLocalDateTime
-            val slotEnd = it.endLocalDateTime
+        val busyPlaygroundsPerSlotAndDate = busyPlaygrounds.asSequence().map{
+            Triple(
+                it.startLocalDateTime,
+                it.endLocalDateTime,
+                DetailedPlaygroundSport(
+                    it.playgroundId,
+                    it.playgroundName,
+                    it.sportId,
+                    it.sportCenterName,
+                    it.pricePerHour
+            ))
+        }.flatMap { (slotStart, slotEnd, detailedPlaygroundSport) ->
+            val playgroundsPerSlot = mutableListOf<Pair<LocalDateTime,DetailedPlaygroundSport>>()
+            var tempSlot = slotStart
 
-            val slots = mutableListOf<LocalDateTime>()
-            while (slotStart.isBefore(slotEnd)) {
-                slots.add(slotStart)
-                slotStart = slotStart.plusMinutes(30)
+            while (tempSlot.isBefore(slotEnd)) {
+                playgroundsPerSlot.add(tempSlot to detailedPlaygroundSport)
+                tempSlot = tempSlot.plusMinutes(30)
             }
 
-            val detailedPlaygroundSport = DetailedPlaygroundSport(
-                it.playgroundId,
-                it.playgroundName,
-                it.sportId,
-                it.sportCenterName,
-                it.pricePerHour
-            )
-
-            slots.map { slot -> Pair(slot, detailedPlaygroundSport) }
+            playgroundsPerSlot
         }
-            .groupBy { it.first }
-            .mapValues { (_, pairList) ->
-                pairList.map { (slot, busyPlayground) -> busyPlayground }.toMutableList()
-            }.toMutableMap()
+        .groupBy { it.first.toLocalDate()!! }
+        .mapValues { (_, pairList) ->
+             pairList.groupBy {
+                (slot, _) -> slot
+             }
+             .mapValues { (_, pairList) ->
+                 pairList.map { it.second }.toMutableList()
+             }
+             .toMutableMap()
+        }
+        .toMutableMap()
 
         // * retrieve all open playgrounds for each time slot (in a generic day) *
 
         val detailedPlaygrounds = playgroundSportDao.findBySportId(sport.id)
 
-        val openPlaygroundsPerSlot = detailedPlaygrounds.flatMap {
-            var slotStart = it.openingTime
-            val slotEnd = it.closingTime
-
-            val slots = mutableListOf<LocalTime>()
-            while (slotStart.isBefore(slotEnd)) {
-                slots.add(slotStart)
-                slotStart = slotStart.plusMinutes(30)
-            }
-
-            val detailedPlaygroundSport = DetailedPlaygroundSport(
-                it.playgroundId,
-                it.playgroundName,
-                it.sportId,
-                it.sportCenterName,
-                it.pricePerHour,
-                true
+        val openPlaygroundsPerSlot = detailedPlaygrounds.asSequence().map{
+            Triple(
+                it.openingTime,
+                it.closingTime,
+                DetailedPlaygroundSport(
+                    it.playgroundId,
+                    it.playgroundName,
+                    it.sportId,
+                    it.sportCenterName,
+                    it.pricePerHour,
+                    true
+                )
             )
+        }.flatMap {(slotStart, slotEnd, detailedPlaygroundSport) ->
+            val playgroundsPerSport = mutableListOf<Pair<LocalTime, DetailedPlaygroundSport>>()
+            var tempSlot = slotStart
 
-            slots.map { slot -> Pair(slot, detailedPlaygroundSport) }
-        }
-            .groupBy { it.first }
-            .mapValues { (_, pairList) ->
-                pairList.map { (_, detailedPlayground) -> detailedPlayground }
+            while (tempSlot.isBefore(slotEnd)) {
+                playgroundsPerSport.add(tempSlot to detailedPlaygroundSport)
+                tempSlot = tempSlot.plusMinutes(30)
             }
 
-        val availablePlaygroundsPerSlot = busyPlaygroundsPerSlot
+            playgroundsPerSport
+        }.groupBy { it.first }
+         .mapValues { (_, pairList) ->
+             pairList.map { (_, detailedPlayground) -> detailedPlayground }
+         }
+
+        val availablePlaygroundsPerSlotAndDate = busyPlaygroundsPerSlotAndDate
 
 
         for (day in 1..month.lengthOfMonth()) {
             openPlaygroundsPerSlot.forEach { (slot, playgrounds) ->
-                val slotDateTime = LocalDateTime.of(month.atDay(day), slot)
+                val date = month.atDay(day)
+                val slotDateTime = LocalDateTime.of(date, slot)
+
+                if (!availablePlaygroundsPerSlotAndDate.containsKey(date))
+                    availablePlaygroundsPerSlotAndDate[date] = mutableMapOf()
+
+                val availablePlaygroundsPerSlot = availablePlaygroundsPerSlotAndDate[date]!!
 
                 if (!availablePlaygroundsPerSlot.containsKey(slotDateTime)){
                     availablePlaygroundsPerSlot[slotDateTime] = mutableListOf<DetailedPlaygroundSport>().also {
@@ -288,7 +305,7 @@ class Repository @Inject constructor(
             }
         }
 
-        return availablePlaygroundsPerSlot
+        return availablePlaygroundsPerSlotAndDate
     }
 
     /* Get the available playgrounds for each slot in the provided month */
@@ -339,7 +356,6 @@ class Repository @Inject constructor(
 
     private fun getRandomPlaygroundSports(sportId: Int?): List<DetailedPlaygroundSport> {
         val prices = listOf(10.00, 15.00, 20.00, 25.00)
-        var nextId = 0
         val random1or2Generator = Random().longs(1, 3).iterator()
         val randomSportCenterGenerator = Random().ints(0, 3).iterator()
         val randomPriceGenerator = Random().ints(0, 4)
@@ -364,8 +380,6 @@ class Repository @Inject constructor(
 
                 randomSportIds.limit(random1or2Generator.next()).distinct()
                     .forEach { tempSportId ->
-                        val id = nextId++
-
                         if(sportId == null || tempSportId == sportId) {
                             add(
                                 DetailedPlaygroundSport(

@@ -9,11 +9,13 @@
     <fragment
         android:id="@+id/showReservationsFragment"
         android:name="it.polito.mad.sportapp.show_reservations.ShowReservationsFragment"
-        android:label="ShowReservationsFragment">
+        android:label="showReservationsFragment">
         <action
             android:id="@+id/action_showReservationsFragment_to_eventsListFragment"
             app:destination="@id/eventsListFragment"
             app:enterAnim="@anim/reservations_list_slide_in_from_bottom"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/reservations_list_slide_out_to_bottom"
             app:popUpTo="@id/showReservationsFragment" />
         <action

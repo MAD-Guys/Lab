@@ -51,7 +51,7 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
 
     // available playgrounds ***for current sport and month***
     private var _availablePlaygroundsPerSlot:
-            MutableLiveData<Map<LocalDateTime, List<DetailedPlaygroundSport>>> =
+            MutableLiveData<MutableMap<LocalDate, Map<LocalDateTime, List<DetailedPlaygroundSport>>>> =
                 MutableLiveData(
                     // retrieve initial playgrounds availabilities from the repository,
                     // for current month and default sport
@@ -60,7 +60,7 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
 
 
     internal var availablePlaygroundsPerSlot:
-            LiveData<Map<LocalDateTime, List<DetailedPlaygroundSport>>> = _availablePlaygroundsPerSlot
+            LiveData<MutableMap<LocalDate, Map<LocalDateTime, List<DetailedPlaygroundSport>>>> = _availablePlaygroundsPerSlot
 
     fun setSelectedDate(newSelectedDate: LocalDate?) {
         val tempPreviousSelectedDate = this.selectedDate.value
@@ -82,24 +82,23 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
     }
 
     fun getAvailablePlaygroundsOn(date: LocalDate): Map<LocalDateTime, List<DetailedPlaygroundSport>> {
-
-        val availablePlaygrounds = this.availablePlaygroundsPerSlot.value.orEmpty().filterKeys {
-            it.toLocalDate() == date
-        }
-
-        // fill with missing slots
-        return fillWithMissingTimeSlots(availablePlaygrounds)
+        return availablePlaygroundsPerSlot.value.orEmpty()[date] ?: mapOf()
     }
 
     fun updatePlaygroundAvailabilitiesForCurrentMonthAndSport() {
         Thread {
-            val newAvailabilities = this.getPlaygroundAvailabilitiesForCurrentMonthAndSport()
+            val oldAvailabilities = this.availablePlaygroundsPerSlot.value ?: mutableMapOf()
+            val newAvailabilities = this.getPlaygroundAvailabilitiesForCurrentMonthAndSport().also {
+                // merge new months' availabilities with the previous one's
+                it.putAll(oldAvailabilities)
+            }
+
             this._availablePlaygroundsPerSlot.postValue(newAvailabilities)
         }.start()
     }
 
     private fun getPlaygroundAvailabilitiesForCurrentMonthAndSport()
-        : Map<LocalDateTime, List<DetailedPlaygroundSport>> {
+        : MutableMap<LocalDate, Map<LocalDateTime, List<DetailedPlaygroundSport>>> {
         val currentMonthAvailabilities = repository.getAvailablePlaygroundsPerSlot(
             currentMonth.value ?: defaultMonth,
             selectedSport.value
@@ -115,7 +114,7 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
             selectedSport.value
         )
 
-        val allAvailabilities = mutableMapOf<LocalDateTime, List<DetailedPlaygroundSport>>().also {
+        val allAvailabilities = mutableMapOf<LocalDate, Map<LocalDateTime, List<DetailedPlaygroundSport>>>().also {
             it.putAll(currentMonthAvailabilities)
             it.putAll(previousMonthAvailabilities)
             it.putAll(nextMonthAvailabilities)
@@ -127,29 +126,5 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
     /* selected sport */
     fun setSelectedSport(selectedSport: Sport?) {
         this._selectedSport.value = selectedSport
-    }
-
-    private fun fillWithMissingTimeSlots(
-        availablePlaygroundsOnDate: Map<LocalDateTime, List<DetailedPlaygroundSport>>,
-    ): Map<LocalDateTime, List<DetailedPlaygroundSport>> {
-        val availablePlaygroundsInAllSlots = availablePlaygroundsOnDate.toMutableMap()
-
-        // if there are no available playgrounds on this date, keep the map empty
-        if(availablePlaygroundsOnDate.isEmpty())
-            return availablePlaygroundsInAllSlots
-
-        // retrieve the first and the last slot to show
-        var startSlot = availablePlaygroundsInAllSlots.keys.min()
-        val endSlot = availablePlaygroundsInAllSlots.keys.max()
-
-        // fill the missing slots between the first and the last one
-        while(startSlot.isBefore(endSlot)) {
-            if (!availablePlaygroundsInAllSlots.containsKey(startSlot))
-                availablePlaygroundsInAllSlots[startSlot] = emptyList()
-
-            startSlot = startSlot.plus(slotDuration)
-        }
-
-        return availablePlaygroundsInAllSlots
     }
 }
