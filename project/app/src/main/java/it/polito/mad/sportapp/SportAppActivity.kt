@@ -1,11 +1,8 @@
 package it.polito.mad.sportapp
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.navigation.NavigationBarView
@@ -42,26 +39,31 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
 
         // configure toasts appearance
         toastyInit()
-
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 
         val previousFragment = navController.previousBackStackEntry?.destination?.id
 
-        when {
-            (item.itemId == R.id.reservations && previousFragment == R.id.playgroundAvailabilitiesFragment) -> {
-                navController.navigate(R.id.action_playgroundAvailabilitiesFragment_to_showReservationsFragment)
+        when(item.itemId) {
+            R.id.reservations -> {
+                if (previousFragment == R.id.playgroundAvailabilitiesFragment)
+                    navController.navigate(R.id.action_playgroundAvailabilitiesFragment_to_showReservationsFragment)
+                else
+                    navController.navigate(R.id.showReservationsFragment)
+            }
+
+            R.id.playgrounds -> {
+                if (previousFragment == R.id.showReservationsFragment)
+                    navController.navigate(R.id.action_showReservationsFragment_to_playgroundAvailabilitiesFragment)
+                else
+                    navController.navigate(R.id.playgroundAvailabilitiesFragment)
             }
 
             // TODO: uncomment and substitute with the show profile fragment and action
             /*(item.itemId == R.id.reservations && previousFragment == R.id.showProfileFragment) -> {
                 navController.navigate(R.id.action_showProfileFragment_to_showReservationsFragment)
             }*/
-
-            (item.itemId == R.id.playgrounds && previousFragment == R.id.showReservationsFragment) -> {
-                navController.navigate(R.id.action_showReservationsFragment_to_playgroundAvailabilitiesFragment)
-            }
 
             // TODO: uncomment and substitute with the show profile fragment and action
             /*(item.itemId == R.id.playgrounds && previousFragment == R.id.showProfileFragment) -> {

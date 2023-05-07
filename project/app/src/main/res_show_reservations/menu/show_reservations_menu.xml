@@ -7,7 +7,13 @@
         android:id="@+id/events_list_button"
         android:icon="@drawable/baseline_format_list_bulleted_24"
         android:title="@string/list_view_button"
-        android:visible="true"
+        android:visible="false"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/show_reservations_button"
+        android:icon="@drawable/baseline_calendar_month_24"
+        android:title="@string/show_reservations_button"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
 </menu>

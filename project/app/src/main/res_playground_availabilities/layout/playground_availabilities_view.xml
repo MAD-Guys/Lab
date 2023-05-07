@@ -1,143 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_calendar"
-    android:orientation="vertical"
-    android:clickable="true"
-    android:focusable="true"
+    android:fillViewport="true"
     tools:context=".playground_availabilities.PlaygroundAvailabilitiesFragment">
 
-    <!-- Month bar -->
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/primary_orange"
-        android:theme="@style/AppTheme.AppBarOverlay">
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp">
-
-            <!-- Previous month button -->
-            <ImageView
-                android:id="@+id/previous_month_button"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/previous_month_button_description"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_chevron_left"
-                app:tint="@color/white"
-                tools:ignore="ImageContrastCheck,RedundantDescriptionCheck" />
-
-            <!-- Month label -->
-            <TextView
-                android:id="@+id/month_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_medium"
-                android:paddingTop="3dp"
-                android:text="@string/default_month"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="22sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/next_month_button"
-                app:layout_constraintStart_toEndOf="@+id/previous_month_button"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="TextContrastCheck" />
-
-            <!-- Next month button -->
-            <ImageView
-                android:id="@+id/next_month_button"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/next_month_button_description"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_chevron_right"
-                app:tint="@color/white"
-                tools:ignore="ImageContrastCheck,RedundantDescriptionCheck" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <!-- Sport selection -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="33dp"
-        android:layout_marginHorizontal="1dp"
-        android:layout_marginVertical="3dp"
-        tools:ignore="TextSizeCheck">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="true">
 
-        <Spinner
-            android:id="@+id/selected_sport_spinner"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:textAlignment="center"
-            android:paddingStart="0dp"
-            android:paddingEnd="0dp"
-            android:background="@drawable/spinner_bg"
-            android:hapticFeedbackEnabled="true"
-            tools:ignore="TouchTargetSizeCheck" />
+        <!-- Month bar -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary_orange"
+            android:theme="@style/AppTheme.AppBarOverlay">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
 
-        <!-- (for future use)
-        <Spinner
-            android:id="@+id/selected_sport_center_spinner"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:visibility="invisible" />
-        -->
+                <!-- Previous month button -->
+                <ImageView
+                    android:id="@+id/previous_month_button"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/previous_month_button_description"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_chevron_left"
+                    app:tint="@color/white"
+                    tools:ignore="ImageContrastCheck,RedundantDescriptionCheck" />
+
+                <!-- Month label -->
+                <TextView
+                    android:id="@+id/month_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:paddingTop="3dp"
+                    android:text="@string/default_month"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="22sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/next_month_button"
+                    app:layout_constraintStart_toEndOf="@+id/previous_month_button"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="TextContrastCheck" />
+
+                <!-- Next month button -->
+                <ImageView
+                    android:id="@+id/next_month_button"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/next_month_button_description"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_chevron_right"
+                    app:tint="@color/white"
+                    tools:ignore="ImageContrastCheck,RedundantDescriptionCheck" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- Sport selection -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="33dp"
+            android:layout_marginHorizontal="1dp"
+            android:layout_marginVertical="3dp"
+            tools:ignore="TextSizeCheck">
+
+            <Spinner
+                android:id="@+id/selected_sport_spinner"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/spinner_bg"
+                android:hapticFeedbackEnabled="true"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp"
+                android:textAlignment="center"
+                tools:ignore="TouchTargetSizeCheck,DuplicateSpeakableTextCheck" />
+
+            <!-- (for future use)
+            <Spinner
+                android:id="@+id/selected_sport_center_spinner"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:visibility="invisible" />
+            -->
+        </LinearLayout>
+
+        <!-- Calendar -->
+        <com.kizitonwose.calendar.view.CalendarView
+            android:id="@+id/calendar_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="1dp"
+            app:cv_dayViewResource="@layout/playground_availabilities_calendar_day_container"
+            app:cv_monthHeaderResource="@layout/calendar_header"
+            app:cv_outDateStyle="endOfGrid"
+            app:cv_scrollPaged="true"
+            />
+
+        <!-- selected date label container -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="20sp"
+            android:layout_margin="1dp"
+            android:background="@drawable/time_slot_bg"
+            tools:ignore="TextSizeCheck">
+
+            <TextView
+                android:id="@+id/selected_date_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/poppins_semibold"
+                android:includeFontPadding="false"
+                android:text="@string/selected_date_text"
+                android:textAlignment="center"
+                android:textColor="@color/time_slot_text"
+                android:textSize="@dimen/selected_date_label_text_size"
+                tools:ignore="TextContrastCheck" />
+
+        </RelativeLayout>
+
+        <!-- Selected date slots' playground availabilities -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/playground_availabilities_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"/>
+
     </LinearLayout>
 
-    <!-- Calendar -->
-    <com.kizitonwose.calendar.view.CalendarView
-        android:id="@+id/calendar_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="1dp"
-        app:cv_dayViewResource="@layout/playground_availabilities_calendar_day_container"
-        app:cv_monthHeaderResource="@layout/calendar_header"
-        app:cv_outDateStyle="endOfGrid"
-        app:cv_scrollPaged="true"
-        />
-
-    <!-- selected date label container -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="20sp"
-        android:layout_margin="1dp"
-        android:background="@drawable/time_slot_bg"
-        tools:ignore="TextSizeCheck">
-
-        <TextView
-            android:id="@+id/selected_date_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:fontFamily="@font/poppins_semibold"
-            android:includeFontPadding="false"
-            android:text="@string/selected_date_text"
-            android:textAlignment="center"
-            android:textColor="@color/time_slot_text"
-            android:textSize="@dimen/selected_date_label_text_size"
-            tools:ignore="TextContrastCheck" />
-
-    </RelativeLayout>
-
-    <!-- Selected date slots' playground availabilities -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/playground_availabilities_rv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-</LinearLayout>
+</androidx.core.widget.NestedScrollView>

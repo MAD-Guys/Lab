@@ -111,7 +111,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 // handle the menu selection
                 return when (menuItem.itemId) {
-                    R.id.show_profile_button -> {
+                    R.id.show_reservations_button -> {
                         navController.navigate(R.id.action_eventsListFragment_to_showReservationsFragment)
                         true
                     }

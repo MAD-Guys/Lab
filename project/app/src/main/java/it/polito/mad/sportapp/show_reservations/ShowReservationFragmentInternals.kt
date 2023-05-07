@@ -221,6 +221,8 @@ internal fun ShowReservationsFragment.menuInit() {
             // change app bar's title
             actionBar?.title = "My Reservations"
 
+            // change visibility of the show reservations menu item
+            menu.findItem(R.id.events_list_button).isVisible = true
         }
 
         override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -238,6 +240,7 @@ internal fun ShowReservationsFragment.menuInit() {
 }
 
 // perform haptic feedback if android version is lower than 13
+@Suppress("DEPRECATION")
 internal fun performHapticFeedback(view: View) {
 
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
