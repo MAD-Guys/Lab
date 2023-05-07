@@ -216,13 +216,11 @@ internal fun ShowReservationsFragment.menuInit() {
 
     menuHost.addMenuProvider(object : MenuProvider {
         override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-            menuInflater.inflate(R.menu.sport_app_menu, menu)
+            menuInflater.inflate(R.menu.show_reservations_menu, menu)
 
             // change app bar's title
             actionBar?.title = "My Reservations"
 
-            // change visibility of events list menu item
-            menu.getItem(R.id.events_list_button).isVisible = true
         }
 
         override fun onMenuItemSelected(menuItem: MenuItem): Boolean {

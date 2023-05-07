@@ -43,8 +43,6 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         // configure toasts appearance
         toastyInit()
 
-        // configure menu
-        menuInit()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -87,27 +85,6 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         return true
     }
 
-    /* app menu */
 
-    private fun menuInit() {
-        // add menu items without overriding methods in the Activity
-        addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                // inflate the menu
-                menuInflater.inflate(R.menu.sport_app_menu, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.events_list_button -> {
-                        navController.navigate(R.id.action_showReservationsFragment_to_eventsListFragment)
-                        true
-                    }
-
-                    else -> false
-                }
-            }
-        })
-    }
 
 }

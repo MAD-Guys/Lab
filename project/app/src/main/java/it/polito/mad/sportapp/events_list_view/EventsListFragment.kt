@@ -99,7 +99,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
 
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.sport_app_menu, menu)
+                menuInflater.inflate(R.menu.show_reservations_menu, menu)
 
                 // change app bar's title
                 actionBar?.title = "My Reservations"

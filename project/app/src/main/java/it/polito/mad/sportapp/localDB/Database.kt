@@ -47,9 +47,9 @@ abstract class AppDatabase : RoomDatabase() {
             val i = INSTANCE ?:
                 Room.databaseBuilder(
                     context.applicationContext, AppDatabase::class.java, "sportapp.db"
-                ).createFromAsset(
+                )/*.createFromAsset(
                     "database/sportapp.db"
-                )/*.addCallback(object : RoomDatabase.Callback() {
+                )*//*.addCallback(object : RoomDatabase.Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
                         initDb(INSTANCE)
