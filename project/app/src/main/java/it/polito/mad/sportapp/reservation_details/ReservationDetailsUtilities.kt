@@ -34,7 +34,7 @@ fun reservationQRCode(r: DetailedReservation): Bitmap {
     return bitmap
 }
 
-fun setQRCodeView(reservation: DetailedReservation, imageView: ImageView) {
+internal fun setQRCodeView(reservation: DetailedReservation, imageView: ImageView) {
     val qrCode: Bitmap = reservationQRCode(reservation)
     imageView.setImageBitmap(qrCode)
 }

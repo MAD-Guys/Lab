@@ -10,4 +10,11 @@
         android:visible="false"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/reservation_details_edit_button"
+        android:icon="@drawable/baseline_edit_24"
+        android:title="@string/reservation_details_back_button"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+
 </menu>

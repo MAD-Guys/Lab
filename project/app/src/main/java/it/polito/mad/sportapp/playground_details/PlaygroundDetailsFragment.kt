@@ -1,8 +1,5 @@
 package it.polito.mad.sportapp.playground_details
 
-import android.content.Intent
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -13,51 +10,50 @@ import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.playground_details.reviews_recycler_view.ReviewAdapter
 
+@AndroidEntryPoint
 class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details) {
 
-    private val viewModel by viewModels<PlaygroundDetailsViewModel>()
+    internal val viewModel by viewModels<PlaygroundDetailsViewModel>()
 
-    private var playgroundId = -1
+    internal var playgroundId = -1
 
-    private lateinit var playgroundImage: ImageView
-    private lateinit var overallRatingBar: RatingBar
-    private lateinit var playgroundName: TextView
-    private lateinit var sportCenterName: TextView
-    private lateinit var playgroundSport: TextView
-    private lateinit var playgroundAddress: TextView
-    private lateinit var playgroundOpeningTime: TextView
-    private lateinit var playgroundClosingTime: TextView
-    private lateinit var playgroundPrice: TextView
-    private lateinit var addReservationButton: Button
-    private lateinit var directionsButton: Button
+    internal lateinit var playgroundImage: ImageView
+    internal lateinit var overallRatingBar: RatingBar
+    internal lateinit var playgroundName: TextView
+    internal lateinit var sportCenterName: TextView
+    internal lateinit var playgroundSport: TextView
+    internal lateinit var playgroundAddress: TextView
+    internal lateinit var playgroundOpeningTime: TextView
+    internal lateinit var playgroundClosingTime: TextView
+    internal lateinit var playgroundPrice: TextView
+    internal lateinit var addReservationButton: Button
+    internal lateinit var directionsButton: Button
 
+    internal lateinit var playgroundQualityRatingBar: RatingBar
+    internal lateinit var playgroundFacilitiesRatingBar: RatingBar
 
-    private lateinit var playgroundQualityRatingBar: RatingBar
-    private lateinit var playgroundFacilitiesRatingBar: RatingBar
+    internal lateinit var yourReviewContainer: LinearLayout
+    internal lateinit var reviewList: RecyclerView
+    internal val reviewAdapter = ReviewAdapter()
 
-    private lateinit var yourReviewContainer: LinearLayout
-    private lateinit var reviewList: RecyclerView
-    private val reviewAdapter = ReviewAdapter()
-
-    private lateinit var yourReview: View
-    private lateinit var yourUsername: TextView
-    private lateinit var yourReviewDate: TextView
-    private lateinit var yourQualityRating: RatingBar
-    private lateinit var yourFacilitiesRating: RatingBar
-    private lateinit var yourReviewText: TextView
-    private lateinit var yourReviewEditText: EditText
-    private lateinit var addReviewButton: Button
-    private lateinit var editReviewButton: Button
-    private lateinit var saveReviewButton: Button
-    private lateinit var existingReview: LinearLayout
-    private lateinit var writeReview: LinearLayout
+    internal lateinit var yourReview: View
+    internal lateinit var yourUsername: TextView
+    internal lateinit var yourReviewDate: TextView
+    internal lateinit var yourQualityRating: RatingBar
+    internal lateinit var yourFacilitiesRating: RatingBar
+    internal lateinit var yourReviewText: TextView
+    internal lateinit var yourReviewEditText: EditText
+    internal lateinit var addReviewButton: Button
+    internal lateinit var editReviewButton: Button
+    internal lateinit var saveReviewButton: Button
+    internal lateinit var existingReview: LinearLayout
+    internal lateinit var writeReview: LinearLayout
 
     private lateinit var bottomNavigationBar: View
 
@@ -98,183 +94,6 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
     override fun onPause() {
         super.onPause()
         bottomNavigationBar.visibility = View.VISIBLE
-    }
-
-    private fun retrieveViews() {
-        playgroundImage = requireView().findViewById(R.id.playgroundImage)
-        overallRatingBar = requireView().findViewById(R.id.overallRating)
-        playgroundName = requireView().findViewById(R.id.playgroundName)
-        sportCenterName = requireView().findViewById(R.id.sportCenterName)
-        playgroundSport = requireView().findViewById(R.id.playgroundSport)
-        playgroundAddress = requireView().findViewById(R.id.playgroundAddress)
-        playgroundOpeningTime = requireView().findViewById(R.id.playgroundOpeningTime)
-        playgroundClosingTime = requireView().findViewById(R.id.playgroundClosingTime)
-        playgroundPrice = requireView().findViewById(R.id.playgroundPrice)
-        playgroundQualityRatingBar = requireView().findViewById(R.id.overallQualityRatingBar)
-        playgroundFacilitiesRatingBar = requireView().findViewById(R.id.overallFacilitiesRatingBar)
-        yourReviewContainer = requireView().findViewById(R.id.yourReviewContainer)
-        reviewList = requireView().findViewById(R.id.reviews_recyclerView)
-        addReservationButton = requireView().findViewById(R.id.buttonAddReservation)
-        directionsButton = requireView().findViewById(R.id.directionsButton)
-    }
-
-    private fun initViews() {
-        chooseImage(playgroundImage)
-        overallRatingBar.rating = 3.5f //viewModel.playground.value?.overallRating
-        playgroundName.text = viewModel.playground.value?.playgroundName
-        sportCenterName.text = viewModel.playground.value?.sportCenterName
-        playgroundSport.text = "Basketball" //viewModel.playground.value?.sportName
-        playgroundAddress.text =
-            "Via Roma 1, Turin" //viewModel.playground.value?.sportCenterAddress
-        playgroundOpeningTime.text = viewModel.playground.value?.openingHours
-        playgroundClosingTime.text = viewModel.playground.value?.closingHours
-        playgroundPrice.text = String.format("%.2f", viewModel.playground.value?.pricePerHour)
-        playgroundQualityRatingBar.rating = 4.5f //viewModel.playground.value?.qualityRating
-        playgroundFacilitiesRatingBar.rating = 2.5f //viewModel.playground.value?.facilitiesRating
-
-        addReservationButton.setOnClickListener { handleAddReservationButton() }
-        directionsButton.setOnClickListener { handleDirectionsButton() }
-    }
-
-    private fun initYourReview() {
-        yourReview = layoutInflater.inflate(R.layout.your_review, yourReviewContainer)
-
-        //retrieve views
-        yourUsername = yourReview.findViewById(R.id.username)
-        yourReviewDate = yourReview.findViewById(R.id.date)
-        yourQualityRating = yourReview.findViewById(R.id.qualityRatingBar)
-        yourFacilitiesRating = yourReview.findViewById(R.id.facilitiesRatingBar)
-        yourReviewText = yourReview.findViewById(R.id.reviewBody)
-        yourReviewEditText = yourReview.findViewById(R.id.reviewInputBody)
-        addReviewButton = yourReview.findViewById(R.id.buttonAddReview)
-        editReviewButton = yourReview.findViewById(R.id.buttonEditReview)
-        saveReviewButton = yourReview.findViewById(R.id.buttonSaveReview)
-        existingReview = yourReview.findViewById(R.id.existingReview)
-        writeReview = yourReview.findViewById(R.id.writeReview)
-
-        //Common initializations
-        yourUsername.text = "johndoe" //viewModel.yourReview.value.username
-
-        if ( //Case 1: no rate and no review
-            (viewModel.yourReview.value?.id  == 0)
-            && (viewModel.yourReview.value?.qualityRating == 0f)
-            && (viewModel.yourReview.value?.facilitiesRating == 0f)
-            && (viewModel.yourReview.value?.review == "")
-        ) {
-            yourReviewDate.visibility = TextView.GONE
-            yourQualityRating.rating = 0f
-            yourFacilitiesRating.rating = 0f
-            yourReviewText.text = ""
-            yourReviewEditText.setText("", TextView.BufferType.EDITABLE)
-        } else if ( //Case 2: rate but not review
-            viewModel.yourReview.value?.review == ""
-        ) {
-            yourReviewDate.text =
-                "6/5/23" //viewModel.yourReview.value?.date?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
-            yourReviewDate.visibility = TextView.VISIBLE
-            yourQualityRating.rating = viewModel.yourReview.value?.qualityRating!!
-            yourFacilitiesRating.rating = viewModel.yourReview.value?.facilitiesRating!!
-            yourReviewText.text = ""
-            yourReviewEditText.setText("", TextView.BufferType.EDITABLE)
-        } else { //Case 3: rate and review
-            yourReviewDate.text =
-                "6/5/23" //viewModel.yourReview.value?.date?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
-            yourReviewDate.visibility = TextView.VISIBLE
-            yourQualityRating.rating = viewModel.yourReview.value?.qualityRating!!
-            yourFacilitiesRating.rating = viewModel.yourReview.value?.facilitiesRating!!
-            yourReviewText.text = viewModel.yourReview.value?.review!!
-            yourReviewEditText.setText(
-                viewModel.yourReview.value?.review,
-                TextView.BufferType.EDITABLE
-            )
-            addReviewButton.visibility = Button.GONE
-            existingReview.visibility = LinearLayout.VISIBLE
-        }
-
-        //setListeners
-        yourQualityRating.setOnRatingBarChangeListener { _, fl, _ -> handleQualityRatingBar(fl) }
-        yourFacilitiesRating.setOnRatingBarChangeListener { _, fl, _ -> handleFacilitiesRatingBar(fl) }
-        addReviewButton.setOnClickListener { handleAddReviewButton() }
-        editReviewButton.setOnClickListener { handleEditReviewButton() }
-        saveReviewButton.setOnClickListener { handleSaveReviewButton() }
-
-        yourReviewContainer.addView(yourReview)
-    }
-
-    private fun initReviewList() {
-        reviewList.apply {
-            layoutManager =
-                LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            adapter = reviewAdapter
-        }
-        reviewAdapter.reviews.clear()
-        //reviewAdapter.reviews.addAll(viewModel.playground.value?.reviews)
-        reviewAdapter.notifyDataSetChanged()
-    }
-
-    private fun handleAddReservationButton() {
-        //TODO: navigate to new reservation
-    }
-
-    private fun handleDirectionsButton() {
-        val formattedAddress = playgroundAddress.text
-        val intent = Intent(
-            Intent.ACTION_VIEW,
-            Uri.parse("https://www.google.com/maps/search/?api=1&query=$formattedAddress")
-        )
-        startActivity(intent)
-    }
-
-    private fun chooseImage(view: ImageView) {
-        lateinit var image : Drawable
-        when (viewModel.playground.value?.sportId) {
-            1 -> image = ResourcesCompat.getDrawable(resources, R.drawable._01_tennis, null)!!
-            2 -> image = ResourcesCompat.getDrawable(resources, R.drawable._02_table_tennis, null)!!
-            3 -> image = ResourcesCompat.getDrawable(resources, R.drawable._03_padel, null)!!
-            4 -> image = ResourcesCompat.getDrawable(resources, R.drawable._04_basket, null)!!
-            5 -> image = ResourcesCompat.getDrawable(resources, R.drawable._05_football11, null)!!
-            6 -> image = ResourcesCompat.getDrawable(resources, R.drawable._06_volleyball, null)!!
-            7 -> image = ResourcesCompat.getDrawable(resources, R.drawable._07_beach_volley, null)!!
-            8 -> image = ResourcesCompat.getDrawable(resources, R.drawable._08_football5, null)!!
-            9 -> image = ResourcesCompat.getDrawable(resources, R.drawable._09_football8, null)!!
-            10 -> image = ResourcesCompat.getDrawable(resources, R.drawable._10_minigolf, null)!!
-        }
-
-        view.setImageDrawable(image)
-    }
-
-    private fun handleQualityRatingBar(rating: Float) {
-        //TODO
-        //call viewModel and update db
-    }
-
-    private fun handleFacilitiesRatingBar(rating: Float) {
-        //TODO
-        //call viewModel and update db
-    }
-
-    private fun handleAddReviewButton() {
-        addReviewButton.visibility = Button.GONE
-        writeReview.visibility = LinearLayout.VISIBLE
-    }
-
-    private fun handleEditReviewButton() {
-        existingReview.visibility = LinearLayout.GONE
-        writeReview.visibility = LinearLayout.VISIBLE
-    }
-
-    private fun handleSaveReviewButton() {
-
-        yourReviewText.text = yourReviewEditText.text
-        writeReview.visibility = LinearLayout.GONE
-
-        if (yourReviewText.text == "") {
-            addReviewButton.visibility = Button.VISIBLE
-        } else {
-            existingReview.visibility = LinearLayout.VISIBLE
-        }
-
-        //TODO: call viewModel to store the new review
     }
 
 }

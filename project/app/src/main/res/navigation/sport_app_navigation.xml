@@ -31,13 +31,23 @@
     <fragment
         android:id="@+id/reservationDetailsFragment"
         android:name="it.polito.mad.sportapp.reservation_details.ReservationDetailsFragment"
-        android:label="ReservationDetailsFragment"/>
+        android:label="ReservationDetailsFragment">
+        <action
+            android:id="@+id/action_reservationDetailsFragment_to_PlaygroundDetailsFragment"
+            app:destination="@id/PlaygroundDetailsFragment"
+            app:enterAnim="@anim/custom_animation_slide_in_from_bottom"
+            app:exitAnim="@anim/custom_animation_fade_out" />
+    </fragment>
 
     <fragment
         android:id="@+id/playgroundAvailabilitiesFragment"
         android:name="it.polito.mad.sportapp.playground_availabilities.PlaygroundAvailabilitiesFragment"
         android:label="playground_availabilities_view"
-        tools:layout="@layout/playground_availabilities_view"/>
+        tools:layout="@layout/playground_availabilities_view">
+        <action
+            android:id="@+id/action_playgroundAvailabilitiesFragment_to_PlaygroundDetailsFragment"
+            app:destination="@id/PlaygroundDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/eventsListFragment"
         android:name="it.polito.mad.sportapp.show_reservations.events_list_view.EventsListFragment"
@@ -68,5 +78,10 @@
         android:id="@+id/editProfileFragment"
         android:name="it.polito.mad.sportapp.profile.edit_profile.EditProfileFragment"
         android:label="EditProfileFragment" />
+    <fragment
+        android:id="@+id/PlaygroundDetailsFragment"
+        android:name="it.polito.mad.sportapp.playground_details.PlaygroundDetailsFragment"
+        android:label="PlaygroundDetailsFragment"
+        />
 
 </navigation>

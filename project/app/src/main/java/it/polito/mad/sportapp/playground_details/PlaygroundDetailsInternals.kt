@@ -1,0 +1,75 @@
+package it.polito.mad.sportapp.playground_details
+
+import android.content.Intent
+import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.widget.ImageView
+import androidx.core.content.res.ResourcesCompat
+import it.polito.mad.sportapp.R
+
+internal fun PlaygroundDetailsFragment.retrieveViews() {
+    playgroundImage = requireView().findViewById(R.id.playgroundImage)
+    overallRatingBar = requireView().findViewById(R.id.overallRating)
+    playgroundName = requireView().findViewById(R.id.playgroundName)
+    sportCenterName = requireView().findViewById(R.id.sportCenterName)
+    playgroundSport = requireView().findViewById(R.id.playgroundSport)
+    playgroundAddress = requireView().findViewById(R.id.playgroundAddress)
+    playgroundOpeningTime = requireView().findViewById(R.id.playgroundOpeningTime)
+    playgroundClosingTime = requireView().findViewById(R.id.playgroundClosingTime)
+    playgroundPrice = requireView().findViewById(R.id.playgroundPrice)
+    playgroundQualityRatingBar = requireView().findViewById(R.id.overallQualityRatingBar)
+    playgroundFacilitiesRatingBar = requireView().findViewById(R.id.overallFacilitiesRatingBar)
+    yourReviewContainer = requireView().findViewById(R.id.yourReviewContainer)
+    reviewList = requireView().findViewById(R.id.reviews_recyclerView)
+    addReservationButton = requireView().findViewById(R.id.buttonAddReservation)
+    directionsButton = requireView().findViewById(R.id.buttonDirections)
+}
+
+internal fun PlaygroundDetailsFragment.initViews() {
+    chooseImage(playgroundImage)
+    overallRatingBar.rating = 3.5f //viewModel.playground.value?.overallRating
+    playgroundName.text = viewModel.playground.value?.playgroundName
+    sportCenterName.text = viewModel.playground.value?.sportCenterName
+    playgroundSport.text = "Basketball" //viewModel.playground.value?.sportName
+    playgroundAddress.text =
+        "Via Roma 1, Turin" //viewModel.playground.value?.sportCenterAddress
+    playgroundOpeningTime.text = viewModel.playground.value?.openingHours
+    playgroundClosingTime.text = viewModel.playground.value?.closingHours
+    playgroundPrice.text = String.format("%.2f", viewModel.playground.value?.pricePerHour)
+    playgroundQualityRatingBar.rating = 4.5f //viewModel.playground.value?.qualityRating
+    playgroundFacilitiesRatingBar.rating = 2.5f //viewModel.playground.value?.facilitiesRating
+
+    addReservationButton.setOnClickListener { handleAddReservationButton() }
+    directionsButton.setOnClickListener { handleDirectionsButton() }
+}
+
+internal fun PlaygroundDetailsFragment.chooseImage(view: ImageView) {
+    lateinit var image : Drawable
+    when (viewModel.playground.value?.sportId) {
+        1 -> image = ResourcesCompat.getDrawable(resources, R.drawable._01_tennis, null)!!
+        2 -> image = ResourcesCompat.getDrawable(resources, R.drawable._02_table_tennis, null)!!
+        3 -> image = ResourcesCompat.getDrawable(resources, R.drawable._03_padel, null)!!
+        4 -> image = ResourcesCompat.getDrawable(resources, R.drawable._04_basket, null)!!
+        5 -> image = ResourcesCompat.getDrawable(resources, R.drawable._05_football11, null)!!
+        6 -> image = ResourcesCompat.getDrawable(resources, R.drawable._06_volleyball, null)!!
+        7 -> image = ResourcesCompat.getDrawable(resources, R.drawable._07_beach_volley, null)!!
+        8 -> image = ResourcesCompat.getDrawable(resources, R.drawable._08_football5, null)!!
+        9 -> image = ResourcesCompat.getDrawable(resources, R.drawable._09_football8, null)!!
+        10 -> image = ResourcesCompat.getDrawable(resources, R.drawable._10_minigolf, null)!!
+    }
+
+    view.setImageDrawable(image)
+}
+
+internal fun PlaygroundDetailsFragment.handleAddReservationButton() {
+    //TODO: navigate to new reservation
+}
+
+internal fun PlaygroundDetailsFragment.handleDirectionsButton() {
+    val formattedAddress = playgroundAddress.text
+    val intent = Intent(
+        Intent.ACTION_VIEW,
+        Uri.parse("https://www.google.com/maps/search/?api=1&query=$formattedAddress")
+    )
+    startActivity(intent)
+}

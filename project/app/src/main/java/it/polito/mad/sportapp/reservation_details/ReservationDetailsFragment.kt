@@ -16,6 +16,7 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -41,7 +42,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
     private lateinit var reservationPlayground: TextView
     private lateinit var reservationSportCenter: TextView
     private lateinit var reservationSportCenterAddress: TextView
-    private lateinit var directionsButton: ImageButton
+    private lateinit var playgroundButton: Button
     private lateinit var noEquipmentMessage: TextView
     private lateinit var equipment: LinearLayout
     private lateinit var editButton: ImageButton
@@ -90,9 +91,9 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         // initializeValues()
         initializeEquipment()
 
-        // add link to Google Maps
-        directionsButton.setOnClickListener {
-            handleDirectionsButton(reservationSportCenterAddress.text.toString())
+        // add link to Playground Details
+        playgroundButton.setOnClickListener {
+            handlePlaygroundButton(1 /*viewModel.reservation.value.playgroundId*/)
         }
 
         editButton.setOnClickListener {
@@ -140,6 +141,8 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                     it.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
                     it.title = "Reservation Details"
                 }
+
+                menu.findItem(R.id.reservation_details_edit_button).isVisible = true
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -147,6 +150,11 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                 return when (menuItem.itemId) {
                     R.id.reservation_details_back_button -> {
                         navController.popBackStack()
+                        true
+                    }
+                    R.id.reservation_details_edit_button -> {
+                        //TODO: Navigate to edit
+                        showToasty("info", requireContext(), "Edit reservation")
                         true
                     }
 
@@ -165,7 +173,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         reservationPlayground = requireView().findViewById(R.id.reservationPlaygroundName)
         reservationSportCenter = requireView().findViewById(R.id.reservationSportCenter)
         reservationSportCenterAddress = requireView().findViewById(R.id.reservationAddress)
-        directionsButton = requireView().findViewById(R.id.directionsButton)
+        playgroundButton = requireView().findViewById(R.id.button_playground_details)
         noEquipmentMessage = requireView().findViewById(R.id.noEquipmentMessage)
         reservationTotalPrice = requireView().findViewById(R.id.reservationPrice)
         equipment = requireView().findViewById(R.id.equipmentContainer)
@@ -232,6 +240,11 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
             Uri.parse("https://www.google.com/maps/search/?api=1&query=$formattedAddress")
         )
         startActivity(intent)
+    }
+
+    private fun handlePlaygroundButton(playgroundId : Int){
+        val bundle = bundleOf("id_playground" to playgroundId)
+        navController.navigate(R.id.action_reservationDetailsFragment_to_PlaygroundDetailsFragment, bundle)
     }
 
     private fun toEditView() {

@@ -175,7 +175,7 @@ internal fun clearStorageFiles(directory: File, regexp: String) {
 
 /* showing toast according to its type */
 
-internal fun showToasty(type: String, context: Context, message: String) {
+fun showToasty(type: String, context: Context, message: String) {
     when (type) {
         "success" -> Toasty.custom(
             context, message,
