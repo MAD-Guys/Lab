@@ -101,6 +101,9 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
         if (isGranted) {
             // gallery permission is granted
             openGallery()
+        } else {
+            // gallery permission is not granted
+            Log.d("EditProfileFragment", "Gallery permission not granted!")
         }
     }
 
@@ -129,6 +132,9 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
         if (isGranted) {
             // camera permission is granted
             openCamera()
+        } else {
+            // camera permission is not granted
+            Log.d("EditProfileFragment", "Camera permission not granted!")
         }
     }
 
@@ -192,6 +198,9 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
 
         // setup bottom bar
         setupBottomBar()
+
+        // initialize key listeners
+        keyListenersInit()
 
         // initialize the EditText views
         firstName = view.findViewById(R.id.edit_first_name)

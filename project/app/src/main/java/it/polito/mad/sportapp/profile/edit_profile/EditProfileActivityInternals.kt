@@ -7,6 +7,7 @@ import android.os.Build
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -37,6 +38,7 @@ import it.polito.mad.sportapp.setProfilePictureSize
 import it.polito.mad.sportapp.showToasty
 import org.json.JSONObject
 import java.io.File
+
 
 // manage menu item selection
 internal fun EditProfileFragment.menuInit() {
@@ -87,6 +89,28 @@ internal fun EditProfileFragment.menuInit() {
             }
         }
     }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+}
+
+internal fun EditProfileFragment.keyListenersInit() {
+    view?.isFocusableInTouchMode = true
+    view?.requestFocus()
+    view?.setOnKeyListener { _, keyCode, event ->
+
+        // check if the back button has been pressed
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
+            // (the information will be persistently saved in the onPause method)
+
+            // showing feedback information
+            showToasty("success", requireContext(), "Information correctly saved!")
+
+            // navigate back to show profile fragment
+            navController.popBackStack()
+
+            true
+        } else {
+            false
+        }
+    }
 }
 
 /* bottom bar */
