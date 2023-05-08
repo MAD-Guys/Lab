@@ -1,6 +1,7 @@
 package it.polito.mad.sportapp.playground_details
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -12,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -224,9 +226,21 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
     }
 
     private fun chooseImage(view: ImageView) {
+        lateinit var image : Drawable
         when (viewModel.playground.value?.sportId) {
-            //TODO n -> view.setImageDrawable(...)
+            1 -> image = ResourcesCompat.getDrawable(resources, R.drawable._01_tennis, null)!!
+            2 -> image = ResourcesCompat.getDrawable(resources, R.drawable._02_table_tennis, null)!!
+            3 -> image = ResourcesCompat.getDrawable(resources, R.drawable._03_padel, null)!!
+            4 -> image = ResourcesCompat.getDrawable(resources, R.drawable._04_basket, null)!!
+            5 -> image = ResourcesCompat.getDrawable(resources, R.drawable._05_football11, null)!!
+            6 -> image = ResourcesCompat.getDrawable(resources, R.drawable._06_volleyball, null)!!
+            7 -> image = ResourcesCompat.getDrawable(resources, R.drawable._07_beach_volley, null)!!
+            8 -> image = ResourcesCompat.getDrawable(resources, R.drawable._08_football5, null)!!
+            9 -> image = ResourcesCompat.getDrawable(resources, R.drawable._09_football8, null)!!
+            10 -> image = ResourcesCompat.getDrawable(resources, R.drawable._10_minigolf, null)!!
         }
+
+        view.setImageDrawable(image)
     }
 
     private fun handleQualityRatingBar(rating: Float) {
