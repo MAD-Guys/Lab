@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.show_reservations.ShowReservationsViewModel
 import it.polito.mad.sportapp.show_reservations.events_list_view.events_list_recycler_view.EventsListAdapter
 import java.time.LocalDate
 
@@ -34,7 +35,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     private lateinit var navController: NavController
 
     // events list view model
-    private val vm by viewModels<EventsListViewModel>()
+    private val vm by activityViewModels<ShowReservationsViewModel>()
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -83,7 +84,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         // update events list
         // the invocation is in the onResume method because the list of events
         // should be refreshed each time this activity is resumed
-        vm.getUserEventsFromDb()
+        vm.loadEventsFromDb()
     }
 
     // manage menu item selection

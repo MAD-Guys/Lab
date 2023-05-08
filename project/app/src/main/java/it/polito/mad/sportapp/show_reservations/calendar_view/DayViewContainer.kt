@@ -8,6 +8,7 @@ import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.view.ViewContainer
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.show_reservations.ShowReservationsViewModel
 import java.time.LocalDate
 
 /* Day View Container */

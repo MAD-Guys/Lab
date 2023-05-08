@@ -133,6 +133,8 @@ internal fun EditProfileFragment.loadDataFromStorage() {
     val sh = activity?.getSharedPreferences("it.polito.mad.lab2", AppCompatActivity.MODE_PRIVATE)
     val jsonObjectProfile: JSONObject? = sh?.getString("profile", null)?.let { JSONObject(it) }
 
+    showToasty("info", requireContext(), "${vm.userFirstName.value} ${vm.userLastName.value}")
+
     /* manage user info */
 
     // retrieve data from the JSON object

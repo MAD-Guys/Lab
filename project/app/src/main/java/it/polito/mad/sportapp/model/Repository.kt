@@ -8,6 +8,7 @@ import it.polito.mad.sportapp.entities.SportCenter
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.entities.EquipmentReservation
+import it.polito.mad.sportapp.entities.PlaygroundInfo
 import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.localDB.dao.EquipmentDao
 import it.polito.mad.sportapp.localDB.dao.PlaygroundSportDao
@@ -196,6 +197,16 @@ class Repository @Inject constructor(
     }
 
     // * Playground methods *
+
+    fun getPlaygroundInfoById(playgroundId: Int): PlaygroundInfo {
+        val playgroundInfo = playgroundSportDao.getPlaygroundInfo(playgroundId)
+        playgroundInfo.reviewList = getAllReviewsByPlaygroundId(playgroundId)
+        playgroundInfo.overallQualityRating = playgroundInfo.reviewList.map { it.qualityRating }.average().toFloat()
+        playgroundInfo.overallFacilitiesRating = playgroundInfo.reviewList.map { it.facilitiesRating }.average().toFloat()
+        playgroundInfo.overallRating = (playgroundInfo.overallFacilitiesRating + playgroundInfo.overallQualityRating) / 2
+        return playgroundInfo
+    }
+
 
     fun getAvailablePlaygroundsPerSlot(month: YearMonth, sport: Sport?)
             : MutableMap<LocalDate, MutableMap<LocalDateTime, MutableList<DetailedPlaygroundSport>>> {
