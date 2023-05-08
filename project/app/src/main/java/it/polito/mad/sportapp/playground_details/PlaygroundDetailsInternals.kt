@@ -3,8 +3,14 @@ package it.polito.mad.sportapp.playground_details
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
+import androidx.lifecycle.Lifecycle
 import it.polito.mad.sportapp.R
 
 internal fun PlaygroundDetailsFragment.retrieveViews() {
@@ -43,8 +49,37 @@ internal fun PlaygroundDetailsFragment.initViews() {
     directionsButton.setOnClickListener { handleDirectionsButton() }
 }
 
+// manage menu item selection
+internal fun PlaygroundDetailsFragment.menuInit() {
+    val menuHost: MenuHost = requireActivity()
+
+    menuHost.addMenuProvider(object : MenuProvider {
+        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+            menuInflater.inflate(R.menu.show_reservations_menu, menu)
+
+            actionBar?.let {
+                it.setDisplayHomeAsUpEnabled(true)
+                it.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
+                it.title = "Playground Details"
+            }
+        }
+
+        override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+            // handle the menu selection
+            return when (menuItem.itemId) {
+                R.id.playground_details_back_button -> {
+                    navController.popBackStack()
+                    true
+                }
+
+                else -> false
+            }
+        }
+    }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+}
+
 internal fun PlaygroundDetailsFragment.chooseImage(view: ImageView) {
-    lateinit var image : Drawable
+    lateinit var image: Drawable
     when (viewModel.playground.value?.sportId) {
         1 -> image = ResourcesCompat.getDrawable(resources, R.drawable._01_tennis, null)!!
         2 -> image = ResourcesCompat.getDrawable(resources, R.drawable._02_table_tennis, null)!!

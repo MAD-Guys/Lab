@@ -55,6 +55,7 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
         // initialize menu
         menuInit()
 
+        // initialize month buttons
         monthButtonsInit()
 
         // initialize CalendarView from layout
@@ -76,7 +77,7 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
         }
 
         /* bottom bar */
-        this.setupBottomBar()
+        setupBottomBar()
     }
 
     override fun onResume() {

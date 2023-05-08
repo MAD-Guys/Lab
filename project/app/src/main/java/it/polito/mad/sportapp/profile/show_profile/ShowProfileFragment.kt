@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.Chip
@@ -15,6 +16,7 @@ import com.google.android.material.chip.ChipGroup
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.getPictureFromInternalStorage
+import it.polito.mad.sportapp.profile.ProfileViewModel
 import it.polito.mad.sportapp.profile.Sport
 import it.polito.mad.sportapp.profile.getHardcodedSports
 import org.json.JSONObject
@@ -50,6 +52,9 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
     // navigation controller
     internal lateinit var navController: NavController
 
+    // show profile view model
+    internal val vm by activityViewModels<ProfileViewModel>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -62,8 +67,11 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
         // initialize menu
         menuInit()
 
-        // initialize views
-        viewsInit()
+        // setup layout views
+        viewsSetup()
+
+        // setup layout observers
+        observersSetup()
 
         // initialize buttons
         buttonsInit()
@@ -77,24 +85,16 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
         super.onResume()
 
         /*  The information is retrieved and showed in onResume() because  *
-         *  it has to be refreshed after saving in edit mode (in fact,     *
-         *  when the EditProfileActivity is created and started, the       *
-         *  ShowProfileActivity is not destroyed, but it is still behind) */
+         *  it has to be refreshed after saving in edit mode  */
 
+        // retrieve user information from db
+        vm.loadUserInformationFromDb(1)
+
+        //TODO: delete from line 90 to line 94
         // retrieve data from SharedPreferences
         val sh =
             activity?.getSharedPreferences("it.polito.mad.lab2", AppCompatActivity.MODE_PRIVATE)
         val jsonObjectProfile: JSONObject? = sh?.getString("profile", null)?.let { JSONObject(it) }
-
-        // retrieve user info from JSON object (if any, or take the default one) and update view's texts
-        firstName.text = jsonObjectProfile?.getString("firstName") ?: getString(R.string.first_name)
-        lastName.text = jsonObjectProfile?.getString("lastName") ?: getString(R.string.last_name)
-        username.text = jsonObjectProfile?.getString("username") ?: getString(R.string.username)
-        gender.text = jsonObjectProfile?.getString("gender") ?: getString(R.string.user_gender)
-        age.text = jsonObjectProfile?.getString("age") ?: getString(R.string.user_age)
-        location.text =
-            jsonObjectProfile?.getString("location") ?: getString(R.string.user_location)
-        bio.text = jsonObjectProfile?.getString("bio") ?: getString(R.string.user_bio)
 
         // retrieve profile and background picture from the internal storage
         val profilePictureBitmap =
@@ -117,8 +117,9 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
         val sportsContainer = requireView().findViewById<ChipGroup>(R.id.sports_container)
         sportsContainer.removeAllViews()
 
+        //TODO: change this if statement after db attachment
         // first time the app is launched, some hardcoded sports will appear
-        if (jsonObjectProfile == null)
+        if (jsonObjectProfile == null || vm.userSports.value?.isEmpty() == true)
             loadHardcodedSports(*getHardcodedSports(), parent = sportsContainer)
         else {
             // load the (already) selected sports by the user

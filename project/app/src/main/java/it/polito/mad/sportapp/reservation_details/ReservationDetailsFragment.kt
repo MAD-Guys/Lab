@@ -141,8 +141,6 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                     it.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
                     it.title = "Reservation Details"
                 }
-
-                menu.findItem(R.id.reservation_details_edit_button).isVisible = true
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {

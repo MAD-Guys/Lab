@@ -36,7 +36,10 @@
             android:id="@+id/action_reservationDetailsFragment_to_PlaygroundDetailsFragment"
             app:destination="@id/PlaygroundDetailsFragment"
             app:enterAnim="@anim/custom_animation_slide_in_from_bottom"
-            app:exitAnim="@anim/custom_animation_fade_out" />
+            app:exitAnim="@anim/custom_animation_fade_out"
+            app:popEnterAnim="@anim/custom_animation_fade_in"
+            app:popExitAnim="@anim/custom_animation_slide_out_to_bottom"
+            app:popUpTo="@id/reservationDetailsFragment" />
     </fragment>
 
     <fragment
@@ -46,7 +49,8 @@
         tools:layout="@layout/playground_availabilities_view">
         <action
             android:id="@+id/action_playgroundAvailabilitiesFragment_to_PlaygroundDetailsFragment"
-            app:destination="@id/PlaygroundDetailsFragment" />
+            app:destination="@id/PlaygroundDetailsFragment"
+            app:popUpTo="@id/playgroundAvailabilitiesFragment" />
     </fragment>
     <fragment
         android:id="@+id/eventsListFragment"

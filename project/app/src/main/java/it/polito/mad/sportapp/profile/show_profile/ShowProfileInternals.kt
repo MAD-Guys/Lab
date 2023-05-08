@@ -64,7 +64,7 @@ internal fun ShowProfileFragment.menuInit() {
     }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 }
 
-internal fun ShowProfileFragment.viewsInit() {
+internal fun ShowProfileFragment.viewsSetup() {
     // retrieve user info and picture views
     firstName = requireView().findViewById(R.id.first_name)
     lastName = requireView().findViewById(R.id.last_name)
@@ -75,6 +75,44 @@ internal fun ShowProfileFragment.viewsInit() {
     bio = requireView().findViewById(R.id.user_bio)
     profilePicture = requireView().findViewById(R.id.profile_picture)
     backgroundProfilePicture = requireView().findViewById(R.id.background_profile_picture)
+}
+
+internal fun ShowProfileFragment.observersSetup() {
+
+    // user first name observer
+    vm.userFirstName.observe(viewLifecycleOwner) {
+        firstName.text = it
+    }
+
+    // user last name observer
+    vm.userLastName.observe(viewLifecycleOwner) {
+        lastName.text = it
+    }
+
+    // user username observer
+    vm.userUsername.observe(viewLifecycleOwner) {
+        username.text = it
+    }
+
+    // user gender observer
+    vm.userGender.observe(viewLifecycleOwner) {
+        gender.text = it
+    }
+
+    // user age observer
+    vm.userAge.observe(viewLifecycleOwner) {
+        age.text = it.toString()
+    }
+
+    // user location observer
+    vm.userLocation.observe(viewLifecycleOwner) {
+        location.text = it
+    }
+
+    // user bio observer
+    vm.userBio.observe(viewLifecycleOwner) {
+        bio.text = it
+    }
 }
 
 internal fun ShowProfileFragment.buttonsInit() {

@@ -9,8 +9,11 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
@@ -55,19 +58,28 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
     internal lateinit var existingReview: LinearLayout
     internal lateinit var writeReview: LinearLayout
 
+    // action bar
+    internal var actionBar: ActionBar? = null
+
     private lateinit var bottomNavigationBar: View
+    internal lateinit var navController: NavController
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // get activity action bar
-        val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+        actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+
         bottomNavigationBar =
             (requireActivity() as AppCompatActivity).findViewById(R.id.bottom_navigation_bar)
 
-        // change app bar's title
-        actionBar?.title = "Playground Details"
         bottomNavigationBar.visibility = View.GONE
+
+        // initialize menu
+        menuInit()
+
+        // initialize navigation controller
+        navController = Navigation.findNavController(view)
 
         // Retrieve event id
         playgroundId = arguments?.getInt("id_playground") ?: -1
@@ -89,11 +101,6 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
         super.onResume()
         if (playgroundId != -1)
             viewModel.getPlaygroundFromDb(playgroundId)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        bottomNavigationBar.visibility = View.VISIBLE
     }
 
 }

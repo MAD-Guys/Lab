@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
@@ -91,13 +92,11 @@ internal fun EditProfileFragment.menuInit() {
     }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 }
 
-internal fun EditProfileFragment.keyListenersInit() {
-    view?.isFocusableInTouchMode = true
-    view?.requestFocus()
-    view?.setOnKeyListener { _, keyCode, event ->
-
-        // check if the back button has been pressed
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
+internal fun EditProfileFragment.setupOnBackPressedCallback() {
+    val callback = object : OnBackPressedCallback(
+        true // default to enabled
+    ) {
+        override fun handleOnBackPressed() {
             // (the information will be persistently saved in the onPause method)
 
             // showing feedback information
@@ -105,12 +104,12 @@ internal fun EditProfileFragment.keyListenersInit() {
 
             // navigate back to show profile fragment
             navController.popBackStack()
-
-            true
-        } else {
-            false
         }
     }
+    requireActivity().onBackPressedDispatcher.addCallback(
+        viewLifecycleOwner, // LifecycleOwner
+        callback
+    )
 }
 
 /* bottom bar */

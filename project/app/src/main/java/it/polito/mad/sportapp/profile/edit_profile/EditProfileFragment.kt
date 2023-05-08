@@ -19,23 +19,27 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
+import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.clearStorageFiles
 import it.polito.mad.sportapp.fastblur
 import it.polito.mad.sportapp.getPictureFromInternalStorage
 import it.polito.mad.sportapp.profile.Gender
 import it.polito.mad.sportapp.profile.Level
+import it.polito.mad.sportapp.profile.ProfileViewModel
 import it.polito.mad.sportapp.profile.Sport
 import it.polito.mad.sportapp.profile.SportChips
 import it.polito.mad.sportapp.rotateBitmap
 import it.polito.mad.sportapp.uriToBitmap
 
+@AndroidEntryPoint
 class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
 
     // user info fields' temporary state
@@ -52,6 +56,9 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
 
     // navigation controller
     internal lateinit var navController: NavController
+
+    // edit profile view model
+    internal val vm by activityViewModels<ProfileViewModel>()
 
     // Sports temporary state
     internal var sportsTemp = mutableMapOf(
@@ -199,8 +206,8 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
         // setup bottom bar
         setupBottomBar()
 
-        // initialize key listeners
-        keyListenersInit()
+        // setup back button callback
+        setupOnBackPressedCallback()
 
         // initialize the EditText views
         firstName = view.findViewById(R.id.edit_first_name)

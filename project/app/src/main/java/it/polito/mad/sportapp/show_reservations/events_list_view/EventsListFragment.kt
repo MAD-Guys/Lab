@@ -33,7 +33,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     private lateinit var bottomNavigationBar: View
     private lateinit var navController: NavController
 
-    // events view model
+    // events list view model
     private val vm by viewModels<EventsListViewModel>()
 
     @SuppressLint("NotifyDataSetChanged")
@@ -107,7 +107,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
                 // handle the menu selection
                 return when (menuItem.itemId) {
                     R.id.show_reservations_button -> {
-                        navController.navigateUp()
+                        navController.popBackStack()
                         true
                     }
 
