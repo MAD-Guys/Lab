@@ -4,16 +4,23 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,6 +51,9 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
     private lateinit var navController: NavController
     private lateinit var bottomNavigationBar: View
 
+    // action bar
+    private var actionBar: ActionBar? = null
+
     private val viewModel by viewModels<ReservationDetailsFragmentViewModel>()
 
     private var eventId: Int = -1
@@ -52,16 +62,16 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         super.onViewCreated(view, savedInstanceState)
 
         // get activity action bar
-        val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+        actionBar = (requireActivity() as AppCompatActivity).supportActionBar
 
         // get bottom navigation bar
         bottomNavigationBar = requireActivity().findViewById(R.id.bottom_navigation_bar)
 
-        // change app bar's title
-        actionBar?.title = "Reservation Details"
-
         // hide bottom navigation bar
         bottomNavigationBar.visibility = View.GONE
+
+        // initialize menu
+        menuInit()
 
         // initialize navigation controller
         navController = Navigation.findNavController(view)
@@ -115,6 +125,35 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         super.onResume()
         if (eventId != -1)
             viewModel.getReservationFromDb(eventId)
+    }
+
+    // manage menu item selection
+    private fun menuInit() {
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.reservations_details_menu, menu)
+
+                actionBar?.let {
+                    it.setDisplayHomeAsUpEnabled(true)
+                    it.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
+                    it.title = "Reservation Details"
+                }
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // handle the menu selection
+                return when (menuItem.itemId) {
+                    R.id.reservation_details_back_button -> {
+                        navController.popBackStack()
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun retrieveViews() {
@@ -215,8 +254,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                         requireContext(),
                         "Reservation correctly deleted"
                     )
-                }
-                else {
+                } else {
                     showToasty(
                         "error",
                         requireContext(),

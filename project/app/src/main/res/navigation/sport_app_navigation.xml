@@ -53,7 +53,7 @@
     </fragment>
     <fragment
         android:id="@+id/showProfileFragment"
-        android:name="it.polito.mad.sportapp.profile.ShowProfileFragment"
+        android:name="it.polito.mad.sportapp.profile.show_profile.ShowProfileFragment"
         android:label="ShowProfileFragment" />
 
 </navigation>

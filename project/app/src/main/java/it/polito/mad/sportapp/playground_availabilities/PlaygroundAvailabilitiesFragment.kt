@@ -34,8 +34,10 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
         // retrieve activity action bar
         val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
 
-        // change bar's title
-        actionBar?.title = "Playground availabilities"
+        actionBar?.let {
+            it.setDisplayHomeAsUpEnabled(false)
+            it.title = "Playground Availabilities"
+        }
 
         /* initialize calendar view */
         this.initCalendar()

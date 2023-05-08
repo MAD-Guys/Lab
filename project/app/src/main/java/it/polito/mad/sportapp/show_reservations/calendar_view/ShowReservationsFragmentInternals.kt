@@ -101,13 +101,23 @@ internal fun ShowReservationsFragment.calendarInit() {
 
                 // mark current date
                 if (data.date == currentDate) {
-                    dayTextView.setTextColor(getColor(requireContext(), R.color.current_date_text_color))
+                    dayTextView.setTextColor(
+                        getColor(
+                            requireContext(),
+                            R.color.current_date_text_color
+                        )
+                    )
                     dayRelativeLayout.setBackgroundResource(R.drawable.current_day_selected_bg)
                 }
 
                 // mark selected date
                 if (data.date != currentDate && data.date == vm.selectedDate.value) {
-                    dayTextView.setTextColor(getColor(requireContext(), R.color.selected_date_text_color))
+                    dayTextView.setTextColor(
+                        getColor(
+                            requireContext(),
+                            R.color.selected_date_text_color
+                        )
+                    )
                     dayRelativeLayout.setBackgroundResource(R.drawable.day_selected_bg)
                 }
 
@@ -214,8 +224,10 @@ internal fun ShowReservationsFragment.menuInit() {
         override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
             menuInflater.inflate(R.menu.show_reservations_menu, menu)
 
-            // change app bar's title
-            actionBar?.title = "My Reservations"
+            actionBar?.let {
+                it.setDisplayHomeAsUpEnabled(false)
+                it.title = "My Reservations"
+            }
 
             // change visibility of the show reservations menu item
             menu.findItem(R.id.events_list_button).isVisible = true
@@ -238,7 +250,8 @@ internal fun ShowReservationsFragment.menuInit() {
 // bottom bar setup
 internal fun ShowReservationsFragment.setupBottomBar() {
     // show bottom navigation bar
-    val bottomNavigationBar: BottomNavigationView = requireActivity().findViewById(R.id.bottom_navigation_bar)
+    val bottomNavigationBar: BottomNavigationView =
+        requireActivity().findViewById(R.id.bottom_navigation_bar)
     bottomNavigationBar.visibility = View.VISIBLE
 
     // set the right button

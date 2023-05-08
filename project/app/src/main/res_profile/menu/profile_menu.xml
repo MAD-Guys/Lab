@@ -6,6 +6,5 @@
         android:id="@+id/edit_button"
         android:icon="@drawable/baseline_edit_24"
         android:title="@string/edit_button"
-        android:visible="false"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 </menu>

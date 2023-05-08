@@ -94,8 +94,10 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.show_reservations_menu, menu)
 
-                // change app bar's title
-                actionBar?.title = "My Reservations"
+                actionBar?.let {
+                    it.setDisplayHomeAsUpEnabled(false)
+                    it.title = "My Reservations"
+                }
 
                 // change visibility of the show reservations menu item
                 menu.findItem(R.id.show_reservations_button).isVisible = true

@@ -1,8 +1,10 @@
-package it.polito.mad.sportapp.profile
+package it.polito.mad.sportapp.profile.show_profile
 
+import android.content.res.Configuration
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -10,8 +12,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.Chip
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.profile.Level
+import it.polito.mad.sportapp.profile.Sport
+import it.polito.mad.sportapp.profile.extendedNameOf
 import it.polito.mad.sportapp.setProfilePictureSize
 import it.polito.mad.sportapp.showToasty
 
@@ -23,11 +29,10 @@ internal fun ShowProfileFragment.menuInit() {
         override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
             menuInflater.inflate(R.menu.profile_menu, menu)
 
-            // change app bar's title
-            actionBar?.title = "Profile"
-
-            // change visibility of the show reservations menu item
-            menu.findItem(R.id.edit_button).isVisible = true
+            actionBar?.let {
+                it.setDisplayHomeAsUpEnabled(false)
+                it.title = "Profile"
+            }
 
             val menuHeight = actionBar?.height!!
             val profilePictureContainer =
@@ -85,6 +90,22 @@ internal fun ShowProfileFragment.buttonsInit() {
     messageButton.setOnClickListener {
         showToasty("info", requireContext(), "Message button clicked!!!")
     }
+}
+
+/* bottom bar */
+internal fun ShowProfileFragment.setupBottomBar() {
+    // show bottom bar
+    val bottomBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation_bar)
+
+    // check if the device is in portrait or landscape mode
+    if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
+        bottomBar.visibility = View.GONE
+    else {
+        bottomBar.visibility = View.VISIBLE
+    }
+
+    // set the right selected button
+    bottomBar.menu.findItem(R.id.profile).isChecked = true
 }
 
 internal fun ShowProfileFragment.createSportChip(sport: Sport, parent: ViewGroup): Chip {

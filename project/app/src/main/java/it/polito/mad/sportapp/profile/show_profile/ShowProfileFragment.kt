@@ -1,4 +1,4 @@
-package it.polito.mad.sportapp.profile
+package it.polito.mad.sportapp.profile.show_profile
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -15,6 +15,8 @@ import com.google.android.material.chip.ChipGroup
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.getPictureFromInternalStorage
+import it.polito.mad.sportapp.profile.Sport
+import it.polito.mad.sportapp.profile.getHardcodedSports
 import org.json.JSONObject
 
 @AndroidEntryPoint
@@ -65,6 +67,10 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
 
         // initialize buttons
         buttonsInit()
+
+        // setup bottom bar
+        setupBottomBar()
+
     }
 
     override fun onResume() {
