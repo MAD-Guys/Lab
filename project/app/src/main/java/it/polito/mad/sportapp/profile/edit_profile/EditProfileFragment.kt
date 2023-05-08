@@ -2,7 +2,6 @@ package it.polito.mad.sportapp.profile.edit_profile
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -19,7 +18,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -96,6 +94,16 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
     internal var cameraUri: Uri? = null
     private lateinit var cropImageOptions: CropImageOptions
 
+    // gallery permission launcher
+    private val galleryRequestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // gallery permission is granted
+            openGallery()
+        }
+    }
+
     /* results launchers */
     internal var galleryActivityResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(
@@ -113,6 +121,16 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
                 )
             }
         }
+
+    // camera permission launcher
+    private val cameraRequestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // camera permission is granted
+            openCamera()
+        }
+    }
 
     internal var cameraActivityResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(
@@ -323,37 +341,13 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
         return when (item.itemId) {
             R.id.camera -> {
                 // check if camera permissions have already been granted or not
-                if (ActivityCompat.checkSelfPermission(
-                        requireContext(), Manifest.permission.CAMERA
-                    ) == PackageManager.PERMISSION_DENIED
-                ) {
-                    // request permissions
-                    val permission = arrayOf(
-                        Manifest.permission.CAMERA
-                    )
-
-                    // NOTE: the request code is used to identify the request
-                    // in the callback function but it is completely random
-                    ActivityCompat.requestPermissions(requireActivity(), permission, 112)
-                } else openCamera()
+                cameraRequestPermissionLauncher.launch(Manifest.permission.CAMERA)
                 true
             }
 
             R.id.gallery -> {
                 // check if gallery permissions have already been granted or not
-                if (ActivityCompat.checkSelfPermission(
-                        requireContext(),
-                        galleryImagesPermission()
-                    ) == PackageManager.PERMISSION_DENIED
-                ) {
-                    // request permissions
-                    val permissions = arrayOf(
-                        galleryImagesPermission()
-                    )
-
-                    ActivityCompat.requestPermissions(requireActivity(), permissions, 113)
-                } else openGallery()
-
+                galleryRequestPermissionLauncher.launch(galleryImagesPermission())
                 true
             }
             // sport level menu options
@@ -390,30 +384,6 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
             }
 
             else -> super.onContextItemSelected(item)
-        }
-    }
-
-    // Handle the result of the permission request
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        // if camera permissions have been granted, open the camera
-        if (requestCode == 112) {
-            val cameraGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED
-
-            if (cameraGranted)
-                openCamera()
-        }
-        // if gallery permissions have been granted, open the gallery
-
-        else if (requestCode == 113) {
-            val galleryImagesPermissionGranted =
-                grantResults[0] == PackageManager.PERMISSION_GRANTED
-
-            if (galleryImagesPermissionGranted)
-                openGallery()
         }
     }
 
