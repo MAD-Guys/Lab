@@ -154,11 +154,10 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
         yourUsername.text = "johndoe" //viewModel.yourReview.value.username
 
         if ( //Case 1: no rate and no review
-        //viewModel.yourReview.value.id == 0
-        //&& viewModel.yourReview.value.qualityRating == 0
-        //&& viewModel.yourReview.value.facilitiesRating == 0
-        //&& viewModel.yourReview.value.text == ""
-            viewModel.yourReview.value != null
+            (viewModel.yourReview.value?.id  == 0)
+            && (viewModel.yourReview.value?.qualityRating == 0f)
+            && (viewModel.yourReview.value?.facilitiesRating == 0f)
+            && (viewModel.yourReview.value?.review == "")
         ) {
             yourReviewDate.visibility = TextView.GONE
             yourQualityRating.rating = 0f
@@ -166,25 +165,24 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
             yourReviewText.text = ""
             yourReviewEditText.setText("", TextView.BufferType.EDITABLE)
         } else if ( //Case 2: rate but not review
-        //&& viewModel.yourReview.value.text == ""
-            viewModel.yourReview.value != null
+            viewModel.yourReview.value?.review == ""
         ) {
             yourReviewDate.text =
                 "6/5/23" //viewModel.yourReview.value?.date?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
             yourReviewDate.visibility = TextView.VISIBLE
-            yourQualityRating.rating = 3f //viewModel.yourReview.value?.qualityRating
-            yourFacilitiesRating.rating = 3f //viewModel.yourReview.value?.facilitiesRating
+            yourQualityRating.rating = viewModel.yourReview.value?.qualityRating!!
+            yourFacilitiesRating.rating = viewModel.yourReview.value?.facilitiesRating!!
             yourReviewText.text = ""
             yourReviewEditText.setText("", TextView.BufferType.EDITABLE)
         } else { //Case 3: rate and review
             yourReviewDate.text =
                 "6/5/23" //viewModel.yourReview.value?.date?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
             yourReviewDate.visibility = TextView.VISIBLE
-            yourQualityRating.rating = 3f //viewModel.yourReview.value?.qualityRating
-            yourFacilitiesRating.rating = 3f //viewModel.yourReview.value?.facilitiesRating
-            yourReviewText.text = "Some text" //viewModel.yourReview.value?.text
+            yourQualityRating.rating = viewModel.yourReview.value?.qualityRating!!
+            yourFacilitiesRating.rating = viewModel.yourReview.value?.facilitiesRating!!
+            yourReviewText.text = viewModel.yourReview.value?.review!!
             yourReviewEditText.setText(
-                "Some text" /*viewModel.yourReview.value?.text*/,
+                viewModel.yourReview.value?.review,
                 TextView.BufferType.EDITABLE
             )
             addReviewButton.visibility = Button.GONE
@@ -252,7 +250,7 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
     }
 
     private fun handleSaveReviewButton() {
-        //TODO
+
         yourReviewText.text = yourReviewEditText.text
         writeReview.visibility = LinearLayout.GONE
 
