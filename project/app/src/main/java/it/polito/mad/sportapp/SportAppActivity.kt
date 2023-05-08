@@ -42,20 +42,35 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         toastyInit()
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean = when(item.itemId) {
-        R.id.reservations -> {
-            navController.navigate(R.id.showReservationsFragment)
-            true
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+
+        val currentFragment = navController.currentDestination?.id
+
+        when (item.itemId) {
+
+            R.id.reservations -> {
+                if (currentFragment != R.id.showReservationsFragment) {
+                    navController.navigate(R.id.showReservationsFragment)
+                }
+                return true
+            }
+
+            R.id.playgrounds -> {
+                if (currentFragment != R.id.playgroundAvailabilitiesFragment) {
+                    navController.navigate(R.id.playgroundAvailabilitiesFragment)
+                }
+                return true
+            }
+
+            R.id.profile -> {
+                if (currentFragment != R.id.showProfileFragment) {
+                    navController.navigate(R.id.showProfileFragment)
+                }
+                return true
+            }
+
+            else -> return false
         }
-        R.id.playgrounds -> {
-            navController.navigate(R.id.playgroundAvailabilitiesFragment)
-            true
-        }
-        R.id.profile -> {
-            navController.navigate(R.id.showProfileFragment)
-            true
-        }
-        else -> false
     }
 
     override fun onSupportNavigateUp(): Boolean {
