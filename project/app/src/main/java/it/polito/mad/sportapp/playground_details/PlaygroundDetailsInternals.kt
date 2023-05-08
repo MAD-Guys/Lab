@@ -3,6 +3,7 @@ package it.polito.mad.sportapp.playground_details
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -97,7 +98,9 @@ internal fun PlaygroundDetailsFragment.chooseImage(view: ImageView) {
 }
 
 internal fun PlaygroundDetailsFragment.handleAddReservationButton() {
-    //TODO: navigate to new reservation
+    // navigate to the Add Reservation view
+    navController.navigate(
+        R.id.action_PlaygroundDetailsFragment_to_reservationManagementFragment)
 }
 
 internal fun PlaygroundDetailsFragment.handleDirectionsButton() {

@@ -9,7 +9,7 @@
     <fragment
         android:id="@+id/showReservationsFragment"
         android:name="it.polito.mad.sportapp.show_reservations.calendar_view.ShowReservationsFragment"
-        android:label="ShowReservationsFragment">
+        android:label="fragment_show_reservations">
         <action
             android:id="@+id/action_showReservationsFragment_to_eventsListFragment"
             app:destination="@id/eventsListFragment"
@@ -50,6 +50,10 @@
         <action
             android:id="@+id/action_playgroundAvailabilitiesFragment_to_PlaygroundDetailsFragment"
             app:destination="@id/PlaygroundDetailsFragment"
+            app:enterAnim="@anim/custom_animation_slide_in_from_bottom"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@anim/custom_animation_slide_out_to_bottom"
             app:popUpTo="@id/playgroundAvailabilitiesFragment" />
     </fragment>
     <fragment
@@ -86,6 +90,26 @@
         android:id="@+id/PlaygroundDetailsFragment"
         android:name="it.polito.mad.sportapp.playground_details.PlaygroundDetailsFragment"
         android:label="PlaygroundDetailsFragment"
-        />
+        >
+        <action
+            android:id="@+id/action_PlaygroundDetailsFragment_to_reservationManagementFragment"
+            app:destination="@id/reservationManagementFragment"
+            app:enterAnim="@anim/custom_animation_slide_in_from_right"
+            app:exitAnim="@anim/custom_animation_slide_out_to_left"
+            app:popEnterAnim="@anim/custom_animation_slide_in_from_left"
+            app:popExitAnim="@anim/custom_animation_slide_out_to_right"
+            app:popUpTo="@id/PlaygroundDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/reservationManagementFragment"
+        android:name="it.polito.mad.sportapp.reservation_management.ReservationManagementFragment"
+        android:label="reservation_management_view"
+        tools:layout="@layout/reservation_management_view" >
+        <action
+            android:id="@+id/action_reservationManagementFragment_to_PlaygroundDetailsFragment"
+            app:destination="@id/PlaygroundDetailsFragment"
+            app:enterAnim="@anim/custom_animation_slide_in_from_left"
+            app:exitAnim="@anim/custom_animation_slide_out_to_right" />
+    </fragment>
 
 </navigation>

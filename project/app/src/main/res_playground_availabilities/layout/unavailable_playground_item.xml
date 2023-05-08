@@ -5,7 +5,9 @@
     android:id="@+id/available_playground_item"
     android:layout_width="@dimen/available_playground_item_width"
     android:layout_height="match_parent"
-    android:background="@color/unavailable_playground_background_color">
+    android:background="@drawable/unavailable_playground_item_state"
+    android:clickable="true"
+    android:focusable="true">
 
     <!-- Playground name -->
     <TextView

@@ -20,7 +20,8 @@
                 android:id="@+id/playgroundImage"
                 android:layout_width="match_parent"
                 android:layout_height="256dp"
-                tools:src="@tools:sample/backgrounds/scenic" />
+                tools:src="@tools:sample/backgrounds/scenic"
+                android:contentDescription="playground_image" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -243,8 +244,8 @@
                             android:contentDescription="Add reservation"
                             android:fontFamily="@font/poppins_bold"
                             android:includeFontPadding="false"
-                            android:paddingTop="10.5dp"
-                            android:paddingBottom="10.5dp"
+                            android:paddingTop="11dp"
+                            android:paddingBottom="11dp"
                             android:text="Book now"
                             android:textAlignment="center"
                             android:textAllCaps="false"
@@ -253,7 +254,10 @@
                             android:textSize="16sp"
                             app:icon="@drawable/baseline_post_add_24"
                             app:iconGravity="textStart"
-                            app:iconTint="@color/button_text_color" />
+                            app:iconTint="@color/button_text_color"
+                            android:clickable="true"
+                            android:focusable="true"
+                            style="?android:attr/buttonBarButtonStyle" />
 
                         <!-- Directions Button -->
                         <Button
@@ -267,8 +271,8 @@
                             android:contentDescription="Search on Google Maps"
                             android:fontFamily="@font/poppins_bold"
                             android:includeFontPadding="false"
-                            android:paddingTop="10.5dp"
-                            android:paddingBottom="10.5dp"
+                            android:paddingTop="11dp"
+                            android:paddingBottom="11dp"
                             android:text="See on Maps"
                             android:textAlignment="center"
                             android:textAllCaps="false"
@@ -278,9 +282,9 @@
                             app:icon="@drawable/baseline_directions_24"
                             app:iconGravity="textStart"
                             app:iconTint="@color/button_text_color"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/button_add_friend"
-                            app:layout_constraintTop_toBottomOf="@+id/user_location_wrapper" />
+                            android:clickable="true"
+                            android:focusable="true"
+                            style="?android:attr/buttonBarButtonStyle" />
                     </LinearLayout>
 
                     <View

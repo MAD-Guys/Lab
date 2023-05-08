@@ -18,7 +18,7 @@
     <color name="available_playground_text_color">@color/black</color>
 
     <!-- not available playground item -->
-    <color name="unavailable_playground_background_color">#D0D0D0</color>
+    <color name="unavailable_playground_background_color">#E0E0E0</color>
     <color name="unavailable_playground_text_color">#606060</color>
 
 </resources>

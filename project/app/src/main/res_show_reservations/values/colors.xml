@@ -20,6 +20,6 @@
     <!-- Event colors -->
     <color name="event_color">#9A9A9A</color>
     <color name="event_tag_color">#9A9A9A</color>
-    <color name="past_event_color">#D6D6D6</color>
+    <color name="past_event_color">#E0E0E0</color>
 
 </resources>

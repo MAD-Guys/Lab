@@ -93,7 +93,9 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
 
         // add link to Playground Details
         playgroundButton.setOnClickListener {
-            handlePlaygroundButton(1 /*viewModel.reservation.value.playgroundId*/)
+            viewModel.reservation.value?.let {
+                handlePlaygroundButton(it.id)
+            }
         }
 
         editButton.setOnClickListener {

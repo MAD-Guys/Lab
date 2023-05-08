@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- current day selected shape -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <solid android:color="@color/available_playground_background_color" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <stroke
+                android:width="@dimen/available_playground_item_border_size"
+                android:color="@color/available_playground_border_color" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <gradient
+                android:angle="90"
+                android:startColor="#270F0F10"
+                android:centerColor="#310D0D0F"
+                android:endColor="#275D5D5E"
+                />
+        </shape>
+    </item>
+</layer-list>
