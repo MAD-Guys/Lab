@@ -22,6 +22,8 @@ data class DetailedReservation(
     val id: Int,
     @ColumnInfo(name = "user_id")
     val userId: Int,
+    @ColumnInfo(name = "username")
+    val username: String,
     @ColumnInfo(name = "sport_center_id")
     val sportCenterId: Int,
     @ColumnInfo(name = "sport_id")
@@ -36,6 +38,8 @@ data class DetailedReservation(
     val startDateTime: String,
     @ColumnInfo(name = "end_date_time")
     val endDateTime: String,
+    @ColumnInfo(name = "playground_id")
+    val playgroundId: Int,
     @ColumnInfo(name = "playground_name")
     val playgroundName: String,
     @ColumnInfo(name = "total_price")
@@ -105,10 +109,52 @@ data class DetailedPlayground(
     val closingHours: String,
     @ColumnInfo(name = "playground_id")
     val playgroundId: Int,
-)
-{
+) {
     @Ignore
     val openingTime: LocalTime = LocalTime.parse(openingHours)
+
     @Ignore
     val closingTime: LocalTime = LocalTime.parse(closingHours)
+}
+
+data class PlaygroundInfo(
+    @ColumnInfo(name = "playground_id")
+    val playgroundId: Int,
+    @ColumnInfo(name = "playground_name")
+    val playgroundName: String,
+    @ColumnInfo(name = "sport_center_name")
+    val sportCenterName: String,
+    @ColumnInfo(name = "sport_id")
+    val sportId: Int,
+    @ColumnInfo(name = "sport_name")
+    val sportName: String,
+    @ColumnInfo(name = "sport_center_address")
+    val sportCenterAddress: String,
+    @ColumnInfo(name = "opening_time")
+    val openingTime: String,
+    @ColumnInfo(name = "closing_time")
+    val closingTime: String,
+    @ColumnInfo(name = "price_per_hour")
+    val pricePerHour: Float
+
+
+) {
+    @Ignore
+    var overallQualityRating: Float = 0f
+
+    @Ignore
+    var overallFacilitiesRating: Float = 0f
+
+    @Ignore
+    val openingHours: LocalTime = LocalTime.parse(openingTime)
+
+    @Ignore
+    val closingHours: LocalTime = LocalTime.parse(closingTime)
+
+    @Ignore
+    var overallRating: Float = (overallQualityRating + overallFacilitiesRating) / 2
+
+    @Ignore
+    var reviewList: List<Review> = listOf()
+
 }

@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import it.polito.mad.sportapp.entities.DetailedPlayground
+import it.polito.mad.sportapp.entities.PlaygroundInfo
 import it.polito.mad.sportapp.entities.PlaygroundSport
 
 
@@ -23,5 +24,10 @@ interface PlaygroundSportDao {
             "FROM sport_center SC, playground_sport PS " +
             "WHERE SC.id == PS.sport_center_id AND PS.sport_id == :sportId")
     fun findBySportId(sportId: Int): List<DetailedPlayground>
+
+    @Query("SELECT PS.id AS playground_id, PS.playground_name, SC.name AS sport_center_name, PS.sport_id, S.name AS sport_name, SC.address AS sport_center_address, SC.opening_hour AS opening_time, SC.closing_hour AS closing_time, PS.cost_per_hour AS price_per_hour " +
+            "FROM sport_center SC, playground_sport PS, SPORT S " +
+            "WHERE SC.id == PS.sport_center_id AND S.id = PS.sport_id AND PS.id == :playgroundId")
+    fun getPlaygroundInfo(playgroundId: Int): PlaygroundInfo
 
 }

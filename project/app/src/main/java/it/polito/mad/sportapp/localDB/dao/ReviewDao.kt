@@ -14,6 +14,7 @@ interface ReviewDao {
     @Query("SELECT * FROM review WHERE user_id == :userId AND playground_id == :playgroundId")
     fun findByUserIdAndPlaygroundId(userId: Int, playgroundId: Int): Review
 
+
     @Update
     fun update(review: Review)
 

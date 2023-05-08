@@ -40,7 +40,7 @@ internal fun setQRCodeView(reservation: DetailedReservation, imageView: ImageVie
 }
 
 /* MOCK RESERVATION DETAILS */
-fun mockReservationDetails(): DetailedReservation {
+/*fun mockReservationDetails(): DetailedReservation {
 
     val res = DetailedReservation(
         123456,
@@ -62,7 +62,7 @@ fun mockReservationDetails(): DetailedReservation {
     )
 
     return res
-}
+}*/
 
 
 
