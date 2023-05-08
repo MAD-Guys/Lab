@@ -22,4 +22,13 @@ data class DetailedPlaygroundSport(
     override fun hashCode(): Int {
         return playgroundId
     }
+
+    fun exactlyEqualTo(playground: DetailedPlaygroundSport): Boolean {
+        return this.playgroundId == playground.playgroundId &&
+                this.playgroundName == playground.playgroundName &&
+                this.sportId == playground.sportId &&
+                this.sportCenterName == playground.sportCenterName &&
+                this.pricePerHour == playground.pricePerHour &&
+                this.available == playground.available
+    }
 }

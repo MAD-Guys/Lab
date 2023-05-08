@@ -1,6 +1,5 @@
 package it.polito.mad.sportapp.playground_availabilities
 
-import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -137,7 +136,6 @@ internal fun PlaygroundAvailabilitiesFragment.initSelectedSportSpinner() {
 }
 
 /* observers init functions */
-@SuppressLint("NotifyDataSetChanged")
 internal fun PlaygroundAvailabilitiesFragment.initMonthAndDateObservers() {
     /* months view model observers */
     val monthLabel = requireView().findViewById<TextView>(R.id.month_label)
@@ -164,11 +162,11 @@ internal fun PlaygroundAvailabilitiesFragment.initMonthAndDateObservers() {
 
         // update recycler view data
         playgroundAvailabilitiesAdapter.selectedDate = it
-        playgroundAvailabilitiesAdapter.playgroundAvailabilities =
-            viewModel.getAvailablePlaygroundsOnSelectedDate()
 
-        // update time slots view
-        playgroundAvailabilitiesAdapter.notifyDataSetChanged()
+        // update time slots
+        playgroundAvailabilitiesAdapter.smartUpdatePlaygroundAvailabilities(
+            viewModel.getAvailablePlaygroundsOnSelectedDate()
+        )
     }
 
     viewModel.previousSelectedDate.observe(this) {
@@ -176,7 +174,6 @@ internal fun PlaygroundAvailabilitiesFragment.initMonthAndDateObservers() {
     }
 }
 
-@SuppressLint("NotifyDataSetChanged")
 internal fun PlaygroundAvailabilitiesFragment.initAvailablePlaygroundsObserver() {
     /* playground availabilities observer to change dates' colors */
     viewModel.availablePlaygroundsPerSlot.observe(this) {
@@ -191,12 +188,10 @@ internal fun PlaygroundAvailabilitiesFragment.initAvailablePlaygroundsObserver()
         calendarView.notifyMonthChanged(previousMonth)
         calendarView.notifyMonthChanged(nextMonth)
 
-        // update recycler view data
-        playgroundAvailabilitiesAdapter.playgroundAvailabilities =
+        // update recycler view time slots
+        playgroundAvailabilitiesAdapter.smartUpdatePlaygroundAvailabilities(
             viewModel.getAvailablePlaygroundsOnSelectedDate()
-
-        // show changes on recycler view
-        playgroundAvailabilitiesAdapter.notifyDataSetChanged()
+        )
     }
 }
 
@@ -204,14 +199,18 @@ internal fun PlaygroundAvailabilitiesFragment.initSelectedSportObservers() {
     // sports observer
     viewModel.sports.observe(this) {
         // add new sports list
-        selectedSportSpinnerAdapter.addAll(it)
-
-        // select first sport option
-        selectedSportSpinner.setSelection(0)
+        try {
+            selectedSportSpinnerAdapter.clear()
+            selectedSportSpinnerAdapter.addAll(it)
+        }
+        catch (_: UnsupportedOperationException) { }
     }
 
     // selected sport observer
     viewModel.selectedSport.observe(this) {
+        // empty current playground availabilities
+        viewModel.emptyPlaygroundAvailabilities()
+
         // retrieve new playground availabilities for the current month and the current sport
         viewModel.updatePlaygroundAvailabilitiesForCurrentMonthAndSport()
     }

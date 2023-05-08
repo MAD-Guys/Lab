@@ -50,16 +50,10 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
     internal val slotDuration: Duration = Duration.ofMinutes(30)
 
     // available playgrounds ***for current sport and month***
-    private var _availablePlaygroundsPerSlot:
-            MutableLiveData<MutableMap<LocalDate, Map<LocalDateTime, List<DetailedPlaygroundSport>>>> =
-                MutableLiveData(
-                    // retrieve initial playgrounds availabilities from the repository,
-                    // for current month and default sport
-                    this.getPlaygroundAvailabilitiesForCurrentMonthAndSport()
-                )
+    private val _availablePlaygroundsPerSlot:
+            MutableLiveData<MutableMap<LocalDate, Map<LocalDateTime, List<DetailedPlaygroundSport>>>> = MutableLiveData()
 
-
-    internal var availablePlaygroundsPerSlot:
+    internal val availablePlaygroundsPerSlot:
             LiveData<MutableMap<LocalDate, Map<LocalDateTime, List<DetailedPlaygroundSport>>>> = _availablePlaygroundsPerSlot
 
     fun setSelectedDate(newSelectedDate: LocalDate?) {
@@ -126,5 +120,9 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
     /* selected sport */
     fun setSelectedSport(selectedSport: Sport?) {
         this._selectedSport.value = selectedSport
+    }
+
+    fun emptyPlaygroundAvailabilities() {
+        this._availablePlaygroundsPerSlot.value?.clear()
     }
 }

@@ -2,6 +2,7 @@ package it.polito.mad.sportapp.playground_availabilities.recycler_view
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
@@ -59,5 +60,77 @@ class PlaygroundAvailabilitiesAdapter(
             holder.setTimeSlotTimes(timeSlot, timeSlot.plus(slotDuration))
             holder.setAvailablePlaygrounds(availablePlaygrounds)
         }
+    }
+
+    fun smartUpdatePlaygroundAvailabilities(
+        newPlaygroundAvailabilities: Map<LocalDateTime, List<DetailedPlaygroundSport>>
+    ) {
+        // computing differences between previous and new playground availabilities (for the specified date)
+        val diffs = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize() =
+                if (playgroundAvailabilities.isEmpty()) 1
+                else playgroundAvailabilities.size
+
+            override fun getNewListSize() =
+                if (newPlaygroundAvailabilities.isEmpty()) 1
+                else newPlaygroundAvailabilities.size
+
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                // from <no availabilities> to <no availabilities>
+                if (playgroundAvailabilities.isEmpty() && newPlaygroundAvailabilities.isEmpty())
+                    return true
+
+                // from <no availabilities> to <some availabilities> or
+                // from <some availabilities> to <no availabilities>
+                if ((playgroundAvailabilities.isEmpty() && newPlaygroundAvailabilities.isNotEmpty()) ||
+                    (playgroundAvailabilities.isNotEmpty() && newPlaygroundAvailabilities.isEmpty()))
+                    return false
+
+                // from <some availabilities> to <some other availabilities>
+                val newTimeSlots = newPlaygroundAvailabilities.keys.toList().sorted()
+
+                return timeSlots[oldItemPosition].toLocalTime() == newTimeSlots[newItemPosition].toLocalTime()
+            }
+
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                // from <no availabilities> to <no availabilities>
+                if (playgroundAvailabilities.isEmpty() && newPlaygroundAvailabilities.isEmpty())
+                    return true
+
+                // from <no availabilities> to <some availabilities> or
+                // from <some availabilities> to <no availabilities>
+                if ((playgroundAvailabilities.isEmpty() && newPlaygroundAvailabilities.isNotEmpty()) ||
+                    (playgroundAvailabilities.isNotEmpty() && newPlaygroundAvailabilities.isEmpty()))
+                    return false
+
+                // from <some availabilities> to <some other availabilities>
+                val oldTimeSlots = timeSlots
+                val oldTimeSlot = oldTimeSlots[oldItemPosition]
+                val oldPlaygrounds = playgroundAvailabilities[oldTimeSlot]!!
+
+                val newTimeSlots = newPlaygroundAvailabilities.keys.toList().sorted()
+                val newTimeSlot = newTimeSlots[newItemPosition]
+                val newPlaygrounds = newPlaygroundAvailabilities[newTimeSlot]!!
+
+                // check exact equality between the two lists
+                return oldPlaygrounds.all{ oldPlayground ->
+                            newPlaygrounds.any{ newPlayground ->
+                                oldPlayground.exactlyEqualTo(newPlayground)
+                            } &&
+                       newPlaygrounds.all { newPlayground ->
+                            oldPlaygrounds.any { oldPlayground ->
+                                newPlayground.exactlyEqualTo(oldPlayground)
+                            }
+                    }
+                }
+            }
+
+        })
+
+        // update playground availabilities
+        this.playgroundAvailabilities = newPlaygroundAvailabilities
+
+        // perform smart updates
+        diffs.dispatchUpdatesTo(this)
     }
 }
