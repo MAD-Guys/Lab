@@ -1,4 +1,4 @@
-package it.polito.mad.sportapp.show_reservations.calendar_view
+package it.polito.mad.sportapp.show_reservations
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
