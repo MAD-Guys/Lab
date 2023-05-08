@@ -7,7 +7,6 @@ import android.os.Build
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -39,7 +38,6 @@ import it.polito.mad.sportapp.setProfilePictureSize
 import it.polito.mad.sportapp.showToasty
 import org.json.JSONObject
 import java.io.File
-
 
 // manage menu item selection
 internal fun EditProfileFragment.menuInit() {

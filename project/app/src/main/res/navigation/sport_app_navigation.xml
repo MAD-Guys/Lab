@@ -14,8 +14,8 @@
             android:id="@+id/action_showReservationsFragment_to_eventsListFragment"
             app:destination="@id/eventsListFragment"
             app:enterAnim="@anim/custom_animation_slide_in_from_bottom"
-            app:exitAnim="@anim/custom_animation_fade_out"
-            app:popEnterAnim="@anim/custom_animation_fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@anim/custom_animation_slide_out_to_bottom"
             app:popUpTo="@id/showReservationsFragment" />
         <action
@@ -36,8 +36,8 @@
             android:id="@+id/action_reservationDetailsFragment_to_PlaygroundDetailsFragment"
             app:destination="@id/PlaygroundDetailsFragment"
             app:enterAnim="@anim/custom_animation_slide_in_from_bottom"
-            app:exitAnim="@anim/custom_animation_fade_out"
-            app:popEnterAnim="@anim/custom_animation_fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@anim/custom_animation_slide_out_to_bottom"
             app:popUpTo="@id/reservationDetailsFragment" />
     </fragment>
