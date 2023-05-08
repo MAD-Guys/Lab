@@ -1,4 +1,4 @@
-package it.polito.mad.sportapp.profile
+package it.polito.mad.sportapp.profile.edit_profile
 
 import android.Manifest
 import android.content.Intent
@@ -7,20 +7,39 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.*
-import android.widget.*
+import android.view.ContextMenu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.RadioGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
-import it.polito.mad.sportapp.*
+import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.clearStorageFiles
+import it.polito.mad.sportapp.fastblur
+import it.polito.mad.sportapp.getPictureFromInternalStorage
+import it.polito.mad.sportapp.profile.Gender
+import it.polito.mad.sportapp.profile.Level
+import it.polito.mad.sportapp.profile.Sport
+import it.polito.mad.sportapp.profile.SportChips
+import it.polito.mad.sportapp.rotateBitmap
+import it.polito.mad.sportapp.uriToBitmap
 
-class EditProfileActivity : AppCompatActivity() {
+class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
+
     // user info fields' temporary state
     internal var firstNameTemp: String? = null
     internal var lastNameTemp: String? = null
@@ -30,21 +49,27 @@ class EditProfileActivity : AppCompatActivity() {
     internal var locationTemp: String? = null
     internal var bioTemp: String? = null
 
+    // action bar
+    internal var actionBar: ActionBar? = null
+
+    // navigation controller
+    internal lateinit var navController: NavController
+
     // Sports temporary state
     internal var sportsTemp = mutableMapOf(
         // 10 values initially set according to the values hard coded in ShowProfileActivity.kt
-        Pair("basket",      Sport("basket",     false, Level.NO_LEVEL)),
-        Pair("soccer11",    Sport("soccer11",   false, Level.NO_LEVEL)),
-        Pair("soccer5",     Sport("soccer5",    false, Level.NO_LEVEL)),
-        Pair("soccer8",     Sport("soccer8",    false, Level.NO_LEVEL)),
-        Pair("tennis",      Sport("tennis",     false, Level.NO_LEVEL)),
-        Pair("tableTennis", Sport("tableTennis",false, Level.NO_LEVEL)),
-        Pair("volleyball",  Sport("volleyball", false, Level.NO_LEVEL)),
-        Pair("beachVolley", Sport("beachVolley",false, Level.NO_LEVEL)),
-        Pair("padel",       Sport("padel",      false, Level.NO_LEVEL)),
-        Pair("miniGolf",    Sport("miniGolf",   false, Level.NO_LEVEL)),
+        Pair("basket", Sport("basket", false, Level.NO_LEVEL)),
+        Pair("soccer11", Sport("soccer11", false, Level.NO_LEVEL)),
+        Pair("soccer5", Sport("soccer5", false, Level.NO_LEVEL)),
+        Pair("soccer8", Sport("soccer8", false, Level.NO_LEVEL)),
+        Pair("tennis", Sport("tennis", false, Level.NO_LEVEL)),
+        Pair("tableTennis", Sport("tableTennis", false, Level.NO_LEVEL)),
+        Pair("volleyball", Sport("volleyball", false, Level.NO_LEVEL)),
+        Pair("beachVolley", Sport("beachVolley", false, Level.NO_LEVEL)),
+        Pair("padel", Sport("padel", false, Level.NO_LEVEL)),
+        Pair("miniGolf", Sport("miniGolf", false, Level.NO_LEVEL)),
         // * added to deal with a no-sense ChipGroup bug inherent to the last Chip *
-        Pair("pad",         Sport("pad",        false, Level.NO_LEVEL))
+        Pair("pad", Sport("pad", false, Level.NO_LEVEL))
     )
 
     // used to distinguish between tapped sports
@@ -60,7 +85,7 @@ class EditProfileActivity : AppCompatActivity() {
     internal lateinit var bio: EditText
 
     // Sports views: each element contains the Sport Chip and the actual level icon Chip
-    internal val sports = HashMap<String,SportChips>()
+    internal val sports = HashMap<String, SportChips>()
 
     // Profile picture
     private lateinit var profilePicture: ImageView
@@ -76,7 +101,7 @@ class EditProfileActivity : AppCompatActivity() {
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) {
-            if (it.resultCode == RESULT_OK) {
+            if (it.resultCode == AppCompatActivity.RESULT_OK) {
                 // retrieve gallery picture Uri
                 val galleryUri = it.data?.data
 
@@ -93,7 +118,7 @@ class EditProfileActivity : AppCompatActivity() {
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) {
-            if (it.resultCode == RESULT_OK) {
+            if (it.resultCode == AppCompatActivity.RESULT_OK) {
 
                 cropPicture.launch(
                     CropImageContractOptions(
@@ -110,8 +135,8 @@ class EditProfileActivity : AppCompatActivity() {
 
             // convert cropUri to a bitmap and rotate it
             profilePictureBitmap = cropUri?.let { uri ->
-                uriToBitmap(uri, contentResolver)?.let { bitmap ->
-                    rotateBitmap(uri, bitmap, contentResolver)
+                uriToBitmap(uri, requireActivity().contentResolver)?.let { bitmap ->
+                    rotateBitmap(uri, bitmap, requireActivity().contentResolver)
                 }
             }
 
@@ -135,20 +160,31 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_edit_profile)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // get activity action bar
+        actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+
+        // initialize navigation controller
+        navController = findNavController()
+
+        // initialize menu
+        menuInit()
+
+        // setup bottom bar
+        setupBottomBar()
 
         // initialize the EditText views
-        firstName = findViewById(R.id.edit_first_name)
-        lastName = findViewById(R.id.edit_last_name)
-        username = findViewById(R.id.edit_username)
-        genderRadioGroup = findViewById(R.id.radio_gender_group)
-        age = findViewById(R.id.edit_age)
-        location = findViewById(R.id.edit_location)
-        bio = findViewById(R.id.edit_bio)
-        profilePicture = findViewById(R.id.profile_picture)
-        backgroundProfilePicture = findViewById(R.id.background_profile_picture)
+        firstName = view.findViewById(R.id.edit_first_name)
+        lastName = view.findViewById(R.id.edit_last_name)
+        username = view.findViewById(R.id.edit_username)
+        genderRadioGroup = view.findViewById(R.id.radio_gender_group)
+        age = view.findViewById(R.id.edit_age)
+        location = view.findViewById(R.id.edit_location)
+        bio = view.findViewById(R.id.edit_bio)
+        profilePicture = view.findViewById(R.id.profile_picture)
+        backgroundProfilePicture = view.findViewById(R.id.background_profile_picture)
 
         // initialize options to crop the profile picture
         cropImageOptions = CropImageOptions(
@@ -169,19 +205,22 @@ class EditProfileActivity : AppCompatActivity() {
         /* manage profile and background picture */
 
         // retrieve profile picture and update it with the one uploaded by the user, if any
-        getPictureFromInternalStorage(filesDir, "profilePicture.jpeg")?.let {
+        getPictureFromInternalStorage(requireActivity().filesDir, "profilePicture.jpeg")?.let {
             profilePicture.setImageBitmap(it)
         }
 
         // retrieve background picture and update it with the one uploaded by the user, if any
-        getPictureFromInternalStorage(filesDir, "backgroundProfilePicture.jpeg")?.let {
+        getPictureFromInternalStorage(
+            requireActivity().filesDir,
+            "backgroundProfilePicture.jpeg"
+        )?.let {
             backgroundProfilePicture.setImageBitmap(it)
         }
 
         /* manage listeners */
 
         // set context menu to change profile picture
-        val profileImageButton: ImageButton = findViewById(R.id.profile_picture_button)
+        val profileImageButton: ImageButton = view.findViewById(R.id.profile_picture_button)
         registerForContextMenu(profileImageButton)
         // disable long default click listener
         profileImageButton.setOnLongClickListener(null)
@@ -189,7 +228,7 @@ class EditProfileActivity : AppCompatActivity() {
         // set click listener to change profile picture
         profileImageButton.setOnClickListener {
             // open the related context menu
-            openContextMenu(profileImageButton)
+            requireActivity().openContextMenu(profileImageButton)
         }
 
         // add listeners to the user info views
@@ -201,7 +240,7 @@ class EditProfileActivity : AppCompatActivity() {
         bio.addTextChangedListener(textListenerInit("bio"))
 
         genderRadioGroup.setOnCheckedChangeListener { _, checkedId ->
-            radioGenderCheckedTemp = when(checkedId) {
+            radioGenderCheckedTemp = when (checkedId) {
                 R.id.radio_male -> Gender.Male
                 R.id.radio_female -> Gender.Female
                 R.id.radio_other -> Gender.Other
@@ -222,7 +261,7 @@ class EditProfileActivity : AppCompatActivity() {
                 consideredSport = sportName
 
                 // open the context menu to select a new sport level
-                openContextMenu(sportChips.actualLevelChip)
+                requireActivity().openContextMenu(sportChips.actualLevelChip)
             }
 
             // add listener to the sport chip
@@ -230,6 +269,7 @@ class EditProfileActivity : AppCompatActivity() {
                 sportChipListener(sportName)
             }
         }
+
     }
 
     override fun onResume() {
@@ -254,56 +294,7 @@ class EditProfileActivity : AppCompatActivity() {
         // cannot be cleared before the picture is cropped
 
         // delete the temporary profile pictures saved into cache (if any)
-        clearStorageFiles(cacheDir, "temp_profile_picture[a-zA-Z0-9]*.jpeg")
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        // show a pop up to the user when coming back to the previous activity
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            showToasty("success", this, "Information correctly saved!")
-        }
-
-        return super.onKeyDown(keyCode, event)
-    }
-
-    /* app menu */
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // inflate and render the menu
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.edit_profile_menu, menu)
-        // change app bar's title
-        supportActionBar?.title = "Edit Profile"
-
-        val menuHeight = supportActionBar?.height!!
-        val profilePictureContainer = findViewById<ConstraintLayout>(R.id.profile_picture_container)
-        val backgroundProfilePicture = findViewById<ImageView>(R.id.background_profile_picture)
-        val profilePicture = findViewById<ImageView>(R.id.profile_picture)
-
-        // set profile picture height 1/3 of the app view
-        this.setProfilePictureSize(
-            menuHeight,
-            profilePictureContainer,
-            backgroundProfilePicture,
-            profilePicture
-        )
-
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        // detect when the user clicks on the "confirm" button
-        R.id.confirm_button -> {
-            // (the information will be persistently saved in the onPause method)
-
-            // showing feedback information
-            showToasty("success", this, "Information correctly saved!")
-
-            // terminate this activity (go back to the previous one according to the stack queue)
-            this.finish()
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
+        clearStorageFiles(requireActivity().cacheDir, "temp_profile_picture[a-zA-Z0-9]*.jpeg")
     }
 
     /* context menu (to choose how to change profile picture) */
@@ -312,12 +303,13 @@ class EditProfileActivity : AppCompatActivity() {
         menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?
     ) {
         super.onCreateContextMenu(menu, v, menuInfo)
-        val inflater: MenuInflater = menuInflater
+        val inflater: MenuInflater = requireActivity().menuInflater
 
         when (v.id) {
             R.id.profile_picture_button -> {
                 inflater.inflate(R.menu.profile_picture_context_menu, menu)
             }
+
             R.id.actual_level_chip -> {
                 inflater.inflate(R.menu.sport_level_context_menu, menu)
                 // set menu title
@@ -332,7 +324,9 @@ class EditProfileActivity : AppCompatActivity() {
             R.id.camera -> {
                 // check if camera permissions have already been granted or not
                 if (ActivityCompat.checkSelfPermission(
-                        this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+                        requireContext(), Manifest.permission.CAMERA
+                    ) == PackageManager.PERMISSION_DENIED
+                ) {
                     // request permissions
                     val permission = arrayOf(
                         Manifest.permission.CAMERA
@@ -340,22 +334,25 @@ class EditProfileActivity : AppCompatActivity() {
 
                     // NOTE: the request code is used to identify the request
                     // in the callback function but it is completely random
-                    ActivityCompat.requestPermissions(this, permission, 112)
-                }
-                else openCamera()
+                    ActivityCompat.requestPermissions(requireActivity(), permission, 112)
+                } else openCamera()
                 true
             }
+
             R.id.gallery -> {
                 // check if gallery permissions have already been granted or not
-                if (ActivityCompat.checkSelfPermission(this, galleryImagesPermission()) == PackageManager.PERMISSION_DENIED) {
+                if (ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        galleryImagesPermission()
+                    ) == PackageManager.PERMISSION_DENIED
+                ) {
                     // request permissions
                     val permissions = arrayOf(
                         galleryImagesPermission()
                     )
 
-                    ActivityCompat.requestPermissions(this, permissions, 113)
-                }
-                else openGallery()
+                    ActivityCompat.requestPermissions(requireActivity(), permissions, 113)
+                } else openGallery()
 
                 true
             }
@@ -367,6 +364,7 @@ class EditProfileActivity : AppCompatActivity() {
                 changeSportLevel(tappedSport, Level.BEGINNER)
                 true
             }
+
             R.id.intermediate_sport_level -> {
                 // retrieve tapped sport
                 val tappedSport = consideredSport
@@ -374,6 +372,7 @@ class EditProfileActivity : AppCompatActivity() {
                 changeSportLevel(tappedSport, Level.INTERMEDIATE)
                 true
             }
+
             R.id.expert_sport_level -> {
                 // retrieve tapped sport
                 val tappedSport = consideredSport
@@ -381,6 +380,7 @@ class EditProfileActivity : AppCompatActivity() {
                 changeSportLevel(tappedSport, Level.EXPERT)
                 true
             }
+
             R.id.pro_sport_level -> {
                 // retrieve tapped sport
                 val tappedSport = consideredSport
@@ -416,4 +416,5 @@ class EditProfileActivity : AppCompatActivity() {
                 openGallery()
         }
     }
+
 }

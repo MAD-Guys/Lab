@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_orange"
-    android:baselineAligned="false"
-    tools:context=".profile.EditProfileActivity">
+    android:baselineAligned="false">
 
     <!-- Profile picture box
     (put a default height which will be programmatically overwritten at run time) -->
@@ -23,9 +23,9 @@
             android:layout_height="match_parent"
             android:contentDescription="@string/background_profile_picture"
             android:scaleType="centerCrop"
+            android:visibility="visible"
             app:srcCompat="@drawable/background_user_profile_picture"
-            tools:ignore="ImageContrastCheck"
-            android:visibility="visible"/>
+            tools:ignore="ImageContrastCheck" />
         <!-- profile picture -->
         <ImageView
             android:id="@+id/profile_picture"

@@ -13,18 +13,18 @@
         <action
             android:id="@+id/action_showReservationsFragment_to_eventsListFragment"
             app:destination="@id/eventsListFragment"
-            app:enterAnim="@anim/reservations_list_slide_in_from_bottom"
+            app:enterAnim="@anim/custom_animation_slide_in_from_bottom"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/reservations_list_slide_out_to_bottom"
+            app:popExitAnim="@anim/custom_animation_slide_out_to_bottom"
             app:popUpTo="@id/showReservationsFragment" />
         <action
             android:id="@+id/action_showReservationsFragment_to_reservationDetailsFragment"
             app:destination="@id/reservationDetailsFragment"
-            app:enterAnim="@anim/reservation_details_slide_in_from_right"
-            app:exitAnim="@anim/reservations_slide_out_to_left"
-            app:popEnterAnim="@anim/reservations_slide_in_from_left"
-            app:popExitAnim="@anim/reservation_details_slide_out_to_right"
+            app:enterAnim="@anim/custom_animation_slide_in_from_right"
+            app:exitAnim="@anim/custom_animation_out_to_left"
+            app:popEnterAnim="@anim/custom_animation_slide_in_from_left"
+            app:popExitAnim="@anim/custom_animation_slide_out_to_right"
             app:popUpTo="@id/showReservationsFragment" />
     </fragment>
 
@@ -45,15 +45,28 @@
         <action
             android:id="@+id/action_eventsListFragment_to_reservationDetailsFragment"
             app:destination="@id/reservationDetailsFragment"
-            app:enterAnim="@anim/reservation_details_slide_in_from_right"
-            app:exitAnim="@anim/reservations_slide_out_to_left"
-            app:popEnterAnim="@anim/reservations_slide_in_from_left"
-            app:popExitAnim="@anim/reservation_details_slide_out_to_right"
+            app:enterAnim="@anim/custom_animation_slide_in_from_right"
+            app:exitAnim="@anim/custom_animation_out_to_left"
+            app:popEnterAnim="@anim/custom_animation_slide_in_from_left"
+            app:popExitAnim="@anim/custom_animation_slide_out_to_right"
             app:popUpTo="@id/eventsListFragment" />
     </fragment>
     <fragment
         android:id="@+id/showProfileFragment"
         android:name="it.polito.mad.sportapp.profile.show_profile.ShowProfileFragment"
-        android:label="ShowProfileFragment" />
+        android:label="ShowProfileFragment" >
+        <action
+            android:id="@+id/action_showProfileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment"
+            app:enterAnim="@anim/custom_animation_slide_in_from_right"
+            app:exitAnim="@anim/custom_animation_out_to_left"
+            app:popEnterAnim="@anim/custom_animation_slide_in_from_left"
+            app:popExitAnim="@anim/custom_animation_slide_out_to_right"
+            app:popUpTo="@id/showProfileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="it.polito.mad.sportapp.profile.edit_profile.EditProfileFragment"
+        android:label="EditProfileFragment" />
 
 </navigation>

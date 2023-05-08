@@ -54,7 +54,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
     // action bar
     private var actionBar: ActionBar? = null
 
-    private val viewModel by viewModels<ReservationDetailsFragmentViewModel>()
+    private val viewModel by viewModels<ReservationDetailsViewModel>()
 
     private var eventId: Int = -1
 

@@ -42,7 +42,7 @@ internal fun ShowProfileFragment.menuInit() {
             val profilePicture = requireView().findViewById<ImageView>(R.id.profile_picture)
 
             // set profile picture height 1/3 of the app view
-            activity?.setProfilePictureSize(
+            requireActivity().setProfilePictureSize(
                 menuHeight,
                 profilePictureContainer,
                 backgroundProfilePicture,
@@ -54,8 +54,7 @@ internal fun ShowProfileFragment.menuInit() {
             // handle the menu selection
             return when (menuItem.itemId) {
                 R.id.edit_button -> {
-                    //TODO: modify with edit profile fragment navigation
-                    navController.navigate(R.id.action_showReservationsFragment_to_eventsListFragment)
+                    navController.navigate(R.id.action_showProfileFragment_to_editProfileFragment)
                     true
                 }
 

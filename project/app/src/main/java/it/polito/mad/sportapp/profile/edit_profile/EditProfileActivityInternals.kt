@@ -1,41 +1,129 @@
-package it.polito.mad.sportapp.profile
+package it.polito.mad.sportapp.profile.edit_profile
 
 import android.Manifest
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Build
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.children
+import androidx.lifecycle.Lifecycle
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.profile.Gender
+import it.polito.mad.sportapp.profile.Level
+import it.polito.mad.sportapp.profile.Sport
+import it.polito.mad.sportapp.profile.SportChips
+import it.polito.mad.sportapp.profile.extendedNameOf
+import it.polito.mad.sportapp.profile.getHardcodedSports
 import it.polito.mad.sportapp.savePictureOnInternalStorage
+import it.polito.mad.sportapp.setProfilePictureSize
+import it.polito.mad.sportapp.showToasty
 import org.json.JSONObject
 import java.io.File
 
+// manage menu item selection
+internal fun EditProfileFragment.menuInit() {
+    val menuHost: MenuHost = requireActivity()
+
+    menuHost.addMenuProvider(object : MenuProvider {
+        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+            menuInflater.inflate(R.menu.edit_profile_menu, menu)
+
+            var menuHeight: Int = -1
+
+            actionBar?.let {
+                it.setDisplayHomeAsUpEnabled(false)
+                it.title = "Edit Profile"
+                menuHeight = it.height
+            }
+
+            val profilePictureContainer =
+                requireView().findViewById<ConstraintLayout>(R.id.profile_picture_container)
+            val backgroundProfilePicture =
+                requireView().findViewById<ImageView>(R.id.background_profile_picture)
+            val profilePicture = requireView().findViewById<ImageView>(R.id.profile_picture)
+
+            // set profile picture height 1/3 of the app view
+            requireActivity().setProfilePictureSize(
+                menuHeight,
+                profilePictureContainer,
+                backgroundProfilePicture,
+                profilePicture
+            )
+        }
+
+        override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+            // handle the menu selection
+            return when (menuItem.itemId) {
+                R.id.confirm_button -> {
+                    // (the information will be persistently saved in the onPause method)
+
+                    // showing feedback information
+                    showToasty("success", requireContext(), "Information correctly saved!")
+
+                    // navigate back to show profile fragment
+                    navController.popBackStack()
+                    true
+                }
+
+                else -> false
+            }
+        }
+    }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+}
+
+/* bottom bar */
+internal fun EditProfileFragment.setupBottomBar() {
+    // show bottom bar
+    val bottomBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation_bar)
+
+    // check if the device is in portrait or landscape mode
+    if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
+        bottomBar.visibility = View.GONE
+    else {
+        bottomBar.visibility = View.VISIBLE
+    }
+
+    // set the right selected button
+    bottomBar.menu.findItem(R.id.profile).isChecked = true
+}
 
 /* manage load/save from/into storage */
 
-internal fun EditProfileActivity.loadDataFromStorage() {
+internal fun EditProfileFragment.loadDataFromStorage() {
     // retrieve data from SharedPreferences
-    val sh = getSharedPreferences("it.polito.mad.lab2", AppCompatActivity.MODE_PRIVATE)
-    val jsonObjectProfile: JSONObject? = sh.getString("profile", null)?.let { JSONObject(it) }
+    val sh = activity?.getSharedPreferences("it.polito.mad.lab2", AppCompatActivity.MODE_PRIVATE)
+    val jsonObjectProfile: JSONObject? = sh?.getString("profile", null)?.let { JSONObject(it) }
 
     /* manage user info */
 
     // retrieve data from the JSON object
-    val firstNameResume = jsonObjectProfile?.getString("firstName") ?: getString(R.string.first_name)
+    val firstNameResume =
+        jsonObjectProfile?.getString("firstName") ?: getString(R.string.first_name)
     val lastNameResume = jsonObjectProfile?.getString("lastName") ?: getString(R.string.last_name)
     val usernameResume = jsonObjectProfile?.getString("username") ?: getString(R.string.username)
-    val genderResume = Gender.valueOf(jsonObjectProfile?.getString("gender") ?: getString(R.string.male_gender))
+    val genderResume =
+        Gender.valueOf(jsonObjectProfile?.getString("gender") ?: getString(R.string.male_gender))
     val ageResume = jsonObjectProfile?.getString("age") ?: getString(R.string.user_age)
-    val locationResume = jsonObjectProfile?.getString("location") ?: getString(R.string.user_location)
+    val locationResume =
+        jsonObjectProfile?.getString("location") ?: getString(R.string.user_location)
     val bioResume = jsonObjectProfile?.getString("bio") ?: getString(R.string.user_bio)
 
     // set EditText views
@@ -76,11 +164,11 @@ internal fun EditProfileActivity.loadDataFromStorage() {
     }
 }
 
-internal fun EditProfileActivity.saveInformationOnStorage() {
+internal fun EditProfileFragment.saveInformationOnStorage() {
     // the temporary information is *serialized* firstly into a JSONObject
     // and then into the sharedPreferences file with the key *profile*
-    val sh = getSharedPreferences("it.polito.mad.lab2", AppCompatActivity.MODE_PRIVATE)
-    val editor = sh.edit()
+    val sh = activity?.getSharedPreferences("it.polito.mad.lab2", AppCompatActivity.MODE_PRIVATE)
+    val editor = sh?.edit()
 
     val jsonObjectProfile = JSONObject()
 
@@ -95,23 +183,27 @@ internal fun EditProfileActivity.saveInformationOnStorage() {
 
     // save profile and background pictures into the internal storage
     profilePictureBitmap?.let {
-        savePictureOnInternalStorage(it, filesDir, "profilePicture.jpeg")
+        savePictureOnInternalStorage(it, requireActivity().filesDir, "profilePicture.jpeg")
     }
     backgroundProfilePictureBitmap?.let {
-        savePictureOnInternalStorage(it, filesDir, "backgroundProfilePicture.jpeg")
+        savePictureOnInternalStorage(
+            it,
+            requireActivity().filesDir,
+            "backgroundProfilePicture.jpeg"
+        )
     }
 
     // save sports as a JsonObject
     val sportJson = JSONObject()
-    sportsTemp.forEach{ (_, sport) -> sport.saveAsJson(sportJson) }
+    sportsTemp.forEach { (_, sport) -> sport.saveAsJson(sportJson) }
     jsonObjectProfile.put("sports", sportJson)
 
     // apply changes
-    editor.putString("profile", jsonObjectProfile.toString())
-    editor.apply()
+    editor?.putString("profile", jsonObjectProfile.toString())
+    editor?.apply()
 }
 
-internal fun EditProfileActivity.textListenerInit(fieldName: String): TextWatcher {
+internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatcher {
     // implement and return the TextWatcher interface
     return object : TextWatcher {
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -133,13 +225,13 @@ internal fun EditProfileActivity.textListenerInit(fieldName: String): TextWatche
 
 /* start new Activities to get a new picture */
 
-internal fun EditProfileActivity.openCamera() {
+internal fun EditProfileFragment.openCamera() {
     // Creating a file object for the temporal image
-    val imageFile = File.createTempFile("temp_profile_picture", ".jpeg", cacheDir)
+    val imageFile = File.createTempFile("temp_profile_picture", ".jpeg", requireActivity().cacheDir)
 
     // Creating through a FileProvider the URI
     cameraUri = FileProvider.getUriForFile(
-        this,
+        requireContext(),
         "it.polito.mad.sportapp.fileprovider", imageFile
     )
 
@@ -149,7 +241,7 @@ internal fun EditProfileActivity.openCamera() {
     cameraActivityResultLauncher.launch(cameraIntent)
 }
 
-internal fun EditProfileActivity.openGallery() {
+internal fun EditProfileFragment.openGallery() {
     // create intent and open phone gallery
     val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
 
@@ -157,23 +249,22 @@ internal fun EditProfileActivity.openGallery() {
 }
 
 internal fun galleryImagesPermission(): String =
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            Manifest.permission.READ_MEDIA_IMAGES
-        else
-            Manifest.permission.READ_EXTERNAL_STORAGE
-
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+        Manifest.permission.READ_MEDIA_IMAGES
+    else
+        Manifest.permission.READ_EXTERNAL_STORAGE
 
 
 /*----- SPORTS UTILITIES -----*/
 
 // Fills sport chips and sport level lists, the chips in xml are named with the sport name
-internal fun EditProfileActivity.sportsInit() {
-    val sportsContainer = findViewById<ChipGroup>(R.id.sports_container)
+internal fun EditProfileFragment.sportsInit() {
+    val sportsContainer = requireView().findViewById<ChipGroup>(R.id.sports_container)
 
     for (sport in sportsTemp.keys) {
         // create the horizontal sport chip wrapper
         // (it will contain the sport chip and the level badge, if any)
-        val sportChipWrapper = LinearLayout(this).apply {
+        val sportChipWrapper = LinearLayout(requireContext()).apply {
             layoutParams = LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, // width
                 LinearLayout.LayoutParams.WRAP_CONTENT  // height
@@ -185,7 +276,8 @@ internal fun EditProfileActivity.sportsInit() {
         val sportChip = createEditSportChip(sport, sportChipWrapper)
 
         // create the actual Sport level chip
-        val sportActualLevelChip = createEditSportLevelBadge(R.drawable.beginner_level_badge, sportChipWrapper)
+        val sportActualLevelChip =
+            createEditSportLevelBadge(R.drawable.beginner_level_badge, sportChipWrapper)
 
         // build sport hierarchy
         sportChipWrapper.addView(sportChip)
@@ -202,7 +294,7 @@ internal fun EditProfileActivity.sportsInit() {
     sportsContainer.children.last().visibility = LinearLayout.GONE
 }
 
-private fun EditProfileActivity.createEditSportChip(sportName: String, parent: ViewGroup): Chip {
+private fun EditProfileFragment.createEditSportChip(sportName: String, parent: ViewGroup): Chip {
     // inflate generic sport chip
     val sportChip = layoutInflater.inflate(R.layout.edit_profile_chip, parent, false) as Chip
     // customize it for the provided sport
@@ -211,15 +303,19 @@ private fun EditProfileActivity.createEditSportChip(sportName: String, parent: V
     return sportChip
 }
 
-private fun EditProfileActivity.createEditSportLevelBadge(levelIconResource: Int, parent: ViewGroup): Chip {
+private fun EditProfileFragment.createEditSportLevelBadge(
+    levelIconResource: Int,
+    parent: ViewGroup
+): Chip {
     // inflate generic level badge
     val levelChip = layoutInflater.inflate(
-        if(levelIconResource == R.drawable.intermediate_level_badge)
+        if (levelIconResource == R.drawable.intermediate_level_badge)
             R.layout.edit_profile_sport_level_chip_big
         else
             R.layout.edit_profile_sport_level_chip,
         parent,
-        false) as Chip
+        false
+    ) as Chip
 
     // customize icon based on the level
     levelChip.setChipIconResource(levelIconResource)
@@ -235,7 +331,7 @@ private fun EditProfileActivity.createEditSportLevelBadge(levelIconResource: Int
 }
 
 // Generic listener to select or deselect a sport badge
-internal fun EditProfileActivity.sportChipListener(sportName: String) {
+internal fun EditProfileFragment.sportChipListener(sportName: String) {
     val sport = sports[sportName]!!
     val sportTemp = sportsTemp[sportName]!!
 
@@ -245,20 +341,19 @@ internal fun EditProfileActivity.sportChipListener(sportName: String) {
 
         // hide actual level image
         sport.actualLevelChip.visibility = Chip.GONE
-    }
-    else {
+    } else {
         // update sport considered at the moment by the menu
         consideredSport = sportName
 
         // this sport was not selected -> open the context menu to choose the level
-        openContextMenu(sport.actualLevelChip)
+        requireActivity().openContextMenu(sport.actualLevelChip)
 
         // hide the checked icon on the sport badge
         sport.chip.isChecked = false
     }
 }
 
-internal fun EditProfileActivity.changeSportLevel(sportName: String, level: Level) {
+internal fun EditProfileFragment.changeSportLevel(sportName: String, level: Level) {
     val sport = sportsTemp[sportName]!!
     val sportChips = sports[sportName]!!
 
@@ -280,7 +375,7 @@ internal fun EditProfileActivity.changeSportLevel(sportName: String, level: Leve
 }
 
 // Set sports Edit fields and temporary values
-private fun EditProfileActivity.setEditSportsField(sport: Sport) {
+private fun EditProfileFragment.setEditSportsField(sport: Sport) {
     if (sport.selected) {
         // manage sport state
         sportsTemp[sport.name] = sport
@@ -303,7 +398,7 @@ private fun EditProfileActivity.setEditSportsField(sport: Sport) {
     }
 }
 
-private fun EditProfileActivity.setHardcodedSportFields(vararg hardcodedSports: Sport) {
+private fun EditProfileFragment.setHardcodedSportFields(vararg hardcodedSports: Sport) {
     hardcodedSports.forEach {
         setEditSportsField(it)
     }

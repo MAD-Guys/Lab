@@ -45,14 +45,6 @@
         </provider>
 
         <activity
-            android:name=".profile.EditProfileActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".reservation_details.ReservationDetailsActivity"
-            android:exported="true" />
-
-        <activity
             android:name=".reservation_details.EditEquipmentActivity"
             android:exported="true" />
 
