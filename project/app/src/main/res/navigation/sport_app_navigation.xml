@@ -14,15 +14,15 @@
             android:id="@+id/action_showReservationsFragment_to_eventsListFragment"
             app:destination="@id/eventsListFragment"
             app:enterAnim="@anim/custom_animation_slide_in_from_bottom"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
+            app:exitAnim="@anim/custom_animation_fade_out"
+            app:popEnterAnim="@anim/custom_animation_fade_in"
             app:popExitAnim="@anim/custom_animation_slide_out_to_bottom"
             app:popUpTo="@id/showReservationsFragment" />
         <action
             android:id="@+id/action_showReservationsFragment_to_reservationDetailsFragment"
             app:destination="@id/reservationDetailsFragment"
             app:enterAnim="@anim/custom_animation_slide_in_from_right"
-            app:exitAnim="@anim/custom_animation_out_to_left"
+            app:exitAnim="@anim/custom_animation_slide_out_to_left"
             app:popEnterAnim="@anim/custom_animation_slide_in_from_left"
             app:popExitAnim="@anim/custom_animation_slide_out_to_right"
             app:popUpTo="@id/showReservationsFragment" />
@@ -46,7 +46,7 @@
             android:id="@+id/action_eventsListFragment_to_reservationDetailsFragment"
             app:destination="@id/reservationDetailsFragment"
             app:enterAnim="@anim/custom_animation_slide_in_from_right"
-            app:exitAnim="@anim/custom_animation_out_to_left"
+            app:exitAnim="@anim/custom_animation_slide_out_to_left"
             app:popEnterAnim="@anim/custom_animation_slide_in_from_left"
             app:popExitAnim="@anim/custom_animation_slide_out_to_right"
             app:popUpTo="@id/eventsListFragment" />
@@ -59,7 +59,7 @@
             android:id="@+id/action_showProfileFragment_to_editProfileFragment"
             app:destination="@id/editProfileFragment"
             app:enterAnim="@anim/custom_animation_slide_in_from_right"
-            app:exitAnim="@anim/custom_animation_out_to_left"
+            app:exitAnim="@anim/custom_animation_slide_out_to_left"
             app:popEnterAnim="@anim/custom_animation_slide_in_from_left"
             app:popExitAnim="@anim/custom_animation_slide_out_to_right"
             app:popUpTo="@id/showProfileFragment" />
