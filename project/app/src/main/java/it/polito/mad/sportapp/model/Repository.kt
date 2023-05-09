@@ -201,8 +201,8 @@ class Repository @Inject constructor(
     fun getPlaygroundInfoById(playgroundId: Int): PlaygroundInfo {
         val playgroundInfo = playgroundSportDao.getPlaygroundInfo(playgroundId)
         playgroundInfo.reviewList = getAllReviewsByPlaygroundId(playgroundId)
-        playgroundInfo.overallQualityRating = playgroundInfo.reviewList.map { it.qualityRating }.average().toFloat()
-        playgroundInfo.overallFacilitiesRating = playgroundInfo.reviewList.map { it.facilitiesRating }.average().toFloat()
+        playgroundInfo.overallQualityRating = playgroundInfo.reviewList.map { it.qualityRating }.filter{it != 0f}.average().toFloat()
+        playgroundInfo.overallFacilitiesRating = playgroundInfo.reviewList.map { it.facilitiesRating }.filter { it!=0f }.average().toFloat()
         playgroundInfo.overallRating = (playgroundInfo.overallFacilitiesRating + playgroundInfo.overallQualityRating) / 2
         return playgroundInfo
     }
