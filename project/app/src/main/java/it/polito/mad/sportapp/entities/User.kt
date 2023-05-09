@@ -30,12 +30,12 @@ data class User (
 
     @Ignore
     var achievements : Map<Achievement,Boolean> = mapOf(
-        Achievement.atleastOneSport to false,
-        Achievement.atleastFiveSport to false,
-        Achievement.allSports to false,
-        Achievement.atleastThreeMatches to false,
-        Achievement.atleastTenMatches to false,
-        Achievement.atLeastTwentyFiveMatches to false,
+        Achievement.AtLeastOneSport to false,
+        Achievement.AtLeastFiveSports to false,
+        Achievement.AllSports to false,
+        Achievement.AtLeastThreeMatches to false,
+        Achievement.AtLeastTenMatches to false,
+        Achievement.AtLeastTwentyFiveMatches to false,
     )
 
 }

@@ -21,7 +21,6 @@
     <string name="user_gender">Male</string>
     <string name="user_age">23</string>
     <string name="age_label">Age: </string>
-
     <string name="user_location">Rome</string>
 
     <!-- buttons -->
@@ -50,6 +49,15 @@
     <string name="intermediate_sport_level">Intermediate</string>
     <string name="expert_sport_level">Expert</string>
     <string name="pro_sport_level">Pro</string>
+
+    <!-- achievements -->
+    <string name="achievements_title">Achievements</string>
+    <string name="at_least_one_sport_achievement_description">At least one sport achievement description</string>
+    <string name="at_least_five_sports_achievement_description">At least five sports achievement description</string>
+    <string name="all_sports_achievement_description">All sports achievement description</string>
+    <string name="at_least_three_matches_achievement_description">At least three matches achievement description</string>
+    <string name="at_least_ten_matches_achievement_description">At least ten matches achievement description</string>
+    <string name="at_least_twenty_five_match_achievement_description">At least twenty five matches achievement description</string>
 
     <!-- user bio -->
     <string name="bio_title">Bio</string>

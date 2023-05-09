@@ -301,13 +301,42 @@
 
                 <!-- line divider -->
                 <View
+                    android:id="@+id/achievements_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="8dp"
+                    android:background="?android:attr/listDivider" />
+
+                <!-- Section 3: Achievements -->
+                <LinearLayout
+                    android:id="@+id/achievements_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Achievements title -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:includeFontPadding="false"
+                        android:text="@string/achievements_title"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/section_title_text_size" />
+
+                    <!-- add achievements programmatically here -->
+
+                </LinearLayout>
+
+                <!-- line divider -->
+                <View
                     android:id="@+id/bio_divider"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginVertical="8dp"
                     android:background="?android:attr/listDivider" />
 
-                <!-- Section 3: Bio -->
+                <!-- Section 4: Bio -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
