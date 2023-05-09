@@ -1,13 +1,20 @@
 package it.polito.mad.sportapp.playground_availabilities
 
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.children
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,12 +26,66 @@ import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.playground_availabilities.calendar_utils.CalendarDayBinder
 import it.polito.mad.sportapp.playground_availabilities.calendar_utils.MonthViewContainer
 import it.polito.mad.sportapp.playground_availabilities.recycler_view.PlaygroundAvailabilitiesAdapter
+import it.polito.mad.sportapp.showToasty
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 import kotlin.math.min
+
+/* action bar and menu init */
+internal fun PlaygroundAvailabilitiesFragment.initAppBar() {
+    // retrieve activity action bar
+    val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+
+    actionBar?.let {
+        if(viewModel.reservationManagementMode == null) {
+            it.setDisplayHomeAsUpEnabled(false)
+            it.title = "Playground Availabilities"
+        }
+        else {
+            it.setDisplayHomeAsUpEnabled(true)
+            it.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
+            it.title = viewModel.reservationManagementMode!!.appBarTitle
+        }
+    }
+}
+
+internal fun PlaygroundAvailabilitiesFragment.initMenu() {
+    val menuHost: MenuHost = requireActivity()
+
+    menuHost.addMenuProvider(object : MenuProvider {
+        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+            menuInflater.inflate(
+                if (viewModel.reservationManagementMode != null) viewModel.reservationManagementMode!!.menuResourceId
+                else R.menu.playgrounds_availabilities_menu,
+                menu
+            )
+        }
+
+        override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
+            R.id.add_reservation_button -> {
+                navigateToAddReservation()
+                true
+            }
+            R.id.add_reservation_slot_button -> {
+                navigateToManageEquipments()
+                true
+            }
+            else -> false
+        }
+    }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+}
+
+private fun PlaygroundAvailabilitiesFragment.navigateToAddReservation() {
+    // go to add/edit mode
+    findNavController().navigate(R.id.action_playgroundAvailabilitiesFragment_self)
+}
+private fun PlaygroundAvailabilitiesFragment.navigateToManageEquipments() {
+    // TODO
+    showToasty("info", requireContext(), "Go to edit/add equipments")
+}
 
 
 /* calendar init functions */
@@ -51,6 +112,12 @@ internal fun PlaygroundAvailabilitiesFragment.initCalendar() {
 }
 
 private fun PlaygroundAvailabilitiesFragment.initCalendarHeader(daysOfWeek: List<DayOfWeek>) {
+    if (viewModel.reservationManagementMode != null) {
+        // change current month color
+        val selectedMonthBar = requireView().findViewById<View>(R.id.app_bar_layout)
+        selectedMonthBar.setBackgroundResource(viewModel.reservationManagementMode!!.variantColorId)
+    }
+
     /* initialize calendar header with days of week */
     calendarView.monthHeaderBinder = object : MonthHeaderFooterBinder<MonthViewContainer> {
         override fun create(view: View) = MonthViewContainer(view as ViewGroup)
@@ -224,6 +291,11 @@ internal fun PlaygroundAvailabilitiesFragment.initSelectedSportObservers() {
 
 /* Playground availabilities recycler view */
 internal fun PlaygroundAvailabilitiesFragment.setupAvailablePlaygroundsRecyclerView() {
+    if (viewModel.reservationManagementMode != null) {
+        val selectedDateLabelBox = requireView().findViewById<View>(R.id.selected_date_label_box)
+        selectedDateLabelBox.setBackgroundResource(viewModel.reservationManagementMode!!.variantColorId)
+    }
+
     val playgroundAvailabilitiesRecyclerView =
         requireView().findViewById<RecyclerView>(R.id.playground_availabilities_rv)
 
@@ -231,7 +303,8 @@ internal fun PlaygroundAvailabilitiesFragment.setupAvailablePlaygroundsRecyclerV
     playgroundAvailabilitiesAdapter = PlaygroundAvailabilitiesAdapter(
         viewModel.getAvailablePlaygroundsOnSelectedDate(),
         viewModel.selectedDate.value ?: viewModel.defaultDate,
-        viewModel.slotDuration
+        viewModel.slotDuration,
+        viewModel.reservationManagementMode
     ) { playgroundId ->
         val params = bundleOf(
             "id_playground" to playgroundId
@@ -252,10 +325,16 @@ internal fun PlaygroundAvailabilitiesFragment.setupAvailablePlaygroundsRecyclerV
 internal fun PlaygroundAvailabilitiesFragment.setupBottomBar() {
     // show bottom bar
     val bottomBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation_bar)
-    bottomBar.visibility = View.VISIBLE
 
-    // set the right selected button
-    bottomBar.menu.findItem(R.id.playgrounds).isChecked = true
+    if (viewModel.reservationManagementMode == null) { /* playground availabilities view */
+        // show bottom bar with the right selected button
+        bottomBar.visibility = View.VISIBLE
+        bottomBar.menu.findItem(R.id.playgrounds).isChecked = true
+    }
+    else {  /* add/edit reservation */
+        // hide bottom bar
+        bottomBar.visibility = View.GONE
+    }
 }
 
 /* utils */

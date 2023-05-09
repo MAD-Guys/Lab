@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
+import it.polito.mad.sportapp.reservation_management.ReservationManagementMode
 import java.lang.Exception
 import java.time.Duration
 import java.time.LocalDate
@@ -16,6 +17,7 @@ class PlaygroundAvailabilitiesAdapter(
     playgroundAvailabilities: Map<LocalDateTime, List<DetailedPlaygroundSport>>,
     internal var selectedDate: LocalDate,
     private val slotDuration: Duration,
+    private val reservationManagementMode: ReservationManagementMode?,
     private val navigateToPlayground: (Int) -> Unit
 ) : RecyclerView.Adapter<AbstractTimeSlotVH>()
 {
@@ -48,7 +50,8 @@ class PlaygroundAvailabilitiesAdapter(
             viewType, parent, false)
 
         return when(viewType) {
-            R.layout.time_slot_availabilities_container -> TimeSlotVH(timeSlotView, navigateToPlayground)
+            R.layout.time_slot_availabilities_container -> TimeSlotVH(
+                timeSlotView, navigateToPlayground, reservationManagementMode)
             R.layout.no_available_playgrounds_box -> NoAvailablePlaygroundsVH(timeSlotView)
             else -> throw Exception("Unexpected view found in onCreateViewHolder")
         }

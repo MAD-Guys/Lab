@@ -98,7 +98,7 @@ internal fun PlaygroundDetailsFragment.chooseImage(view: ImageView) {
 internal fun PlaygroundDetailsFragment.handleAddReservationButton() {
     // navigate to the Add Reservation view
     navController.navigate(
-        R.id.action_PlaygroundDetailsFragment_to_reservationManagementFragment)
+        R.id.action_PlaygroundDetailsFragment_to_playgroundAvailabilitiesFragment)
 }
 
 internal fun PlaygroundDetailsFragment.handleDirectionsButton() {

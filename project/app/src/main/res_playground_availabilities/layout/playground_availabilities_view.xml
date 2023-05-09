@@ -21,7 +21,7 @@
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/primary_orange"
+            android:background="@color/current_month_background_color"
             android:theme="@style/AppTheme.AppBarOverlay">
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -119,6 +119,7 @@
 
         <!-- selected date label container -->
         <RelativeLayout
+            android:id="@+id/selected_date_label_box"
             android:layout_width="match_parent"
             android:layout_height="20sp"
             android:layout_margin="1dp"

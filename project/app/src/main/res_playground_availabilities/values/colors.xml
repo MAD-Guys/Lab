@@ -5,12 +5,19 @@
     <color name="selected_sport_spinner_border_color">@color/time_slot_border_color</color>
 
     <!-- calendar -->
+    <color name="current_month_background_color">@color/primary_orange</color>
     <color name="default_calendar_date_background_color">#FFFFFF</color>
+    <!-- variant -->
+    <color name="current_month_background_color_variant">@color/primary_blue</color>
+
 
     <!-- time slots -->
     <color name="time_slot_text">@color/white</color>
     <color name="time_slot_background_color">#909090</color>
     <color name="time_slot_border_color">#404040</color>
+    <!-- variants -->
+    <color name="time_slot_background_color_variant">@color/primary_blue</color>
+
 
     <!-- available playground item -->
     <color name="available_playground_background_color">@color/white</color>

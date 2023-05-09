@@ -1,6 +1,5 @@
 package it.polito.mad.sportapp.playground_availabilities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -12,14 +11,20 @@ import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.playground_availabilities.recycler_view.PlaygroundAvailabilitiesAdapter
+import it.polito.mad.sportapp.reservation_management.ReservationManagementMode
+import it.polito.mad.sportapp.showToasty
 
 
 @AndroidEntryPoint
 class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabilities_view) {
-    internal lateinit var calendarView: CalendarView
+    // reservation data received from previous view
+    private var reservationBundle: Bundle? = null
 
     // View Model
     internal val viewModel: PlaygroundAvailabilitiesViewModel by viewModels()
+
+    // calendar
+    internal lateinit var calendarView: CalendarView
 
     // spinner adapter
     internal lateinit var selectedSportSpinner : Spinner
@@ -31,13 +36,17 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // retrieve activity action bar
-        val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+        // determine if we are in 'add mode' or in 'edit mode' (or none)
+        viewModel.reservationManagementMode = ReservationManagementMode.from(
+            arguments?.getString("mode")
+        )
 
-        actionBar?.let {
-            it.setDisplayHomeAsUpEnabled(false)
-            it.title = "Playground Availabilities"
-        }
+        if (viewModel.reservationManagementMode == ReservationManagementMode.EDIT_MODE)
+            reservationBundle = arguments?.getBundle("reservation")
+
+        /* init app bar and menu */
+        this.initAppBar()
+        this.initMenu()
 
         /* initialize calendar view */
         this.initCalendar()
@@ -62,5 +71,14 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
 
         /* bottom bar */
         this.setupBottomBar()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // TODO: remove
+        showToasty("info", requireContext(),
+            "$arguments"
+        )
     }
 }

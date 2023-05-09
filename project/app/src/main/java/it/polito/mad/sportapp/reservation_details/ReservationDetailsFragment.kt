@@ -1,9 +1,6 @@
 package it.polito.mad.sportapp.reservation_details
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -17,7 +14,6 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat.invalidateOptionsMenu
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -250,11 +246,11 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
 
     private fun toEditView() {
         val params = bundleOf(
-            "mode" to "edit",           /* edit mode */
+            // "mode" to "edit",           /* edit mode */
             "reservation_id" to eventId /* reservation (id) to be edited */
         )
 
-        navController.navigate(R.id.action_reservationDetailsFragment_to_reservationManagementFragment, params)
+        navController.navigate(R.id.action_reservationDetailsFragment_to_playgroundAvailabilitiesFragment, params)
     }
 
     private fun startDialog() {

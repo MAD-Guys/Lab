@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
 import it.polito.mad.sportapp.model.Repository
+import it.polito.mad.sportapp.reservation_management.ReservationManagementMode
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -16,7 +17,11 @@ import javax.inject.Inject
 @HiltViewModel
 class PlaygroundAvailabilitiesViewModel @Inject constructor(
     private val repository: Repository
-) : ViewModel() {
+) : ViewModel()
+{
+    internal var reservationManagementMode: ReservationManagementMode? = null
+
+    // default values
     internal val defaultDate = LocalDate.now()
     internal val defaultMonth = YearMonth.now()
 

@@ -46,6 +46,7 @@
 
     <!-- app colors -->
     <color name="primary_orange">#FAAC14</color>
+    <color name="primary_blue">#2191F3</color>
     <color name="secondary_blue">#67C0F3</color>
 
 </resources>

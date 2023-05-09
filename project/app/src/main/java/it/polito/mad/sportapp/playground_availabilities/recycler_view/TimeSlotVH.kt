@@ -6,18 +6,27 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
+import it.polito.mad.sportapp.reservation_management.ReservationManagementMode
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class TimeSlotVH(
     val view: View,
-    private val navigateToPlayground: (Int) -> Unit
+    private val navigateToPlayground: (Int) -> Unit,
+    private val reservationManagementMode: ReservationManagementMode?
 ) : AbstractTimeSlotVH(view)
 {
     private val startTimeSlotText = view.findViewById<TextView>(R.id.start_time_slot)
     private val endTimeSlotText = view.findViewById<TextView>(R.id.end_time_slot)
     private val availablePlaygroundsContainer =
         view.findViewById<LinearLayout>(R.id.available_playgrounds_container)
+
+    init {
+        if (reservationManagementMode != null) {
+            val timeSlotBox = view.findViewById<View>(R.id.time_slot_box)
+            timeSlotBox.setBackgroundResource(reservationManagementMode.variantColorId)
+        }
+    }
 
     fun setTimeSlotTimes(start: LocalDateTime, end: LocalDateTime) {
         startTimeSlotText.text = start.format(DateTimeFormatter.ofPattern("HH:mm"))
@@ -47,8 +56,12 @@ class TimeSlotVH(
 
             // attach listener to navigate to that playground
             playgroundBox.setOnClickListener {
-                // TODO: manage edit/add mode
-                navigateToPlayground(playground.playgroundId)
+                if (reservationManagementMode == null)
+                    navigateToPlayground(playground.playgroundId)
+                else {
+                    // TODO: manage edit/add mode
+
+                }
             }
 
             playgroundBox
