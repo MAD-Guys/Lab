@@ -1,74 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp">
 
     <!-- three matches achievement -->
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/at_least_three_matches_layout"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
+        android:layout_height="wrap_content"
         android:paddingHorizontal="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="1"
         app:layout_constraintEnd_toStartOf="@id/at_least_ten_matches_layout"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:id="@+id/at_least_three_matches_achievement"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/at_least_one_sport_achievement_description"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/at_least_three_matches_achievement_description"
+            app:layout_constraintBottom_toTopOf="@id/at_least_three_matches_achievement_text"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/sport_medal_achievement_black" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/at_least_three_matches_achievement_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_medium"
+            android:paddingTop="3dp"
+            android:text="@string/at_least_three_matches_achievement_text"
+            android:textAlignment="center"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/at_least_three_matches_achievement" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- ten matches achievement -->
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/at_least_ten_matches_layout"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
+        android:layout_height="wrap_content"
         android:paddingHorizontal="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="1"
         app:layout_constraintEnd_toStartOf="@id/at_least_twenty_five_matches_layout"
         app:layout_constraintStart_toEndOf="@id/at_least_three_matches_layout"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:id="@+id/at_least_ten_matches_achievement"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/at_least_five_sports_achievement_description"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/at_least_ten_matches_achievement_description"
+            app:layout_constraintBottom_toTopOf="@id/at_least_ten_matches_achievement_text"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/sport_medal_achievement_black" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/at_least_ten_matches_achievement_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_medium"
+            android:paddingTop="3dp"
+            android:text="@string/at_least_ten_matches_achievement_text"
+            android:textAlignment="center"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/at_least_ten_matches_achievement" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- twenty five matches achievement -->
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/at_least_twenty_five_matches_layout"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
+        android:layout_height="wrap_content"
         android:paddingHorizontal="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/at_least_ten_matches_layout"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:id="@+id/at_least_twenty_five_matches_achievement"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/all_sports_achievement_description"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/at_least_twenty_five_matches_achievement_description"
+            app:layout_constraintBottom_toTopOf="@id/at_least_twenty_five_matches_achievement_text"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/sport_medal_achievement_black" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/at_least_twenty_five_matches_achievement_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_medium"
+            android:paddingTop="3dp"
+            android:text="@string/at_least_twenty_five_matches_achievement_text"
+            android:textAlignment="center"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/at_least_twenty_five_matches_achievement" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

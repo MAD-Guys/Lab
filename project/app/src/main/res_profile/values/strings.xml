@@ -53,11 +53,17 @@
     <!-- achievements -->
     <string name="achievements_title">Achievements</string>
     <string name="at_least_one_sport_achievement_description">At least one sport achievement description</string>
+    <string name="at_least_one_sport_achievement_text">You played at least one sport</string>
     <string name="at_least_five_sports_achievement_description">At least five sports achievement description</string>
+    <string name="at_least_five_sports_achievement_text">You played at least five sports</string>
     <string name="all_sports_achievement_description">All sports achievement description</string>
+    <string name="all_sports_achievement_text">You played all the sports</string>
     <string name="at_least_three_matches_achievement_description">At least three matches achievement description</string>
+    <string name="at_least_three_matches_achievement_text">You played at least three games</string>
     <string name="at_least_ten_matches_achievement_description">At least ten matches achievement description</string>
-    <string name="at_least_twenty_five_match_achievement_description">At least twenty five matches achievement description</string>
+    <string name="at_least_ten_matches_achievement_text">You played at least ten games</string>
+    <string name="at_least_twenty_five_matches_achievement_description">At least twenty five matches achievement description</string>
+    <string name="at_least_twenty_five_matches_achievement_text">You played at least twenty five games</string>
 
     <!-- user bio -->
     <string name="bio_title">Bio</string>

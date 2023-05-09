@@ -156,7 +156,6 @@ internal fun ShowProfileFragment.inflateAchievementsLayout() {
             false
         )
 
-
     // add achievements to parent container
     achievementsContainer.addView(matchesAchievements)
     achievementsContainer.addView(sportsAchievements)
@@ -166,7 +165,7 @@ internal fun ShowProfileFragment.updateAchievements(achievementsMap: Map<Achieve
 
     achievementsMap.forEach { (achievement, boolean) ->
 
-        val achievementLayout: LinearLayout
+        val achievementLayout: ConstraintLayout
 
         when (achievement) {
             // one sport achievement
