@@ -41,6 +41,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
     private lateinit var reservationStartTime: TextView
     private lateinit var reservationEndTime: TextView
     private lateinit var reservationSport: TextView
+    private lateinit var reservationUsername: TextView
     private lateinit var reservationPlayground: TextView
     private lateinit var reservationSportCenter: TextView
     private lateinit var reservationSportCenterAddress: TextView
@@ -176,6 +177,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         reservationStartTime = requireView().findViewById(R.id.reservationStartTime)
         reservationEndTime = requireView().findViewById(R.id.reservationEndTime)
         reservationSport = requireView().findViewById(R.id.reservationSport)
+        reservationUsername = requireView().findViewById(R.id.reservationUsername)
         reservationPlayground = requireView().findViewById(R.id.reservationPlaygroundName)
         reservationSportCenter = requireView().findViewById(R.id.reservationSportCenter)
         reservationSportCenterAddress = requireView().findViewById(R.id.reservationAddress)
@@ -206,6 +208,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                 )
             )
         reservationSport.text = viewModel.reservation.value?.sportName
+        reservationUsername.text = viewModel.reservation.value?.username
         reservationPlayground.text = viewModel.reservation.value?.playgroundName
         reservationSportCenter.text = viewModel.reservation.value?.sportCenterName
         reservationSportCenterAddress.text = viewModel.reservation.value?.location
