@@ -80,7 +80,7 @@ internal fun PlaygroundDetailsFragment.initReviewList() {
         adapter = reviewAdapter
     }
     reviewAdapter.reviews.clear()
-    //reviewAdapter.reviews.addAll(viewModel.playground.value?.reviews)
+    viewModel.playground.value?.reviewList?.let { reviewAdapter.reviews.addAll(it) }
     reviewAdapter.notifyDataSetChanged()
 }
 

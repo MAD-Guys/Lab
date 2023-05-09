@@ -17,12 +17,15 @@ class ReviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val qualityRatingBar = view.findViewById<RatingBar>(R.id.qualityRatingBar)
     private val facilitiesRatingBar = view.findViewById<RatingBar>(R.id.facilitiesRatingBar)
     private val reviewBody = view.findViewById<TextView>(R.id.reviewBody)
+    private val lastUpdate = view.findViewById<TextView>(R.id.lastUpdate)
 
     fun bind(review : Review){
+        title.text = review.title
         username.text = review.username
-        date.text = review.publicationDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
+        date.text = review.publicationDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) //.ofLocalizedDate(FormatStyle.SHORT))
         qualityRatingBar.rating = review.qualityRating
         facilitiesRatingBar.rating = review.facilitiesRating
         reviewBody.text = review.review
+        lastUpdate.text = review.lastUpdateDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) //.ofLocalizedDate(FormatStyle.SHORT))
     }
 }
