@@ -171,8 +171,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_medium"
                         android:text="POLI Sport"
-                        android:textColor="@color/black"
-                        android:textSize="24sp"
+                        android:textSize="20sp"
                         android:layout_gravity="center_horizontal"
                         />
 

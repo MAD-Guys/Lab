@@ -87,7 +87,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
                             android:contentDescription="@string/image_location_content_description"
-                            app:srcCompat="@drawable/baseline_sports_24" />
+                            app:srcCompat="@drawable/baseline_sports_basketball_24" />
 
                         <TextView
                             android:id="@+id/playgroundSport"
@@ -202,7 +202,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
-                            app:srcCompat="@drawable/baseline_euro_symbol_24" />
+                            app:srcCompat="@drawable/baseline_attach_money_24" />
 
                         <TextView
                             android:id="@+id/playgroundPrice"

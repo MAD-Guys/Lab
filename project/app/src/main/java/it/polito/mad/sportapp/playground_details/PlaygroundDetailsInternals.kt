@@ -1,7 +1,7 @@
 package it.polito.mad.sportapp.playground_details
 
 import android.content.Intent
-import android.graphics.drawable.Drawable
+import android.graphics. drawable.Drawable
 import android.net.Uri
 import android.view.Menu
 import android.view.MenuInflater
@@ -12,6 +12,8 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import it.polito.mad.sportapp.R
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 internal fun PlaygroundDetailsFragment.retrieveViews() {
     playgroundImage = requireView().findViewById(R.id.playgroundImage)
@@ -38,8 +40,8 @@ internal fun PlaygroundDetailsFragment.initViews() {
     sportCenterName.text = viewModel.playground.value?.sportCenterName
     playgroundSport.text = viewModel.playground.value?.sportName
     playgroundAddress.text = viewModel.playground.value?.sportCenterAddress
-    playgroundOpeningTime.text = viewModel.playground.value?.openingTime
-    playgroundClosingTime.text = viewModel.playground.value?.closingTime
+    playgroundOpeningTime.text = viewModel.playground.value?.openingHours!!.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
+    playgroundClosingTime.text = viewModel.playground.value?.closingHours!!.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
     playgroundPrice.text = String.format("%.2f", viewModel.playground.value?.pricePerHour)
     playgroundQualityRatingBar.rating = viewModel.playground.value?.overallQualityRating!!
     playgroundFacilitiesRatingBar.rating = viewModel.playground.value?.overallFacilitiesRating!!

@@ -34,18 +34,72 @@ class PlaygroundDetailsViewModel @Inject constructor(
 
     fun setYourReview(){
         if(playground.value != null){
-            val review = Review(0,1, playground.value!!.playgroundId,"",
-                0f,0f,"", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)) //playground.value!!.reviewList.find { it.userId == 1} //TODO: change 1 with the logged user id
+            val review = playground.value!!.reviewList.find { it.userId == 1} //TODO: change 1 with the logged user id
             _yourReview.value = review ?: Review(0,1, playground.value!!.playgroundId,"",
-                0f,0f,"","","")
+                0f,0f,"",LocalDateTime.now().toString(),LocalDateTime.now().toString())
         }
     }
 
+    fun updateReview(qualityRating : Float, facilitiesRating : Float, title : String, text : String){
+        val updatedReview = Review(
+            _yourReview.value?.id ?: 0,
+            1, //TODO: change 1 with the logged user id
+            _yourReview.value?.playgroundId ?: playground.value!!.playgroundId,
+            title,
+            qualityRating,
+            facilitiesRating,
+            text,
+            _yourReview.value?.timestamp ?: "",
+            _yourReview.value?.lastUpdate ?: ""
+        )
+
+        val dbThread = Thread {
+            repository.updateReview(updatedReview)
+        }
+
+        // start db thread
+        dbThread.start()
+    }
+
     fun updateQualityRating(r : Float){
-        //TODO call repository
+        val updatedReview = Review(
+            _yourReview.value?.id ?: 0,
+            1, //TODO: change 1 with the logged user id
+            _yourReview.value?.playgroundId ?: playground.value!!.playgroundId,
+            _yourReview.value?.title ?: "",
+            r,
+            _yourReview.value?.facilitiesRating ?: 0f,
+            _yourReview.value?.review ?: "",
+            _yourReview.value?.timestamp ?: "",
+            _yourReview.value?.lastUpdate ?: ""
+        )
+
+        val dbThread = Thread {
+            repository.updateReview(updatedReview)
+        }
+
+        // start db thread
+        dbThread.start()
     }
 
     fun updateFacilitiesRating(r : Float){
-        //TODO call repository
+        val updatedReview = Review(
+            _yourReview.value?.id ?: 0,
+            1, //TODO: change 1 with the logged user id
+            _yourReview.value?.playgroundId ?: playground.value!!.playgroundId,
+            _yourReview.value?.title ?: "",
+            _yourReview.value?.qualityRating ?: 0f,
+            r,
+            _yourReview.value?.review ?: "",
+            _yourReview.value?.timestamp ?: "",
+            _yourReview.value?.lastUpdate ?: ""
+        )
+
+        val dbThread = Thread {
+            repository.updateReview(updatedReview)
+        }
+
+        // start db thread
+        dbThread.start()
     }
 }
