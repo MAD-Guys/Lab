@@ -33,17 +33,16 @@ internal fun PlaygroundDetailsFragment.retrieveViews() {
 
 internal fun PlaygroundDetailsFragment.initViews() {
     chooseImage(playgroundImage)
-    overallRatingBar.rating = 3.5f //viewModel.playground.value?.overallRating
+    overallRatingBar.rating = viewModel.playground.value?.overallRating!!
     playgroundName.text = viewModel.playground.value?.playgroundName
     sportCenterName.text = viewModel.playground.value?.sportCenterName
-    playgroundSport.text = "Basketball" //viewModel.playground.value?.sportName
-    playgroundAddress.text =
-        "Via Roma 1, Turin" //viewModel.playground.value?.sportCenterAddress
+    playgroundSport.text = viewModel.playground.value?.sportName
+    playgroundAddress.text = viewModel.playground.value?.sportCenterAddress
     playgroundOpeningTime.text = viewModel.playground.value?.openingTime
     playgroundClosingTime.text = viewModel.playground.value?.closingTime
     playgroundPrice.text = String.format("%.2f", viewModel.playground.value?.pricePerHour)
-    playgroundQualityRatingBar.rating = 4.5f //viewModel.playground.value?.qualityRating
-    playgroundFacilitiesRatingBar.rating = 2.5f //viewModel.playground.value?.facilitiesRating
+    playgroundQualityRatingBar.rating = viewModel.playground.value?.overallQualityRating!!
+    playgroundFacilitiesRatingBar.rating = viewModel.playground.value?.overallFacilitiesRating!!
 
     addReservationButton.setOnClickListener { handleAddReservationButton() }
     directionsButton.setOnClickListener { handleDirectionsButton() }

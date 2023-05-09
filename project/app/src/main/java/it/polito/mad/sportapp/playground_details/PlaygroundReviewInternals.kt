@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
 
 internal fun PlaygroundDetailsFragment.initYourReview() {
+    yourReviewContainer.removeAllViewsInLayout()
     yourReview = layoutInflater.inflate(R.layout.your_review, yourReviewContainer, false)
 
     //retrieve views
