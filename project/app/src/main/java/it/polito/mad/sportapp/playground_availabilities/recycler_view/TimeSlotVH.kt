@@ -9,7 +9,11 @@ import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class TimeSlotVH(val view: View) : AbstractTimeSlotVH(view) {
+class TimeSlotVH(
+    val view: View,
+    private val navigateToPlayground: (Int) -> Unit
+) : AbstractTimeSlotVH(view)
+{
     private val startTimeSlotText = view.findViewById<TextView>(R.id.start_time_slot)
     private val endTimeSlotText = view.findViewById<TextView>(R.id.end_time_slot)
     private val availablePlaygroundsContainer =
@@ -40,6 +44,12 @@ class TimeSlotVH(val view: View) : AbstractTimeSlotVH(view) {
             playgroundNameText.text = playground.playgroundName
             sportCenterNameText.text = playground.sportCenterName
             pricePerHourText.text = String.format("%.2f €/h", playground.pricePerHour)
+
+            // attach listener to navigate to that playground
+            playgroundBox.setOnClickListener {
+                // TODO: manage edit/add mode
+                navigateToPlayground(playground.playgroundId)
+            }
 
             playgroundBox
         }
