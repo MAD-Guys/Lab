@@ -21,46 +21,9 @@
             android:includeFontPadding="false"
             android:text="My review"
             android:textColor="@color/black"
-            android:textSize="24sp" />
-
-        <LinearLayout
-            android:id="@+id/cardHeader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingVertical="8dp"
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_medium"
-                android:includeFontPadding="false"
-                android:text="\@"
-                android:textColor="@color/light_grey"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/username"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="@font/poppins_medium"
-                android:includeFontPadding="false"
-                android:text="johndoe"
-                android:textColor="@color/light_grey"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_medium"
-                android:includeFontPadding="false"
-                android:text="6/5/23"
-                android:textColor="@color/light_grey"
-                android:textSize="18sp" />
-        </LinearLayout>
+            android:textSize="24sp"
+            android:paddingBottom="16dp"
+            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -139,6 +102,55 @@
                 android:background="?android:attr/listDivider" />
 
             <TextView
+                android:id="@+id/reviewTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:includeFontPadding="false"
+                android:text="Review Title"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <LinearLayout
+                android:id="@+id/cardHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="\@"
+                    android:textColor="@color/light_grey"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="johndoe"
+                    android:textColor="@color/light_grey"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="6/5/23"
+                    android:textColor="@color/light_grey"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <TextView
                 android:id="@+id/reviewBody"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -147,6 +159,37 @@
                 android:text="@string/review_lorem_ipsum"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
+
+            <LinearLayout
+                android:id="@+id/lastUpdate_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:paddingHorizontal="16dp"
+                android:paddingBottom="16dp"
+
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="Last update: "
+                    android:textColor="@color/light_grey"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/lastUpdate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="9/5/23"
+                    android:textColor="@color/light_grey"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
 
             <Button
                 android:id="@+id/buttonEditReview"
@@ -184,6 +227,20 @@
                 android:layout_marginHorizontal="8dp"
                 android:layout_marginVertical="16dp"
                 android:background="?android:attr/listDivider" />
+
+            <EditText
+                android:id="@+id/reviewInputTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:hint="Your review title"
+                android:includeFontPadding="false"
+                android:inputType="textMultiLine"
+                android:text="Title"
+                android:textColor="@color/edit_text_text_color"
+                android:textColorHint="@color/edit_text_text_color_hint"
+                android:textSize="@dimen/edit_text_text_size"
+                />
 
             <EditText
                 android:id="@+id/reviewInputBody"

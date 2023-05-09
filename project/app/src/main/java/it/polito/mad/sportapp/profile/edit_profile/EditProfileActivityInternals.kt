@@ -2,7 +2,6 @@ package it.polito.mad.sportapp.profile.edit_profile
 
 import android.Manifest
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Build
 import android.provider.MediaStore
 import android.text.Editable
@@ -10,7 +9,6 @@ import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.widget.ImageView
@@ -23,7 +21,6 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.children
 import androidx.lifecycle.Lifecycle
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import it.polito.mad.sportapp.R

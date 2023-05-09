@@ -117,7 +117,9 @@ internal fun ShowProfileFragment.observersSetup() {
     }
 
     vm.userAchievements.observe(viewLifecycleOwner) {
-        inflateAchievements(it)
+        if (it.isNotEmpty()) {
+            updateAchievements(it)
+        }
     }
 }
 
@@ -135,7 +137,7 @@ internal fun ShowProfileFragment.buttonsInit() {
     }
 }
 
-internal fun ShowProfileFragment.inflateAchievements(achievementsMap: Map<Achievement, Boolean>) {
+internal fun ShowProfileFragment.inflateAchievementsLayout() {
     // retrieve achievements container
     val achievementsContainer =
         requireView().findViewById<LinearLayout>(R.id.achievements_container)
@@ -154,9 +156,16 @@ internal fun ShowProfileFragment.inflateAchievements(achievementsMap: Map<Achiev
             false
         )
 
+    // add achievements to parent container
+    achievementsContainer.addView(matchesAchievements)
+    achievementsContainer.addView(sportsAchievements)
+}
+
+internal fun ShowProfileFragment.updateAchievements(achievementsMap: Map<Achievement, Boolean>) {
+
     achievementsMap.forEach { (achievement, boolean) ->
 
-        val achievementLayout: LinearLayout
+        val achievementLayout: ConstraintLayout
 
         when (achievement) {
             // one sport achievement
@@ -251,10 +260,6 @@ internal fun ShowProfileFragment.inflateAchievements(achievementsMap: Map<Achiev
             }
         }
     }
-
-    // add achievements to container
-    achievementsContainer.addView(sportsAchievements)
-    achievementsContainer.addView(matchesAchievements)
 }
 
 /* bottom bar */

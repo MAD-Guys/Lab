@@ -23,7 +23,7 @@
             android:paddingTop="16dp"
             android:text="Review Title"
             android:textColor="@color/black"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <LinearLayout
             android:id="@+id/cardHeader"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingHorizontal="16dp"
-            android:paddingBottom="16dp">
+            android:paddingBottom="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
                 android:includeFontPadding="false"
                 android:text="\@"
                 android:textColor="@color/light_grey"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/username"
@@ -51,7 +51,7 @@
                 android:includeFontPadding="false"
                 android:text="johndoe"
                 android:textColor="@color/light_grey"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/date"
@@ -61,7 +61,7 @@
                 android:includeFontPadding="false"
                 android:text="6/5/23"
                 android:textColor="@color/light_grey"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -116,7 +116,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginHorizontal="8dp"
-            android:layout_marginVertical="16dp"
+            android:layout_marginVertical="8dp"
             android:background="?android:attr/listDivider" />
 
         <TextView
@@ -126,10 +126,10 @@
             android:fontFamily="@font/poppins_medium"
             android:includeFontPadding="false"
             android:paddingHorizontal="16dp"
-            android:paddingBottom="16dp"
+            android:paddingBottom="8dp"
             android:text="@string/review_lorem_ipsum"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
