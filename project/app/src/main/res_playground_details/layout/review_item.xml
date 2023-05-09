@@ -1,19 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardBackgroundColor="@color/available_playground_background_color"
     android:layout_marginHorizontal="8dp"
     android:layout_marginVertical="8dp"
     android:paddingHorizontal="8dp"
-    >
+    app:cardBackgroundColor="@color/available_playground_background_color">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/reviewTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_medium"
+            android:includeFontPadding="false"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="16dp"
+            android:text="Review Title"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
 
         <LinearLayout
             android:id="@+id/cardHeader"
@@ -21,88 +31,83 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingHorizontal="16dp"
-            android:paddingVertical="16dp"
-            >
+            android:paddingBottom="16dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="\@"
                 android:fontFamily="@font/poppins_medium"
                 android:includeFontPadding="false"
+                android:text="\@"
                 android:textColor="@color/light_grey"
-                android:textSize="18sp"
-                />
+                android:textSize="18sp" />
+
             <TextView
                 android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="johndoe"
                 android:fontFamily="@font/poppins_medium"
                 android:includeFontPadding="false"
+                android:text="johndoe"
                 android:textColor="@color/light_grey"
-                android:textSize="18sp"
-                />
+                android:textSize="18sp" />
+
             <TextView
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="6/5/23"
                 android:fontFamily="@font/poppins_medium"
                 android:includeFontPadding="false"
+                android:text="6/5/23"
                 android:textColor="@color/light_grey"
-                android:textSize="18sp"
-                />
+                android:textSize="18sp" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            >
+            android:layout_gravity="center_horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Quality: "
+                android:layout_gravity="center_vertical"
                 android:fontFamily="@font/poppins_medium"
                 android:includeFontPadding="false"
+                android:text="Quality: "
                 android:textColor="@color/black"
-                android:textSize="14sp"
-                android:layout_gravity="center_vertical"
-                />
+                android:textSize="14sp" />
+
             <RatingBar
                 android:id="@+id/qualityRatingBar"
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:progressTint="@color/primary_orange"
-                android:rating="2.5"
                 android:layout_gravity="center_vertical"
-                />
+                android:progressTint="@color/primary_orange"
+                android:rating="2.5" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Facilities: "
-                android:fontFamily="@font/poppins_medium"
-                android:includeFontPadding="false"
-                android:textColor="@color/black"
-                android:textSize="14sp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="32dp"
-                />
+                android:fontFamily="@font/poppins_medium"
+                android:includeFontPadding="false"
+                android:text="Facilities: "
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
             <RatingBar
                 android:id="@+id/facilitiesRatingBar"
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:progressTint="@color/primary_orange"
-                android:rating="2.5"
                 android:layout_gravity="center_vertical"
-                />
+                android:progressTint="@color/primary_orange"
+                android:rating="2.5" />
 
         </LinearLayout>
 
@@ -110,23 +115,51 @@
             android:id="@+id/divider5"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="?android:attr/listDivider"
-            android:layout_marginVertical="16dp"
             android:layout_marginHorizontal="8dp"
-            />
+            android:layout_marginVertical="16dp"
+            android:background="?android:attr/listDivider" />
 
         <TextView
             android:id="@+id/reviewBody"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/review_lorem_ipsum"
             android:fontFamily="@font/poppins_medium"
             android:includeFontPadding="false"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            android:paddingBottom="16dp"
             android:paddingHorizontal="16dp"
-            />
+            android:paddingBottom="16dp"
+            android:text="@string/review_lorem_ipsum"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="16dp"
+
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:includeFontPadding="false"
+                android:text="Last update: "
+                android:textColor="@color/light_grey"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/lastUpdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:includeFontPadding="false"
+                android:text="9/5/23"
+                android:textColor="@color/light_grey"
+                android:textSize="14sp" />
+
+        </LinearLayout>
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

@@ -7,6 +7,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.PlaygroundInfo
 import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.model.Repository
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,9 +34,10 @@ class PlaygroundDetailsViewModel @Inject constructor(
 
     fun setYourReview(){
         if(playground.value != null){
-            val review = playground.value!!.reviewList.find { it.userId == 1} //TODO: change 1 with the logged user id
-            _yourReview.value = review ?: Review(0,1, playground.value!!.playgroundId,"giggino title",
-                5f,5f,"empty content","2023-05-04T12:04","2023-05-04T12:04")
+            val review = Review(0,1, playground.value!!.playgroundId,"",
+                0f,0f,"", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)) //playground.value!!.reviewList.find { it.userId == 1} //TODO: change 1 with the logged user id
+            _yourReview.value = review ?: Review(0,1, playground.value!!.playgroundId,"",
+                0f,0f,"","","")
         }
     }
 

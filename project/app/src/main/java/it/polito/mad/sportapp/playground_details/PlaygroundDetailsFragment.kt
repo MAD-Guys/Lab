@@ -50,7 +50,9 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
     internal lateinit var yourReviewDate: TextView
     internal lateinit var yourQualityRating: RatingBar
     internal lateinit var yourFacilitiesRating: RatingBar
+    internal lateinit var yourReviewTitle: TextView
     internal lateinit var yourReviewText: TextView
+    internal lateinit var yourReviewEditTitle: EditText
     internal lateinit var yourReviewEditText: EditText
     internal lateinit var addReviewButton: Button
     internal lateinit var editReviewButton: Button

@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_semibold"
             android:includeFontPadding="false"
-            android:text="Your review"
+            android:text="My review"
             android:textColor="@color/black"
             android:textSize="24sp" />
 
@@ -27,7 +27,9 @@
             android:id="@+id/cardHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingVertical="8dp"
+            >
 
             <TextView
                 android:layout_width="wrap_content"
@@ -117,7 +119,7 @@
             android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Button"
             android:textColor="@color/button_text_color"
-            android:textSize="18sp"
+            android:textSize="16sp"
             app:icon="@drawable/baseline_add_comment_24"
             app:iconGravity="textStart"
             app:iconTint="@color/button_text_color" />
@@ -144,7 +146,7 @@
                 android:includeFontPadding="false"
                 android:text="@string/review_lorem_ipsum"
                 android:textColor="@color/black"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
 
             <Button
                 android:id="@+id/buttonEditReview"
@@ -163,7 +165,7 @@
                 android:textAllCaps="false"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/button_text_color"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:icon="@drawable/baseline_edit_24"
                 app:iconGravity="textStart"
                 app:iconTint="@color/button_text_color" />
@@ -213,7 +215,7 @@
                 android:textAllCaps="false"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/button_text_color"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:icon="@drawable/baseline_done_24"
                 app:iconGravity="textStart"
                 app:iconTint="@color/button_text_color" />
