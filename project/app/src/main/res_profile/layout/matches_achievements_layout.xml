@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <!-- three matches achievement -->
     <LinearLayout
         android:id="@+id/at_least_three_matches_layout"
         android:layout_width="0dp"
@@ -26,6 +27,7 @@
 
     </LinearLayout>
 
+    <!-- ten matches achievement -->
     <LinearLayout
         android:id="@+id/at_least_ten_matches_layout"
         android:layout_width="0dp"
@@ -47,6 +49,7 @@
 
     </LinearLayout>
 
+    <!-- twenty five matches achievement -->
     <LinearLayout
         android:id="@+id/at_least_twenty_five_matches_layout"
         android:layout_width="0dp"

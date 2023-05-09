@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <!-- one sport achievement -->
     <LinearLayout
         android:id="@+id/at_least_one_sport_layout"
         android:layout_width="0dp"
@@ -29,6 +30,7 @@
 
     </LinearLayout>
 
+    <!-- five sports achievement -->
     <LinearLayout
         android:id="@+id/at_least_five_sports_layout"
         android:layout_width="0dp"
@@ -52,6 +54,7 @@
 
     </LinearLayout>
 
+    <!-- all sports achievement -->
     <LinearLayout
         android:id="@+id/all_sports_layout"
         android:layout_width="0dp"

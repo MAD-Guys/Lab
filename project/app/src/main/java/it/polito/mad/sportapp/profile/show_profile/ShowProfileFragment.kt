@@ -76,6 +76,9 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
         // initialize buttons
         buttonsInit()
 
+        // inflate achievements layout
+        inflateAchievementsLayout()
+
         // setup bottom bar
         setupBottomBar()
 
