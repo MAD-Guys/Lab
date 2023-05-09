@@ -74,7 +74,8 @@ private fun PlaygroundAvailabilitiesFragment.initCalendarDays() {
         requireContext(),
         viewModel.selectedDate,
         viewModel::setSelectedDate,
-        this::getAvailabilityPercentageOf
+        this::getAvailabilityPercentageOf,
+        viewModel::isAvailablePlaygroundsLoaded
     )
 
     // attach day binder to the calendar view
@@ -192,6 +193,9 @@ internal fun PlaygroundAvailabilitiesFragment.initAvailablePlaygroundsObserver()
         playgroundAvailabilitiesAdapter.smartUpdatePlaygroundAvailabilities(
             viewModel.getAvailablePlaygroundsOnSelectedDate()
         )
+
+        if(it.isNotEmpty())
+            viewModel.setAvailablePlaygroundsLoaded()
     }
 }
 

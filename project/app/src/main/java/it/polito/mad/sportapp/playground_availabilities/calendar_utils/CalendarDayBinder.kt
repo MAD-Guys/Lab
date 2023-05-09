@@ -13,7 +13,8 @@ class CalendarDayBinder(
     private val context: Context,
     private val selectedDate: LiveData<LocalDate>,
     private val setSelectedDate: (LocalDate?) -> Unit,
-    private val getAvailabilityPercentageOf: (LocalDate) -> Float
+    private val getAvailabilityPercentageOf: (LocalDate) -> Float,
+    private val isAvailablePlaygroundsLoaded: () -> Boolean
 ) : MonthDayBinder<DayViewContainer> {
 
     override fun create(view: View) =
@@ -42,7 +43,7 @@ class CalendarDayBinder(
             val availabilityPercentage = getAvailabilityPercentageOf(data.date)
 
             // if this day is completely full (no existing available playgrounds), show a red dot
-            if (availabilityPercentage == 0.0f) {
+            if (isAvailablePlaygroundsLoaded() && availabilityPercentage == 0.0f) {
                 val notAvailableColor = Color.rgb(255, 80, 80)    // red
                 container.setAvailabilityTagColor(notAvailableColor)
             }

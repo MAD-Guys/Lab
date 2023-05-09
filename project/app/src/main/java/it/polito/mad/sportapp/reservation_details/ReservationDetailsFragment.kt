@@ -148,10 +148,6 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 // handle the menu selection
                 return when (menuItem.itemId) {
-                    R.id.reservation_details_back_button -> {
-                        navController.popBackStack()
-                        true
-                    }
                     R.id.reservation_details_edit_button -> {
                         toEditView()
                         true
@@ -229,16 +225,6 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         } else {
             noEquipmentMessage.visibility = TextView.VISIBLE
         }
-    }
-
-    private fun handleDirectionsButton(address: String) {
-
-        val formattedAddress = address.replace(" ", "+")
-        val intent = Intent(
-            Intent.ACTION_VIEW,
-            Uri.parse("https://www.google.com/maps/search/?api=1&query=$formattedAddress")
-        )
-        startActivity(intent)
     }
 
     private fun handlePlaygroundButton(playgroundId : Int){

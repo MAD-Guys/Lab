@@ -49,6 +49,9 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
     // hardcoded slot duration
     internal val slotDuration: Duration = Duration.ofMinutes(30)
 
+    private val _isAvailablePlaygroundsLoadedFlag = MutableLiveData(false)
+    private val isAvailablePlaygroundsLoadedFlag: LiveData<Boolean> = _isAvailablePlaygroundsLoadedFlag
+
     // available playgrounds ***for current sport and month***
     private val _availablePlaygroundsPerSlot:
             MutableLiveData<MutableMap<LocalDate, Map<LocalDateTime, List<DetailedPlaygroundSport>>>> = MutableLiveData()
@@ -115,6 +118,11 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
         }
 
         return allAvailabilities
+    }
+
+    fun isAvailablePlaygroundsLoaded(): Boolean = isAvailablePlaygroundsLoadedFlag.value ?: false
+    fun setAvailablePlaygroundsLoaded() {
+        _isAvailablePlaygroundsLoadedFlag.value = true
     }
 
     /* selected sport */

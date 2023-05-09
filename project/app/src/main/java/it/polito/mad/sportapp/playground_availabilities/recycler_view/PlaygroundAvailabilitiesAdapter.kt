@@ -15,7 +15,7 @@ class PlaygroundAvailabilitiesAdapter(
     // map containing all the slots and their corresponding available playgrounds
     playgroundAvailabilities: Map<LocalDateTime, List<DetailedPlaygroundSport>>,
     internal var selectedDate: LocalDate,
-    private val slotDuration: Duration,
+    private val slotDuration: Duration
 ) : RecyclerView.Adapter<AbstractTimeSlotVH>() {
     // list of all the interesting slots, chronologically ordered
     private var timeSlots = playgroundAvailabilities.keys.toList().sorted()

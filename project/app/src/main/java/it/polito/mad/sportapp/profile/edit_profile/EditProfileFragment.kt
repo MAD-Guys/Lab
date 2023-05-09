@@ -226,8 +226,8 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
             outputCompressFormat = Bitmap.CompressFormat.JPEG,
             outputCompressQuality = 100,
             autoZoomEnabled = true,
-            allowFlipping = false,
-            allowRotation = false,
+            allowFlipping = true,
+            allowRotation = true,
             fixAspectRatio = true,
             aspectRatioX = 1,
             aspectRatioY = 1

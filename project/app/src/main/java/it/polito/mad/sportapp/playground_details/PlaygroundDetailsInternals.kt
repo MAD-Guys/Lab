@@ -55,7 +55,7 @@ internal fun PlaygroundDetailsFragment.menuInit() {
 
     menuHost.addMenuProvider(object : MenuProvider {
         override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-            menuInflater.inflate(R.menu.show_reservations_menu, menu)
+            menuInflater.inflate(R.menu.playground_details_menu, menu)
 
             actionBar?.let {
                 it.setDisplayHomeAsUpEnabled(true)
@@ -67,8 +67,8 @@ internal fun PlaygroundDetailsFragment.menuInit() {
         override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
             // handle the menu selection
             return when (menuItem.itemId) {
-                R.id.playground_details_back_button -> {
-                    navController.popBackStack()
+                R.id.add_reservation_button -> {
+                    handleAddReservationButton()
                     true
                 }
 
