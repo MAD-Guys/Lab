@@ -32,8 +32,8 @@ class PlaygroundDetailsViewModel @Inject constructor(
 
     fun setYourReview(){
         if(playground.value != null){
-            // val review = Review(0,1,1,"title",5f, 3f, "review text", "", "")//playground.value.reviews.find { it.userId == 1} //TODO: change 1 with the logged user id
-            _yourReview.value = Review(0,1, playground.value!!.playgroundId,"giggino title",
+            val review = playground.value!!.reviewList.find { it.userId == 1} //TODO: change 1 with the logged user id
+            _yourReview.value = review ?: Review(0,1, playground.value!!.playgroundId,"giggino title",
                 5f,5f,"empty content","2023-05-04T12:04","2023-05-04T12:04")
         }
     }

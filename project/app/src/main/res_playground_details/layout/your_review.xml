@@ -12,8 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingHorizontal="16dp"
-        android:paddingVertical="16dp"
-        >
+        android:paddingVertical="16dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -61,58 +60,45 @@
                 android:textSize="18sp" />
         </LinearLayout>
 
-        <LinearLayout
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="16dp">
+            android:layout_gravity="center_vertical"
+            android:fontFamily="@font/poppins_medium"
+            android:includeFontPadding="false"
+            android:text="Quality: "
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:fontFamily="@font/poppins_medium"
-                android:includeFontPadding="false"
-                android:text="Quality: "
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
-            <RatingBar
-                android:id="@+id/qualityRatingBar"
-                style="@android:style/Widget.Material.Light.RatingBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:progressTint="@color/primary_orange"
-                android:rating="2.5"
-                android:stepSize="1" />
-
-        </LinearLayout>
-
-        <LinearLayout
+        <RatingBar
+            android:id="@+id/qualityRatingBar"
+            style="@android:style/Widget.Material.Light.RatingBar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:progressTint="@color/primary_orange"
+            android:rating="2.5"
+            android:stepSize="1" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:fontFamily="@font/poppins_medium"
-                android:includeFontPadding="false"
-                android:text="Facilities: "
-                android:textColor="@color/black"
-                android:textSize="20sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:fontFamily="@font/poppins_medium"
+            android:includeFontPadding="false"
+            android:text="Facilities: "
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
-            <RatingBar
-                android:id="@+id/facilitiesRatingBar"
-                style="@android:style/Widget.Material.Light.RatingBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:progressTint="@color/primary_orange"
-                android:rating="2.5"
-                android:stepSize="1" />
-
-        </LinearLayout>
+        <RatingBar
+            android:id="@+id/facilitiesRatingBar"
+            style="@android:style/Widget.Material.Light.RatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:progressTint="@color/primary_orange"
+            android:rating="2.5"
+            android:stepSize="1" />
 
         <Button
             android:id="@+id/buttonAddReview"
@@ -141,8 +127,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone"
-            >
+            android:visibility="gone">
 
             <View
                 android:layout_width="match_parent"
