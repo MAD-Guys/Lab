@@ -108,22 +108,6 @@ internal fun EditProfileFragment.setupOnBackPressedCallback() {
     )
 }
 
-/* bottom bar */
-internal fun EditProfileFragment.setupBottomBar() {
-    // show bottom bar
-    val bottomBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation_bar)
-
-    // check if the device is in portrait or landscape mode
-    if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
-        bottomBar.visibility = View.GONE
-    else {
-        bottomBar.visibility = View.VISIBLE
-    }
-
-    // set the right selected button
-    bottomBar.menu.findItem(R.id.profile).isChecked = true
-}
-
 /* manage load/save from/into storage */
 
 internal fun EditProfileFragment.loadDataFromStorage() {

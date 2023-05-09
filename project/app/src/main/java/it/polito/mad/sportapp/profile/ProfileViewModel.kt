@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import it.polito.mad.sportapp.entities.Achievement
 import it.polito.mad.sportapp.entities.SportLevel
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.model.Repository
@@ -42,6 +43,9 @@ class ProfileViewModel @Inject constructor(
     }
     val userBio: LiveData<String> = _userBio
 
+    private val _userAchievements = MutableLiveData<Map<Achievement, Boolean>>().also { it.value = mapOf() }
+    val userAchievements: LiveData<Map<Achievement, Boolean>> = _userAchievements
+
     private val _userSports = MutableLiveData<List<SportLevel>>().also { it.value = listOf() }
     val userSports: LiveData<List<SportLevel>> = _userSports
 
@@ -50,7 +54,7 @@ class ProfileViewModel @Inject constructor(
 
         // get user information from database
         val dbThread = Thread {
-            val user = repository.getUserWithSportLevel(userId)
+            val user = repository.getUser(userId)
 
             // update user information
             _userFirstName.postValue(user.firstName)
@@ -60,6 +64,7 @@ class ProfileViewModel @Inject constructor(
             _userAge.postValue(user.age)
             _userLocation.postValue(user.location)
             _userBio.postValue(user.bio)
+            _userAchievements.postValue(user.achievements)
             _userSports.postValue(user.sportLevel)
         }
 
@@ -82,6 +87,8 @@ class ProfileViewModel @Inject constructor(
             _userBio.value!!
         )
 
+        user.sportLevel = _userSports.value!!
+
         // update user information in database
         val dbThread = Thread {
             repository.updateUser(user)
@@ -89,6 +96,39 @@ class ProfileViewModel @Inject constructor(
 
         // start db thread
         dbThread.start()
+    }
+
+    /* user information setters */
+    fun setUserFirstName(firstName: String) {
+        _userFirstName.value = firstName
+    }
+
+    fun setUserLastName(lastName: String) {
+        _userLastName.value = lastName
+    }
+
+    fun setUserUsername(username: String) {
+        _userUsername.value = username
+    }
+
+    fun setUserGender(gender: String) {
+        _userGender.value = gender
+    }
+
+    fun setUserAge(age: Int) {
+        _userAge.value = age
+    }
+
+    fun setUserLocation(location: String) {
+        _userLocation.value = location
+    }
+
+    fun setUserBio(bio: String) {
+        _userBio.value = bio
+    }
+
+    fun setUserSports(sports: List<SportLevel>) {
+        _userSports.value = sports
     }
 
 }

@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
@@ -15,6 +16,7 @@ import androidx.lifecycle.Lifecycle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.Chip
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.entities.Achievement
 import it.polito.mad.sportapp.profile.Level
 import it.polito.mad.sportapp.profile.Sport
 import it.polito.mad.sportapp.profile.extendedNameOf
@@ -113,6 +115,10 @@ internal fun ShowProfileFragment.observersSetup() {
     vm.userBio.observe(viewLifecycleOwner) {
         bio.text = it
     }
+
+    vm.userAchievements.observe(viewLifecycleOwner) {
+        inflateAchievements(it)
+    }
 }
 
 internal fun ShowProfileFragment.buttonsInit() {
@@ -127,6 +133,128 @@ internal fun ShowProfileFragment.buttonsInit() {
     messageButton.setOnClickListener {
         showToasty("info", requireContext(), "Message button clicked!!!")
     }
+}
+
+internal fun ShowProfileFragment.inflateAchievements(achievementsMap: Map<Achievement, Boolean>) {
+    // retrieve achievements container
+    val achievementsContainer =
+        requireView().findViewById<LinearLayout>(R.id.achievements_container)
+
+    // inflate achievements
+    val sportsAchievements =
+        layoutInflater.inflate(
+            R.layout.matches_achievements_layout,
+            achievementsContainer,
+            false
+        )
+    val matchesAchievements =
+        layoutInflater.inflate(
+            R.layout.sports_achievements_layout,
+            achievementsContainer,
+            false
+        )
+
+    achievementsMap.forEach { (achievement, boolean) ->
+
+        val achievementLayout: LinearLayout
+
+        when (achievement) {
+            // one sport achievement
+            Achievement.AtLeastOneSport -> {
+                achievementLayout = requireView().findViewById(R.id.at_least_one_sport_layout)
+
+                if (boolean) {
+                    achievementLayout.findViewById<ImageView>(R.id.at_least_one_sport_achievement)
+                        .setImageDrawable(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.one_sport_achievement
+                            )
+                        )
+                }
+            }
+
+            // five sports achievement
+            Achievement.AtLeastFiveSports -> {
+                achievementLayout = requireView().findViewById(R.id.at_least_five_sports_layout)
+
+                if (boolean) {
+                    achievementLayout.findViewById<ImageView>(R.id.at_least_five_sports_achievement)
+                        .setImageDrawable(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.five_sports_achievement
+                            )
+                        )
+                }
+            }
+
+            // all sports achievement
+            Achievement.AllSports -> {
+                achievementLayout = requireView().findViewById(R.id.all_sports_layout)
+
+                if (boolean) {
+                    achievementLayout.findViewById<ImageView>(R.id.all_sports_achievement)
+                        .setImageDrawable(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.all_sports_achievement
+                            )
+                        )
+                }
+            }
+
+            // three matches achievement
+            Achievement.AtLeastThreeMatches -> {
+                achievementLayout = requireView().findViewById(R.id.at_least_three_matches_layout)
+
+                if (boolean) {
+                    achievementLayout.findViewById<ImageView>(R.id.at_least_three_matches_achievement)
+                        .setImageDrawable(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.three_matches_achievement
+                            )
+                        )
+                }
+            }
+
+            // ten matches achievement
+            Achievement.AtLeastTenMatches -> {
+                achievementLayout = requireView().findViewById(R.id.at_least_ten_matches_layout)
+
+                if (boolean) {
+                    achievementLayout.findViewById<ImageView>(R.id.at_least_ten_matches_achievement)
+                        .setImageDrawable(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.ten_matches_achievement
+                            )
+                        )
+                }
+            }
+
+            // twenty five matches achievement
+            Achievement.AtLeastTwentyFiveMatches -> {
+                achievementLayout =
+                    requireView().findViewById(R.id.at_least_twenty_five_matches_layout)
+
+                if (boolean) {
+                    achievementLayout.findViewById<ImageView>(R.id.at_least_twenty_five_matches_achievement)
+                        .setImageDrawable(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.twenty_five_match_achievement
+                            )
+                        )
+                }
+            }
+        }
+    }
+
+    // add achievements to container
+    achievementsContainer.addView(sportsAchievements)
+    achievementsContainer.addView(matchesAchievements)
 }
 
 /* bottom bar */

@@ -50,12 +50,12 @@ class Repository @Inject constructor(
         val playedMatches = userDao.findPlayedMatches(userId)
         val playedSport = userDao.findPlayedSports(userId).maxOrNull() ?: 0
         return mapOf(
-            Achievement.atleastOneSport to (playedSport > 0),
-            Achievement.atleastFiveSport to (playedSport > 4),
-            Achievement.allSports to (playedSport == sportDao.count()),
-            Achievement.atleastThreeMatches to (playedMatches > 2),
-            Achievement.atleastTenMatches to (playedMatches > 9),
-            Achievement.atLeastTwentyFiveMatches to (playedMatches > 24),
+            Achievement.AtLeastOneSport to (playedSport > 0),
+            Achievement.AtLeastFiveSports to (playedSport > 4),
+            Achievement.AllSports to (playedSport == sportDao.count()),
+            Achievement.AtLeastThreeMatches to (playedMatches > 2),
+            Achievement.AtLeastTenMatches to (playedMatches > 9),
+            Achievement.AtLeastTwentyFiveMatches to (playedMatches > 24),
         )
     }
 

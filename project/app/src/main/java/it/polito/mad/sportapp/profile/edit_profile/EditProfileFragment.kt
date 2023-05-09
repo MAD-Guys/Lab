@@ -26,6 +26,7 @@ import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.clearStorageFiles
@@ -203,8 +204,9 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
         // initialize menu
         menuInit()
 
-        // setup bottom bar
-        setupBottomBar()
+        // hide bottom bar
+        val bottomBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation_bar)
+        bottomBar.visibility = View.GONE
 
         // setup back button callback
         setupOnBackPressedCallback()

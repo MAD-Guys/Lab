@@ -163,11 +163,11 @@ data class PlaygroundInfo(
 }
 
 enum class Achievement{
-    atleastOneSport,
-    atleastFiveSport,
-    allSports,
-    atleastThreeMatches,
-    atleastTenMatches,
-    atLeastTwentyFiveMatches
+    AtLeastOneSport,
+    AtLeastFiveSports,
+    AllSports,
+    AtLeastThreeMatches,
+    AtLeastTenMatches,
+    AtLeastTwentyFiveMatches
 }
 
