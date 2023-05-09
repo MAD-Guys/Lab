@@ -16,7 +16,9 @@ class PlaygroundAvailabilitiesAdapter(
     playgroundAvailabilities: Map<LocalDateTime, List<DetailedPlaygroundSport>>,
     internal var selectedDate: LocalDate,
     private val slotDuration: Duration,
-) : RecyclerView.Adapter<AbstractTimeSlotVH>() {
+    private val navigateToPlayground: (Int) -> Unit
+) : RecyclerView.Adapter<AbstractTimeSlotVH>()
+{
     // list of all the interesting slots, chronologically ordered
     private var timeSlots = playgroundAvailabilities.keys.toList().sorted()
 
@@ -46,7 +48,7 @@ class PlaygroundAvailabilitiesAdapter(
             viewType, parent, false)
 
         return when(viewType) {
-            R.layout.time_slot_availabilities_container -> TimeSlotVH(timeSlotView)
+            R.layout.time_slot_availabilities_container -> TimeSlotVH(timeSlotView, navigateToPlayground)
             R.layout.no_available_playgrounds_box -> NoAvailablePlaygroundsVH(timeSlotView)
             else -> throw Exception("Unexpected view found in onCreateViewHolder")
         }

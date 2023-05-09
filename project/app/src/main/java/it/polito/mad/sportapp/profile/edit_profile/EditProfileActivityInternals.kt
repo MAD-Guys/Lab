@@ -91,9 +91,7 @@ internal fun EditProfileFragment.menuInit() {
 }
 
 internal fun EditProfileFragment.setupOnBackPressedCallback() {
-    val callback = object : OnBackPressedCallback(
-        true // default to enabled
-    ) {
+    val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             // (the information will be persistently saved in the onPause method)
 

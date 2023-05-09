@@ -6,7 +6,9 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.core.view.children
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -74,7 +76,8 @@ private fun PlaygroundAvailabilitiesFragment.initCalendarDays() {
         requireContext(),
         viewModel.selectedDate,
         viewModel::setSelectedDate,
-        this::getAvailabilityPercentageOf
+        this::getAvailabilityPercentageOf,
+        viewModel::isAvailablePlaygroundsLoaded
     )
 
     // attach day binder to the calendar view
@@ -192,6 +195,9 @@ internal fun PlaygroundAvailabilitiesFragment.initAvailablePlaygroundsObserver()
         playgroundAvailabilitiesAdapter.smartUpdatePlaygroundAvailabilities(
             viewModel.getAvailablePlaygroundsOnSelectedDate()
         )
+
+        if(it.isNotEmpty())
+            viewModel.setAvailablePlaygroundsLoaded()
     }
 }
 
@@ -226,7 +232,13 @@ internal fun PlaygroundAvailabilitiesFragment.setupAvailablePlaygroundsRecyclerV
         viewModel.getAvailablePlaygroundsOnSelectedDate(),
         viewModel.selectedDate.value ?: viewModel.defaultDate,
         viewModel.slotDuration
-    )
+    ) { playgroundId ->
+        val params = bundleOf(
+            "id_playground" to playgroundId
+        )
+        // navigate to playground details view
+        findNavController().navigate(R.id.action_playgroundAvailabilitiesFragment_to_PlaygroundDetailsFragment, params)
+    }
 
     // init recycler view
     playgroundAvailabilitiesRecyclerView.apply {
