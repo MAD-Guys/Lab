@@ -3,7 +3,6 @@ package it.polito.mad.sportapp.playground_details
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -40,8 +39,8 @@ internal fun PlaygroundDetailsFragment.initViews() {
     playgroundSport.text = "Basketball" //viewModel.playground.value?.sportName
     playgroundAddress.text =
         "Via Roma 1, Turin" //viewModel.playground.value?.sportCenterAddress
-    playgroundOpeningTime.text = viewModel.playground.value?.openingHours
-    playgroundClosingTime.text = viewModel.playground.value?.closingHours
+    playgroundOpeningTime.text = viewModel.playground.value?.openingTime
+    playgroundClosingTime.text = viewModel.playground.value?.closingTime
     playgroundPrice.text = String.format("%.2f", viewModel.playground.value?.pricePerHour)
     playgroundQualityRatingBar.rating = 4.5f //viewModel.playground.value?.qualityRating
     playgroundFacilitiesRatingBar.rating = 2.5f //viewModel.playground.value?.facilitiesRating

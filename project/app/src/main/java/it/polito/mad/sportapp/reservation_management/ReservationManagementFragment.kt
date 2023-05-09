@@ -3,6 +3,7 @@ package it.polito.mad.sportapp.reservation_management
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.widget.TextView
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -16,8 +17,12 @@ class ReservationManagementFragment : Fragment(R.layout.reservation_management_v
     }
 
     internal val viewModel by viewModels<ReservationManagementViewModel>()
-    internal lateinit var currentMode: ReservationManagementMode
     internal lateinit var navController: NavController
+
+    // params
+    internal lateinit var currentMode: ReservationManagementMode
+    internal var reservationId : Int? = null
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -31,16 +36,19 @@ class ReservationManagementFragment : Fragment(R.layout.reservation_management_v
             else
                 ReservationManagementMode.CREATE_MODE
 
+        reservationId = arguments?.getInt("reservation_id")
+
         // modify activity action bar
         this.initMenu()
 
-        // TODO
-    }
-
-    override fun onResume() {
-        super.onResume()
-
         // hide bottom bar during reservation management
         this.setupBottomBar()
+
+        if (currentMode == ReservationManagementMode.EDIT_MODE) {
+            val tv = requireActivity().findViewById<TextView>(R.id.tv)
+            tv.text = "${tv.text} ${reservationId}"
+        }
+
+        // TODO
     }
 }

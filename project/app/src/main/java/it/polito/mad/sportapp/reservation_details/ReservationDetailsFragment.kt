@@ -153,8 +153,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                         true
                     }
                     R.id.reservation_details_edit_button -> {
-                        //TODO: Navigate to edit
-                        showToasty("info", requireContext(), "Edit reservation")
+                        toEditView()
                         true
                     }
 
@@ -248,10 +247,12 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
     }
 
     private fun toEditView() {
-        //TODO: USE NAVIGATION
-        val intent = Intent(requireContext(), EditEquipmentActivity::class.java)
-        intent.putExtra("id_event", eventId)
-        startActivity(intent)
+        val params = bundleOf(
+            "mode" to "edit",           /* edit mode */
+            "reservation_id" to eventId /* reservation (id) to be edited */
+        )
+
+        navController.navigate(R.id.action_reservationDetailsFragment_to_reservationManagementFragment, params)
     }
 
     private fun startDialog() {
