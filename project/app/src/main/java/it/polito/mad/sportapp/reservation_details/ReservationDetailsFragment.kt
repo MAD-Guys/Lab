@@ -1,6 +1,7 @@
 package it.polito.mad.sportapp.reservation_details
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -16,6 +17,7 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat.invalidateOptionsMenu
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -114,6 +116,9 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                 initializeValues()
                 initializeEquipment()
 
+                // it calls again onCreateOptionsMenu() to check if the reservation date has already passed, and thus hide the edit option
+                activity?.invalidateOptionsMenu()
+
                 // show delete reservation button only if the reservation starts in the future
                 val currentDateTime = LocalDateTime.now()
 
@@ -142,6 +147,12 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                     it.setDisplayHomeAsUpEnabled(true)
                     it.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
                     it.title = "Reservation Details"
+                }
+
+                // show edit reservation button only if the reservation starts in the future
+                val currentDateTime = LocalDateTime.now()
+                if (currentDateTime.isAfter(viewModel.reservation.value?.startLocalDateTime)) {
+                    menu.getItem(R.id.reservation_details_edit_button).isVisible = false
                 }
             }
 
@@ -179,9 +190,9 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
     @SuppressLint("SetTextI18n")
     private fun initializeValues() {
         reservationNumber.text =
-            "Reservation number: " + String.format("%010d", viewModel.reservation.value?.id)
+            "Reservation number: ${viewModel.reservation.value?.id}"
         reservationDate.text =
-            viewModel.reservation.value?.date?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
+            viewModel.reservation.value?.date?.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
         reservationStartTime.text =
             viewModel.reservation.value?.startTime?.format(
                 DateTimeFormatter.ofLocalizedTime(

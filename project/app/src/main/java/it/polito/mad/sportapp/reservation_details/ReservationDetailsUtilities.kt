@@ -14,7 +14,7 @@ fun reservationQRCode(r: DetailedReservation): Bitmap {
     lateinit var bitmap: Bitmap
     lateinit var qrEncoder: QRGEncoder
 
-    val text = "Reservation number " + String.format("%010d", r.id) + "\nUser: ${r.userId}"
+    val text = "Reservation number: ${r.id}\nUser: ${r.userId}"
 
     qrEncoder = QRGEncoder(text, null, QRGContents.Type.TEXT, 512)
 
@@ -65,7 +65,7 @@ internal fun setQRCodeView(reservation: DetailedReservation, imageView: ImageVie
 }*/
 
 
-
+/*
 fun mockAvailableEquipment(): MutableList<Equipment> {
     return mutableListOf(
         Equipment(27, "Ball", 1, 1, 3.99f, 7),
@@ -74,3 +74,5 @@ fun mockAvailableEquipment(): MutableList<Equipment> {
         Equipment(68, "Towel", 1, 1,  2.5f, 12)
     )
 }
+
+ */

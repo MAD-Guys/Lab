@@ -56,7 +56,7 @@
                         android:gravity="center_horizontal"
                         android:text="Reservation number: 123456"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                        android:textSize="24sp"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -66,7 +66,7 @@
                         android:fontFamily="@font/poppins_medium"
                         android:gravity="center_horizontal"
                         android:text="18/04/2023"
-                        android:textSize="24sp" />
+                        android:textSize="20sp" />
 
                     <LinearLayout
                         android:id="@+id/reservationTime"
@@ -123,6 +123,28 @@
                         android:textSize="24sp"
                         android:textStyle="bold"
                         />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:text="By @"
+                            android:textSize="20sp" />
+                        <TextView
+                            android:id="@+id/reservationUsername"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:text="johndoe"
+                            android:textSize="20sp" />
+
+                    </LinearLayout>
 
                     <View
                         android:id="@+id/divider2"
