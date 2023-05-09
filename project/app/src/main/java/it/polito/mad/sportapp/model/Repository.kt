@@ -1,5 +1,6 @@
 package it.polito.mad.sportapp.model
 
+import it.polito.mad.sportapp.entities.Achievement
 import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
 import it.polito.mad.sportapp.entities.Equipment
 import it.polito.mad.sportapp.entities.PlaygroundReservation
@@ -38,13 +39,31 @@ class Repository @Inject constructor(
     private val reviewDao: ReviewDao
 ) {
     // User methods
-    fun getUserWithSportLevel(id: Int): User {
+    fun getUser(id: Int): User {
         val user = userDao.findById(id)
         user.sportLevel = userDao.findSportByUserId(id)
+        user.achievements = buildAchievements(id)
         return user
     }
 
+    private fun buildAchievements(userId: Int): Map<Achievement, Boolean> {
+        val playedMatches = userDao.findPlayedMatches(userId)
+        val playedSport = userDao.findPlayedSports(userId).maxOrNull() ?: 0
+        return mapOf(
+            Achievement.atleastOneSport to (playedSport > 0),
+            Achievement.atleastFiveSport to (playedSport > 4),
+            Achievement.allSports to (playedSport == sportDao.count()),
+            Achievement.atleastThreeMatches to (playedMatches > 2),
+            Achievement.atleastTenMatches to (playedMatches > 9),
+            Achievement.atLeastTwentyFiveMatches to (playedMatches > 24),
+        )
+    }
+
     fun updateUser(user: User) {
+        userDao.deleteSportByUserId(user.id)
+        user.sportLevel.forEach {
+            userDao.insertSportByUserId(user.id, it.sportId, it.level ?: "")
+        }
         userDao.update(user)
     }
 
@@ -201,9 +220,16 @@ class Repository @Inject constructor(
     fun getPlaygroundInfoById(playgroundId: Int): PlaygroundInfo {
         val playgroundInfo = playgroundSportDao.getPlaygroundInfo(playgroundId)
         playgroundInfo.reviewList = getAllReviewsByPlaygroundId(playgroundId)
-        playgroundInfo.overallQualityRating = playgroundInfo.reviewList.map { it.qualityRating }.filter{it != 0f}.average().toFloat()
-        playgroundInfo.overallFacilitiesRating = playgroundInfo.reviewList.map { it.facilitiesRating }.filter { it!=0f }.average().toFloat()
-        playgroundInfo.overallRating = (playgroundInfo.overallFacilitiesRating + playgroundInfo.overallQualityRating) / 2
+        val overallQualityRating: Float = playgroundInfo.reviewList.map { it.qualityRating }.filter{it != 0f}.average().toFloat()
+
+        val overallFacilitiesRating: Float = playgroundInfo.reviewList.map { it.facilitiesRating }.filter{it != 0f}.average().toFloat()
+        playgroundInfo.overallQualityRating = overallQualityRating.takeIf { !it.isNaN() } ?: 0f
+        playgroundInfo.overallFacilitiesRating = overallFacilitiesRating.takeIf { !it.isNaN() } ?: 0f
+        playgroundInfo.overallRating = when {
+            playgroundInfo.overallQualityRating == 0f -> playgroundInfo.overallFacilitiesRating
+            playgroundInfo.overallFacilitiesRating == 0f -> playgroundInfo.overallQualityRating
+            else -> (playgroundInfo.overallQualityRating + playgroundInfo.overallFacilitiesRating) / 2
+        }
         return playgroundInfo
     }
 

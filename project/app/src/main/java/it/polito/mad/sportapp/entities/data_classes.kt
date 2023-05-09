@@ -11,11 +11,15 @@ import java.time.LocalTime
 
 //data class for the join between user and sport to get the level of the sport played by the user
 data class SportLevel(
+    @ColumnInfo(name = "sport_id")
+    val sportId: Int,
     @ColumnInfo(name = "name")
     val sport: String?,
     @ColumnInfo(name = "level")
     val level: String?
+
 )
+
 
 data class DetailedReservation(
     @ColumnInfo(name = "id")
@@ -156,5 +160,14 @@ data class PlaygroundInfo(
 
     @Ignore
     var reviewList: List<Review> = listOf()
-
 }
+
+enum class Achievement{
+    atleastOneSport,
+    atleastFiveSport,
+    allSports,
+    atleastThreeMatches,
+    atleastTenMatches,
+    atLeastTwentyFiveMatches
+}
+

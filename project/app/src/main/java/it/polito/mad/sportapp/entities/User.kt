@@ -27,5 +27,16 @@ data class User (
 ) {
     @Ignore
     var sportLevel: List<SportLevel> = listOf()
+
+    @Ignore
+    var achievements : Map<Achievement,Boolean> = mapOf(
+        Achievement.atleastOneSport to false,
+        Achievement.atleastFiveSport to false,
+        Achievement.allSports to false,
+        Achievement.atleastThreeMatches to false,
+        Achievement.atleastTenMatches to false,
+        Achievement.atLeastTwentyFiveMatches to false,
+    )
+
 }
 

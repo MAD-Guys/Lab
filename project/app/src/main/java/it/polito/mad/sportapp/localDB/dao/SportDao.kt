@@ -10,6 +10,9 @@ interface SportDao {
     @Query("SELECT * FROM sport")
     fun getAll(): List<Sport>
 
+    @Query("SELECT COUNT(*) FROM sport")
+    fun count(): Int
+
     @Insert
     fun insertAll(vararg sport: Sport)
 
