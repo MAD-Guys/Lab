@@ -31,7 +31,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.clearStorageFiles
 import it.polito.mad.sportapp.fastblur
-import it.polito.mad.sportapp.getPictureFromInternalStorage
 import it.polito.mad.sportapp.profile.Gender
 import it.polito.mad.sportapp.profile.Level
 import it.polito.mad.sportapp.profile.ProfileViewModel
@@ -94,8 +93,8 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
     internal val sports = HashMap<String, SportChips>()
 
     // Profile picture
-    private lateinit var profilePicture: ImageView
-    private lateinit var backgroundProfilePicture: ImageView
+    internal lateinit var profilePicture: ImageView
+    internal lateinit var backgroundProfilePicture: ImageView
     internal var profilePictureBitmap: Bitmap? = null
     internal var backgroundProfilePictureBitmap: Bitmap? = null
 
@@ -205,7 +204,8 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
         menuInit()
 
         // hide bottom bar
-        val bottomBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation_bar)
+        val bottomBar =
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation_bar)
         bottomBar.visibility = View.GONE
 
         // setup back button callback
@@ -222,6 +222,9 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
         profilePicture = view.findViewById(R.id.profile_picture)
         backgroundProfilePicture = view.findViewById(R.id.background_profile_picture)
 
+        // setup views observers
+        observersSetup()
+
         // initialize options to crop the profile picture
         cropImageOptions = CropImageOptions(
             guidelines = CropImageView.Guidelines.ON,
@@ -236,22 +239,10 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
         )
 
         // fills the sportChips
-        this.sportsInit()
+        sportsInit()
 
-        /* manage profile and background picture */
-
-        // retrieve profile picture and update it with the one uploaded by the user, if any
-        getPictureFromInternalStorage(requireActivity().filesDir, "profilePicture.jpeg")?.let {
-            profilePicture.setImageBitmap(it)
-        }
-
-        // retrieve background picture and update it with the one uploaded by the user, if any
-        getPictureFromInternalStorage(
-            requireActivity().filesDir,
-            "backgroundProfilePicture.jpeg"
-        )?.let {
-            backgroundProfilePicture.setImageBitmap(it)
-        }
+        // load profile pictures from storage
+        loadPicturesFromInternalStorage()
 
         /* manage listeners */
 
@@ -276,6 +267,7 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
         bio.addTextChangedListener(textListenerInit("bio"))
 
         genderRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+
             radioGenderCheckedTemp = when (checkedId) {
                 R.id.radio_male -> Gender.Male
                 R.id.radio_female -> Gender.Female
@@ -311,14 +303,14 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
     override fun onResume() {
         super.onResume()
 
-        // load user data from SharedPreferences
-        this.loadDataFromStorage()
+        // initialize temporary variables
+        initializeTempVariables()
     }
 
     override fun onPause() {
         super.onPause()
 
-        // save the temporary profile variables into the sharedPreferences file
+        // save the user information on internal storage
         saveInformationOnStorage()
     }
 

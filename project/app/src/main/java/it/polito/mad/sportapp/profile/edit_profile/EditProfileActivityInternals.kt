@@ -14,7 +14,6 @@ import android.view.ViewGroup.LayoutParams
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
 import androidx.core.view.MenuHost
@@ -24,16 +23,15 @@ import androidx.lifecycle.Lifecycle
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.getPictureFromInternalStorage
 import it.polito.mad.sportapp.profile.Gender
 import it.polito.mad.sportapp.profile.Level
 import it.polito.mad.sportapp.profile.Sport
 import it.polito.mad.sportapp.profile.SportChips
 import it.polito.mad.sportapp.profile.extendedNameOf
-import it.polito.mad.sportapp.profile.getHardcodedSports
 import it.polito.mad.sportapp.savePictureOnInternalStorage
 import it.polito.mad.sportapp.setProfilePictureSize
 import it.polito.mad.sportapp.showToasty
-import org.json.JSONObject
 import java.io.File
 
 // manage menu item selection
@@ -87,6 +85,48 @@ internal fun EditProfileFragment.menuInit() {
     }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 }
 
+internal fun EditProfileFragment.observersSetup() {
+
+    // user first name observer
+    vm.userFirstName.observe(viewLifecycleOwner) {
+        firstName.setText(it)
+    }
+
+    // user last name observer
+    vm.userLastName.observe(viewLifecycleOwner) {
+        lastName.setText(it)
+    }
+
+    // user username observer
+    vm.userUsername.observe(viewLifecycleOwner) {
+        username.setText(it)
+    }
+
+    // user gender observer
+    vm.userGender.observe(viewLifecycleOwner) {
+        when (Gender.valueOf(it)) {
+            Gender.Male -> genderRadioGroup.check(R.id.radio_male)
+            Gender.Female -> genderRadioGroup.check(R.id.radio_female)
+            Gender.Other -> genderRadioGroup.check(R.id.radio_other)
+        }
+    }
+
+    // user age observer
+    vm.userAge.observe(viewLifecycleOwner) {
+        age.setText(it)
+    }
+
+    // user location observer
+    vm.userLocation.observe(viewLifecycleOwner) {
+        location.setText(it)
+    }
+
+    // user bio observer
+    vm.userBio.observe(viewLifecycleOwner) {
+        bio.setText(it)
+    }
+}
+
 internal fun EditProfileFragment.setupOnBackPressedCallback() {
     val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -107,7 +147,61 @@ internal fun EditProfileFragment.setupOnBackPressedCallback() {
 
 /* manage load/save from/into storage */
 
-internal fun EditProfileFragment.loadDataFromStorage() {
+internal fun EditProfileFragment.initializeTempVariables() {
+    firstNameTemp = vm.userFirstName.value ?: getString(R.string.first_name)
+    lastNameTemp = vm.userLastName.value ?: getString(R.string.last_name)
+    usernameTemp = vm.userUsername.value ?: getString(R.string.username)
+    radioGenderCheckedTemp = Gender.valueOf(vm.userGender.value ?: getString(R.string.male_gender))
+    ageTemp = vm.userAge.value ?: getString(R.string.user_age)
+    locationTemp = vm.userLocation.value ?: getString(R.string.user_location)
+    bioTemp = vm.userBio.value ?: getString(R.string.user_bio)
+}
+
+internal fun EditProfileFragment.loadPicturesFromInternalStorage() {
+    /* manage profile and background picture */
+
+    // retrieve profile picture and update it with the one uploaded by the user, if any
+    getPictureFromInternalStorage(requireActivity().filesDir, "profilePicture.jpeg")?.let {
+        profilePicture.setImageBitmap(it)
+    }
+
+    // retrieve background picture and update it with the one uploaded by the user, if any
+    getPictureFromInternalStorage(
+        requireActivity().filesDir,
+        "backgroundProfilePicture.jpeg"
+    )?.let {
+        backgroundProfilePicture.setImageBitmap(it)
+    }
+}
+
+internal fun EditProfileFragment.saveInformationOnStorage() {
+
+    // update view model variables
+    vm.setUserFirstName(firstName.text.toString())
+    vm.setUserLastName(lastName.text.toString())
+    vm.setUserUsername(username.text.toString())
+    vm.setUserGender(radioGenderCheckedTemp.toString())
+    vm.setUserAge(age.text.toString())
+    vm.setUserLocation(location.text.toString())
+    vm.setUserBio(bio.text.toString())
+
+    // save profile and background pictures into the internal storage
+    profilePictureBitmap?.let {
+        savePictureOnInternalStorage(it, requireActivity().filesDir, "profilePicture.jpeg")
+    }
+    backgroundProfilePictureBitmap?.let {
+        savePictureOnInternalStorage(
+            it,
+            requireActivity().filesDir,
+            "backgroundProfilePicture.jpeg"
+        )
+    }
+
+    // update db user information
+    vm.updateDbUserInformation(1)
+}
+
+/*internal fun EditProfileFragment.loadDataFromStorage() {
     // retrieve data from SharedPreferences
     val sh = activity?.getSharedPreferences("it.polito.mad.lab2", AppCompatActivity.MODE_PRIVATE)
     val jsonObjectProfile: JSONObject? = sh?.getString("profile", null)?.let { JSONObject(it) }
@@ -164,8 +258,9 @@ internal fun EditProfileFragment.loadDataFromStorage() {
             setEditSportsField(sportResume)
         }
     }
-}
+}*/
 
+/*
 internal fun EditProfileFragment.saveInformationOnStorage() {
     // the temporary information is *serialized* firstly into a JSONObject
     // and then into the sharedPreferences file with the key *profile*
@@ -183,18 +278,6 @@ internal fun EditProfileFragment.saveInformationOnStorage() {
     jsonObjectProfile.put("bio", bioTemp)
     jsonObjectProfile.put("gender", radioGenderCheckedTemp?.name)
 
-    // save profile and background pictures into the internal storage
-    profilePictureBitmap?.let {
-        savePictureOnInternalStorage(it, requireActivity().filesDir, "profilePicture.jpeg")
-    }
-    backgroundProfilePictureBitmap?.let {
-        savePictureOnInternalStorage(
-            it,
-            requireActivity().filesDir,
-            "backgroundProfilePicture.jpeg"
-        )
-    }
-
     // save sports as a JsonObject
     val sportJson = JSONObject()
     sportsTemp.forEach { (_, sport) -> sport.saveAsJson(sportJson) }
@@ -203,7 +286,7 @@ internal fun EditProfileFragment.saveInformationOnStorage() {
     // apply changes
     editor?.putString("profile", jsonObjectProfile.toString())
     editor?.apply()
-}
+}*/
 
 internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatcher {
     // implement and return the TextWatcher interface
@@ -212,12 +295,29 @@ internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatche
 
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             when (fieldName) {
-                "firstName" -> firstNameTemp = firstName.text.toString()
-                "lastName" -> lastNameTemp = lastName.text.toString()
-                "username" -> usernameTemp = username.text.toString()
-                "age" -> ageTemp = age.text.toString()
-                "location" -> locationTemp = location.text.toString()
-                "bio" -> bioTemp = bio.text.toString()
+                "firstName" -> {
+                    firstNameTemp = firstName.text.toString()
+                }
+
+                "lastName" -> {
+                    lastNameTemp = lastName.text.toString()
+                }
+
+                "username" -> {
+                    usernameTemp = username.text.toString()
+                }
+
+                "age" -> {
+                    ageTemp = age.text.toString()
+                }
+
+                "location" -> {
+                    locationTemp = location.text.toString()
+                }
+
+                "bio" -> {
+                    bioTemp = bio.text.toString()
+                }
             }
         }
 

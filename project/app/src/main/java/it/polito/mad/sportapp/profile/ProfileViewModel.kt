@@ -31,8 +31,8 @@ class ProfileViewModel @Inject constructor(
     private val _userGender = MutableLiveData<String>().also { it.value = "Male" }
     val userGender: LiveData<String> = _userGender
 
-    private val _userAge = MutableLiveData<Int>().also { it.value = 23 }
-    val userAge: LiveData<Int> = _userAge
+    private val _userAge = MutableLiveData<String>().also { it.value = 25.toString() }
+    val userAge: LiveData<String> = _userAge
 
     private val _userLocation = MutableLiveData<String>().also { it.value = "Rome" }
     val userLocation: LiveData<String> = _userLocation
@@ -61,7 +61,7 @@ class ProfileViewModel @Inject constructor(
             _userLastName.postValue(user.lastName)
             _userUsername.postValue(user.username)
             _userGender.postValue(user.gender)
-            _userAge.postValue(user.age)
+            _userAge.postValue(user.age.toString())
             _userLocation.postValue(user.location)
             _userBio.postValue(user.bio)
             _userAchievements.postValue(user.achievements)
@@ -82,7 +82,7 @@ class ProfileViewModel @Inject constructor(
             _userLastName.value!!,
             _userUsername.value!!,
             _userGender.value!!,
-            _userAge.value!!,
+            _userAge.value?.toInt()!!,
             _userLocation.value!!,
             _userBio.value!!
         )
@@ -115,7 +115,7 @@ class ProfileViewModel @Inject constructor(
         _userGender.value = gender
     }
 
-    fun setUserAge(age: Int) {
+    fun setUserAge(age: String) {
         _userAge.value = age
     }
 

@@ -103,7 +103,7 @@ internal fun ShowProfileFragment.observersSetup() {
 
     // user age observer
     vm.userAge.observe(viewLifecycleOwner) {
-        age.text = it.toString()
+        age.text = it
     }
 
     // user location observer
