@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
@@ -15,8 +16,10 @@ import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.Achievement
+import it.polito.mad.sportapp.entities.SportLevel
 import it.polito.mad.sportapp.profile.Level
 import it.polito.mad.sportapp.profile.Sport
 import it.polito.mad.sportapp.setProfilePictureSize
@@ -115,11 +118,67 @@ internal fun ShowProfileFragment.observersSetup() {
         bio.text = it
     }
 
+    vm.userSports.observe(viewLifecycleOwner) {
+
+        val noSportsTextView =
+            requireView().findViewById<TextView>(R.id.no_sports_selected_text_view)
+
+        noSportsTextView.visibility = View.GONE
+
+        if (it.isNotEmpty()) {
+            setupSports(it)
+        } else {
+            // show default message
+            noSportsTextView.visibility = View.VISIBLE
+        }
+    }
+
     vm.userAchievements.observe(viewLifecycleOwner) {
         if (it.isNotEmpty()) {
             updateAchievements(it)
         }
     }
+}
+
+internal fun ShowProfileFragment.setupSports(userSports: List<SportLevel>) {
+    /* manage sports */
+
+    // retrieve and clean sports container
+    val sportsContainer = requireView().findViewById<ChipGroup>(R.id.sports_container)
+    sportsContainer.removeAllViews()
+
+    // create sports chips
+    userSports.forEach {
+
+        val sportId = getDbSportId(it.sport!!)
+
+        if (sportId != -1) {
+            val sport = Sport.from(sportId, it.sport, it.level!!)
+            val sportChip = createSportChip(sport, sportsContainer)
+
+            sportChips[it.sport] = sportChip
+            sportData[it.sport] = sport
+        }
+    }
+
+    // display sports in decreasing order of level
+    sportChips.asSequence().sortedByDescending { (sportName, _) ->
+        sportData[sportName]!!.level
+    }.forEach { (_, chip) ->
+        sportsContainer.addView(chip)
+    }
+}
+
+private fun ShowProfileFragment.getDbSportId(sportName: String): Int {
+
+    vm.sportsList.value?.let { sportList ->
+        val sport = sportList.find { it.name == sportName }
+        sport?.let {
+            return it.id
+        }
+    }
+
+    return -1
 }
 
 internal fun ShowProfileFragment.buttonsInit() {

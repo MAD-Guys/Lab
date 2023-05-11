@@ -180,9 +180,6 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // get all sports from db
-        vm.loadSportsFromDb()
-
         // get activity action bar
         actionBar = (requireActivity() as AppCompatActivity).supportActionBar
 

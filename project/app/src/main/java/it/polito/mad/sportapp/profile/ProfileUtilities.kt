@@ -6,13 +6,13 @@ import it.polito.mad.sportapp.entities.SportLevel
 
 /* Sport utilities */
 
-internal data class Sport(val name: String, var selected: Boolean, var level: Level) {
+internal data class Sport(val id: Int, val name: String, var selected: Boolean, var level: Level) {
     companion object {
-        fun from(name: String, level: String): Sport =
-            Sport(name, true, Level.valueOf(level.uppercase()))
+        fun from(id: Int, name: String, level: String): Sport =
+            Sport(id, name, true, Level.valueOf(level.uppercase()))
     }
 
-    fun toSportLevel(): SportLevel = SportLevel(0, name, level.name)
+    fun toSportLevel(): SportLevel = SportLevel(id, name, level.name)
 }
 
 internal class SportChips(

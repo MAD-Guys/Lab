@@ -147,25 +147,25 @@ internal fun EditProfileFragment.setupTemporarySports(sportsList: List<SportEnti
 
             if (userSport != null) {
                 sportsTemp[tempSport.name] =
-                    Sport(tempSport.name, true, Level.valueOf(userSport.level!!))
+                    Sport(tempSport.id, tempSport.name, true, Level.valueOf(userSport.level!!))
             } else {
-                sportsTemp[tempSport.name] = Sport(tempSport.name, false, Level.NO_LEVEL)
+                sportsTemp[tempSport.name] = Sport(tempSport.id, tempSport.name, false, Level.NO_LEVEL)
             }
 
         } else {
-            sportsTemp[tempSport.name] = Sport(tempSport.name, false, Level.NO_LEVEL)
+            sportsTemp[tempSport.name] = Sport(tempSport.id, tempSport.name, false, Level.NO_LEVEL)
         }
     }
 
     // * added to deal with a no-sense ChipGroup bug inherent to the last Chip *
-    sportsTemp["pad"] = Sport("pad", false, Level.NO_LEVEL)
+    sportsTemp["pad"] = Sport(0, "pad", false, Level.NO_LEVEL)
+
+    // fills the sportChips
+    sportsInit()
 
     sportsTemp.values.forEach { sport ->
         setEditSportsField(sport)
     }
-
-    // fills the sportChips
-    sportsInit()
 
     // setup the chips listeners
     setupChipsListeners()
@@ -463,8 +463,6 @@ internal fun EditProfileFragment.changeSportLevel(sportName: String, level: Leve
 // Set sports Edit fields and temporary values
 private fun EditProfileFragment.setEditSportsField(sport: Sport) {
     if (sport.selected) {
-        // manage sport state
-        sportsTemp[sport.name] = sport
 
         // manage sport views
         val sportGroup = sports[sport.name]!!

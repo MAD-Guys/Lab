@@ -12,7 +12,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.getPictureFromInternalStorage
@@ -39,10 +38,10 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
     internal lateinit var messageButton: Button
 
     // Sport views
-    private lateinit var sportChips: MutableMap<String, Chip>
+    internal var sportChips: MutableMap<String, Chip> = HashMap()
 
     // sport data
-    private lateinit var sportData: MutableMap<String, Sport>
+    internal var sportData: MutableMap<String, Sport> = HashMap()
 
     // action bar
     internal var actionBar: ActionBar? = null
@@ -91,6 +90,9 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
         // retrieve user information from db
         vm.loadUserInformationFromDb(1)
 
+        // get all sports from db
+        vm.loadSportsFromDb()
+
         // retrieve profile and background picture from the internal storage
         val profilePictureBitmap =
             getPictureFromInternalStorage(requireActivity().filesDir, "profilePicture.jpeg")
@@ -103,42 +105,5 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
         // update profile and background picture with the ones uploaded by the user, if any
         profilePictureBitmap?.let { profilePicture.setImageBitmap(it) }
         backgroundProfilePictureBitmap?.let { backgroundProfilePicture.setImageBitmap(it) }
-
-        /* manage sports */
-        sportChips = HashMap()
-        sportData = HashMap()
-
-        // retrieve and clean sports container
-        val sportsContainer = requireView().findViewById<ChipGroup>(R.id.sports_container)
-        sportsContainer.removeAllViews()
-
-        // load the (already) selected sports by the user
-        vm.userSports.value?.let { userSports ->
-
-            if (userSports.isEmpty()) {
-                // show default message
-                val noSportsTextView =
-                    requireView().findViewById<TextView>(R.id.no_sports_selected_text_view)
-                noSportsTextView.visibility = View.VISIBLE
-            } else {
-                // create sports chips
-                userSports.forEach {
-
-                    val sport = Sport.from(it.sport!!, it.level!!)
-
-                    val sportChip = createSportChip(sport, sportsContainer)
-
-                    sportChips[it.sport] = sportChip
-                    sportData[it.sport] = sport
-                }
-            }
-        }
-
-        // display sports in decreasing order of level
-        sportChips.asSequence().sortedByDescending { (sportName, _) ->
-            sportData[sportName]!!.level
-        }.forEach { (_, chip) ->
-            sportsContainer.addView(chip)
-        }
     }
 }
