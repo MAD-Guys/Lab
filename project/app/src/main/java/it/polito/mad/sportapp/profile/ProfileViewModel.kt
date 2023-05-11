@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.Achievement
+import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.SportLevel
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.model.Repository
@@ -43,11 +44,27 @@ class ProfileViewModel @Inject constructor(
     }
     val userBio: LiveData<String> = _userBio
 
-    private val _userAchievements = MutableLiveData<Map<Achievement, Boolean>>().also { it.value = mapOf() }
+    private val _userAchievements =
+        MutableLiveData<Map<Achievement, Boolean>>().also { it.value = mapOf() }
     val userAchievements: LiveData<Map<Achievement, Boolean>> = _userAchievements
 
     private val _userSports = MutableLiveData<List<SportLevel>>().also { it.value = listOf() }
     val userSports: LiveData<List<SportLevel>> = _userSports
+
+    /* sports information */
+    private val _sportsList = MutableLiveData<List<Sport>>()
+    val sportsList: LiveData<List<Sport>> = _sportsList
+
+    fun loadSportsFromDb() {
+        // get list of sports from database
+        val dbThread = Thread {
+            val sports = repository.getAllSports()
+            _sportsList.postValue(sports)
+        }
+
+        // start db thread
+        dbThread.start()
+    }
 
     // load user information from database
     fun loadUserInformationFromDb(userId: Int) {

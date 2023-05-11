@@ -95,6 +95,7 @@
 
     <!-- sport selection description -->
     <string name="sport_selection_description">Tap on the sports you like and specify your level! 🚀</string>
+    <string name="no_sport_selected">You have not selected any sports yet</string>
 
     <!-- buttons -->
     <string name="confirm_button_description">Confirm button</string>

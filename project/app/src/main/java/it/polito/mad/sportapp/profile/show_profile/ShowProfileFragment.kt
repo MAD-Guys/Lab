@@ -18,8 +18,6 @@ import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.getPictureFromInternalStorage
 import it.polito.mad.sportapp.profile.ProfileViewModel
 import it.polito.mad.sportapp.profile.Sport
-import it.polito.mad.sportapp.profile.getHardcodedSports
-import org.json.JSONObject
 
 @AndroidEntryPoint
 class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
@@ -41,10 +39,10 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
     internal lateinit var messageButton: Button
 
     // Sport views
-    internal lateinit var sportChips: MutableMap<String, Chip>
+    private lateinit var sportChips: MutableMap<String, Chip>
 
     // sport data
-    internal lateinit var sportData: MutableMap<String, Sport>
+    private lateinit var sportData: MutableMap<String, Sport>
 
     // action bar
     internal var actionBar: ActionBar? = null
@@ -93,12 +91,6 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
         // retrieve user information from db
         vm.loadUserInformationFromDb(1)
 
-        //TODO: delete from line 90 to line 94
-        // retrieve data from SharedPreferences
-        val sh =
-            activity?.getSharedPreferences("it.polito.mad.lab2", AppCompatActivity.MODE_PRIVATE)
-        val jsonObjectProfile: JSONObject? = sh?.getString("profile", null)?.let { JSONObject(it) }
-
         // retrieve profile and background picture from the internal storage
         val profilePictureBitmap =
             getPictureFromInternalStorage(requireActivity().filesDir, "profilePicture.jpeg")
@@ -120,23 +112,24 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
         val sportsContainer = requireView().findViewById<ChipGroup>(R.id.sports_container)
         sportsContainer.removeAllViews()
 
-        //TODO: change this if statement after db attachment
-        // first time the app is launched, some hardcoded sports will appear
-        if (jsonObjectProfile == null || vm.userSports.value?.isEmpty() == true)
-            loadHardcodedSports(*getHardcodedSports(), parent = sportsContainer)
-        else {
-            // load the (already) selected sports by the user
-            val sportJson = jsonObjectProfile.getJSONObject("sports")
-            for (sportName in sportJson.keys()) {
-                val sport = Sport.from(sportName, sportJson)
+        // load the (already) selected sports by the user
+        vm.userSports.value?.let { userSports ->
 
-                if (sport.selected) {
-                    // create sport chip
+            if (userSports.isEmpty()) {
+                // show default message
+                val noSportsTextView =
+                    requireView().findViewById<TextView>(R.id.no_sports_selected_text_view)
+                noSportsTextView.visibility = View.VISIBLE
+            } else {
+                // create sports chips
+                userSports.forEach {
+
+                    val sport = Sport.from(it.sport!!, it.level!!)
+
                     val sportChip = createSportChip(sport, sportsContainer)
 
-                    // save chip and information
-                    sportChips[sportName] = sportChip
-                    sportData[sportName] = sport
+                    sportChips[it.sport] = sportChip
+                    sportData[it.sport] = sport
                 }
             }
         }

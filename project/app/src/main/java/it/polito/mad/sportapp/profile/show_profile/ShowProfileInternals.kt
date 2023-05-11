@@ -19,7 +19,6 @@ import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.Achievement
 import it.polito.mad.sportapp.profile.Level
 import it.polito.mad.sportapp.profile.Sport
-import it.polito.mad.sportapp.profile.extendedNameOf
 import it.polito.mad.sportapp.setProfilePictureSize
 import it.polito.mad.sportapp.showToasty
 
@@ -282,8 +281,8 @@ internal fun ShowProfileFragment.createSportChip(sport: Sport, parent: ViewGroup
     val chip = layoutInflater.inflate(R.layout.show_profile_chip, parent, false) as Chip
 
     chip.apply {
-        activity?.setVisible(sport.selected)  // !!!
-        text = extendedNameOf(sport.name) // !!!
+        activity?.setVisible(sport.selected)
+        text = sport.name
         // set level characteristics
         when (sport.level) {
             Level.BEGINNER -> {
@@ -321,18 +320,4 @@ internal fun ShowProfileFragment.createSportChip(sport: Sport, parent: ViewGroup
     }
 
     return chip
-}
-
-internal fun ShowProfileFragment.loadHardcodedSports(
-    vararg hardcodedSports: Sport,
-    parent: ViewGroup
-) {
-    hardcodedSports.forEach {
-        // create chip view
-        val sportChip = createSportChip(it, parent)
-
-        // save chip and sport info
-        sportChips[it.name] = sportChip
-        sportData[it.name] = it
-    }
 }

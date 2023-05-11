@@ -61,21 +61,7 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
     internal val vm by activityViewModels<ProfileViewModel>()
 
     // Sports temporary state
-    internal var sportsTemp = mutableMapOf(
-        // 10 values initially set according to the values hard coded in ShowProfileActivity.kt
-        Pair("basket", Sport("basket", false, Level.NO_LEVEL)),
-        Pair("soccer11", Sport("soccer11", false, Level.NO_LEVEL)),
-        Pair("soccer5", Sport("soccer5", false, Level.NO_LEVEL)),
-        Pair("soccer8", Sport("soccer8", false, Level.NO_LEVEL)),
-        Pair("tennis", Sport("tennis", false, Level.NO_LEVEL)),
-        Pair("tableTennis", Sport("tableTennis", false, Level.NO_LEVEL)),
-        Pair("volleyball", Sport("volleyball", false, Level.NO_LEVEL)),
-        Pair("beachVolley", Sport("beachVolley", false, Level.NO_LEVEL)),
-        Pair("padel", Sport("padel", false, Level.NO_LEVEL)),
-        Pair("miniGolf", Sport("miniGolf", false, Level.NO_LEVEL)),
-        // * added to deal with a no-sense ChipGroup bug inherent to the last Chip *
-        Pair("pad", Sport("pad", false, Level.NO_LEVEL))
-    )
+    internal var sportsTemp: MutableMap<String, Sport> = mutableMapOf()
 
     // used to distinguish between tapped sports
     internal lateinit var consideredSport: String
@@ -194,6 +180,9 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // get all sports from db
+        vm.loadSportsFromDb()
+
         // get activity action bar
         actionBar = (requireActivity() as AppCompatActivity).supportActionBar
 
@@ -238,9 +227,6 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
             aspectRatioY = 1
         )
 
-        // fills the sportChips
-        sportsInit()
-
         // load profile pictures from storage
         loadPicturesFromInternalStorage()
 
@@ -275,29 +261,6 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
                 else -> throw RuntimeException("An unexpected Gender Button id has been detected")
             }
         }
-
-        // add listeners to the sports views
-        for ((sportName, sportChips) in sports) {
-            // register floating context menu for the actual level icons
-            registerForContextMenu(sportChips.actualLevelChip)
-            // remove long press listener
-            sportChips.actualLevelChip.setOnLongClickListener(null)
-
-            // add listener to the actual level chip
-            sportChips.actualLevelChip.setOnClickListener {
-                // update sport considered at the moment by the menu
-                consideredSport = sportName
-
-                // open the context menu to select a new sport level
-                requireActivity().openContextMenu(sportChips.actualLevelChip)
-            }
-
-            // add listener to the sport chip
-            sportChips.chip.setOnClickListener {
-                sportChipListener(sportName)
-            }
-        }
-
     }
 
     override fun onResume() {

@@ -28,7 +28,7 @@ import it.polito.mad.sportapp.profile.Gender
 import it.polito.mad.sportapp.profile.Level
 import it.polito.mad.sportapp.profile.Sport
 import it.polito.mad.sportapp.profile.SportChips
-import it.polito.mad.sportapp.profile.extendedNameOf
+import it.polito.mad.sportapp.entities.Sport as SportEntity
 import it.polito.mad.sportapp.savePictureOnInternalStorage
 import it.polito.mad.sportapp.setProfilePictureSize
 import it.polito.mad.sportapp.showToasty
@@ -87,6 +87,13 @@ internal fun EditProfileFragment.menuInit() {
 
 internal fun EditProfileFragment.observersSetup() {
 
+    // sports list observer
+    vm.sportsList.observe(viewLifecycleOwner) { sportsList ->
+        if (sportsList.isNotEmpty()) {
+            setupTemporarySports(sportsList)
+        }
+    }
+
     // user first name observer
     vm.userFirstName.observe(viewLifecycleOwner) {
         firstName.setText(it)
@@ -124,6 +131,67 @@ internal fun EditProfileFragment.observersSetup() {
     // user bio observer
     vm.userBio.observe(viewLifecycleOwner) {
         bio.setText(it)
+    }
+}
+
+internal fun EditProfileFragment.setupTemporarySports(sportsList: List<SportEntity>) {
+    val userSports = vm.userSports.value
+
+    sportsList.forEach { tempSport ->
+
+        if (!userSports.isNullOrEmpty()) {
+
+            val userSport = userSports.find {
+                it.sport == tempSport.name
+            }
+
+            if (userSport != null) {
+                sportsTemp[tempSport.name] =
+                    Sport(tempSport.name, true, Level.valueOf(userSport.level!!))
+            } else {
+                sportsTemp[tempSport.name] = Sport(tempSport.name, false, Level.NO_LEVEL)
+            }
+
+        } else {
+            sportsTemp[tempSport.name] = Sport(tempSport.name, false, Level.NO_LEVEL)
+        }
+    }
+
+    // * added to deal with a no-sense ChipGroup bug inherent to the last Chip *
+    sportsTemp["pad"] = Sport("pad", false, Level.NO_LEVEL)
+
+    sportsTemp.values.forEach { sport ->
+        setEditSportsField(sport)
+    }
+
+    // fills the sportChips
+    sportsInit()
+
+    // setup the chips listeners
+    setupChipsListeners()
+}
+
+internal fun EditProfileFragment.setupChipsListeners() {
+    // add listeners to the sports views
+    for ((sportName, sportChips) in sports) {
+        // register floating context menu for the actual level icons
+        registerForContextMenu(sportChips.actualLevelChip)
+        // remove long press listener
+        sportChips.actualLevelChip.setOnLongClickListener(null)
+
+        // add listener to the actual level chip
+        sportChips.actualLevelChip.setOnClickListener {
+            // update sport considered at the moment by the menu
+            consideredSport = sportName
+
+            // open the context menu to select a new sport level
+            requireActivity().openContextMenu(sportChips.actualLevelChip)
+        }
+
+        // add listener to the sport chip
+        sportChips.chip.setOnClickListener {
+            sportChipListener(sportName)
+        }
     }
 }
 
@@ -185,6 +253,9 @@ internal fun EditProfileFragment.saveInformationOnStorage() {
     vm.setUserLocation(location.text.toString())
     vm.setUserBio(bio.text.toString())
 
+    // update user sports
+    vm.setUserSports(sportsTemp.filter { it.value.selected }.map { it.value.toSportLevel() })
+
     // save profile and background pictures into the internal storage
     profilePictureBitmap?.let {
         savePictureOnInternalStorage(it, requireActivity().filesDir, "profilePicture.jpeg")
@@ -200,93 +271,6 @@ internal fun EditProfileFragment.saveInformationOnStorage() {
     // update db user information
     vm.updateDbUserInformation(1)
 }
-
-/*internal fun EditProfileFragment.loadDataFromStorage() {
-    // retrieve data from SharedPreferences
-    val sh = activity?.getSharedPreferences("it.polito.mad.lab2", AppCompatActivity.MODE_PRIVATE)
-    val jsonObjectProfile: JSONObject? = sh?.getString("profile", null)?.let { JSONObject(it) }
-
-    showToasty("info", requireContext(), "${vm.userFirstName.value} ${vm.userLastName.value}")
-
-    /* manage user info */
-
-    // retrieve data from the JSON object
-    val firstNameResume =
-        jsonObjectProfile?.getString("firstName") ?: getString(R.string.first_name)
-    val lastNameResume = jsonObjectProfile?.getString("lastName") ?: getString(R.string.last_name)
-    val usernameResume = jsonObjectProfile?.getString("username") ?: getString(R.string.username)
-    val genderResume =
-        Gender.valueOf(jsonObjectProfile?.getString("gender") ?: getString(R.string.male_gender))
-    val ageResume = jsonObjectProfile?.getString("age") ?: getString(R.string.user_age)
-    val locationResume =
-        jsonObjectProfile?.getString("location") ?: getString(R.string.user_location)
-    val bioResume = jsonObjectProfile?.getString("bio") ?: getString(R.string.user_bio)
-
-    // set EditText views
-    firstName.setText(firstNameResume)
-    lastName.setText(lastNameResume)
-    username.setText(usernameResume)
-    age.setText(ageResume)
-    location.setText(locationResume)
-    bio.setText(bioResume)
-
-    when (genderResume) {
-        Gender.Male -> genderRadioGroup.check(R.id.radio_male)
-        Gender.Female -> genderRadioGroup.check(R.id.radio_female)
-        Gender.Other -> genderRadioGroup.check(R.id.radio_other)
-    }
-
-    // set temporary variables
-    firstNameTemp = firstNameResume
-    lastNameTemp = lastNameResume
-    usernameTemp = usernameResume
-    radioGenderCheckedTemp = genderResume
-    ageTemp = ageResume
-    locationTemp = locationResume
-    bioTemp = bioResume
-
-    /* manage user sports */
-
-    // set hard coded sports the first time the app is launched
-    if (jsonObjectProfile == null)
-        setHardcodedSportFields(*getHardcodedSports())
-    else {
-        // retrieve sports from storage
-        val sportJson = jsonObjectProfile.getJSONObject("sports")
-        sportsTemp.keys.forEach { sportName ->
-            val sportResume = Sport.from(sportName, sportJson)
-            setEditSportsField(sportResume)
-        }
-    }
-}*/
-
-/*
-internal fun EditProfileFragment.saveInformationOnStorage() {
-    // the temporary information is *serialized* firstly into a JSONObject
-    // and then into the sharedPreferences file with the key *profile*
-    val sh = activity?.getSharedPreferences("it.polito.mad.lab2", AppCompatActivity.MODE_PRIVATE)
-    val editor = sh?.edit()
-
-    val jsonObjectProfile = JSONObject()
-
-    // serializing the temporary profile variables into the JSONObject
-    jsonObjectProfile.put("firstName", firstNameTemp)
-    jsonObjectProfile.put("lastName", lastNameTemp)
-    jsonObjectProfile.put("username", usernameTemp)
-    jsonObjectProfile.put("age", ageTemp)
-    jsonObjectProfile.put("location", locationTemp)
-    jsonObjectProfile.put("bio", bioTemp)
-    jsonObjectProfile.put("gender", radioGenderCheckedTemp?.name)
-
-    // save sports as a JsonObject
-    val sportJson = JSONObject()
-    sportsTemp.forEach { (_, sport) -> sport.saveAsJson(sportJson) }
-    jsonObjectProfile.put("sports", sportJson)
-
-    // apply changes
-    editor?.putString("profile", jsonObjectProfile.toString())
-    editor?.apply()
-}*/
 
 internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatcher {
     // implement and return the TextWatcher interface
@@ -400,7 +384,7 @@ private fun EditProfileFragment.createEditSportChip(sportName: String, parent: V
     // inflate generic sport chip
     val sportChip = layoutInflater.inflate(R.layout.edit_profile_chip, parent, false) as Chip
     // customize it for the provided sport
-    sportChip.text = extendedNameOf(sportName)
+    sportChip.text = sportName
 
     return sportChip
 }
@@ -497,11 +481,5 @@ private fun EditProfileFragment.setEditSportsField(sport: Sport) {
                 R.dimen.chip_icon_size
         )
         sportGroup.actualLevelChip.visibility = Chip.VISIBLE
-    }
-}
-
-private fun EditProfileFragment.setHardcodedSportFields(vararg hardcodedSports: Sport) {
-    hardcodedSports.forEach {
-        setEditSportsField(it)
     }
 }
