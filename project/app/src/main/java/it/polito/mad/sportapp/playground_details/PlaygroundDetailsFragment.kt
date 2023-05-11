@@ -99,6 +99,12 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
                 initReviewList()
             }
         }
+
+        viewModel.yourReview.observe(viewLifecycleOwner) {
+            if(viewModel.yourReview.value?.id != 0){
+                initYourReview()
+            }
+        }
     }
 
     override fun onResume() {

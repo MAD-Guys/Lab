@@ -96,7 +96,12 @@ class Repository @Inject constructor(
     }
 
     fun updateReview(review: Review) {
-        review.lastUpdate = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME).toString()
+        val now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME).toString()
+        review.lastUpdate = now
+        if(review.id == 0){
+            review.timestamp = now
+            reviewDao.insert(review)
+        }
         reviewDao.update(review)
     }
 

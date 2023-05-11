@@ -55,6 +55,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
 
         val dbThread = Thread {
             repository.updateReview(updatedReview)
+            _yourReview.postValue(repository.getReviewByUserIdAndPlaygroundId(1, _playground.value!!.playgroundId))
         }
 
         // start db thread
