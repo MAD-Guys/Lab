@@ -20,7 +20,6 @@ data class SportLevel(
 
 )
 
-
 data class DetailedReservation(
     @ColumnInfo(name = "id")
     val id: Int,

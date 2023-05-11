@@ -153,7 +153,7 @@ private fun initDb(INSTANCE: AppDatabase?) {
                 ),
 
                 )
-            it?.sportDao()?.insertAll(
+            /*it?.sportDao()?.insertAll(
                 Sport(0, "Tennis", 4),
                 Sport(0, "Table Tennis", 2),
                 Sport(0, "Padel", 4),
@@ -164,7 +164,7 @@ private fun initDb(INSTANCE: AppDatabase?) {
                 Sport(0, "5-a-side-soccer", 10),
                 Sport(0, "8-a-side-soccer", 16),
                 Sport(0, "Mini Golf", 2),
-            )
+            )*/
             it?.playgroundSportDao()?.insert(
                 PlaygroundSport(0, 1, 1, "Tennis Court", 12.0F)
             )

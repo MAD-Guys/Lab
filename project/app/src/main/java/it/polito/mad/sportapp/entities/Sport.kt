@@ -8,6 +8,8 @@ data class Sport(
     val id: Int,
     @ColumnInfo(name = "name")
     val name: String,
+    @ColumnInfo(name = "emoji")
+    val emoji: String,
     @ColumnInfo(name = "max_players")
     val maxPlayers: Int
 ) {

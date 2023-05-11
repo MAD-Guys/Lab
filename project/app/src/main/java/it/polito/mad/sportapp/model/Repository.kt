@@ -88,12 +88,6 @@ class Repository @Inject constructor(
         return review
     }
 
-    fun insertReview(review: Review) {
-        val isoFormat = DateTimeFormatter.ISO_DATE_TIME
-        review.lastUpdate = LocalDateTime.now().format(isoFormat).toString()
-        review.timestamp = LocalDateTime.now().format(isoFormat).toString()
-        reviewDao.insert(review)
-    }
 
     fun updateReview(review: Review) {
         val now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME).toString()
@@ -102,7 +96,9 @@ class Repository @Inject constructor(
             review.timestamp = now
             reviewDao.insert(review)
         }
-        reviewDao.update(review)
+        else{
+            reviewDao.update(review)
+        }
     }
 
     // Reservation methods
