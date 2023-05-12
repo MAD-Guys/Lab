@@ -175,14 +175,14 @@ internal fun clearStorageFiles(directory: File, regexp: String) {
 
 /* showing toast according to its type */
 
-fun showToasty(type: String, context: Context, message: String) {
+fun showToasty(type: String, context: Context, message: String, length:Int = Toasty.LENGTH_SHORT) {
     when (type) {
         "success" -> Toasty.custom(
             context, message,
             ContextCompat.getDrawable(context, R.drawable.baseline_check_24),
             ContextCompat.getColor(context, R.color.toast_success),
             ContextCompat.getColor(context, R.color.white),
-            Toasty.LENGTH_SHORT, true, true
+            length, true, true
         ).show()
 
         "error" -> Toasty.custom(
@@ -190,7 +190,7 @@ fun showToasty(type: String, context: Context, message: String) {
             ContextCompat.getDrawable(context, R.drawable.outline_close_24),
             ContextCompat.getColor(context, R.color.toast_error),
             ContextCompat.getColor(context, R.color.white),
-            Toasty.LENGTH_SHORT, true, true
+            length, true, true
         ).show()
 
         "info" -> Toasty.custom(
@@ -198,7 +198,7 @@ fun showToasty(type: String, context: Context, message: String) {
             ContextCompat.getDrawable(context, R.drawable.outline_info_24),
             ContextCompat.getColor(context, R.color.toast_info),
             ContextCompat.getColor(context, R.color.white),
-            Toasty.LENGTH_SHORT, true, true
+            length, true, true
         ).show()
 
         "warning" -> Toasty.custom(
@@ -206,7 +206,7 @@ fun showToasty(type: String, context: Context, message: String) {
             ContextCompat.getDrawable(context, R.drawable.baseline_warning_24),
             ContextCompat.getColor(context, R.color.toast_warning),
             ContextCompat.getColor(context, R.color.white),
-            Toasty.LENGTH_SHORT, true, true
+            length, true, true
         ).show()
     }
 }

@@ -17,6 +17,9 @@ class ReservationManagementViewModel @Inject constructor(
     internal var reservationManagementMode: ReservationManagementMode? = null
 
     // reservation data received from previous view
+    internal var originalReservationBundle: Bundle? = null
+
+    // dynamic reservation data selected by the user
     private var _reservationBundle = MutableLiveData(Bundle())
     internal var reservationBundle: LiveData<Bundle> = _reservationBundle
 
@@ -24,6 +27,6 @@ class ReservationManagementViewModel @Inject constructor(
         _reservationBundle.value = bundle
     }
 
-    fun isStartTimeSet(): Boolean = reservationBundle.value?.getString("start_time") != null
-    fun isEndTimeSet()  : Boolean = reservationBundle.value?.getString("end_time") != null
+    fun isStartSlotSet(): Boolean = reservationBundle.value?.getString("start_slot") != null
+    fun isEndSlotSet()  : Boolean = reservationBundle.value?.getString("end_slot") != null
 }

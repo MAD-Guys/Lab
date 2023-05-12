@@ -23,13 +23,7 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
     internal val defaultMonth = YearMonth.now()
 
     // all sports
-    private val _sports = MutableLiveData<List<Sport>>().also {
-        // call the db from a secondary thread
-        Thread {
-            val allSports = repository.getAllSports().sortedBy { it.name }
-            it.postValue(allSports)
-        }.start()
-    }
+    private val _sports = MutableLiveData<List<Sport>>()
     val sports: LiveData<List<Sport>> = _sports
 
     // selected sport
@@ -61,11 +55,26 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
     internal val availablePlaygroundsPerSlot:
             LiveData<MutableMap<LocalDate, Map<LocalDateTime, List<DetailedPlaygroundSport>>>> = _availablePlaygroundsPerSlot
 
-    fun setSelectedDate(newSelectedDate: LocalDate?) {
+
+    internal fun loadAllSportsAsync(sportToShow: Int?) {
+        // call the db from a secondary thread
+        Thread {
+            var allSports = repository.getAllSports().sortedBy { it.name }
+
+            // restrict the loaded sports to one only
+            if(sportToShow != null)
+                allSports = allSports.filter { sport -> sport.id == sportToShow }
+
+            _sports.postValue(allSports)
+        }.start()
+    }
+
+    fun setSelectedDate(selectedDate: LocalDate?) {
         val tempPreviousSelectedDate = this.selectedDate.value
+        val newSelectedDate = selectedDate ?: LocalDate.now()
 
         // default selected date is the current date
-        this._selectedDate.value = newSelectedDate ?: LocalDate.now()
+        this._selectedDate.value = newSelectedDate
         // update previous selected date
         this._previousSelectedDate.value = tempPreviousSelectedDate
     }

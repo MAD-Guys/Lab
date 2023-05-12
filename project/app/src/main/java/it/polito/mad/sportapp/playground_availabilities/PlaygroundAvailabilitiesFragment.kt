@@ -5,16 +5,16 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.view.CalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.playground_availabilities.recycler_view.PlaygroundAvailabilitiesAdapter
-import it.polito.mad.sportapp.reservation_management.ReservationManagementMode
 import it.polito.mad.sportapp.reservation_management.ReservationManagementViewModel
-import java.time.LocalDateTime
 
 
 @AndroidEntryPoint
@@ -34,16 +34,19 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
     internal lateinit var selectedSportSpinner : Spinner
     internal lateinit var selectedSportSpinnerAdapter: ArrayAdapter<Sport>
 
-    // recycler view adapter
+    // recycler view
+    internal var playgroundAvailabilitiesRecyclerView: RecyclerView? = null
     internal lateinit var playgroundAvailabilitiesAdapter: PlaygroundAvailabilitiesAdapter
+
+    internal var sportIdToShow: Int? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // determine if we are in 'add mode' or in 'edit mode' (or none)
-        reservationVM.reservationManagementMode = ReservationManagementMode.from(
-            arguments?.getString("mode")
-        )
+        /* add/edit mode setup */
+        this.addOrEditModeSetup()
+
+        playgroundsVM.loadAllSportsAsync(sportIdToShow)
 
         /* init app bar and menu */
         this.initAppBar()
@@ -75,24 +78,29 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
 
         // * Manage add/edit mode *
 
-        /* (if necessary) switch to add/edit mode */
-        reservationVM.reservationManagementMode?.let { _ ->
-            // retrieve the reservation data to edit
-            arguments?.getBundle("reservation")?.let {
-                reservationVM.setReservationBundle(it)
-            }
-
+        if (reservationVM.reservationManagementMode != null) {
+            // set reservation selection observer
             reservationVM.reservationBundle.observe(viewLifecycleOwner) { newBundle ->
-                // change selected date
-                newBundle.getString("start_time")?.let {
-                    val startTime = LocalDateTime.parse(it)
-                    playgroundsVM.setSelectedDate(startTime.toLocalDate())
+                // update slots selections
+                playgroundAvailabilitiesAdapter.reservationBundle = newBundle
 
-                    playgroundAvailabilitiesAdapter.reservationBundle = newBundle
-                    playgroundAvailabilitiesAdapter.notifyDataSetChanged()
-                }
+                // refresh recycler view
+                playgroundAvailabilitiesAdapter.smartUpdatePlaygroundAvailabilities(
+                    playgroundsVM.getAvailablePlaygroundsOnSelectedDate()
+                )
+
+                // check if at least a slot has been selected
+                addReservationSlotButton?.icon = AppCompatResources.getDrawable(
+                    requireContext(),
+                    if(newBundle.getString("start_slot") != null)
+                    // a slot has been selected -> set white icon
+                        R.drawable.baseline_more_time_24
+                    else // no slot is still selected -> set blurred icon
+                        R.drawable.baseline_more_time_24_blurred
+                )
             }
 
+            /* (if necessary) switch to add/edit mode */
             this.switchToAddOrEditMode()
         }
     }

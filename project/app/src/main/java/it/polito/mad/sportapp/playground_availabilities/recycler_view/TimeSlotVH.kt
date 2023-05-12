@@ -1,5 +1,6 @@
 package it.polito.mad.sportapp.playground_availabilities.recycler_view
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
@@ -7,19 +8,25 @@ import android.widget.TextView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
 import it.polito.mad.sportapp.reservation_management.ReservationManagementMode
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class TimeSlotVH(
     val view: View,
     private val navigateToPlayground: (Int) -> Unit,
-    private val reservationManagementMode: ReservationManagementMode?
+    private val reservationManagementMode: ReservationManagementMode?,
+    private val reservationBundle: Bundle?,
+    private val setReservationBundle: (Bundle) -> Unit
 ) : AbstractTimeSlotVH(view)
 {
     private val startTimeSlotText = view.findViewById<TextView>(R.id.start_time_slot)
     private val endTimeSlotText = view.findViewById<TextView>(R.id.end_time_slot)
     private val availablePlaygroundsContainer =
         view.findViewById<LinearLayout>(R.id.available_playgrounds_container)
+
+    private lateinit var slot: LocalDateTime
+    private lateinit var slotDuration: Duration
 
     init {
         if (reservationManagementMode != null) {
@@ -28,7 +35,10 @@ class TimeSlotVH(
         }
     }
 
-    fun setTimeSlotTimes(start: LocalDateTime, end: LocalDateTime) {
+    fun setTimeSlotTimes(start: LocalDateTime, end: LocalDateTime, slotDuration: Duration) {
+        slot = start
+        this.slotDuration = slotDuration
+
         startTimeSlotText.text = start.format(DateTimeFormatter.ofPattern("HH:mm"))
         endTimeSlotText.text = end.format(DateTimeFormatter.ofPattern("HH:mm"))
     }
@@ -42,7 +52,7 @@ class TimeSlotVH(
             val playgroundSkeletonBox = when {
                 !playground.available -> R.layout.unavailable_playground_item
                 selectionState == PlaygroundAvailabilitiesAdapter.SelectionState.SELECTED -> R.layout.selected_playground_item
-                selectionState == PlaygroundAvailabilitiesAdapter.SelectionState.SELECTABLE -> R.layout.available_selectable_playground_item
+                selectionState == PlaygroundAvailabilitiesAdapter.SelectionState.SELECTABLE -> R.layout.selectable_playground_item
                 selectionState == PlaygroundAvailabilitiesAdapter.SelectionState.UNSELECTED -> R.layout.unselected_playground_item
                 else -> throw Exception("Unexpected state caught")
             }
@@ -66,11 +76,52 @@ class TimeSlotVH(
 
             // attach listener to navigate to that playground
             playgroundBox.setOnClickListener {
-                if (reservationManagementMode == null && playground.available)
-                    navigateToPlayground(playground.playgroundId)
-                else {
-                    // TODO: manage edit/add mode
+                if(!playground.available) return@setOnClickListener
 
+                if (reservationManagementMode == null) {
+                    navigateToPlayground(playground.playgroundId)
+                    return@setOnClickListener
+                }
+
+                // * add or edit mode *
+                reservationBundle?.let { bundle ->
+                    // (1) this is the very first selected slot (e.g. at the beginning of add mode)
+                    if (bundle.getString("start_slot") == null) {
+                        bundle.putString("start_slot", slot.toString())
+                        bundle.putInt("playground_id", playground.playgroundId)
+                        bundle.putInt("sport_id", playground.sportId)
+                    }
+                    // (2) one (start) slot is already selected ->
+                    //      check if to either extend the same selection or restart a new one
+                    else if (bundle.getString("end_slot") == null) {
+                        // if user re-click to the same slot (of the same playground), nothing happens
+                        if(bundle.getString("start_slot") == slot.toString() &&
+                           bundle.getInt("playground_id") == playground.playgroundId)
+                            return@let
+
+                        if(selectionState == PlaygroundAvailabilitiesAdapter.SelectionState.SELECTABLE) {
+                            // extend selection
+                            bundle.putString("end_slot", slot.toString())
+                        }
+                        else {
+                            // restart selection
+                            bundle.putString("start_slot", slot.toString())
+                            bundle.remove("end_slot")
+                            bundle.putInt("playground_id", playground.playgroundId)
+                            bundle.putInt("sport_id", playground.sportId)
+                        }
+                    }
+                    // (3) start and end slots were already selected -> ...
+                    else {
+                        // ...restart selection
+                        bundle.putString("start_slot", slot.toString())
+                        bundle.remove("end_slot")
+                        bundle.putInt("playground_id", playground.playgroundId)
+                        bundle.putInt("sport_id", playground.sportId)
+                    }
+
+                    // update bundle live data to refresh everything
+                    setReservationBundle(bundle)
                 }
             }
 

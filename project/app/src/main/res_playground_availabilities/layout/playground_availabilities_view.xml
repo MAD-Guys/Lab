@@ -95,14 +95,6 @@
                 android:textAlignment="center"
                 tools:ignore="TouchTargetSizeCheck,DuplicateSpeakableTextCheck" />
 
-            <!-- (for future use)
-            <Spinner
-                android:id="@+id/selected_sport_center_spinner"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:visibility="invisible" />
-            -->
         </LinearLayout>
 
         <!-- Calendar -->

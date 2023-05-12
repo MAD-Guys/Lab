@@ -58,6 +58,9 @@ data class DetailedReservation(
     var startLocalDateTime: LocalDateTime = LocalDateTime.parse(startDateTime)
 
     @Ignore
+    var endLocalDateTime: LocalDateTime = LocalDateTime.parse(endDateTime)
+
+    @Ignore
     var endTime: LocalTime = LocalTime.parse(endDateTime.substring(11, 19))
 
     @Ignore

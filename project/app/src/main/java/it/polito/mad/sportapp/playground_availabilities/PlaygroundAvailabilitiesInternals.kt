@@ -23,17 +23,47 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.kizitonwose.calendar.core.CalendarMonth
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.view.MonthHeaderFooterBinder
+import es.dmoral.toasty.Toasty
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.playground_availabilities.calendar_utils.CalendarDayBinder
 import it.polito.mad.sportapp.playground_availabilities.calendar_utils.MonthViewContainer
 import it.polito.mad.sportapp.playground_availabilities.recycler_view.PlaygroundAvailabilitiesAdapter
+import it.polito.mad.sportapp.reservation_management.ReservationManagementMode
 import it.polito.mad.sportapp.showToasty
 import java.time.DayOfWeek
+import java.time.Duration
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 import kotlin.math.min
+
+/* add/edit mode setup */
+internal fun PlaygroundAvailabilitiesFragment.addOrEditModeSetup() {
+    // determine if we are in 'add mode' or in 'edit mode' (or none)
+    reservationVM.reservationManagementMode = ReservationManagementMode.from(
+        arguments?.getString("mode")
+    )?.also { mode ->
+        // * if so, save the received reservation bundle  *
+        arguments?.getBundle("reservation")?.let { bundle ->
+            reservationVM.setReservationBundle(bundle)
+
+            if (mode == ReservationManagementMode.EDIT_MODE)
+                reservationVM.originalReservationBundle = bundle
+
+            // change selected date to the one of the selected slot, if there
+            bundle.getString("start_slot")?.let {
+                val startSlot = LocalDateTime.parse(it)
+                playgroundsVM.setSelectedDate(startSlot.toLocalDate())
+            }
+        }
+    }
+
+    // restrict the sport to show (just the one of the reservation to be edited, if any)
+    sportIdToShow = reservationVM.originalReservationBundle?.getInt("sport_id")
+}
+
 
 /* action bar and menu init */
 internal fun PlaygroundAvailabilitiesFragment.initAppBar() {
@@ -69,9 +99,10 @@ internal fun PlaygroundAvailabilitiesFragment.initMenu() {
                 // add/edit mode -> show add slot button
                 addReservationSlotButton!!.isVisible = true
 
-                if (!reservationVM.isStartTimeSet() || !reservationVM.isEndTimeSet())
+                if (!reservationVM.isStartSlotSet()) {
                     addReservationSlotButton?.icon = AppCompatResources.getDrawable(requireContext(),
                         R.drawable.baseline_more_time_24_blurred)
+                }
             }
         }
 
@@ -81,7 +112,8 @@ internal fun PlaygroundAvailabilitiesFragment.initMenu() {
                 true
             }
             R.id.add_reservation_slot_button -> {
-                if(reservationVM.isStartTimeSet() && reservationVM.isEndTimeSet())
+                // navigate to next step (add/edit equipments) only if at least the start slot is selected
+                if(reservationVM.isStartSlotSet())
                     navigateToManageEquipments()
                 true
             }
@@ -95,8 +127,32 @@ private fun PlaygroundAvailabilitiesFragment.navigateToAddReservation() {
     findNavController().navigate(R.id.action_playgroundAvailabilitiesFragment_self)
 }
 private fun PlaygroundAvailabilitiesFragment.navigateToManageEquipments() {
-    // TODO
+    val selectedReservationInfo = reservationVM.reservationBundle.value
+
+    if (selectedReservationInfo == null) {
+        showToasty("error", requireContext(),
+            "Error: cannot go to manage equipments without having selected a reservation",
+            Toasty.LENGTH_LONG)
+        return
+    }
+
+    val params = selectedReservationInfo.also {
+        if(it.getString("end_slot") == null) {
+            // just one slot has been selected -> put manually the end one
+            val startSlot = LocalDateTime.parse(it.getString("start_slot"))
+            val slotDuration = Duration.ofMinutes(it.getInt("slot_duration_mins").toLong())
+            val endSlot = startSlot.plus(slotDuration)
+
+            it.putString("end_slot", endSlot.toString())
+        }
+    }
+
     showToasty("info", requireContext(), "Go to edit/add equipments")
+
+
+    // TODO
+    // findNavController().navigate(
+    //     R.id.action_playgroundAvailabilitiesFragment_to_ReservationEquipmentFragment, params)
 }
 
 
@@ -186,14 +242,25 @@ internal fun PlaygroundAvailabilitiesFragment.initSelectedSportSpinner() {
     // create the spinner adapter
     selectedSportSpinnerAdapter = ArrayAdapter(
         requireContext(),
-        android.R.layout.simple_spinner_item,
+        R.layout.simple_spinner_item,
         playgroundsVM.sports.value ?: mutableListOf()
     ).also {
         it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
     }
 
-    // mount the adapter in the selected sport spinner
+    // initialize sport Spinner
     selectedSportSpinner = requireView().findViewById(R.id.selected_sport_spinner)
+
+    // if in edit mode, restrict it to contain one only sport
+    if(reservationVM.reservationManagementMode == ReservationManagementMode.EDIT_MODE) {
+        // set it as unclickable (and remove selection arrow)
+
+        selectedSportSpinner.isEnabled = false
+        selectedSportSpinner.isClickable = false
+        selectedSportSpinner.setBackgroundResource(R.drawable.spinner_one_entry_only_bg)
+    }
+
+    // mount the adapter in the selected sport spinner
     selectedSportSpinner.adapter = selectedSportSpinnerAdapter
 
     // specify the spinner callback to call at each user selection
@@ -269,8 +336,9 @@ internal fun PlaygroundAvailabilitiesFragment.initAvailablePlaygroundsObserver()
             playgroundsVM.getAvailablePlaygroundsOnSelectedDate()
         )
 
-        if(it.isNotEmpty())
+        if(it.isNotEmpty()) {
             playgroundsVM.setAvailablePlaygroundsLoaded()
+        }
     }
 }
 
@@ -297,8 +365,7 @@ internal fun PlaygroundAvailabilitiesFragment.initSelectedSportObservers() {
 
 /* Playground availabilities recycler view */
 internal fun PlaygroundAvailabilitiesFragment.setupAvailablePlaygroundsRecyclerView() {
-    val playgroundAvailabilitiesRecyclerView =
-        requireView().findViewById<RecyclerView>(R.id.playground_availabilities_rv)
+    playgroundAvailabilitiesRecyclerView = requireView().findViewById(R.id.playground_availabilities_rv)
 
     // init adapter
     playgroundAvailabilitiesAdapter = PlaygroundAvailabilitiesAdapter(
@@ -306,7 +373,9 @@ internal fun PlaygroundAvailabilitiesFragment.setupAvailablePlaygroundsRecyclerV
         playgroundsVM.selectedDate.value ?: playgroundsVM.defaultDate,
         playgroundsVM.slotDuration,
         reservationVM.reservationManagementMode,
-        reservationVM.reservationBundle.value
+        reservationVM.originalReservationBundle,
+        reservationVM.reservationBundle.value,
+        reservationVM::setReservationBundle,
     ) { playgroundId ->
         val params = bundleOf(
             "id_playground" to playgroundId
@@ -316,7 +385,7 @@ internal fun PlaygroundAvailabilitiesFragment.setupAvailablePlaygroundsRecyclerV
     }
 
     // init recycler view
-    playgroundAvailabilitiesRecyclerView.apply {
+    playgroundAvailabilitiesRecyclerView!!.apply {
         layoutManager = LinearLayoutManager(
             requireContext(), RecyclerView.VERTICAL, false)
         adapter = playgroundAvailabilitiesAdapter
@@ -364,9 +433,6 @@ internal fun PlaygroundAvailabilitiesFragment.switchToAddOrEditMode() {
     // hide bottom bar
     val bottomBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation_bar)
     bottomBar.visibility = View.GONE
-
-    // reset recycler view adapter flag
-    playgroundAvailabilitiesAdapter.setEditableReservationSlotsAsAvailable()
 }
 
 /* utils */

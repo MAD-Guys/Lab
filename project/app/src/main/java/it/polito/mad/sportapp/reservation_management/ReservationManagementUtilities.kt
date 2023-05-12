@@ -1,7 +1,11 @@
 package it.polito.mad.sportapp.reservation_management
 
+import android.os.Bundle
+import androidx.core.os.bundleOf
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.entities.DetailedReservation
 import java.lang.IllegalArgumentException
+import java.time.Duration
 
 enum class ReservationManagementMode(
     val appBarTitle: String,
@@ -25,6 +29,20 @@ enum class ReservationManagementMode(
             catch (e: IllegalArgumentException) {
                 null
             }
+        }
+    }
+}
+
+class ReservationManagementUtilities {
+    companion object {
+        fun createBundleFrom(reservation: DetailedReservation?, slotDuration: Duration): Bundle {
+            return bundleOf(
+                "playground_id" to reservation?.playgroundId,
+                "start_slot" to reservation?.startLocalDateTime?.toString(),
+                "end_slot" to reservation?.endLocalDateTime?.minus(slotDuration)?.toString(),
+                "sport_id" to reservation?.sportId,
+                "slot_duration_mins" to 30
+            )
         }
     }
 }
