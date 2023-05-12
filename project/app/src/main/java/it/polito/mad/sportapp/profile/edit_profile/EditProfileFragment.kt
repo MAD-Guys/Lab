@@ -31,7 +31,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.clearStorageFiles
 import it.polito.mad.sportapp.fastblur
-import it.polito.mad.sportapp.getPictureFromInternalStorage
 import it.polito.mad.sportapp.profile.Gender
 import it.polito.mad.sportapp.profile.Level
 import it.polito.mad.sportapp.profile.ProfileViewModel
@@ -62,21 +61,7 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
     internal val vm by activityViewModels<ProfileViewModel>()
 
     // Sports temporary state
-    internal var sportsTemp = mutableMapOf(
-        // 10 values initially set according to the values hard coded in ShowProfileActivity.kt
-        Pair("basket", Sport("basket", false, Level.NO_LEVEL)),
-        Pair("soccer11", Sport("soccer11", false, Level.NO_LEVEL)),
-        Pair("soccer5", Sport("soccer5", false, Level.NO_LEVEL)),
-        Pair("soccer8", Sport("soccer8", false, Level.NO_LEVEL)),
-        Pair("tennis", Sport("tennis", false, Level.NO_LEVEL)),
-        Pair("tableTennis", Sport("tableTennis", false, Level.NO_LEVEL)),
-        Pair("volleyball", Sport("volleyball", false, Level.NO_LEVEL)),
-        Pair("beachVolley", Sport("beachVolley", false, Level.NO_LEVEL)),
-        Pair("padel", Sport("padel", false, Level.NO_LEVEL)),
-        Pair("miniGolf", Sport("miniGolf", false, Level.NO_LEVEL)),
-        // * added to deal with a no-sense ChipGroup bug inherent to the last Chip *
-        Pair("pad", Sport("pad", false, Level.NO_LEVEL))
-    )
+    internal var sportsTemp: MutableMap<String, Sport> = mutableMapOf()
 
     // used to distinguish between tapped sports
     internal lateinit var consideredSport: String
@@ -94,8 +79,8 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
     internal val sports = HashMap<String, SportChips>()
 
     // Profile picture
-    private lateinit var profilePicture: ImageView
-    private lateinit var backgroundProfilePicture: ImageView
+    internal lateinit var profilePicture: ImageView
+    internal lateinit var backgroundProfilePicture: ImageView
     internal var profilePictureBitmap: Bitmap? = null
     internal var backgroundProfilePictureBitmap: Bitmap? = null
 
@@ -205,7 +190,8 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
         menuInit()
 
         // hide bottom bar
-        val bottomBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation_bar)
+        val bottomBar =
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation_bar)
         bottomBar.visibility = View.GONE
 
         // setup back button callback
@@ -222,6 +208,9 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
         profilePicture = view.findViewById(R.id.profile_picture)
         backgroundProfilePicture = view.findViewById(R.id.background_profile_picture)
 
+        // setup views observers
+        observersSetup()
+
         // initialize options to crop the profile picture
         cropImageOptions = CropImageOptions(
             guidelines = CropImageView.Guidelines.ON,
@@ -235,23 +224,8 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
             aspectRatioY = 1
         )
 
-        // fills the sportChips
-        this.sportsInit()
-
-        /* manage profile and background picture */
-
-        // retrieve profile picture and update it with the one uploaded by the user, if any
-        getPictureFromInternalStorage(requireActivity().filesDir, "profilePicture.jpeg")?.let {
-            profilePicture.setImageBitmap(it)
-        }
-
-        // retrieve background picture and update it with the one uploaded by the user, if any
-        getPictureFromInternalStorage(
-            requireActivity().filesDir,
-            "backgroundProfilePicture.jpeg"
-        )?.let {
-            backgroundProfilePicture.setImageBitmap(it)
-        }
+        // load profile pictures from storage
+        loadPicturesFromInternalStorage()
 
         /* manage listeners */
 
@@ -276,6 +250,7 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
         bio.addTextChangedListener(textListenerInit("bio"))
 
         genderRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+
             radioGenderCheckedTemp = when (checkedId) {
                 R.id.radio_male -> Gender.Male
                 R.id.radio_female -> Gender.Female
@@ -283,42 +258,19 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
                 else -> throw RuntimeException("An unexpected Gender Button id has been detected")
             }
         }
-
-        // add listeners to the sports views
-        for ((sportName, sportChips) in sports) {
-            // register floating context menu for the actual level icons
-            registerForContextMenu(sportChips.actualLevelChip)
-            // remove long press listener
-            sportChips.actualLevelChip.setOnLongClickListener(null)
-
-            // add listener to the actual level chip
-            sportChips.actualLevelChip.setOnClickListener {
-                // update sport considered at the moment by the menu
-                consideredSport = sportName
-
-                // open the context menu to select a new sport level
-                requireActivity().openContextMenu(sportChips.actualLevelChip)
-            }
-
-            // add listener to the sport chip
-            sportChips.chip.setOnClickListener {
-                sportChipListener(sportName)
-            }
-        }
-
     }
 
     override fun onResume() {
         super.onResume()
 
-        // load user data from SharedPreferences
-        this.loadDataFromStorage()
+        // initialize temporary variables
+        initializeTempVariables()
     }
 
     override fun onPause() {
         super.onPause()
 
-        // save the temporary profile variables into the sharedPreferences file
+        // save the user information on internal storage
         saveInformationOnStorage()
     }
 

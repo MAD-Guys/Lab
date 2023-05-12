@@ -2,45 +2,18 @@ package it.polito.mad.sportapp.profile
 
 import com.google.android.material.chip.Chip
 import it.polito.mad.sportapp.R
-import org.json.JSONObject
+import it.polito.mad.sportapp.entities.SportLevel
 
 /* Sport utilities */
 
-internal data class Sport(val name: String, var selected: Boolean, var level: Level) {
+internal data class Sport(val id: Int, val name: String, var selected: Boolean, var level: Level) {
     companion object {
-        fun from(name: String, jsonObject: JSONObject): Sport =
-            jsonObject.getJSONObject(name).let {
-                Sport(name, it.getBoolean("selected"), Level.of(it.getInt("level")))
-            }
+        fun from(id: Int, name: String, level: String): Sport =
+            Sport(id, name, true, Level.valueOf(level.uppercase()))
     }
 
-    fun saveAsJson(jsonObject: JSONObject) {
-        val sportJson = JSONObject()
-        sportJson.put("selected", this.selected)
-        sportJson.put("level", this.level.ordinal)  // "level" -> 0/1/2/3/4
-        jsonObject.put(this.name, sportJson)
-    }
+    fun toSportLevel(): SportLevel = SportLevel(id, name, level.name)
 }
-
-internal fun extendedNameOf(sportName: String): String = when(sportName) {
-    "basket" -> "Basket"
-    "soccer5" -> "5-a-side Soccer"
-    "soccer8" -> "8-a-side Soccer"
-    "soccer11" -> "11-a-side Soccer"
-    "tennis" -> "Tennis"
-    "tableTennis" -> "Table Tennis"
-    "volleyball" -> "Volleyball"
-    "beachVolley" -> "Beach Volley"
-    "padel" -> "Padel"
-    "miniGolf" -> "Mini Golf"
-    "swimming" -> "Swimming"
-    else -> "????"
-}
-
-internal fun getHardcodedSports() = arrayOf(
-    Sport("basket", true, Level.EXPERT),
-    Sport("tennis", true, Level.BEGINNER)
-)
 
 internal class SportChips(
     val name: String, val chip: Chip, val actualLevelChip: Chip

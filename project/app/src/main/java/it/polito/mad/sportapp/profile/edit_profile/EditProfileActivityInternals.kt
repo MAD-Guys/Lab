@@ -14,7 +14,6 @@ import android.view.ViewGroup.LayoutParams
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
 import androidx.core.view.MenuHost
@@ -24,16 +23,15 @@ import androidx.lifecycle.Lifecycle
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.getPictureFromInternalStorage
 import it.polito.mad.sportapp.profile.Gender
 import it.polito.mad.sportapp.profile.Level
 import it.polito.mad.sportapp.profile.Sport
 import it.polito.mad.sportapp.profile.SportChips
-import it.polito.mad.sportapp.profile.extendedNameOf
-import it.polito.mad.sportapp.profile.getHardcodedSports
+import it.polito.mad.sportapp.entities.Sport as SportEntity
 import it.polito.mad.sportapp.savePictureOnInternalStorage
 import it.polito.mad.sportapp.setProfilePictureSize
 import it.polito.mad.sportapp.showToasty
-import org.json.JSONObject
 import java.io.File
 
 // manage menu item selection
@@ -87,6 +85,116 @@ internal fun EditProfileFragment.menuInit() {
     }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 }
 
+internal fun EditProfileFragment.observersSetup() {
+
+    // sports list observer
+    vm.sportsList.observe(viewLifecycleOwner) { sportsList ->
+        if (sportsList.isNotEmpty()) {
+            setupTemporarySports(sportsList)
+        }
+    }
+
+    // user first name observer
+    vm.userFirstName.observe(viewLifecycleOwner) {
+        firstName.setText(it)
+    }
+
+    // user last name observer
+    vm.userLastName.observe(viewLifecycleOwner) {
+        lastName.setText(it)
+    }
+
+    // user username observer
+    vm.userUsername.observe(viewLifecycleOwner) {
+        username.setText(it)
+    }
+
+    // user gender observer
+    vm.userGender.observe(viewLifecycleOwner) {
+        when (Gender.valueOf(it)) {
+            Gender.Male -> genderRadioGroup.check(R.id.radio_male)
+            Gender.Female -> genderRadioGroup.check(R.id.radio_female)
+            Gender.Other -> genderRadioGroup.check(R.id.radio_other)
+        }
+    }
+
+    // user age observer
+    vm.userAge.observe(viewLifecycleOwner) {
+        age.setText(it)
+    }
+
+    // user location observer
+    vm.userLocation.observe(viewLifecycleOwner) {
+        location.setText(it)
+    }
+
+    // user bio observer
+    vm.userBio.observe(viewLifecycleOwner) {
+        bio.setText(it)
+    }
+}
+
+internal fun EditProfileFragment.setupTemporarySports(sportsList: List<SportEntity>) {
+    val userSports = vm.userSports.value
+
+    sportsList.forEach { tempSport ->
+
+        if (!userSports.isNullOrEmpty()) {
+
+            val userSport = userSports.find {
+                it.sport == tempSport.name
+            }
+
+            if (userSport != null) {
+                sportsTemp[tempSport.name] =
+                    Sport(tempSport.id, tempSport.name, true, Level.valueOf(userSport.level!!))
+            } else {
+                sportsTemp[tempSport.name] = Sport(tempSport.id, tempSport.name, false, Level.NO_LEVEL)
+            }
+
+        } else {
+            sportsTemp[tempSport.name] = Sport(tempSport.id, tempSport.name, false, Level.NO_LEVEL)
+        }
+    }
+
+    // * added to deal with a no-sense ChipGroup bug inherent to the last Chip *
+    sportsTemp["pad"] = Sport(0, "pad", false, Level.NO_LEVEL)
+
+    // fills the sportChips
+    sportsInit()
+
+    sportsTemp.values.forEach { sport ->
+        setEditSportsField(sport)
+    }
+
+    // setup the chips listeners
+    setupChipsListeners()
+}
+
+internal fun EditProfileFragment.setupChipsListeners() {
+    // add listeners to the sports views
+    for ((sportName, sportChips) in sports) {
+        // register floating context menu for the actual level icons
+        registerForContextMenu(sportChips.actualLevelChip)
+        // remove long press listener
+        sportChips.actualLevelChip.setOnLongClickListener(null)
+
+        // add listener to the actual level chip
+        sportChips.actualLevelChip.setOnClickListener {
+            // update sport considered at the moment by the menu
+            consideredSport = sportName
+
+            // open the context menu to select a new sport level
+            requireActivity().openContextMenu(sportChips.actualLevelChip)
+        }
+
+        // add listener to the sport chip
+        sportChips.chip.setOnClickListener {
+            sportChipListener(sportName)
+        }
+    }
+}
+
 internal fun EditProfileFragment.setupOnBackPressedCallback() {
     val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -107,81 +215,46 @@ internal fun EditProfileFragment.setupOnBackPressedCallback() {
 
 /* manage load/save from/into storage */
 
-internal fun EditProfileFragment.loadDataFromStorage() {
-    // retrieve data from SharedPreferences
-    val sh = activity?.getSharedPreferences("it.polito.mad.lab2", AppCompatActivity.MODE_PRIVATE)
-    val jsonObjectProfile: JSONObject? = sh?.getString("profile", null)?.let { JSONObject(it) }
+internal fun EditProfileFragment.initializeTempVariables() {
+    firstNameTemp = vm.userFirstName.value ?: getString(R.string.first_name)
+    lastNameTemp = vm.userLastName.value ?: getString(R.string.last_name)
+    usernameTemp = vm.userUsername.value ?: getString(R.string.username)
+    radioGenderCheckedTemp = Gender.valueOf(vm.userGender.value ?: getString(R.string.male_gender))
+    ageTemp = vm.userAge.value ?: getString(R.string.user_age)
+    locationTemp = vm.userLocation.value ?: getString(R.string.user_location)
+    bioTemp = vm.userBio.value ?: getString(R.string.user_bio)
+}
 
-    showToasty("info", requireContext(), "${vm.userFirstName.value} ${vm.userLastName.value}")
+internal fun EditProfileFragment.loadPicturesFromInternalStorage() {
+    /* manage profile and background picture */
 
-    /* manage user info */
-
-    // retrieve data from the JSON object
-    val firstNameResume =
-        jsonObjectProfile?.getString("firstName") ?: getString(R.string.first_name)
-    val lastNameResume = jsonObjectProfile?.getString("lastName") ?: getString(R.string.last_name)
-    val usernameResume = jsonObjectProfile?.getString("username") ?: getString(R.string.username)
-    val genderResume =
-        Gender.valueOf(jsonObjectProfile?.getString("gender") ?: getString(R.string.male_gender))
-    val ageResume = jsonObjectProfile?.getString("age") ?: getString(R.string.user_age)
-    val locationResume =
-        jsonObjectProfile?.getString("location") ?: getString(R.string.user_location)
-    val bioResume = jsonObjectProfile?.getString("bio") ?: getString(R.string.user_bio)
-
-    // set EditText views
-    firstName.setText(firstNameResume)
-    lastName.setText(lastNameResume)
-    username.setText(usernameResume)
-    age.setText(ageResume)
-    location.setText(locationResume)
-    bio.setText(bioResume)
-
-    when (genderResume) {
-        Gender.Male -> genderRadioGroup.check(R.id.radio_male)
-        Gender.Female -> genderRadioGroup.check(R.id.radio_female)
-        Gender.Other -> genderRadioGroup.check(R.id.radio_other)
+    // retrieve profile picture and update it with the one uploaded by the user, if any
+    getPictureFromInternalStorage(requireActivity().filesDir, "profilePicture.jpeg")?.let {
+        profilePicture.setImageBitmap(it)
     }
 
-    // set temporary variables
-    firstNameTemp = firstNameResume
-    lastNameTemp = lastNameResume
-    usernameTemp = usernameResume
-    radioGenderCheckedTemp = genderResume
-    ageTemp = ageResume
-    locationTemp = locationResume
-    bioTemp = bioResume
-
-    /* manage user sports */
-
-    // set hard coded sports the first time the app is launched
-    if (jsonObjectProfile == null)
-        setHardcodedSportFields(*getHardcodedSports())
-    else {
-        // retrieve sports from storage
-        val sportJson = jsonObjectProfile.getJSONObject("sports")
-        sportsTemp.keys.forEach { sportName ->
-            val sportResume = Sport.from(sportName, sportJson)
-            setEditSportsField(sportResume)
-        }
+    // retrieve background picture and update it with the one uploaded by the user, if any
+    getPictureFromInternalStorage(
+        requireActivity().filesDir,
+        "backgroundProfilePicture.jpeg"
+    )?.let {
+        backgroundProfilePicture.setImageBitmap(it)
     }
 }
 
 internal fun EditProfileFragment.saveInformationOnStorage() {
-    // the temporary information is *serialized* firstly into a JSONObject
-    // and then into the sharedPreferences file with the key *profile*
-    val sh = activity?.getSharedPreferences("it.polito.mad.lab2", AppCompatActivity.MODE_PRIVATE)
-    val editor = sh?.edit()
 
-    val jsonObjectProfile = JSONObject()
+    // update view model variables
+    vm.setUserFirstName(firstName.text.toString())
+    vm.setUserLastName(lastName.text.toString())
+    vm.setUserUsername(username.text.toString())
+    vm.setUserGender(radioGenderCheckedTemp.toString())
+    vm.setUserAge(age.text.toString())
+    vm.setUserLocation(location.text.toString())
+    vm.setUserBio(bio.text.toString())
 
-    // serializing the temporary profile variables into the JSONObject
-    jsonObjectProfile.put("firstName", firstNameTemp)
-    jsonObjectProfile.put("lastName", lastNameTemp)
-    jsonObjectProfile.put("username", usernameTemp)
-    jsonObjectProfile.put("age", ageTemp)
-    jsonObjectProfile.put("location", locationTemp)
-    jsonObjectProfile.put("bio", bioTemp)
-    jsonObjectProfile.put("gender", radioGenderCheckedTemp?.name)
+    // update user sports
+    vm.setUserSports(sportsTemp.filter { it.value.selected }.map { it.value.toSportLevel() })
 
     // save profile and background pictures into the internal storage
     profilePictureBitmap?.let {
@@ -195,14 +268,8 @@ internal fun EditProfileFragment.saveInformationOnStorage() {
         )
     }
 
-    // save sports as a JsonObject
-    val sportJson = JSONObject()
-    sportsTemp.forEach { (_, sport) -> sport.saveAsJson(sportJson) }
-    jsonObjectProfile.put("sports", sportJson)
-
-    // apply changes
-    editor?.putString("profile", jsonObjectProfile.toString())
-    editor?.apply()
+    // update db user information
+    vm.updateDbUserInformation(1)
 }
 
 internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatcher {
@@ -212,12 +279,29 @@ internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatche
 
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             when (fieldName) {
-                "firstName" -> firstNameTemp = firstName.text.toString()
-                "lastName" -> lastNameTemp = lastName.text.toString()
-                "username" -> usernameTemp = username.text.toString()
-                "age" -> ageTemp = age.text.toString()
-                "location" -> locationTemp = location.text.toString()
-                "bio" -> bioTemp = bio.text.toString()
+                "firstName" -> {
+                    firstNameTemp = firstName.text.toString()
+                }
+
+                "lastName" -> {
+                    lastNameTemp = lastName.text.toString()
+                }
+
+                "username" -> {
+                    usernameTemp = username.text.toString()
+                }
+
+                "age" -> {
+                    ageTemp = age.text.toString()
+                }
+
+                "location" -> {
+                    locationTemp = location.text.toString()
+                }
+
+                "bio" -> {
+                    bioTemp = bio.text.toString()
+                }
             }
         }
 
@@ -300,7 +384,7 @@ private fun EditProfileFragment.createEditSportChip(sportName: String, parent: V
     // inflate generic sport chip
     val sportChip = layoutInflater.inflate(R.layout.edit_profile_chip, parent, false) as Chip
     // customize it for the provided sport
-    sportChip.text = extendedNameOf(sportName)
+    sportChip.text = sportName
 
     return sportChip
 }
@@ -379,8 +463,6 @@ internal fun EditProfileFragment.changeSportLevel(sportName: String, level: Leve
 // Set sports Edit fields and temporary values
 private fun EditProfileFragment.setEditSportsField(sport: Sport) {
     if (sport.selected) {
-        // manage sport state
-        sportsTemp[sport.name] = sport
 
         // manage sport views
         val sportGroup = sports[sport.name]!!
@@ -397,11 +479,5 @@ private fun EditProfileFragment.setEditSportsField(sport: Sport) {
                 R.dimen.chip_icon_size
         )
         sportGroup.actualLevelChip.visibility = Chip.VISIBLE
-    }
-}
-
-private fun EditProfileFragment.setHardcodedSportFields(vararg hardcodedSports: Sport) {
-    hardcodedSports.forEach {
-        setEditSportsField(it)
     }
 }

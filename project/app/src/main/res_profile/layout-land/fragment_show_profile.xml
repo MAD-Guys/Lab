@@ -302,6 +302,17 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/section_title_text_size" />
 
+                <TextView
+                    android:id="@+id/no_sports_selected_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="@string/no_sport_selected"
+                    android:textColor="@color/light_grey"
+                    android:textSize="@dimen/default_text_size"
+                    android:visibility="gone" />
+
                 <!-- Sports Pills -->
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/sports_container"

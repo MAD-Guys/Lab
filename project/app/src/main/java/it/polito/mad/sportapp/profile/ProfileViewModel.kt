@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.Achievement
+import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.SportLevel
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.model.Repository
@@ -31,8 +32,8 @@ class ProfileViewModel @Inject constructor(
     private val _userGender = MutableLiveData<String>().also { it.value = "Male" }
     val userGender: LiveData<String> = _userGender
 
-    private val _userAge = MutableLiveData<Int>().also { it.value = 23 }
-    val userAge: LiveData<Int> = _userAge
+    private val _userAge = MutableLiveData<String>().also { it.value = 25.toString() }
+    val userAge: LiveData<String> = _userAge
 
     private val _userLocation = MutableLiveData<String>().also { it.value = "Rome" }
     val userLocation: LiveData<String> = _userLocation
@@ -43,11 +44,27 @@ class ProfileViewModel @Inject constructor(
     }
     val userBio: LiveData<String> = _userBio
 
-    private val _userAchievements = MutableLiveData<Map<Achievement, Boolean>>().also { it.value = mapOf() }
+    private val _userAchievements =
+        MutableLiveData<Map<Achievement, Boolean>>().also { it.value = mapOf() }
     val userAchievements: LiveData<Map<Achievement, Boolean>> = _userAchievements
 
     private val _userSports = MutableLiveData<List<SportLevel>>().also { it.value = listOf() }
     val userSports: LiveData<List<SportLevel>> = _userSports
+
+    /* sports information */
+    private val _sportsList = MutableLiveData<List<Sport>>()
+    val sportsList: LiveData<List<Sport>> = _sportsList
+
+    fun loadSportsFromDb() {
+        // get list of sports from database
+        val dbThread = Thread {
+            val sports = repository.getAllSports()
+            _sportsList.postValue(sports)
+        }
+
+        // start db thread
+        dbThread.start()
+    }
 
     // load user information from database
     fun loadUserInformationFromDb(userId: Int) {
@@ -61,7 +78,7 @@ class ProfileViewModel @Inject constructor(
             _userLastName.postValue(user.lastName)
             _userUsername.postValue(user.username)
             _userGender.postValue(user.gender)
-            _userAge.postValue(user.age)
+            _userAge.postValue(user.age.toString())
             _userLocation.postValue(user.location)
             _userBio.postValue(user.bio)
             _userAchievements.postValue(user.achievements)
@@ -82,7 +99,7 @@ class ProfileViewModel @Inject constructor(
             _userLastName.value!!,
             _userUsername.value!!,
             _userGender.value!!,
-            _userAge.value!!,
+            _userAge.value?.toInt()!!,
             _userLocation.value!!,
             _userBio.value!!
         )
@@ -115,7 +132,7 @@ class ProfileViewModel @Inject constructor(
         _userGender.value = gender
     }
 
-    fun setUserAge(age: Int) {
+    fun setUserAge(age: String) {
         _userAge.value = age
     }
 
