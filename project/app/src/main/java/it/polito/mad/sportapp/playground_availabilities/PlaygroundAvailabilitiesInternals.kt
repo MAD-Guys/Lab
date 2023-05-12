@@ -440,7 +440,9 @@ internal fun PlaygroundAvailabilitiesFragment.switchToAddOrEditMode() {
 /** Compute availability percentage as the percentage of slots with at least one available playground */
 private fun PlaygroundAvailabilitiesFragment.getAvailabilityPercentageOf(date: LocalDate): Float {
     val availablePlaygrounds = playgroundsVM.getAvailablePlaygroundsOn(date).mapValues {
-        (_, playgrounds) -> playgrounds.filter { it.available }
+        (_, playgrounds) -> playgrounds.filter {
+            it.available
+        }
     }
 
     val slotsWithAtLeastOneAvailability = availablePlaygrounds.count { it.value.isNotEmpty() }

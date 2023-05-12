@@ -267,7 +267,7 @@ class Repository @Inject constructor(
             var tempSlot = slotStart
 
             while (tempSlot.isBefore(slotEnd)) {
-                playgroundsPerSlot.add(tempSlot to detailedPlaygroundSport)
+                playgroundsPerSlot.add(tempSlot to detailedPlaygroundSport.clone())
                 tempSlot = tempSlot.plusMinutes(30)
             }
 
@@ -307,7 +307,7 @@ class Repository @Inject constructor(
             var tempSlot = slotStart
 
             while (tempSlot.isBefore(slotEnd)) {
-                playgroundsPerSport.add(tempSlot to detailedPlaygroundSport)
+                playgroundsPerSport.add(tempSlot to detailedPlaygroundSport.clone())
                 tempSlot = tempSlot.plusMinutes(30)
             }
 
@@ -317,7 +317,7 @@ class Repository @Inject constructor(
              pairList.map { (_, detailedPlayground) -> detailedPlayground }
          }
 
-        val availablePlaygroundsPerSlotAndDate = busyPlaygroundsPerSlotAndDate
+        val playgroundsPerSlotAndDate = busyPlaygroundsPerSlotAndDate
 
 
         for (day in 1..month.lengthOfMonth()) {
@@ -325,29 +325,40 @@ class Repository @Inject constructor(
                 val date = month.atDay(day)
                 val slotDateTime = LocalDateTime.of(date, slot)
 
-                if (!availablePlaygroundsPerSlotAndDate.containsKey(date))
-                    availablePlaygroundsPerSlotAndDate[date] = mutableMapOf()
+                if (!playgroundsPerSlotAndDate.containsKey(date))
+                    playgroundsPerSlotAndDate[date] = mutableMapOf()
 
-                val availablePlaygroundsPerSlot = availablePlaygroundsPerSlotAndDate[date]!!
+                val playgroundsPerSlot = playgroundsPerSlotAndDate[date]!!
 
-                if (!availablePlaygroundsPerSlot.containsKey(slotDateTime)){
-                    availablePlaygroundsPerSlot[slotDateTime] = mutableListOf<DetailedPlaygroundSport>().also {
-                        it.addAll(playgrounds)
+                if (!playgroundsPerSlot.containsKey(slotDateTime)){
+                    // they are all available
+                    playgroundsPerSlot[slotDateTime] = mutableListOf<DetailedPlaygroundSport>().also { list ->
+                        list.addAll(playgrounds.map {
+                            // clone all the playgrounds instances
+                            it.clone().apply {
+                                // mark them as available only if this is a future slot
+                                available = slotDateTime > LocalDateTime.now()
+                            }
+                        })
                     }
                 }
                 else {
-                    val availablePlaygroundsInSlot = availablePlaygroundsPerSlot[slotDateTime]!!
+                    val playgroundsInSlot = playgroundsPerSlot[slotDateTime]!!
 
-                    availablePlaygroundsInSlot.addAll(
+                    playgroundsInSlot.addAll(
                         playgrounds.filter { playground ->
-                            !availablePlaygroundsInSlot.contains(playground)
-                        }
+                            !playgroundsInSlot.contains(playground)
+                        } // clone them
+                        .map { it.clone().apply {
+                            // mark them as available only if this is a future slot
+                            available = slotDateTime > LocalDateTime.now()
+                        }}
                     )
                 }
             }
         }
 
-        return availablePlaygroundsPerSlotAndDate
+        return playgroundsPerSlotAndDate
     }
 
     /* Get the available playgrounds for each slot in the provided month */

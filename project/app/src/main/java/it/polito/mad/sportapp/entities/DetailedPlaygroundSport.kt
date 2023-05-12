@@ -31,4 +31,13 @@ data class DetailedPlaygroundSport(
                 this.pricePerHour == playground.pricePerHour &&
                 this.available == playground.available
     }
+
+    fun clone() = DetailedPlaygroundSport(
+        playgroundId,
+        playgroundName,
+        sportId,
+        sportCenterName,
+        pricePerHour,
+        available
+    )
 }
