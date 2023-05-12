@@ -131,6 +131,8 @@ data class PlaygroundInfo(
     val sportId: Int,
     @ColumnInfo(name = "sport_name")
     val sportName: String,
+    @ColumnInfo(name = "sport_emoji")
+    val sportEmoji: String,
     @ColumnInfo(name = "sport_center_address")
     val sportCenterAddress: String,
     @ColumnInfo(name = "opening_time")
