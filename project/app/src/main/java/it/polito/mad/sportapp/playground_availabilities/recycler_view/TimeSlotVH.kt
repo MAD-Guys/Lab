@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter
 
 class TimeSlotVH(
     val view: View,
-    private val navigateToPlayground: (Int) -> Unit,
+    private val navigateToPlayground: (Int, LocalDateTime) -> Unit,
     private val reservationManagementMode: ReservationManagementMode?,
     private val reservationBundle: Bundle?,
     private val setReservationBundle: (Bundle) -> Unit
@@ -79,7 +79,7 @@ class TimeSlotVH(
                 if(!playground.available) return@setOnClickListener
 
                 if (reservationManagementMode == null) {
-                    navigateToPlayground(playground.playgroundId)
+                    navigateToPlayground(playground.playgroundId, slot)
                     return@setOnClickListener
                 }
 

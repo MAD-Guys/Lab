@@ -22,7 +22,7 @@ class PlaygroundAvailabilitiesAdapter(
     private var originalReservationBundle: Bundle?,
     internal var reservationBundle: Bundle?,
     private val setReservationBundle: (Bundle) -> Unit,
-    private val navigateToPlayground: (Int) -> Unit
+    private val navigateToPlayground: (Int, LocalDateTime) -> Unit
 ) : RecyclerView.Adapter<AbstractTimeSlotVH>()
 {
     // list of all the interesting slots, chronologically ordered

@@ -8,6 +8,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
@@ -100,9 +101,19 @@ internal fun PlaygroundDetailsFragment.chooseImage(view: ImageView) {
 }
 
 internal fun PlaygroundDetailsFragment.handleAddReservationButton() {
+    val params = selectedSlotInPlaygroundAvailabilities?.let {
+        bundleOf(
+            "reservation" to bundleOf(
+                "start_slot" to it,
+                "playground_id" to viewModel.playground.value?.playgroundId,
+                "sport_id" to viewModel.playground.value?.sportId
+            )
+        )
+    }
+
     // navigate to the Add Reservation view
     navController.navigate(
-        R.id.action_PlaygroundDetailsFragment_to_playgroundAvailabilitiesFragment)
+        R.id.action_PlaygroundDetailsFragment_to_playgroundAvailabilitiesFragment, params)
 }
 
 internal fun PlaygroundDetailsFragment.handleDirectionsButton() {

@@ -25,6 +25,7 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
     internal val viewModel by viewModels<PlaygroundDetailsViewModel>()
 
     internal var playgroundId = -1
+    internal var selectedSlotInPlaygroundAvailabilities: String? = null
 
     internal lateinit var playgroundImage: ImageView
     internal lateinit var overallRatingBar: RatingBar
@@ -88,6 +89,7 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
 
         // Retrieve event id
         playgroundId = arguments?.getInt("id_playground") ?: -1
+        selectedSlotInPlaygroundAvailabilities = arguments?.getString("selected_slot")
 
         // Retrieve views
         retrieveViews()

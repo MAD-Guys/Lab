@@ -60,8 +60,15 @@ internal fun PlaygroundAvailabilitiesFragment.addOrEditModeSetup() {
         }
     }
 
+
     // restrict the sport to show (just the one of the reservation to be edited, if any)
     sportIdToShow = reservationVM.originalReservationBundle?.getInt("sport_id")
+
+    if (sportIdToShow == null || sportIdToShow == 0) {
+        sportIdToShow = reservationVM.reservationBundle.value?.getInt("sport_id")
+        if (sportIdToShow == 0)
+            sportIdToShow = null
+    }
 }
 
 
@@ -252,9 +259,8 @@ internal fun PlaygroundAvailabilitiesFragment.initSelectedSportSpinner() {
     selectedSportSpinner = requireView().findViewById(R.id.selected_sport_spinner)
 
     // if in edit mode, restrict it to contain one only sport
-    if(reservationVM.reservationManagementMode == ReservationManagementMode.EDIT_MODE) {
+    if(reservationVM.isStartSlotSet()) {
         // set it as unclickable (and remove selection arrow)
-
         selectedSportSpinner.isEnabled = false
         selectedSportSpinner.isClickable = false
         selectedSportSpinner.setBackgroundResource(R.drawable.spinner_one_entry_only_bg)
@@ -376,9 +382,11 @@ internal fun PlaygroundAvailabilitiesFragment.setupAvailablePlaygroundsRecyclerV
         reservationVM.originalReservationBundle,
         reservationVM.reservationBundle.value,
         reservationVM::setReservationBundle,
-    ) { playgroundId ->
+    ) { playgroundId, selectedSlot ->
+
         val params = bundleOf(
-            "id_playground" to playgroundId
+            "id_playground" to playgroundId,
+            "selected_slot" to selectedSlot.toString()
         )
         // navigate to playground details view
         findNavController().navigate(R.id.action_playgroundAvailabilitiesFragment_to_PlaygroundDetailsFragment, params)
