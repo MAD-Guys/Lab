@@ -14,7 +14,6 @@ data class Sport(
     val maxPlayers: Int
 ) {
     override fun toString(): String {
-        return name
+        return "$name $emoji"
     }
 }
-

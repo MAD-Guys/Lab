@@ -1,6 +1,7 @@
 package it.polito.mad.sportapp.localDB.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -20,5 +21,8 @@ interface ReviewDao {
 
     @Insert
     fun insert(review: Review)
+
+    @Delete
+    fun delete(review: Review)
 
 }

@@ -20,6 +20,7 @@ internal fun PlaygroundDetailsFragment.retrieveViews() {
     overallRatingBar = requireView().findViewById(R.id.overallRating)
     playgroundName = requireView().findViewById(R.id.playgroundName)
     sportCenterName = requireView().findViewById(R.id.sportCenterName)
+    sportEmoji = requireView().findViewById(R.id.sportEmoji)
     playgroundSport = requireView().findViewById(R.id.playgroundSport)
     playgroundAddress = requireView().findViewById(R.id.playgroundAddress)
     playgroundOpeningTime = requireView().findViewById(R.id.playgroundOpeningTime)
@@ -38,6 +39,7 @@ internal fun PlaygroundDetailsFragment.initViews() {
     overallRatingBar.rating = viewModel.playground.value?.overallRating!!
     playgroundName.text = viewModel.playground.value?.playgroundName
     sportCenterName.text = viewModel.playground.value?.sportCenterName
+    sportEmoji.text = viewModel.playground.value?.sportEmoji
     playgroundSport.text = viewModel.playground.value?.sportName
     playgroundAddress.text = viewModel.playground.value?.sportCenterAddress
     playgroundOpeningTime.text = viewModel.playground.value?.openingHours!!.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))

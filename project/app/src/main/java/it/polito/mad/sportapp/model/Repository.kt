@@ -101,6 +101,10 @@ class Repository @Inject constructor(
         }
     }
 
+    fun deleteReview(review: Review) {
+        reviewDao.delete(review)
+    }
+
     // Reservation methods
     fun getAllReservations(): List<PlaygroundReservation> {
         return reservationDao.getAll()
