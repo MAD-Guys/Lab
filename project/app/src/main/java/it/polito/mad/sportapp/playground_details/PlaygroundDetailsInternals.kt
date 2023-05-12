@@ -20,6 +20,7 @@ internal fun PlaygroundDetailsFragment.retrieveViews() {
     overallRatingBar = requireView().findViewById(R.id.overallRating)
     playgroundName = requireView().findViewById(R.id.playgroundName)
     sportCenterName = requireView().findViewById(R.id.sportCenterName)
+    sportEmoji = requireView().findViewById(R.id.sportEmoji)
     playgroundSport = requireView().findViewById(R.id.playgroundSport)
     playgroundAddress = requireView().findViewById(R.id.playgroundAddress)
     playgroundOpeningTime = requireView().findViewById(R.id.playgroundOpeningTime)
@@ -38,6 +39,7 @@ internal fun PlaygroundDetailsFragment.initViews() {
     overallRatingBar.rating = viewModel.playground.value?.overallRating!!
     playgroundName.text = viewModel.playground.value?.playgroundName
     sportCenterName.text = viewModel.playground.value?.sportCenterName
+    sportEmoji.text = chooseEmoji() // TODO: how to insert this??? viewModel.playground.value?.sportEmoji
     playgroundSport.text = viewModel.playground.value?.sportName
     playgroundAddress.text = viewModel.playground.value?.sportCenterAddress
     playgroundOpeningTime.text = viewModel.playground.value?.openingHours!!.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
@@ -95,6 +97,22 @@ internal fun PlaygroundDetailsFragment.chooseImage(view: ImageView) {
     }
 
     view.setImageDrawable(image)
+}
+
+internal fun PlaygroundDetailsFragment.chooseEmoji() :String {
+    return when (viewModel.playground.value?.sportId) {
+        1 -> "\uD83C\uDFBE"
+        2 -> "\uD83C\uDFD3"
+        3 -> "\uD83C\uDFBE"
+        4 -> "\uD83C\uDFC0"
+        5 -> "\u26BD"
+        6 -> "\uD83C\uDFD0"
+        7 -> "\uD83C\uDFD0"
+        8 -> "\u26BD"
+        9 -> "\u26BD"
+        10 -> "⛳"
+        else -> ""
+    }
 }
 
 internal fun PlaygroundDetailsFragment.handleAddReservationButton() {

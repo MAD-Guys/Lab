@@ -87,7 +87,17 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
                             android:contentDescription="@string/image_location_content_description"
-                            app:srcCompat="@drawable/baseline_sports_basketball_24" />
+                            app:srcCompat="@drawable/baseline_sports_basketball_24"
+                            android:visibility="gone"
+                            />
+
+                        <TextView
+                            android:id="@+id/sportEmoji"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="🏀"
+                            android:textSize="18sp"
+                            />
 
                         <TextView
                             android:id="@+id/playgroundSport"
