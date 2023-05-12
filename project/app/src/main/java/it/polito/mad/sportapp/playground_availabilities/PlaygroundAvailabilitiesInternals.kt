@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -40,15 +41,9 @@ internal fun PlaygroundAvailabilitiesFragment.initAppBar() {
     val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
 
     actionBar?.let {
-        if(viewModel.reservationManagementMode == null) {
-            it.setDisplayHomeAsUpEnabled(false)
-            it.title = "Playground Availabilities"
-        }
-        else {
-            it.setDisplayHomeAsUpEnabled(true)
-            it.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
-            it.title = viewModel.reservationManagementMode!!.appBarTitle
-        }
+        // set title
+        it.setDisplayHomeAsUpEnabled(false)
+        it.title = "Playground Availabilities"
     }
 }
 
@@ -58,10 +53,26 @@ internal fun PlaygroundAvailabilitiesFragment.initMenu() {
     menuHost.addMenuProvider(object : MenuProvider {
         override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
             menuInflater.inflate(
-                if (viewModel.reservationManagementMode != null) viewModel.reservationManagementMode!!.menuResourceId
-                else R.menu.playgrounds_availabilities_menu,
+                R.menu.playgrounds_availabilities_menu,
                 menu
             )
+
+            // save buttons views
+            addReservationButton = menu.findItem(R.id.add_reservation_button)
+            addReservationSlotButton = menu.findItem(R.id.add_reservation_slot_button)
+
+            if (reservationVM.reservationManagementMode == null) {
+                // Playgrounds availabilities view -> show plus button
+                addReservationButton!!.isVisible = true
+            }
+            else {
+                // add/edit mode -> show add slot button
+                addReservationSlotButton!!.isVisible = true
+
+                if (!reservationVM.isStartTimeSet() || !reservationVM.isEndTimeSet())
+                    addReservationSlotButton?.icon = AppCompatResources.getDrawable(requireContext(),
+                        R.drawable.baseline_more_time_24_blurred)
+            }
         }
 
         override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
@@ -70,7 +81,8 @@ internal fun PlaygroundAvailabilitiesFragment.initMenu() {
                 true
             }
             R.id.add_reservation_slot_button -> {
-                navigateToManageEquipments()
+                if(reservationVM.isStartTimeSet() && reservationVM.isEndTimeSet())
+                    navigateToManageEquipments()
                 true
             }
             else -> false
@@ -102,7 +114,7 @@ internal fun PlaygroundAvailabilitiesFragment.initCalendar() {
     this.initCalendarDays()
 
     /* setup calendar */
-    viewModel.currentMonth.value?.let {
+    playgroundsVM.currentMonth.value?.let {
         val startMonth = it.minusMonths(100)
         val endMonth = it.plusMonths(100)
 
@@ -112,12 +124,6 @@ internal fun PlaygroundAvailabilitiesFragment.initCalendar() {
 }
 
 private fun PlaygroundAvailabilitiesFragment.initCalendarHeader(daysOfWeek: List<DayOfWeek>) {
-    if (viewModel.reservationManagementMode != null) {
-        // change current month color
-        val selectedMonthBar = requireView().findViewById<View>(R.id.app_bar_layout)
-        selectedMonthBar.setBackgroundResource(viewModel.reservationManagementMode!!.variantColorId)
-    }
-
     /* initialize calendar header with days of week */
     calendarView.monthHeaderBinder = object : MonthHeaderFooterBinder<MonthViewContainer> {
         override fun create(view: View) = MonthViewContainer(view as ViewGroup)
@@ -141,10 +147,10 @@ private fun PlaygroundAvailabilitiesFragment.initCalendarDays() {
     // create and initialize day binder
     val calendarDayBinder = CalendarDayBinder(
         requireContext(),
-        viewModel.selectedDate,
-        viewModel::setSelectedDate,
+        playgroundsVM.selectedDate,
+        playgroundsVM::setSelectedDate,
         this::getAvailabilityPercentageOf,
-        viewModel::isAvailablePlaygroundsLoaded
+        playgroundsVM::isAvailablePlaygroundsLoaded
     )
 
     // attach day binder to the calendar view
@@ -156,14 +162,14 @@ internal fun PlaygroundAvailabilitiesFragment.initCalendarMonthButtons() {
     val nextMonthButton = requireView().findViewById<ImageView>(R.id.next_month_button)
 
     previousMonthButton.setOnClickListener {
-        viewModel.currentMonth.value?.let {
+        playgroundsVM.currentMonth.value?.let {
             val previousMonth = it.minusMonths(1)
             calendarView.smoothScrollToMonth(previousMonth)
         }
     }
 
     nextMonthButton.setOnClickListener {
-        viewModel.currentMonth.value?.let {
+        playgroundsVM.currentMonth.value?.let {
             val nextMonth = it.plusMonths(1)
             calendarView.smoothScrollToMonth(nextMonth)
         }
@@ -171,7 +177,7 @@ internal fun PlaygroundAvailabilitiesFragment.initCalendarMonthButtons() {
 
     // change selected month if user swipes to another month
     calendarView.monthScrollListener = { newMonth ->
-        viewModel.setCurrentMonth(newMonth.yearMonth)
+        playgroundsVM.setCurrentMonth(newMonth.yearMonth)
     }
 }
 
@@ -181,7 +187,7 @@ internal fun PlaygroundAvailabilitiesFragment.initSelectedSportSpinner() {
     selectedSportSpinnerAdapter = ArrayAdapter(
         requireContext(),
         android.R.layout.simple_spinner_item,
-        viewModel.sports.value ?: mutableListOf()
+        playgroundsVM.sports.value ?: mutableListOf()
     ).also {
         it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
     }
@@ -196,11 +202,11 @@ internal fun PlaygroundAvailabilitiesFragment.initSelectedSportSpinner() {
             // retrieve selected option
             val justSelectedSport = selectedSportSpinnerAdapter.getItem(position)
             // update selected sport
-            viewModel.setSelectedSport(justSelectedSport)
+            playgroundsVM.setSelectedSport(justSelectedSport)
         }
 
         override fun onNothingSelected(parent: AdapterView<*>?) {
-            viewModel.setSelectedSport(null)
+            playgroundsVM.setSelectedSport(null)
         }
     }
 }
@@ -210,19 +216,19 @@ internal fun PlaygroundAvailabilitiesFragment.initMonthAndDateObservers() {
     /* months view model observers */
     val monthLabel = requireView().findViewById<TextView>(R.id.month_label)
 
-    viewModel.currentMonth.observe(this) { newMonth ->
+    playgroundsVM.currentMonth.observe(this) { newMonth ->
         // change month label
         monthLabel.text = capitalize(
             newMonth.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH)))
 
         // retrieve new playground availabilities for the current month and the current sport
-        viewModel.updatePlaygroundAvailabilitiesForCurrentMonthAndSport()
+        playgroundsVM.updatePlaygroundAvailabilitiesForCurrentMonthAndSport()
     }
 
     /* dates view model observers */
     val selectedDateLabel = requireView().findViewById<TextView>(R.id.selected_date_label)
 
-    viewModel.selectedDate.observe(this) {
+    playgroundsVM.selectedDate.observe(this) {
         // update calendar selected date
         calendarView.notifyDateChanged(it)
 
@@ -235,22 +241,22 @@ internal fun PlaygroundAvailabilitiesFragment.initMonthAndDateObservers() {
 
         // update time slots
         playgroundAvailabilitiesAdapter.smartUpdatePlaygroundAvailabilities(
-            viewModel.getAvailablePlaygroundsOnSelectedDate()
+            playgroundsVM.getAvailablePlaygroundsOnSelectedDate()
         )
     }
 
-    viewModel.previousSelectedDate.observe(this) {
+    playgroundsVM.previousSelectedDate.observe(this) {
         calendarView.notifyDateChanged(it)
     }
 }
 
 internal fun PlaygroundAvailabilitiesFragment.initAvailablePlaygroundsObserver() {
     /* playground availabilities observer to change dates' colors */
-    viewModel.availablePlaygroundsPerSlot.observe(this) {
+    playgroundsVM.availablePlaygroundsPerSlot.observe(this) {
         // * update calendar dates' dots *
 
         // update current, previous and next months
-        val currentMonth = viewModel.currentMonth.value ?: viewModel.defaultMonth
+        val currentMonth = playgroundsVM.currentMonth.value ?: playgroundsVM.defaultMonth
         val previousMonth = currentMonth.minusMonths(1)
         val nextMonth = currentMonth.plusMonths(1)
 
@@ -260,17 +266,17 @@ internal fun PlaygroundAvailabilitiesFragment.initAvailablePlaygroundsObserver()
 
         // update recycler view time slots
         playgroundAvailabilitiesAdapter.smartUpdatePlaygroundAvailabilities(
-            viewModel.getAvailablePlaygroundsOnSelectedDate()
+            playgroundsVM.getAvailablePlaygroundsOnSelectedDate()
         )
 
         if(it.isNotEmpty())
-            viewModel.setAvailablePlaygroundsLoaded()
+            playgroundsVM.setAvailablePlaygroundsLoaded()
     }
 }
 
 internal fun PlaygroundAvailabilitiesFragment.initSelectedSportObservers() {
     // sports observer
-    viewModel.sports.observe(this) {
+    playgroundsVM.sports.observe(this) {
         // add new sports list
         try {
             selectedSportSpinnerAdapter.clear()
@@ -280,31 +286,27 @@ internal fun PlaygroundAvailabilitiesFragment.initSelectedSportObservers() {
     }
 
     // selected sport observer
-    viewModel.selectedSport.observe(this) {
+    playgroundsVM.selectedSport.observe(this) {
         // empty current playground availabilities
-        viewModel.emptyPlaygroundAvailabilities()
+        playgroundsVM.emptyPlaygroundAvailabilities()
 
         // retrieve new playground availabilities for the current month and the current sport
-        viewModel.updatePlaygroundAvailabilitiesForCurrentMonthAndSport()
+        playgroundsVM.updatePlaygroundAvailabilitiesForCurrentMonthAndSport()
     }
 }
 
 /* Playground availabilities recycler view */
 internal fun PlaygroundAvailabilitiesFragment.setupAvailablePlaygroundsRecyclerView() {
-    if (viewModel.reservationManagementMode != null) {
-        val selectedDateLabelBox = requireView().findViewById<View>(R.id.selected_date_label_box)
-        selectedDateLabelBox.setBackgroundResource(viewModel.reservationManagementMode!!.variantColorId)
-    }
-
     val playgroundAvailabilitiesRecyclerView =
         requireView().findViewById<RecyclerView>(R.id.playground_availabilities_rv)
 
     // init adapter
     playgroundAvailabilitiesAdapter = PlaygroundAvailabilitiesAdapter(
-        viewModel.getAvailablePlaygroundsOnSelectedDate(),
-        viewModel.selectedDate.value ?: viewModel.defaultDate,
-        viewModel.slotDuration,
-        viewModel.reservationManagementMode
+        playgroundsVM.getAvailablePlaygroundsOnSelectedDate(),
+        playgroundsVM.selectedDate.value ?: playgroundsVM.defaultDate,
+        playgroundsVM.slotDuration,
+        reservationVM.reservationManagementMode,
+        reservationVM.reservationBundle.value
     ) { playgroundId ->
         val params = bundleOf(
             "id_playground" to playgroundId
@@ -326,22 +328,52 @@ internal fun PlaygroundAvailabilitiesFragment.setupBottomBar() {
     // show bottom bar
     val bottomBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation_bar)
 
-    if (viewModel.reservationManagementMode == null) { /* playground availabilities view */
-        // show bottom bar with the right selected button
-        bottomBar.visibility = View.VISIBLE
-        bottomBar.menu.findItem(R.id.playgrounds).isChecked = true
+    // show bottom bar with the right selected button
+    bottomBar.visibility = View.VISIBLE
+    bottomBar.menu.findItem(R.id.playgrounds).isChecked = true
+}
+
+/* add/edit mode */
+internal fun PlaygroundAvailabilitiesFragment.switchToAddOrEditMode() {
+    /* app bar */
+    val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+
+    actionBar?.let {
+        // show back arrow and the right title
+        it.setDisplayHomeAsUpEnabled(true)
+        it.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
+        it.title = reservationVM.reservationManagementMode!!.appBarTitle
     }
-    else {  /* add/edit reservation */
-        // hide bottom bar
-        bottomBar.visibility = View.GONE
-    }
+
+    /* menu */
+
+    // show only add slot button
+    addReservationButton?.isVisible = false
+    addReservationSlotButton?.isVisible = true
+
+    /* month and date colors */
+
+    // change current month color
+    val selectedMonthBar = requireView().findViewById<View>(R.id.app_bar_layout)
+    selectedMonthBar.setBackgroundResource(reservationVM.reservationManagementMode!!.variantColorId)
+
+    // change color to the selected date bar
+    val selectedDateLabelBox = requireView().findViewById<View>(R.id.selected_date_label_box)
+    selectedDateLabelBox.setBackgroundResource(reservationVM.reservationManagementMode!!.variantColorId)
+
+    // hide bottom bar
+    val bottomBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation_bar)
+    bottomBar.visibility = View.GONE
+
+    // reset recycler view adapter flag
+    playgroundAvailabilitiesAdapter.setEditableReservationSlotsAsAvailable()
 }
 
 /* utils */
 
 /** Compute availability percentage as the percentage of slots with at least one available playground */
 private fun PlaygroundAvailabilitiesFragment.getAvailabilityPercentageOf(date: LocalDate): Float {
-    val availablePlaygrounds = viewModel.getAvailablePlaygroundsOn(date).mapValues {
+    val availablePlaygrounds = playgroundsVM.getAvailablePlaygroundsOn(date).mapValues {
         (_, playgrounds) -> playgrounds.filter { it.available }
     }
 

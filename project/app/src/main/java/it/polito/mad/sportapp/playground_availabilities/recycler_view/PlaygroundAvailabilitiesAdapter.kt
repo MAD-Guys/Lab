@@ -1,5 +1,6 @@
 package it.polito.mad.sportapp.playground_availabilities.recycler_view
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -7,10 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
 import it.polito.mad.sportapp.reservation_management.ReservationManagementMode
-import java.lang.Exception
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlin.Exception
 
 class PlaygroundAvailabilitiesAdapter(
     // map containing all the slots and their corresponding available playgrounds
@@ -18,6 +19,7 @@ class PlaygroundAvailabilitiesAdapter(
     internal var selectedDate: LocalDate,
     private val slotDuration: Duration,
     private val reservationManagementMode: ReservationManagementMode?,
+    internal var reservationBundle: Bundle?,
     private val navigateToPlayground: (Int) -> Unit
 ) : RecyclerView.Adapter<AbstractTimeSlotVH>()
 {
@@ -28,7 +30,19 @@ class PlaygroundAvailabilitiesAdapter(
         set(value) {
             field = value
             timeSlots = value.keys.toList().sorted()
+            playgroundAvailabilitiesSelections = this.computeSelectionsOf(value)
         }
+
+    enum class SelectionState {
+        SELECTED, SELECTABLE, UNSELECTED
+    }
+
+    // it contains the playgrounds associated to their state (selected, unselected or selectable)
+    private var playgroundAvailabilitiesSelections = computeSelectionsOf(playgroundAvailabilities)
+
+    init {
+        this.setEditableReservationSlotsAsAvailable()
+    }
 
     override fun getItemCount(): Int {
         return if (timeSlots.isNotEmpty())
@@ -60,10 +74,10 @@ class PlaygroundAvailabilitiesAdapter(
     override fun onBindViewHolder(holder: AbstractTimeSlotVH, position: Int) {
         if(holder is TimeSlotVH) {
             val timeSlot = timeSlots[position]
-            val availablePlaygrounds = playgroundAvailabilities[timeSlot]!!
+            val availablePlaygroundsSelections = playgroundAvailabilitiesSelections[timeSlot]!!
 
             holder.setTimeSlotTimes(timeSlot, timeSlot.plus(slotDuration))
-            holder.setAvailablePlaygrounds(availablePlaygrounds)
+            holder.setAvailablePlaygrounds(availablePlaygroundsSelections)
         }
     }
 
@@ -97,6 +111,7 @@ class PlaygroundAvailabilitiesAdapter(
                 return timeSlots[oldItemPosition].toLocalTime() == newTimeSlots[newItemPosition].toLocalTime()
             }
 
+            // TODO: adjust to take selection state into account
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
                 // from <no availabilities> to <no availabilities>
                 if (playgroundAvailabilities.isEmpty() && newPlaygroundAvailabilities.isEmpty())
@@ -137,5 +152,84 @@ class PlaygroundAvailabilitiesAdapter(
 
         // perform smart updates
         diffs.dispatchUpdatesTo(this)
+    }
+
+    private fun computeSelectionsOf(
+        playgroundAvailabilities: Map<LocalDateTime, List<DetailedPlaygroundSport>>
+    ): Map<LocalDateTime, List<Pair<DetailedPlaygroundSport, SelectionState>>>
+    {
+        val selectedPlaygroundId = reservationBundle?.getInt("playground_id")
+        val selectedStartSlotStr = reservationBundle?.getString("start_slot")
+        val selectedEndSlotStr = reservationBundle?.getString("end_slot")
+
+        val result = playgroundAvailabilities.mapValues { (slot, availablePlaygrounds) ->
+            availablePlaygrounds.map { playground ->
+                // slot for different playgrounds rather than the selected one
+                if (selectedStartSlotStr == null)                    // (no selection)
+                    return@map Pair(playground, SelectionState.SELECTABLE)
+
+                // (a selection is in progress, but this is a different playground)
+                if (playground.playgroundId != selectedPlaygroundId)
+                    return@map Pair(playground, SelectionState.UNSELECTED)
+
+                // determine if this playground slot has been selected or not,
+                // based on the selected start/end time
+
+                val selectedStartSlot = LocalDateTime.parse(selectedStartSlotStr)
+                val selectedEndSlot = selectedEndSlotStr?.let {
+                    LocalDateTime.parse(it)
+                }
+
+                if (selectedEndSlot == null) {
+                    // just one slot is selected
+                    if (slot == selectedStartSlot) {
+                        return@map Pair(playground, SelectionState.SELECTED)
+                    }
+                    else if (slot > selectedStartSlot) {
+                        val playgroundAlreadyBusyInOnePreviousSlot = playgroundAvailabilities
+                            .filterKeys { s -> s > selectedStartSlot && s <= slot } // take the slots between the selected one and this one
+                            .any { (_, playgrounds) -> playgrounds.any {
+                                p -> p.playgroundId == playground.playgroundId && !p.available
+                            } }
+
+                        if(!playgroundAlreadyBusyInOnePreviousSlot)
+                            return@map Pair(playground, SelectionState.SELECTABLE)
+                    }
+                }
+                else {
+                    // more than one slot is selected
+                    if (slot >= selectedStartSlot && slot <= selectedEndSlot) {
+                        return@map Pair(playground, SelectionState.SELECTED)
+                    }
+                }
+
+                Pair(playground, SelectionState.UNSELECTED)
+            }
+        }
+
+        return result
+    }
+
+    internal fun setEditableReservationSlotsAsAvailable() {
+        if(reservationManagementMode == ReservationManagementMode.EDIT_MODE) {
+            val selectedPlaygroundId = reservationBundle?.getInt("playground_id")
+            val selectedStartSlotStr = reservationBundle?.getString("start_slot")
+            val selectedEndSlotStr = reservationBundle?.getString("end_slot")
+
+            if(selectedPlaygroundId == null || selectedStartSlotStr == null)
+                throw Exception("Edit mode without bundle reservation parameters")
+
+            val selectedStartSlot = LocalDateTime.parse(selectedStartSlotStr)
+            val selectedEndSlot = selectedEndSlotStr?.let {
+                LocalDateTime.parse(it)
+            }
+
+            playgroundAvailabilities.filter { (slot, _) ->
+                 (selectedEndSlot == null && slot == selectedStartSlot) ||
+                         (selectedEndSlot != null && slot >= selectedStartSlot && slot <= selectedEndSlot )
+            }.values.forEach { playgrounds ->
+                playgrounds.forEach { playground -> playground.available = true }
+            }
+        }
     }
 }

@@ -1,8 +1,6 @@
 package it.polito.mad.sportapp.entities
 
 import androidx.room.*
-import java.time.LocalDateTime
-import java.time.LocalTime
 
 @Entity(
     tableName = "playground_reservation",

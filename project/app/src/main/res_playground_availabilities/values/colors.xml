@@ -28,4 +28,11 @@
     <color name="unavailable_playground_background_color">#E0E0E0</color>
     <color name="unavailable_playground_text_color">#606060</color>
 
+    <!-- selected playground item -->
+    <color name="selected_playground_background_color">@color/primary_blue</color>
+    <color name="selected_playground_text_color">@color/white</color>
+
+    <!-- discouraged -->
+    <color name="unselected_playground_background_color">#F4F4F4</color>
+    <color name="unselected_playground_text_color">@color/black</color>
 </resources>

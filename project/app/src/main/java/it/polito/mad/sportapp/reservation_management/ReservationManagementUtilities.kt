@@ -13,7 +13,6 @@ enum class ReservationManagementMode(
         "Edit reserved slot",
     );
 
-    val menuResourceId: Int = R.menu.reservation_management_menu
     val variantColorId: Int = R.color.current_month_background_color_variant
 
     companion object {

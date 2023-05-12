@@ -33,13 +33,22 @@ class TimeSlotVH(
         endTimeSlotText.text = end.format(DateTimeFormatter.ofPattern("HH:mm"))
     }
 
-    fun setAvailablePlaygrounds(availablePlaygrounds: List<DetailedPlaygroundSport>) {
+    fun setAvailablePlaygrounds(availablePlaygrounds: List<Pair<DetailedPlaygroundSport, PlaygroundAvailabilitiesAdapter.SelectionState>>) {
         availablePlaygroundsContainer.removeAllViews()  // clear playgrounds
 
         // transform each available playground object in a box view
-        val availablePlaygroundBoxes = availablePlaygrounds.map { playground ->
+        val availablePlaygroundBoxes = availablePlaygrounds.map { (playground, selectionState) ->
+            // set box as busy, selected, selectable or unselected
+            val playgroundSkeletonBox = when {
+                !playground.available -> R.layout.unavailable_playground_item
+                selectionState == PlaygroundAvailabilitiesAdapter.SelectionState.SELECTED -> R.layout.selected_playground_item
+                selectionState == PlaygroundAvailabilitiesAdapter.SelectionState.SELECTABLE -> R.layout.available_selectable_playground_item
+                selectionState == PlaygroundAvailabilitiesAdapter.SelectionState.UNSELECTED -> R.layout.unselected_playground_item
+                else -> throw Exception("Unexpected state caught")
+            }
+
             val playgroundBox = LayoutInflater.from(view.context).inflate(
-                if(playground.available) R.layout.available_playground_item else R.layout.unavailable_playground_item,
+                playgroundSkeletonBox,
                 availablePlaygroundsContainer,
                 false
             )
@@ -54,9 +63,10 @@ class TimeSlotVH(
             sportCenterNameText.text = playground.sportCenterName
             pricePerHourText.text = String.format("%.2f €/h", playground.pricePerHour)
 
+
             // attach listener to navigate to that playground
             playgroundBox.setOnClickListener {
-                if (reservationManagementMode == null)
+                if (reservationManagementMode == null && playground.available)
                     navigateToPlayground(playground.playgroundId)
                 else {
                     // TODO: manage edit/add mode

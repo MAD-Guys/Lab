@@ -25,6 +25,7 @@ import androidx.navigation.Navigation
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.showToasty
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -246,8 +247,11 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
 
     private fun toEditView() {
         val params = bundleOf(
-            // "mode" to "edit",           /* edit mode */
-            "reservation_id" to eventId /* reservation (id) to be edited */
+            "reservation" to bundleOf(
+                "playground_id" to viewModel.reservation.value?.playgroundId,
+                "start_slot" to viewModel.reservation.value?.startLocalDateTime,
+                "end_slot" to viewModel.reservation.value?.startLocalDateTime?.plus(Duration.ofMinutes(30))
+            )
         )
 
         navController.navigate(R.id.action_reservationDetailsFragment_to_playgroundAvailabilitiesFragment, params)

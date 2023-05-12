@@ -2,11 +2,20 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Add button -->
+    <!-- Add reservation button -->
     <item
         android:id="@+id/add_reservation_button"
         android:title="@string/add_reservation_button_description"
         android:icon="@drawable/baseline_add_24"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+
+    <!-- Add slot button -->
+    <item
+        android:id="@+id/add_reservation_slot_button"
+        android:title="@string/add_reservation_slot_button_description"
+        android:icon="@drawable/baseline_more_time_24"
+        android:visible="false"
         app:showAsAction="always" />
 
 </menu>

@@ -1,6 +1,7 @@
 package it.polito.mad.sportapp.playground_availabilities
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
@@ -12,16 +13,19 @@ import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.playground_availabilities.recycler_view.PlaygroundAvailabilitiesAdapter
 import it.polito.mad.sportapp.reservation_management.ReservationManagementMode
-import it.polito.mad.sportapp.showToasty
+import it.polito.mad.sportapp.reservation_management.ReservationManagementViewModel
+import java.time.LocalDateTime
 
 
 @AndroidEntryPoint
 class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabilities_view) {
-    // reservation data received from previous view
-    private var reservationBundle: Bundle? = null
+    // View Models
+    internal val reservationVM: ReservationManagementViewModel by viewModels()
+    internal val playgroundsVM: PlaygroundAvailabilitiesViewModel by viewModels()
 
-    // View Model
-    internal val viewModel: PlaygroundAvailabilitiesViewModel by viewModels()
+    // menu icons
+    internal var addReservationButton: MenuItem? = null
+    internal var addReservationSlotButton: MenuItem? = null
 
     // calendar
     internal lateinit var calendarView: CalendarView
@@ -37,12 +41,9 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
         super.onViewCreated(view, savedInstanceState)
 
         // determine if we are in 'add mode' or in 'edit mode' (or none)
-        viewModel.reservationManagementMode = ReservationManagementMode.from(
+        reservationVM.reservationManagementMode = ReservationManagementMode.from(
             arguments?.getString("mode")
         )
-
-        if (viewModel.reservationManagementMode == ReservationManagementMode.EDIT_MODE)
-            reservationBundle = arguments?.getBundle("reservation")
 
         /* init app bar and menu */
         this.initAppBar()
@@ -71,14 +72,28 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
 
         /* bottom bar */
         this.setupBottomBar()
-    }
 
-    override fun onResume() {
-        super.onResume()
+        // * Manage add/edit mode *
 
-        // TODO: remove
-        showToasty("info", requireContext(),
-            "$arguments"
-        )
+        /* (if necessary) switch to add/edit mode */
+        reservationVM.reservationManagementMode?.let { _ ->
+            // retrieve the reservation data to edit
+            arguments?.getBundle("reservation")?.let {
+                reservationVM.setReservationBundle(it)
+            }
+
+            reservationVM.reservationBundle.observe(viewLifecycleOwner) { newBundle ->
+                // change selected date
+                newBundle.getString("start_time")?.let {
+                    val startTime = LocalDateTime.parse(it)
+                    playgroundsVM.setSelectedDate(startTime.toLocalDate())
+
+                    playgroundAvailabilitiesAdapter.reservationBundle = newBundle
+                    playgroundAvailabilitiesAdapter.notifyDataSetChanged()
+                }
+            }
+
+            this.switchToAddOrEditMode()
+        }
     }
 }
