@@ -7,7 +7,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
 import it.polito.mad.sportapp.model.Repository
-import it.polito.mad.sportapp.reservation_management.ReservationManagementMode
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -133,8 +132,8 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
     }
 
     fun isAvailablePlaygroundsLoaded(): Boolean = isAvailablePlaygroundsLoadedFlag.value ?: false
-    fun setAvailablePlaygroundsLoaded() {
-        _isAvailablePlaygroundsLoadedFlag.value = true
+    fun setAvailablePlaygroundsLoaded(loaded: Boolean = true) {
+        _isAvailablePlaygroundsLoadedFlag.value = loaded
     }
 
     /* selected sport */
@@ -142,7 +141,7 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
         this._selectedSport.value = selectedSport
     }
 
-    fun emptyPlaygroundAvailabilities() {
-        this._availablePlaygroundsPerSlot.value?.clear()
+    fun clearAvailablePlaygroundsPerSlot() {
+        _availablePlaygroundsPerSlot.value = mutableMapOf()
     }
 }

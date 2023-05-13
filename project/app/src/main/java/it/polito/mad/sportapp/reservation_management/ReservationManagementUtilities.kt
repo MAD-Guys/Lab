@@ -33,6 +33,8 @@ enum class ReservationManagementMode(
     }
 }
 
+class ReservationManagementModeWrapper(var mode: ReservationManagementMode?)
+
 class ReservationManagementUtilities {
     companion object {
         fun createBundleFrom(reservation: DetailedReservation?, slotDuration: Duration): Bundle {

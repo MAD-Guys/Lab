@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
-import it.polito.mad.sportapp.reservation_management.ReservationManagementMode
+import it.polito.mad.sportapp.reservation_management.ReservationManagementModeWrapper
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -18,10 +18,11 @@ class PlaygroundAvailabilitiesAdapter(
     playgroundAvailabilities: Map<LocalDateTime, List<DetailedPlaygroundSport>>,
     internal var selectedDate: LocalDate,
     private val slotDuration: Duration,
-    private val reservationManagementMode: ReservationManagementMode?,
+    internal var reservationManagementModeWrapper: ReservationManagementModeWrapper,
     private var originalReservationBundle: Bundle?,
     internal var reservationBundle: Bundle?,
     private val setReservationBundle: (Bundle) -> Unit,
+    private val switchToAddMode: () -> Unit,
     private val navigateToPlayground: (Int, LocalDateTime) -> Unit
 ) : RecyclerView.Adapter<AbstractTimeSlotVH>()
 {
@@ -63,8 +64,8 @@ class PlaygroundAvailabilitiesAdapter(
 
         return when(viewType) {
             R.layout.time_slot_availabilities_container -> TimeSlotVH(
-                timeSlotView, navigateToPlayground, reservationManagementMode,
-                reservationBundle, setReservationBundle
+                timeSlotView, navigateToPlayground, reservationManagementModeWrapper,
+                reservationBundle, setReservationBundle, switchToAddMode
             )
             R.layout.no_available_playgrounds_box -> NoAvailablePlaygroundsVH(timeSlotView)
             else -> throw Exception("Unexpected view found in onCreateViewHolder")
@@ -82,7 +83,8 @@ class PlaygroundAvailabilitiesAdapter(
     }
 
     fun smartUpdatePlaygroundAvailabilities(
-        newPlaygroundAvailabilities: Map<LocalDateTime, List<DetailedPlaygroundSport>>
+        newPlaygroundAvailabilities: Map<LocalDateTime, List<DetailedPlaygroundSport>>,
+        recreateAll:Boolean = false
     ) {
         val newPlaygroundAvailabilitiesSelections = this.computeSelectionsOf(newPlaygroundAvailabilities)
 
@@ -107,6 +109,9 @@ class PlaygroundAvailabilitiesAdapter(
                     (playgroundAvailabilities.isNotEmpty() && newPlaygroundAvailabilities.isEmpty()))
                     return false
 
+                if(recreateAll)
+                    return false
+
                 // from <some availabilities> to <some other availabilities>
                 val newTimeSlots = newPlaygroundAvailabilities.keys.toList().sorted()
 
@@ -125,6 +130,9 @@ class PlaygroundAvailabilitiesAdapter(
                     return false
 
                 // from <some availabilities> to <some other availabilities>
+                if(recreateAll)
+                    return false
+
                 val oldTimeSlots = timeSlots
                 val oldTimeSlot = oldTimeSlots[oldItemPosition]
                 val oldPlaygroundsSelections = playgroundAvailabilitiesSelections[oldTimeSlot]!!
@@ -147,7 +155,6 @@ class PlaygroundAvailabilitiesAdapter(
                     }
                 }
             }
-
         })
 
         // update playground availabilities

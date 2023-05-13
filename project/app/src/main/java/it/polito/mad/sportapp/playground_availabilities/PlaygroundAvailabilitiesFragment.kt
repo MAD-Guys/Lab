@@ -44,7 +44,7 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
         super.onViewCreated(view, savedInstanceState)
 
         /* add/edit mode setup */
-        this.addOrEditModeSetup()
+        this.manageAddOrEditModeParams()
 
         playgroundsVM.loadAllSportsAsync(sportIdToShow)
 
@@ -78,30 +78,38 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
 
         // * Manage add/edit mode *
 
-        if (reservationVM.reservationManagementMode != null) {
-            // set reservation selection observer
-            reservationVM.reservationBundle.observe(viewLifecycleOwner) { newBundle ->
-                // update slots selections
-                playgroundAvailabilitiesAdapter.reservationBundle = newBundle
+        // set reservation selection observer
+        reservationVM.reservationBundle.observe(viewLifecycleOwner) { newBundle ->
+            // update slots selections
+            playgroundAvailabilitiesAdapter.reservationBundle = newBundle
 
-                // refresh recycler view
-                playgroundAvailabilitiesAdapter.smartUpdatePlaygroundAvailabilities(
-                    playgroundsVM.getAvailablePlaygroundsOnSelectedDate()
-                )
+            // refresh recycler view
+            playgroundAvailabilitiesAdapter.smartUpdatePlaygroundAvailabilities(
+                playgroundsVM.getAvailablePlaygroundsOnSelectedDate()
+            )
 
-                // check if at least a slot has been selected
-                addReservationSlotButton?.icon = AppCompatResources.getDrawable(
-                    requireContext(),
-                    if(newBundle.getString("start_slot") != null)
-                    // a slot has been selected -> set white icon
-                        R.drawable.baseline_more_time_24
-                    else // no slot is still selected -> set blurred icon
-                        R.drawable.baseline_more_time_24_blurred
-                )
-            }
-
-            /* (if necessary) switch to add/edit mode */
-            this.switchToAddOrEditMode()
+            // check if at least a slot has been selected
+            addReservationSlotButton?.icon = AppCompatResources.getDrawable(
+                requireContext(),
+                if(newBundle.getString("start_slot") != null)
+                // a slot has been selected -> set white icon
+                    R.drawable.baseline_more_time_24
+                else // no slot is still selected -> set blurred icon
+                    R.drawable.baseline_more_time_24_blurred
+            )
         }
+
+        /* (if necessary) switch to add/edit mode */
+        if (reservationVM.reservationManagementModeWrapper.mode != null) {
+            this.setupAddOrEditModeView()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        // to not show red dot temporary state when coming back to this view:
+        // clear available playgrounds data (and unset flag)
+        playgroundsVM.clearAvailablePlaygroundsPerSlot()
     }
 }

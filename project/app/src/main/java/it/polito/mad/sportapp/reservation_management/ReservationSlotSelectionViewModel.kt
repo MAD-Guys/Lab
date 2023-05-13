@@ -5,16 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.sportapp.model.Repository
 import javax.inject.Inject
 
 @HiltViewModel
-class ReservationManagementViewModel @Inject constructor(
-    repository: Repository
-): ViewModel()
+class ReservationManagementViewModel @Inject constructor(): ViewModel()
 {
     // says if we are in add/edit mode or not
-    internal var reservationManagementMode: ReservationManagementMode? = null
+    internal var reservationManagementModeWrapper: ReservationManagementModeWrapper =
+        ReservationManagementModeWrapper(null)
 
     // reservation data received from previous view
     internal var originalReservationBundle: Bundle? = null
@@ -28,5 +26,4 @@ class ReservationManagementViewModel @Inject constructor(
     }
 
     fun isStartSlotSet(): Boolean = reservationBundle.value?.getString("start_slot") != null
-    fun isEndSlotSet()  : Boolean = reservationBundle.value?.getString("end_slot") != null
 }

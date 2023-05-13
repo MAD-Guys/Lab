@@ -40,9 +40,9 @@ import java.util.Locale
 import kotlin.math.min
 
 /* add/edit mode setup */
-internal fun PlaygroundAvailabilitiesFragment.addOrEditModeSetup() {
+internal fun PlaygroundAvailabilitiesFragment.manageAddOrEditModeParams() {
     // determine if we are in 'add mode' or in 'edit mode' (or none)
-    reservationVM.reservationManagementMode = ReservationManagementMode.from(
+    reservationVM.reservationManagementModeWrapper.mode = ReservationManagementMode.from(
         arguments?.getString("mode")
     )?.also { mode ->
         // * if so, save the received reservation bundle  *
@@ -60,14 +60,13 @@ internal fun PlaygroundAvailabilitiesFragment.addOrEditModeSetup() {
         }
     }
 
-
     // restrict the sport to show (just the one of the reservation to be edited, if any)
     sportIdToShow = reservationVM.originalReservationBundle?.getInt("sport_id")
 
     if (sportIdToShow == null || sportIdToShow == 0) {
         sportIdToShow = reservationVM.reservationBundle.value?.getInt("sport_id")
-        if (sportIdToShow == 0)
-            sportIdToShow = null
+
+        if (sportIdToShow == 0) sportIdToShow = null
     }
 }
 
@@ -98,7 +97,7 @@ internal fun PlaygroundAvailabilitiesFragment.initMenu() {
             addReservationButton = menu.findItem(R.id.add_reservation_button)
             addReservationSlotButton = menu.findItem(R.id.add_reservation_slot_button)
 
-            if (reservationVM.reservationManagementMode == null) {
+            if (reservationVM.reservationManagementModeWrapper.mode == null) {
                 // Playgrounds availabilities view -> show plus button
                 addReservationButton!!.isVisible = true
             }
@@ -252,7 +251,7 @@ internal fun PlaygroundAvailabilitiesFragment.initSelectedSportSpinner() {
         R.layout.simple_spinner_item,
         playgroundsVM.sports.value ?: mutableListOf()
     ).also {
-        it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        it.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
     }
 
     // initialize sport Spinner
@@ -343,7 +342,10 @@ internal fun PlaygroundAvailabilitiesFragment.initAvailablePlaygroundsObserver()
         )
 
         if(it.isNotEmpty()) {
-            playgroundsVM.setAvailablePlaygroundsLoaded()
+            playgroundsVM.setAvailablePlaygroundsLoaded(true)
+        }
+        else {
+            playgroundsVM.setAvailablePlaygroundsLoaded(false)
         }
     }
 }
@@ -362,7 +364,7 @@ internal fun PlaygroundAvailabilitiesFragment.initSelectedSportObservers() {
     // selected sport observer
     playgroundsVM.selectedSport.observe(this) {
         // empty current playground availabilities
-        playgroundsVM.emptyPlaygroundAvailabilities()
+        playgroundsVM.clearAvailablePlaygroundsPerSlot()
 
         // retrieve new playground availabilities for the current month and the current sport
         playgroundsVM.updatePlaygroundAvailabilitiesForCurrentMonthAndSport()
@@ -378,18 +380,21 @@ internal fun PlaygroundAvailabilitiesFragment.setupAvailablePlaygroundsRecyclerV
         playgroundsVM.getAvailablePlaygroundsOnSelectedDate(),
         playgroundsVM.selectedDate.value ?: playgroundsVM.defaultDate,
         playgroundsVM.slotDuration,
-        reservationVM.reservationManagementMode,
+        reservationVM.reservationManagementModeWrapper,
         reservationVM.originalReservationBundle,
         reservationVM.reservationBundle.value,
         reservationVM::setReservationBundle,
-    ) { playgroundId, selectedSlot ->
+        this::switchToAddMode
+    ) { // callback to navigate to Playground details
+        playgroundId, selectedSlot ->
 
         val params = bundleOf(
             "id_playground" to playgroundId,
             "selected_slot" to selectedSlot.toString()
         )
         // navigate to playground details view
-        findNavController().navigate(R.id.action_playgroundAvailabilitiesFragment_to_PlaygroundDetailsFragment, params)
+        findNavController().navigate(
+            R.id.action_playgroundAvailabilitiesFragment_to_PlaygroundDetailsFragment, params)
     }
 
     // init recycler view
@@ -411,7 +416,7 @@ internal fun PlaygroundAvailabilitiesFragment.setupBottomBar() {
 }
 
 /* add/edit mode */
-internal fun PlaygroundAvailabilitiesFragment.switchToAddOrEditMode() {
+internal fun PlaygroundAvailabilitiesFragment.setupAddOrEditModeView() {
     /* app bar */
     val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
 
@@ -419,7 +424,7 @@ internal fun PlaygroundAvailabilitiesFragment.switchToAddOrEditMode() {
         // show back arrow and the right title
         it.setDisplayHomeAsUpEnabled(true)
         it.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
-        it.title = reservationVM.reservationManagementMode!!.appBarTitle
+        it.title = reservationVM.reservationManagementModeWrapper.mode!!.appBarTitle
     }
 
     /* menu */
@@ -432,15 +437,33 @@ internal fun PlaygroundAvailabilitiesFragment.switchToAddOrEditMode() {
 
     // change current month color
     val selectedMonthBar = requireView().findViewById<View>(R.id.app_bar_layout)
-    selectedMonthBar.setBackgroundResource(reservationVM.reservationManagementMode!!.variantColorId)
+    selectedMonthBar.setBackgroundResource(reservationVM.reservationManagementModeWrapper.mode!!.variantColorId)
 
     // change color to the selected date bar
     val selectedDateLabelBox = requireView().findViewById<View>(R.id.selected_date_label_box)
-    selectedDateLabelBox.setBackgroundResource(reservationVM.reservationManagementMode!!.variantColorId)
+    selectedDateLabelBox.setBackgroundResource(reservationVM.reservationManagementModeWrapper.mode!!.variantColorId)
 
     // hide bottom bar
     val bottomBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation_bar)
     bottomBar.visibility = View.GONE
+}
+
+private fun PlaygroundAvailabilitiesFragment.switchToAddMode() {
+    // change mode to ADD_MODE
+    reservationVM.reservationManagementModeWrapper.mode = ReservationManagementMode.ADD_MODE
+
+    // update recycler view adapter
+    playgroundAvailabilitiesAdapter.reservationManagementModeWrapper.mode =
+        reservationVM.reservationManagementModeWrapper.mode
+    playgroundAvailabilitiesAdapter.reservationBundle = reservationVM.reservationBundle.value
+
+    playgroundAvailabilitiesAdapter.smartUpdatePlaygroundAvailabilities(
+        playgroundsVM.getAvailablePlaygroundsOnSelectedDate(),
+        recreateAll = true
+    )
+
+    // update view
+    this.setupAddOrEditModeView()
 }
 
 /* utils */
