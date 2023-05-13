@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
@@ -28,6 +29,7 @@ internal fun PlaygroundDetailsFragment.initYourReview() {
     yourReviewEditText = yourReview.findViewById(R.id.reviewInputBody)
     addReviewButton = yourReview.findViewById(R.id.buttonAddReview)
     editReviewButton = yourReview.findViewById(R.id.buttonEditReview)
+    deleteReviewButton = yourReview.findViewById(R.id.buttonDeleteReview)
     saveReviewButton = yourReview.findViewById(R.id.buttonSaveReview)
     existingReview = yourReview.findViewById(R.id.existingReview)
     writeReview = yourReview.findViewById(R.id.writeReview)
@@ -38,7 +40,33 @@ internal fun PlaygroundDetailsFragment.initYourReview() {
     else
         yourUsername.text = viewModel.yourReview.value?.username
 
-    if ( //Case 1: no rate and no review
+    if( //Case 0: Edit mode
+        viewModel.isEditMode()
+    ){
+        yourReviewDate.text = viewModel.yourReview.value?.publicationDate?.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+        yourReviewDate.visibility = TextView.VISIBLE
+        yourQualityRating.rating = viewModel.yourReview.value?.qualityRating!!
+        yourFacilitiesRating.rating = viewModel.yourReview.value?.facilitiesRating!!
+        yourReviewTitle.text = viewModel.yourReview.value?.title
+        yourReviewText.text = viewModel.yourReview.value?.review!!
+        yourReviewEditTitle.setText(
+            viewModel.getTempTitle(),
+            TextView.BufferType.EDITABLE
+        )
+        yourReviewEditText.setText(
+            viewModel.getTempText(),
+            TextView.BufferType.EDITABLE
+        )
+        yourReviewLastUpdate.text = viewModel.yourReview.value?.lastUpdateDate?.format(
+            DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+        if(viewModel.yourReview.value?.lastUpdateDate?.isEqual(viewModel.yourReview.value?.publicationDate) == true){
+            yourReviewLastUpdateContainer.visibility = LinearLayout.GONE
+        }
+        addReviewButton.visibility = Button.GONE
+        existingReview .visibility = LinearLayout.GONE
+        writeReview.visibility = LinearLayout.VISIBLE
+
+    } else if ( //Case 1: no rate and no review
         (viewModel.yourReview.value?.id  == 0)
         && (viewModel.yourReview.value?.qualityRating == 0f)
         && (viewModel.yourReview.value?.facilitiesRating == 0f)
@@ -93,6 +121,7 @@ internal fun PlaygroundDetailsFragment.initYourReview() {
     yourFacilitiesRating.setOnRatingBarChangeListener { _, fl, _ -> handleFacilitiesRatingBar(fl) }
     addReviewButton.setOnClickListener { handleAddReviewButton() }
     editReviewButton.setOnClickListener { handleEditReviewButton() }
+    deleteReviewButton.setOnClickListener { handleDeleteReviewButton() }
     saveReviewButton.setOnClickListener { handleSaveReviewButton() }
 
     yourReviewContainer.addView(yourReview)
@@ -115,21 +144,64 @@ internal fun PlaygroundDetailsFragment.initReviewList() {
 internal fun PlaygroundDetailsFragment.handleQualityRatingBar(rating: Float) {
     viewModel.updateQualityRating(rating)
     showToasty("success", requireContext(), "New quality rating saved!")
+
+    //if the user is editing, save the current status
+    if(viewModel.isEditMode()){
+        viewModel.saveEditStatus(yourReviewEditTitle.text.toString(), yourReviewEditText.text.toString())
+    }
+
+    // reload the playground with the new rating
+    viewModel.clearPlayground()
+    viewModel.getPlaygroundFromDb(viewModel.playground.value!!.playgroundId)
 }
 
 internal fun PlaygroundDetailsFragment.handleFacilitiesRatingBar(rating: Float) {
     viewModel.updateFacilitiesRating(rating)
     showToasty("success", requireContext(), "New facilities rating saved!")
+
+    //if the user is editing, save the current status
+    if(viewModel.isEditMode()){
+        viewModel.saveEditStatus(yourReviewEditTitle.text.toString(), yourReviewEditText.text.toString())
+    }
+
+    // reload the playground with the new rating
+    viewModel.clearPlayground()
+    viewModel.getPlaygroundFromDb(viewModel.playground.value!!.playgroundId)
 }
 
 internal fun PlaygroundDetailsFragment.handleAddReviewButton() {
     addReviewButton.visibility = Button.GONE
     writeReview.visibility = LinearLayout.VISIBLE
+    viewModel.setEditMode(true)
 }
 
 internal fun PlaygroundDetailsFragment.handleEditReviewButton() {
     existingReview.visibility = LinearLayout.GONE
     writeReview.visibility = LinearLayout.VISIBLE
+    viewModel.setEditMode(true)
+}
+
+internal fun PlaygroundDetailsFragment.handleDeleteReviewButton() {
+
+    AlertDialog.Builder(requireContext())
+        .setMessage("Are you sure to delete this review?")
+        .setPositiveButton("YES") { _, _ ->
+            // delete the review
+            viewModel.deleteReview()
+
+            showToasty(
+                "success",
+                requireContext(),
+                "Review correctly deleted"
+            )
+
+            // reload the playground with the new rating
+            viewModel.clearPlayground()
+            viewModel.getPlaygroundFromDb(viewModel.playground.value!!.playgroundId)
+        }
+        .setNegativeButton("NO") { d, _ -> d.cancel() }
+        .create()
+        .show()
 }
 
 internal fun PlaygroundDetailsFragment.handleSaveReviewButton() {
@@ -156,6 +228,8 @@ internal fun PlaygroundDetailsFragment.handleSaveReviewButton() {
         yourReviewTitle.text.toString(),
         yourReviewText.text.toString()
     )
+
+    viewModel.setEditMode(false)
 
     showToasty("success", requireContext(), "Review correctly saved!")
 }

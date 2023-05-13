@@ -96,6 +96,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:text="🏀"
+                            android:textColor="@color/black"
                             android:textSize="18sp"
                             />
 
@@ -352,6 +353,20 @@
                             android:progressTint="@color/primary_orange"
                             android:rating="4.5" />
 
+                        <TextView
+                            android:id="@+id/noQualityRatingMessage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="4sp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
+                            android:text="No rating available"
+                            android:textSize="20sp"
+                            tools:ignore="HardcodedText"
+                            android:visibility="gone"
+                            />
+
                     </LinearLayout>
 
                     <!-- Facilities -->
@@ -380,6 +395,21 @@
                             android:layout_height="wrap_content"
                             android:progressTint="@color/primary_orange"
                             android:rating="2.5" />
+
+                        <TextView
+                            android:id="@+id/noFacilitiesRatingMessage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="4sp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
+                            android:text="No rating available"
+                            android:textSize="20sp"
+                            tools:ignore="HardcodedText"
+                            android:visibility="gone"
+                            />
+
                     </LinearLayout>
 
                     <!-- Your review -->

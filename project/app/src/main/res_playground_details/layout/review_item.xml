@@ -11,7 +11,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="16dp"
+        >
 
         <TextView
             android:id="@+id/reviewTitle"
@@ -23,6 +25,7 @@
             android:paddingTop="16dp"
             android:text="Review Title"
             android:textColor="@color/black"
+            android:textStyle="bold"
             android:textSize="20sp" />
 
         <LinearLayout
@@ -87,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:progressTint="@color/primary_orange"
-                android:rating="2.5" />
+                android:rating="2.0" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -107,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:progressTint="@color/primary_orange"
-                android:rating="2.5" />
+                android:rating="3.0" />
 
         </LinearLayout>
 
@@ -116,7 +119,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginHorizontal="8dp"
-            android:layout_marginVertical="8dp"
+            android:layout_marginVertical="16dp"
             android:background="?android:attr/listDivider" />
 
         <TextView
@@ -126,7 +129,6 @@
             android:fontFamily="@font/poppins_medium"
             android:includeFontPadding="false"
             android:paddingHorizontal="16dp"
-            android:paddingBottom="8dp"
             android:text="@string/review_lorem_ipsum"
             android:textColor="@color/black"
             android:textSize="16sp" />
@@ -137,7 +139,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:paddingHorizontal="16dp"
-            android:paddingBottom="16dp"
+            android:paddingTop="8dp"
             android:visibility="gone"
             >
 

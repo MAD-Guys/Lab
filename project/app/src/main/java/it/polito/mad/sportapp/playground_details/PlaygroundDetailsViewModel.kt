@@ -8,6 +8,7 @@ import it.polito.mad.sportapp.entities.PlaygroundInfo
 import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.model.Repository
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
@@ -16,11 +17,15 @@ class PlaygroundDetailsViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
 
-    private val _playground = MutableLiveData<PlaygroundInfo>()
-    val playground : LiveData<PlaygroundInfo> = _playground
+    private val _playground = MutableLiveData<PlaygroundInfo?>()
+    val playground : LiveData<PlaygroundInfo?> = _playground
 
     private val _yourReview = MutableLiveData<Review>()
     val yourReview : LiveData<Review> = _yourReview
+
+    private var _edit = false
+    private var _tempTitle = ""
+    private var _tempText = ""
 
     fun getPlaygroundFromDb(id : Int) {
         // get playground from database
@@ -30,6 +35,10 @@ class PlaygroundDetailsViewModel @Inject constructor(
 
         // start db thread
         dbThread.start()
+    }
+
+    fun clearPlayground() {
+        _playground.postValue(null)
     }
 
     fun setYourReview(){
@@ -77,7 +86,6 @@ class PlaygroundDetailsViewModel @Inject constructor(
 
         val dbThread = Thread {
             repository.updateReview(updatedReview)
-            _yourReview.postValue(repository.getReviewByUserIdAndPlaygroundId(1, _playground.value!!.playgroundId))
         }
 
         // start db thread
@@ -99,10 +107,34 @@ class PlaygroundDetailsViewModel @Inject constructor(
 
         val dbThread = Thread {
             repository.updateReview(updatedReview)
-            _yourReview.postValue(repository.getReviewByUserIdAndPlaygroundId(1, _playground.value!!.playgroundId))
         }
 
         // start db thread
         dbThread.start()
     }
+
+    fun deleteReview(){
+        val dbThread = Thread {
+            repository.deleteReview(_yourReview.value!!)
+        }
+
+        // start db thread
+        dbThread.start()
+    }
+
+    fun setEditMode(b : Boolean) {
+        _edit = b
+    }
+
+    fun isEditMode() :Boolean {
+        return _edit
+    }
+
+    fun saveEditStatus(title: String, text: String){
+        _tempTitle = title
+        _tempText = text
+    }
+
+    fun getTempTitle() = _tempTitle
+    fun getTempText() = _tempText
 }

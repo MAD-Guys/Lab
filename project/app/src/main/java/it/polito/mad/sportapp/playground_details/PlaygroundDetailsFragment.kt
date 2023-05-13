@@ -42,6 +42,8 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
 
     internal lateinit var playgroundQualityRatingBar: RatingBar
     internal lateinit var playgroundFacilitiesRatingBar: RatingBar
+    internal lateinit var noQualityRatingMessage: TextView
+    internal lateinit var noFacilitiesRatingMessage: TextView
 
     internal lateinit var yourReviewContainer: LinearLayout
     internal lateinit var reviewList: RecyclerView
@@ -60,6 +62,7 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
     internal lateinit var yourReviewEditText: EditText
     internal lateinit var addReviewButton: Button
     internal lateinit var editReviewButton: Button
+    internal lateinit var deleteReviewButton: Button
     internal lateinit var saveReviewButton: Button
     internal lateinit var existingReview: LinearLayout
     internal lateinit var writeReview: LinearLayout

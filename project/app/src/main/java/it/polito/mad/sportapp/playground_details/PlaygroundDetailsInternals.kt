@@ -7,6 +7,8 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.ImageView
+import android.widget.RatingBar
+import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuHost
@@ -29,6 +31,8 @@ internal fun PlaygroundDetailsFragment.retrieveViews() {
     playgroundPrice = requireView().findViewById(R.id.playgroundPrice)
     playgroundQualityRatingBar = requireView().findViewById(R.id.overallQualityRatingBar)
     playgroundFacilitiesRatingBar = requireView().findViewById(R.id.overallFacilitiesRatingBar)
+    noQualityRatingMessage = requireView().findViewById(R.id.noQualityRatingMessage)
+    noFacilitiesRatingMessage = requireView().findViewById(R.id.noFacilitiesRatingMessage)
     yourReviewContainer = requireView().findViewById(R.id.yourReviewContainer)
     reviewList = requireView().findViewById(R.id.reviews_recyclerView)
     addReservationButton = requireView().findViewById(R.id.buttonAddReservation)
@@ -51,6 +55,28 @@ internal fun PlaygroundDetailsFragment.initViews() {
 
     addReservationButton.setOnClickListener { handleAddReservationButton() }
     directionsButton.setOnClickListener { handleDirectionsButton() }
+
+
+    //hide the rating bars when no evaluation are available
+    if(viewModel.playground.value?.overallRating == 0f){
+        overallRatingBar.visibility = RatingBar.GONE
+    } else {
+        overallRatingBar.visibility = RatingBar.VISIBLE
+    }
+    if(viewModel.playground.value?.overallQualityRating == 0f){
+        playgroundQualityRatingBar.visibility = RatingBar.GONE
+        noQualityRatingMessage.visibility = TextView.VISIBLE
+    } else {
+        playgroundQualityRatingBar.visibility = RatingBar.VISIBLE
+        noQualityRatingMessage.visibility = TextView.GONE
+    }
+    if(viewModel.playground.value?.overallFacilitiesRating == 0f){
+        playgroundFacilitiesRatingBar.visibility = RatingBar.GONE
+        noFacilitiesRatingMessage.visibility = TextView.VISIBLE
+    } else {
+        playgroundFacilitiesRatingBar.visibility = RatingBar.VISIBLE
+        noFacilitiesRatingMessage.visibility = TextView.GONE
+    }
 }
 
 // manage menu item selection
