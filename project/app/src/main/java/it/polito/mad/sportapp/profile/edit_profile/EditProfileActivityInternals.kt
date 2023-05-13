@@ -18,7 +18,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
-import androidx.core.view.children
 import androidx.lifecycle.Lifecycle
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -156,9 +155,6 @@ internal fun EditProfileFragment.setupTemporarySports(sportsList: List<SportEnti
             sportsTemp[tempSport.name] = Sport(tempSport.id, tempSport.name, tempSport.toString(), false, Level.NO_LEVEL)
         }
     }
-
-    // * added to deal with a no-sense ChipGroup bug inherent to the last Chip *
-    sportsTemp["pad"] = Sport(0, "pad", "pad", false, Level.NO_LEVEL)
 
     // fills the sportChips
     sportsInit()
@@ -375,9 +371,6 @@ internal fun EditProfileFragment.sportsInit() {
         // save views
         sports[sport] = SportChips(sport, sportChip, sportActualLevelChip)
     }
-
-    // * hide pad sport at the bottom *
-    sportsContainer.children.last().visibility = LinearLayout.GONE
 }
 
 private fun EditProfileFragment.createEditSportChip(sportName: String, parent: ViewGroup): Chip {
