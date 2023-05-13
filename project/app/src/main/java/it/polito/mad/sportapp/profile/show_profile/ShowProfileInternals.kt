@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
@@ -16,7 +15,6 @@ import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.Achievement
 import it.polito.mad.sportapp.entities.SportLevel
@@ -79,6 +77,12 @@ internal fun ShowProfileFragment.viewsSetup() {
     bio = requireView().findViewById(R.id.user_bio)
     profilePicture = requireView().findViewById(R.id.profile_picture)
     backgroundProfilePicture = requireView().findViewById(R.id.background_profile_picture)
+
+    // retrieve sports views
+    noSportsTextView =
+        requireView().findViewById(R.id.no_sports_selected_text_view)
+
+    sportsContainer = requireView().findViewById(R.id.sports_container)
 }
 
 internal fun ShowProfileFragment.observersSetup() {
@@ -118,18 +122,27 @@ internal fun ShowProfileFragment.observersSetup() {
         bio.text = it
     }
 
+    vm.sportsList.observe(viewLifecycleOwner) {
+        if (vm.sportsInflated.value == false && vm.userSportsLoaded.value == true) {
+            if (vm.userSports.value!!.isNotEmpty()) {
+                noSportsTextView.visibility = View.GONE
+                setupSports(vm.userSports.value!!)
+            } else {
+                // show default message
+                noSportsTextView.visibility = View.VISIBLE
+            }
+        }
+    }
+
     vm.userSports.observe(viewLifecycleOwner) {
-
-        val noSportsTextView =
-            requireView().findViewById<TextView>(R.id.no_sports_selected_text_view)
-
-        noSportsTextView.visibility = View.GONE
-
-        if (it.isNotEmpty()) {
-            setupSports(it)
-        } else {
-            // show default message
-            noSportsTextView.visibility = View.VISIBLE
+        if (vm.sportsInflated.value == false && vm.sportsListLoaded.value == true) {
+            if (it.isNotEmpty()) {
+                noSportsTextView.visibility = View.GONE
+                setupSports(it)
+            } else {
+                // show default message
+                noSportsTextView.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -143,17 +156,18 @@ internal fun ShowProfileFragment.observersSetup() {
 internal fun ShowProfileFragment.setupSports(userSports: List<SportLevel>) {
     /* manage sports */
 
-    // retrieve and clean sports container
-    val sportsContainer = requireView().findViewById<ChipGroup>(R.id.sports_container)
+    // clean sports container amd sportChips
     sportsContainer.removeAllViews()
+    sportChips.clear()
 
     // create sports chips
     userSports.forEach {
 
-        val sportId = getDbSportId(it.sport!!)
+        val sportId: Int = getDbSportId(it.sport!!)
+        val sportString: String = getDbSportName(it.sport) ?: it.sport
 
         if (sportId != -1) {
-            val sport = Sport.from(sportId, it.sport, it.level!!)
+            val sport = Sport.from(sportId, it.sport, sportString, it.level!!)
             val sportChip = createSportChip(sport, sportsContainer)
 
             sportChips[it.sport] = sportChip
@@ -167,6 +181,8 @@ internal fun ShowProfileFragment.setupSports(userSports: List<SportLevel>) {
     }.forEach { (_, chip) ->
         sportsContainer.addView(chip)
     }
+
+    vm.setSportsInflated(true)
 }
 
 private fun ShowProfileFragment.getDbSportId(sportName: String): Int {
@@ -179,6 +195,18 @@ private fun ShowProfileFragment.getDbSportId(sportName: String): Int {
     }
 
     return -1
+}
+
+private fun ShowProfileFragment.getDbSportName(sportName: String): String? {
+
+    vm.sportsList.value?.let { sportList ->
+        val sport = sportList.find { it.name == sportName }
+        sport?.let {
+            return it.toString()
+        }
+    }
+
+    return null
 }
 
 internal fun ShowProfileFragment.buttonsInit() {
@@ -341,7 +369,7 @@ internal fun ShowProfileFragment.createSportChip(sport: Sport, parent: ViewGroup
 
     chip.apply {
         activity?.setVisible(sport.selected)
-        text = sport.name
+        text = sport.displayName
         // set level characteristics
         when (sport.level) {
             Level.BEGINNER -> {

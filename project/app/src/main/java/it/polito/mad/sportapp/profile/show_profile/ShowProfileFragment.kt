@@ -12,6 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.getPictureFromInternalStorage
@@ -38,6 +39,8 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
     internal lateinit var messageButton: Button
 
     // Sport views
+    internal lateinit var noSportsTextView: TextView
+    internal lateinit var sportsContainer: ChipGroup
     internal var sportChips: MutableMap<String, Chip> = HashMap()
 
     // sport data
@@ -85,7 +88,10 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
         super.onResume()
 
         /*  The information is retrieved and showed in onResume() because  *
-         *  it has to be refreshed after saving in edit mode  */
+         *  it has to be refreshed after resuming the fragment */
+
+        // set sports inflated flag to false
+        vm.setSportsInflated(false)
 
         // retrieve user information from db
         vm.loadUserInformationFromDb(1)

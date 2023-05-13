@@ -49,21 +49,22 @@
     <string name="intermediate_sport_level">Intermediate</string>
     <string name="expert_sport_level">Expert</string>
     <string name="pro_sport_level">Pro</string>
+    <string name="no_sport_selected">No sports selected</string>
 
     <!-- achievements -->
     <string name="achievements_title">Achievements</string>
-    <string name="at_least_one_sport_achievement_description">At least one sport achievement description</string>
-    <string name="at_least_one_sport_achievement_text">You played at least one sport</string>
-    <string name="at_least_five_sports_achievement_description">At least five sports achievement description</string>
-    <string name="at_least_five_sports_achievement_text">You played at least five sports</string>
+    <string name="at_least_one_sport_achievement_description">At least 1 sport achievement description</string>
+    <string name="at_least_one_sport_achievement_text">You played at least 1 sport</string>
+    <string name="at_least_five_sports_achievement_description">At least 5 sports achievement description</string>
+    <string name="at_least_five_sports_achievement_text">You played at least 5 sports</string>
     <string name="all_sports_achievement_description">All sports achievement description</string>
     <string name="all_sports_achievement_text">You played all the available sports</string>
-    <string name="at_least_three_matches_achievement_description">At least three matches achievement description</string>
-    <string name="at_least_three_matches_achievement_text">You played at least three games</string>
-    <string name="at_least_ten_matches_achievement_description">At least ten matches achievement description</string>
-    <string name="at_least_ten_matches_achievement_text">You played at least ten games</string>
-    <string name="at_least_twenty_five_matches_achievement_description">At least twenty five matches achievement description</string>
-    <string name="at_least_twenty_five_matches_achievement_text">You played at least twenty five games</string>
+    <string name="at_least_three_matches_achievement_description">At least 3 matches achievement description</string>
+    <string name="at_least_three_matches_achievement_text">You played at least 3 games</string>
+    <string name="at_least_ten_matches_achievement_description">At least 10 matches achievement description</string>
+    <string name="at_least_ten_matches_achievement_text">You played at least 10 games</string>
+    <string name="at_least_twenty_five_matches_achievement_description">At least 25 matches achievement description</string>
+    <string name="at_least_twenty_five_matches_achievement_text">You played at least 25 games</string>
 
     <!-- user bio -->
     <string name="bio_title">Bio</string>
@@ -95,7 +96,6 @@
 
     <!-- sport selection description -->
     <string name="sport_selection_description">Tap on the sports you like and specify your level! 🚀</string>
-    <string name="no_sport_selected">You have not selected any sports yet</string>
 
     <!-- buttons -->
     <string name="confirm_button_description">Confirm button</string>

@@ -147,18 +147,18 @@ internal fun EditProfileFragment.setupTemporarySports(sportsList: List<SportEnti
 
             if (userSport != null) {
                 sportsTemp[tempSport.name] =
-                    Sport(tempSport.id, tempSport.name, true, Level.valueOf(userSport.level!!))
+                    Sport(tempSport.id, tempSport.name, tempSport.toString(), true, Level.valueOf(userSport.level!!))
             } else {
-                sportsTemp[tempSport.name] = Sport(tempSport.id, tempSport.name, false, Level.NO_LEVEL)
+                sportsTemp[tempSport.name] = Sport(tempSport.id, tempSport.name, tempSport.toString(), false, Level.NO_LEVEL)
             }
 
         } else {
-            sportsTemp[tempSport.name] = Sport(tempSport.id, tempSport.name, false, Level.NO_LEVEL)
+            sportsTemp[tempSport.name] = Sport(tempSport.id, tempSport.name, tempSport.toString(), false, Level.NO_LEVEL)
         }
     }
 
     // * added to deal with a no-sense ChipGroup bug inherent to the last Chip *
-    sportsTemp["pad"] = Sport(0, "pad", false, Level.NO_LEVEL)
+    sportsTemp["pad"] = Sport(0, "pad", "pad", false, Level.NO_LEVEL)
 
     // fills the sportChips
     sportsInit()
@@ -359,7 +359,7 @@ internal fun EditProfileFragment.sportsInit() {
         }
 
         // create the Sport Chip
-        val sportChip = createEditSportChip(sport, sportChipWrapper)
+        val sportChip = createEditSportChip(sportsTemp[sport]!!.displayName, sportChipWrapper)
 
         // create the actual Sport level chip
         val sportActualLevelChip =

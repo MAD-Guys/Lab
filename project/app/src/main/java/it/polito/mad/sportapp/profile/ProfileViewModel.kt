@@ -18,6 +18,16 @@ class ProfileViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
 
+    /* sports flags */
+    private val _userSportsLoaded = MutableLiveData<Boolean>().also { it.value = false }
+    val userSportsLoaded: LiveData<Boolean> = _userSportsLoaded
+
+    private val _sportsListLoaded = MutableLiveData<Boolean>().also { it.value = false }
+    val sportsListLoaded: LiveData<Boolean> = _sportsListLoaded
+
+    private val _sportsInflated = MutableLiveData<Boolean>().also { it.value = false }
+    val sportsInflated: LiveData<Boolean> = _sportsInflated
+
     /* user information */
 
     private val _userFirstName = MutableLiveData<String>().also { it.value = "John" }
@@ -60,6 +70,9 @@ class ProfileViewModel @Inject constructor(
         val dbThread = Thread {
             val sports = repository.getAllSports()
             _sportsList.postValue(sports)
+
+            // update db flag
+            _sportsListLoaded.postValue(true)
         }
 
         // start db thread
@@ -83,6 +96,9 @@ class ProfileViewModel @Inject constructor(
             _userBio.postValue(user.bio)
             _userAchievements.postValue(user.achievements)
             _userSports.postValue(user.sportLevel)
+
+            // update db flag
+            _userSportsLoaded.postValue(true)
         }
 
         // start db thread
@@ -146,6 +162,10 @@ class ProfileViewModel @Inject constructor(
 
     fun setUserSports(sports: List<SportLevel>) {
         _userSports.value = sports
+    }
+
+    fun setSportsInflated(value: Boolean) {
+        _sportsInflated.value = value
     }
 
 }
