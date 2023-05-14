@@ -14,13 +14,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.playground_availabilities.recycler_view.PlaygroundAvailabilitiesAdapter
-import it.polito.mad.sportapp.reservation_management.ReservationManagementViewModel
+import it.polito.mad.sportapp.reservation_management.ReservationSlotSelectionViewModel
 
 
 @AndroidEntryPoint
 class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabilities_view) {
     // View Models
-    internal val reservationVM: ReservationManagementViewModel by viewModels()
+    internal val reservationVM: ReservationSlotSelectionViewModel by viewModels()
     internal val playgroundsVM: PlaygroundAvailabilitiesViewModel by viewModels()
 
     // menu icons

@@ -8,7 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class ReservationManagementViewModel @Inject constructor(): ViewModel()
+class ReservationSlotSelectionViewModel @Inject constructor(): ViewModel()
 {
     // says if we are in add/edit mode or not
     internal var reservationManagementModeWrapper: ReservationManagementModeWrapper =
