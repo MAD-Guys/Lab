@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,9 +11,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:orientation="vertical">
 
         <!-- Month bar -->
         <com.google.android.material.appbar.AppBarLayout
@@ -23,6 +22,7 @@
             android:layout_height="wrap_content"
             android:background="@color/current_month_background_color"
             android:theme="@style/AppTheme.AppBarOverlay">
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -97,6 +97,32 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/loading_text"
+                android:paddingTop="16dp"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="@font/poppins_medium"
+                android:textSize="20sp"
+                />
+
+            <ProgressBar
+                style="?android:attr/progressBarStyle"
+                android:layout_width="480dp"
+                android:layout_height="280dp"
+                android:layout_marginStart="100dp"
+                android:indeterminateDrawable="@drawable/stephcurry" />
+        </LinearLayout>
+
+
         <!-- Calendar -->
         <com.kizitonwose.calendar.view.CalendarView
             android:id="@+id/calendar_view"
@@ -106,8 +132,9 @@
             app:cv_dayViewResource="@layout/playground_availabilities_calendar_day_container"
             app:cv_monthHeaderResource="@layout/calendar_header"
             app:cv_outDateStyle="endOfGrid"
-            app:cv_scrollPaged="true"
-            />
+            app:cv_scrollPaged="true">
+
+        </com.kizitonwose.calendar.view.CalendarView>
 
         <!-- selected date label container -->
         <RelativeLayout
@@ -138,7 +165,7 @@
             android:id="@+id/playground_availabilities_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"/>
+            android:nestedScrollingEnabled="false" />
 
     </LinearLayout>
 
