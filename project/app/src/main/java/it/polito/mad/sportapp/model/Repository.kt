@@ -46,6 +46,10 @@ class Repository @Inject constructor(
         return user
     }
 
+    fun usernameAlreadyExists(username: String): Boolean {
+        return userDao.findUsername(username) > 0
+    }
+
     private fun buildAchievements(userId: Int): Map<Achievement, Boolean> {
         val playedMatches = userDao.findPlayedMatches(userId)
         val playedSport = userDao.findPlayedSports(userId).maxOrNull() ?: 0

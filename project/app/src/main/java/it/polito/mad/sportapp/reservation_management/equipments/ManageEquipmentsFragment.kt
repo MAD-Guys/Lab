@@ -25,7 +25,14 @@ class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
         this.initAppBar()
         this.initMenu()
 
-        // TODO
+        // TODO:
+        //  - retrieve all the possible equipments for that playground (name + availableQty)
+        //  - if reservation id exists, retrieve the existing equipments (if any) for that reservation
+        //  - if any, increments/add those equipments quantities to the retrieved ones,
+        //   and show those equipments in the view
+        //  - attach onClickListener to each qty button
+        //  - attach menu containing available equipments to the addEquipment button
+        //  - attach go to reservation summary
     }
 
 }

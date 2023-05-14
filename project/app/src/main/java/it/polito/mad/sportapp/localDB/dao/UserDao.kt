@@ -17,8 +17,8 @@ interface UserDao {
 
     @Query("SELECT username FROM user WHERE id == :id")
     fun findUsernameById(id: Int): String
-    @Query("SELECT * FROM user WHERE username == :username LIMIT 1")
-    fun findByUsername(username: String): User
+    @Query("SELECT COUNT(id) FROM user WHERE username == :username")
+    fun findUsername(username: String): Int
 
     @Query("SELECT * FROM user WHERE id == :id LIMIT 1")
     fun findById(id: Int): User
