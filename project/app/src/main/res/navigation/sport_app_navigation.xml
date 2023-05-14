@@ -86,6 +86,14 @@
                 android:name="mode"
                 android:defaultValue="add" />
         </action>
+        <action
+            android:id="@+id/action_playgroundAvailabilitiesFragment_to_manageEquipmentsFragment"
+            app:destination="@id/manageEquipmentsFragment"
+            app:enterAnim="@anim/custom_animation_slide_in_from_right"
+            app:exitAnim="@anim/custom_animation_slide_out_to_left"
+            app:popEnterAnim="@anim/custom_animation_slide_in_from_left"
+            app:popExitAnim="@anim/custom_animation_slide_out_to_right"
+            app:popUpTo="@id/playgroundAvailabilitiesFragment" />
     </fragment>
     <fragment
         android:id="@+id/eventsListFragment"
@@ -138,5 +146,10 @@
                 android:defaultValue="add" />
         </action>
     </fragment>
+    <fragment
+        android:id="@+id/manageEquipmentsFragment"
+        android:name="it.polito.mad.sportapp.reservation_management.equipments.ManageEquipmentsFragment"
+        android:label="manage_equipments_view"
+        tools:layout="@layout/manage_equipments_view" />
 
 </navigation>

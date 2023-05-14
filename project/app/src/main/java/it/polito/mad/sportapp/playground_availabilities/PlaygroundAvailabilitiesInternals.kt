@@ -31,7 +31,6 @@ import it.polito.mad.sportapp.playground_availabilities.recycler_view.Playground
 import it.polito.mad.sportapp.reservation_management.ReservationManagementMode
 import it.polito.mad.sportapp.showToasty
 import java.time.DayOfWeek
-import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -41,6 +40,9 @@ import kotlin.math.min
 
 /* add/edit mode setup */
 internal fun PlaygroundAvailabilitiesFragment.manageAddOrEditModeParams() {
+    if(reservationVM.reservationManagementModeWrapper.mode != null)
+        return
+
     // determine if we are in 'add mode' or in 'edit mode' (or none)
     reservationVM.reservationManagementModeWrapper.mode = ReservationManagementMode.from(
         arguments?.getString("mode")
@@ -137,28 +139,50 @@ private fun PlaygroundAvailabilitiesFragment.navigateToManageEquipments() {
 
     if (selectedReservationInfo == null) {
         showToasty("error", requireContext(),
-            "Error: cannot go to manage equipments without having selected a reservation",
+            "Error: cannot go to manage equipments without having a reservation",
+            Toasty.LENGTH_LONG)
+        return
+    }
+
+    val bundleStartSlot = selectedReservationInfo.getString("start_slot")
+    val bundleEndSlot = selectedReservationInfo.getString("end_slot")
+    val bundleSlotDurationMins = selectedReservationInfo.getInt("slot_duration_mins").toLong()
+    val bundlePlaygroundId = selectedReservationInfo.getInt("playground_id")
+    val bundleSportId = selectedReservationInfo.getInt("sport_id")
+
+    val errors = mutableListOf<String>()
+
+    if (bundleStartSlot == null)
+        errors.add("a start slot")
+
+    if (bundleSlotDurationMins == 0L)
+        errors.add("the slot duration mins")
+
+    if (bundlePlaygroundId == 0)
+        errors.add("a playground")
+
+    if (bundleSportId == 0)
+        errors.add("a sport")
+
+    if (errors.isNotEmpty()) {
+        showToasty("error", requireContext(), errors.joinToString(
+                prefix = "Error: cannot go to manage equipments without having selected ",
+                separator = ", "
+            ),
             Toasty.LENGTH_LONG)
         return
     }
 
     val params = selectedReservationInfo.also {
-        if(it.getString("end_slot") == null) {
-            // just one slot has been selected -> put manually the end one
-            val startSlot = LocalDateTime.parse(it.getString("start_slot"))
-            val slotDuration = Duration.ofMinutes(it.getInt("slot_duration_mins").toLong())
-            val endSlot = startSlot.plus(slotDuration)
-
-            it.putString("end_slot", endSlot.toString())
+        if(bundleEndSlot == null) {
+            // just one slot has been selected -> put manually the end one (as the same as the start slot)
+            it.putString("end_slot", bundleStartSlot)
         }
     }
 
-    showToasty("info", requireContext(), "Go to edit/add equipments")
-
-
-    // TODO
-    // findNavController().navigate(
-    //     R.id.action_playgroundAvailabilitiesFragment_to_ReservationEquipmentFragment, params)
+    // go to manage equipments
+    findNavController().navigate(
+        R.id.action_playgroundAvailabilitiesFragment_to_manageEquipmentsFragment, params)
 }
 
 

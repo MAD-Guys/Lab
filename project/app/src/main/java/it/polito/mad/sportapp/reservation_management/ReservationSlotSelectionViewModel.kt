@@ -22,7 +22,7 @@ class ReservationManagementViewModel @Inject constructor(): ViewModel()
     internal var reservationBundle: LiveData<Bundle> = _reservationBundle
 
     fun setReservationBundle(bundle: Bundle) {
-        _reservationBundle.value = bundle
+        _reservationBundle.value = Bundle(bundle)
     }
 
     fun isStartSlotSet(): Boolean = reservationBundle.value?.getString("start_slot") != null

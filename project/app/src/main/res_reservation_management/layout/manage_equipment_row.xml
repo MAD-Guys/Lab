@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/equipment_row"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/equipment_row_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="5sp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:baselineAligned="false">
+
+        <LinearLayout
+            android:id="@+id/equipment_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/equipment_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Equipment 1"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_medium"
+                android:includeFontPadding="false"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/equipment_unit_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-1sp"
+                android:fontFamily="@font/poppins_medium"
+                android:includeFontPadding="false"
+                android:text="€5.00"
+                android:textColor="@color/grey"
+                android:textSize="12sp"
+                tools:ignore="TextContrastCheck" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/equipment_quantity_buttons_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/decrement_equipment_button"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="@dimen/equipment_quantity_button_size"
+                android:layout_height="@dimen/equipment_quantity_button_size"
+                android:backgroundTint="@color/primary_orange"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                app:cornerRadius="100dp"
+                app:icon="@drawable/baseline_remove_24"
+                app:iconSize="@dimen/equipment_quantity_button_size"
+                app:iconTint="@color/black"
+                android:contentDescription="@string/decrement_equipment_button_description"
+                tools:ignore="TouchTargetSizeCheck" />
+            <TextView
+                android:id="@+id/equipment_quantity"
+                android:layout_width="38sp"
+                android:layout_height="wrap_content"
+                android:text="3"
+                android:textAlignment="center"
+                android:textSize="23sp"
+                android:fontFamily="@font/poppins_medium"
+                android:textColor="@color/black"
+                android:includeFontPadding="false"/>
+
+            <Button
+                android:id="@+id/increment_equipment_button"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="@dimen/equipment_quantity_button_size"
+                android:layout_height="@dimen/equipment_quantity_button_size"
+                android:backgroundTint="@color/primary_orange"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                app:cornerRadius="100dp"
+                app:icon="@drawable/baseline_add_24"
+                app:iconSize="@dimen/equipment_quantity_button_size"
+                app:iconTint="@color/black"
+                android:contentDescription="@string/increment_equipment_button_description"
+                tools:ignore="TouchTargetSizeCheck" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

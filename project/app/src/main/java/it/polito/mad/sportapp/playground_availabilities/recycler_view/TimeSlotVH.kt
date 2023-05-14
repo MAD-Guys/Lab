@@ -115,6 +115,7 @@ class TimeSlotVH(
                 bundle.putString("start_slot", slot.toString())
                 bundle.putInt("playground_id", playground.playgroundId)
                 bundle.putInt("sport_id", playground.sportId)
+                bundle.putInt("slot_duration_mins", slotDuration.toMinutes().toInt())
             }
             // (2) one (start) slot is already selected ->
             //      check if to either extend the same selection or restart a new one
@@ -127,6 +128,7 @@ class TimeSlotVH(
                 if(selectionState == PlaygroundAvailabilitiesAdapter.SelectionState.SELECTABLE) {
                     // extend selection
                     bundle.putString("end_slot", slot.toString())
+                    bundle.putInt("slot_duration_mins", slotDuration.toMinutes().toInt())
                 }
                 else {
                     // restart selection
@@ -134,6 +136,7 @@ class TimeSlotVH(
                     bundle.remove("end_slot")
                     bundle.putInt("playground_id", playground.playgroundId)
                     bundle.putInt("sport_id", playground.sportId)
+                    bundle.putInt("slot_duration_mins", slotDuration.toMinutes().toInt())
                 }
             }
             // (3) start and end slots were already selected -> ...
@@ -143,6 +146,7 @@ class TimeSlotVH(
                 bundle.remove("end_slot")
                 bundle.putInt("playground_id", playground.playgroundId)
                 bundle.putInt("sport_id", playground.sportId)
+                bundle.putInt("slot_duration_mins", slotDuration.toMinutes().toInt())
             }
 
             // update bundle live data to refresh everything

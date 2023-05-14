@@ -39,11 +39,12 @@ class ReservationManagementUtilities {
     companion object {
         fun createBundleFrom(reservation: DetailedReservation?, slotDuration: Duration): Bundle {
             return bundleOf(
+                "reservation_id" to reservation?.id,
                 "playground_id" to reservation?.playgroundId,
                 "start_slot" to reservation?.startLocalDateTime?.toString(),
                 "end_slot" to reservation?.endLocalDateTime?.minus(slotDuration)?.toString(),
                 "sport_id" to reservation?.sportId,
-                "slot_duration_mins" to 30
+                "slot_duration_mins" to 30,
             )
         }
     }

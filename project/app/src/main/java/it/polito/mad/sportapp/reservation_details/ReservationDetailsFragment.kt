@@ -224,7 +224,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
             noEquipmentMessage.visibility = TextView.GONE
 
             for ((index, e) in viewModel.reservation.value?.equipments!!.withIndex()) {
-                val row = layoutInflater.inflate(R.layout.equipment_row, equipment, false)
+                val row = layoutInflater.inflate(R.layout.manage_equipment_row, equipment, false)
                 row.id = index
                 val equipmentName = row.findViewById<TextView>(R.id.equipmentName)
                 val equipmentQuantity = row.findViewById<TextView>(R.id.equipmentQuantity)
