@@ -70,11 +70,12 @@ internal fun EditProfileFragment.menuInit() {
                 R.id.confirm_button -> {
                     // (the information will be persistently saved in the onPause method)
 
-                    // showing feedback information
-                    showToasty("success", requireContext(), "Information correctly saved!")
-
-                    // navigate back to show profile fragment
-                    navController.popBackStack()
+                    if (username.error == null) {
+                        // navigate back to show profile fragment
+                        navController.popBackStack()
+                    } else {
+                        showToasty("error", requireContext(), "Please fix the errors!")
+                    }
                     true
                 }
 
@@ -103,9 +104,15 @@ internal fun EditProfileFragment.observersSetup() {
         lastName.setText(it)
     }
 
-    // user username observer
+    // user username observers
     vm.userUsername.observe(viewLifecycleOwner) {
         username.setText(it)
+    }
+
+    vm.usernameAlreadyExists.observe(viewLifecycleOwner) {
+        if (it && username.text.toString() != vm.userUsername.value!!) {
+            username.error = getString(R.string.username_already_exists_error)
+        }
     }
 
     // user gender observer
@@ -146,13 +153,21 @@ internal fun EditProfileFragment.setupTemporarySports(sportsList: List<SportEnti
 
             if (userSport != null) {
                 sportsTemp[tempSport.name] =
-                    Sport(tempSport.id, tempSport.name, tempSport.toString(), true, Level.valueOf(userSport.level!!))
+                    Sport(
+                        tempSport.id,
+                        tempSport.name,
+                        tempSport.toString(),
+                        true,
+                        Level.valueOf(userSport.level!!)
+                    )
             } else {
-                sportsTemp[tempSport.name] = Sport(tempSport.id, tempSport.name, tempSport.toString(), false, Level.NO_LEVEL)
+                sportsTemp[tempSport.name] =
+                    Sport(tempSport.id, tempSport.name, tempSport.toString(), false, Level.NO_LEVEL)
             }
 
         } else {
-            sportsTemp[tempSport.name] = Sport(tempSport.id, tempSport.name, tempSport.toString(), false, Level.NO_LEVEL)
+            sportsTemp[tempSport.name] =
+                Sport(tempSport.id, tempSport.name, tempSport.toString(), false, Level.NO_LEVEL)
         }
     }
 
@@ -196,11 +211,12 @@ internal fun EditProfileFragment.setupOnBackPressedCallback() {
         override fun handleOnBackPressed() {
             // (the information will be persistently saved in the onPause method)
 
-            // showing feedback information
-            showToasty("success", requireContext(), "Information correctly saved!")
-
-            // navigate back to show profile fragment
-            navController.popBackStack()
+            if (username.error == null) {
+                // navigate back to show profile fragment
+                navController.popBackStack()
+            } else {
+                showToasty("error", requireContext(), "Please fix the errors!")
+            }
         }
     }
     requireActivity().onBackPressedDispatcher.addCallback(
@@ -266,6 +282,9 @@ internal fun EditProfileFragment.saveInformationOnStorage() {
 
     // update db user information
     vm.updateDbUserInformation(1)
+
+    // showing feedback information
+    showToasty("success", requireContext(), "Information correctly saved!")
 }
 
 internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatcher {
@@ -301,7 +320,18 @@ internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatche
             }
         }
 
-        override fun afterTextChanged(s: Editable?) {}
+        override fun afterTextChanged(s: Editable?) {
+            when (fieldName) {
+                "username" -> {
+                    // check if the username already exists
+                    vm.checkUsername(s.toString())
+
+                    if (s.toString() == "") {
+                        username.error = getString(R.string.username_empty_error)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -343,7 +373,7 @@ internal fun galleryImagesPermission(): String =
 internal fun EditProfileFragment.sportsInit() {
     val sportsContainer = requireView().findViewById<ChipGroup>(R.id.sports_container)
 
-    for ((sportName,sport) in sportsTemp) {
+    for ((sportName, sport) in sportsTemp) {
         // create the horizontal sport chip wrapper
         // (it will contain the sport chip and the level badge, if any)
         val sportChipWrapper = LinearLayout(requireContext()).apply {
@@ -359,7 +389,11 @@ internal fun EditProfileFragment.sportsInit() {
 
         // create the actual Sport level chip
         val sportActualLevelChip =
-            createEditSportLevelBadge(R.drawable.beginner_level_badge, sportChipWrapper, sport.level)
+            createEditSportLevelBadge(
+                R.drawable.beginner_level_badge,
+                sportChipWrapper,
+                sport.level
+            )
 
         // build sport hierarchy
         sportChipWrapper.addView(sportChip)
@@ -451,7 +485,7 @@ internal fun EditProfileFragment.changeSportLevel(sportName: String, level: Leve
             R.dimen.chip_icon_size
     )
     sportChips.actualLevelChip.setIconStartPaddingResource(
-        if(level == Level.INTERMEDIATE)
+        if (level == Level.INTERMEDIATE)
             R.dimen.chip_icon_padding_intermediate
         else
             R.dimen.chip_icon_padding

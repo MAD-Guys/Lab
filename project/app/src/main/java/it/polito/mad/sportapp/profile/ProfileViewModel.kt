@@ -30,6 +30,9 @@ class ProfileViewModel @Inject constructor(
 
     /* user information */
 
+    private val _usernameAlreadyExists = MutableLiveData<Boolean>().also { it.value = false }
+    val usernameAlreadyExists: LiveData<Boolean> = _usernameAlreadyExists
+
     private val _userFirstName = MutableLiveData<String>().also { it.value = "John" }
     val userFirstName: LiveData<String> = _userFirstName
 
@@ -76,6 +79,15 @@ class ProfileViewModel @Inject constructor(
         }
 
         // start db thread
+        dbThread.start()
+    }
+
+    // check if username is unique
+    fun checkUsername(username: String) {
+        val dbThread = Thread {
+            val usernameAlreadyExists = repository.usernameAlreadyExists(username)
+            _usernameAlreadyExists.postValue(usernameAlreadyExists)
+        }
         dbThread.start()
     }
 
