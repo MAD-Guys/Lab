@@ -41,17 +41,19 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
     internal var playgroundAvailabilitiesRecyclerView: RecyclerView? = null
     internal lateinit var playgroundAvailabilitiesAdapter: PlaygroundAvailabilitiesAdapter
 
-    //Progress bar (Steph Curry GIF)
-    internal lateinit var progressBar : View
+    // progress bar (Steph Curry GIF)
+    private lateinit var progressBar: View
+    private lateinit var slotAvailabilitiesSection: View
 
     internal var sportIdToShow: Int? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /* Show progress bar */
+        /* show progress bar */
+        slotAvailabilitiesSection = view.findViewById(R.id.slot_availabilities_section)
         progressBar = view.findViewById(R.id.progressBar)
-        showProgressBar(progressBar)
+        showProgressBar(progressBar, slotAvailabilitiesSection)
 
         /* add/edit mode setup */
         this.manageAddOrEditModeParams()
@@ -117,8 +119,8 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
         requireView().viewTreeObserver?.addOnGlobalLayoutListener {
 
             if(playgroundsVM.availablePlaygroundsPerSlot.value?.isNotEmpty() == true)
-            //task completed: hide progress bar
-                hideProgressBar(progressBar)
+                // task completed: hide progress bar
+                hideProgressBar(progressBar, slotAvailabilitiesSection)
         }
     }
 

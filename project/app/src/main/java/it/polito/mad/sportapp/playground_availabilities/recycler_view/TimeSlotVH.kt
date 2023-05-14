@@ -113,9 +113,13 @@ class TimeSlotVH(
             // (1) this is the very first selected slot (e.g. at the beginning of add mode)
             if (bundle.getString("start_slot") == null) {
                 bundle.putString("start_slot", slot.toString())
-                bundle.putInt("playground_id", playground.playgroundId)
-                bundle.putInt("sport_id", playground.sportId)
                 bundle.putInt("slot_duration_mins", slotDuration.toMinutes().toInt())
+                bundle.putInt("playground_id", playground.playgroundId)
+                bundle.putString("playground_name", playground.playgroundName)
+                bundle.putInt("sport_id", playground.sportId)
+                bundle.putString("sport_name", playground.sportName)
+                bundle.putInt("sport_center_id", playground.sportCenterId)
+                bundle.putString("sport_center_name", playground.sportCenterName)
             }
             // (2) one (start) slot is already selected ->
             //      check if to either extend the same selection or restart a new one
@@ -128,15 +132,18 @@ class TimeSlotVH(
                 if(selectionState == PlaygroundAvailabilitiesAdapter.SelectionState.SELECTABLE) {
                     // extend selection
                     bundle.putString("end_slot", slot.toString())
-                    bundle.putInt("slot_duration_mins", slotDuration.toMinutes().toInt())
                 }
                 else {
                     // restart selection
                     bundle.putString("start_slot", slot.toString())
                     bundle.remove("end_slot")
-                    bundle.putInt("playground_id", playground.playgroundId)
-                    bundle.putInt("sport_id", playground.sportId)
                     bundle.putInt("slot_duration_mins", slotDuration.toMinutes().toInt())
+                    bundle.putInt("playground_id", playground.playgroundId)
+                    bundle.putString("playground_name", playground.playgroundName)
+                    bundle.putInt("sport_id", playground.sportId)
+                    bundle.putString("sport_name", playground.sportName)
+                    bundle.putInt("sport_center_id", playground.sportCenterId)
+                    bundle.putString("sport_center_name", playground.sportCenterName)
                 }
             }
             // (3) start and end slots were already selected -> ...
@@ -144,9 +151,13 @@ class TimeSlotVH(
                 // ...restart selection
                 bundle.putString("start_slot", slot.toString())
                 bundle.remove("end_slot")
-                bundle.putInt("playground_id", playground.playgroundId)
-                bundle.putInt("sport_id", playground.sportId)
                 bundle.putInt("slot_duration_mins", slotDuration.toMinutes().toInt())
+                bundle.putInt("playground_id", playground.playgroundId)
+                bundle.putString("playground_name", playground.playgroundName)
+                bundle.putInt("sport_id", playground.sportId)
+                bundle.putString("sport_name", playground.sportName)
+                bundle.putInt("sport_center_id", playground.sportCenterId)
+                bundle.putString("sport_center_name", playground.sportCenterName)
             }
 
             // update bundle live data to refresh everything
@@ -165,9 +176,13 @@ class TimeSlotVH(
         // create the new reservation bundle containing this slot as (the only) selected one
         val newBundle = bundleOf(
             "start_slot" to slot.toString(),
+            "slot_duration_mins" to slotDuration.toMinutes().toInt(),
             "playground_id" to playground.playgroundId,
+            "playground_name" to playground.playgroundName,
             "sport_id" to playground.sportId,
-            "slot_duration_mins" to slotDuration.toMinutes().toInt()
+            "sport_name" to playground.sportName,
+            "sport_center_id" to playground.sportCenterId,
+            "sport_center_name" to playground.sportCenterName
         )
 
         // set the bundle and switch to edit mode

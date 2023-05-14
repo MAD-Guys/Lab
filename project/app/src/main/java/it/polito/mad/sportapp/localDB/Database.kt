@@ -109,6 +109,7 @@ fun generatePlaygroundReservation(
     return playgroundReservationList
 }
 
+@Suppress("unused")
 private fun initDb(INSTANCE: AppDatabase?) {
     val initDbThread = Thread {
         INSTANCE.let {

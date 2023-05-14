@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.formatDuration
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -55,7 +56,12 @@ internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val displayWidth = displayMetrics.widthPixels
 
         dayText.text = DateTimeFormatter.ofPattern("EEE", Locale.ENGLISH).format(event.date)
-        dateText.text = DateTimeFormatter.ofPattern("dd MMM", Locale.ENGLISH).format(event.date)
+        dateText.text = when(event.date) {
+            LocalDate.now() -> "Today"
+            LocalDate.now().plusDays(1) -> "Tomorrow"
+            LocalDate.now().minusDays(1) -> "Yesterday"
+            else -> DateTimeFormatter.ofPattern("dd MMM", Locale.ENGLISH).format(event.date)
+        }
         timeText.text = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH).format(event.startTime)
 
         val eventInfo = "${event.sportCenterName} - ${event.playgroundName}"

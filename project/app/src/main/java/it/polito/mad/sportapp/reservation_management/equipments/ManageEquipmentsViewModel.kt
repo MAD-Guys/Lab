@@ -9,5 +9,6 @@ import javax.inject.Inject
 class ManageEquipmentsViewModel @Inject constructor(
     repository: Repository
 ) : ViewModel() {
-    // TODO: Implement the ViewModel
+
+
 }

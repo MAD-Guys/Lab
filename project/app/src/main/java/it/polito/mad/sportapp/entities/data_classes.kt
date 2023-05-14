@@ -83,8 +83,12 @@ data class DetailedReservationForAvailablePlaygrounds(
     val playgroundId: Int,
     @ColumnInfo(name = "sport_id")
     val sportId: Int,
+    @ColumnInfo(name = "sport_name")
+    val sportName: String,
     @ColumnInfo(name = "playground_name")
     val playgroundName: String,
+    @ColumnInfo(name = "sport_center_id")
+    val sportCenterId: Int,
     @ColumnInfo(name = "sport_center_name")
     val sportCenterName: String,
     @ColumnInfo(name = "price_per_hour")
@@ -103,6 +107,10 @@ data class DetailedReservationForAvailablePlaygrounds(
 data class DetailedPlayground(
     @ColumnInfo(name = "sport_id", index = true)
     val sportId: Int,
+    @ColumnInfo(name = "sport_name")
+    val sportName: String,
+    @ColumnInfo(name = "sport_center_id")
+    val sportCenterId: Int,
     @ColumnInfo(name = "sport_center_name", index = true)
     val sportCenterName: String,
     @ColumnInfo(name = "playground_name")

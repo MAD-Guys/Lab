@@ -27,6 +27,7 @@ import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.reservation_management.ReservationManagementUtilities
 import it.polito.mad.sportapp.showToasty
 import java.time.Duration
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -193,8 +194,12 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
     private fun initializeValues() {
         reservationNumber.text =
             "Reservation number: ${viewModel.reservation.value?.id}"
-        reservationDate.text =
-            viewModel.reservation.value?.date?.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+        reservationDate.text = when(viewModel.reservation.value?.date) {
+            LocalDate.now() -> "Today"
+            LocalDate.now().plusDays(1) -> "Tomorrow"
+            LocalDate.now().minusDays(1) -> "Yesterday"
+            else -> viewModel.reservation.value?.date?.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+        }
         reservationStartTime.text =
             viewModel.reservation.value?.startTime?.format(
                 DateTimeFormatter.ofLocalizedTime(

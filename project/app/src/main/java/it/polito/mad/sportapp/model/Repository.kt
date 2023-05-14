@@ -263,6 +263,8 @@ class Repository @Inject constructor(
                     it.playgroundId,
                     it.playgroundName,
                     it.sportId,
+                    it.sportName,
+                    it.sportCenterId,
                     it.sportCenterName,
                     it.pricePerHour
             ))
@@ -301,6 +303,8 @@ class Repository @Inject constructor(
                     it.playgroundId,
                     it.playgroundName,
                     it.sportId,
+                    it.sportName,
+                    it.sportCenterId,
                     it.sportCenterName,
                     it.pricePerHour,
                     true
@@ -443,6 +447,8 @@ class Repository @Inject constructor(
                                     playgroundId,
                                     "Playground $playgroundId",
                                     tempSportId,
+                                    sports[tempSportId-1],
+                                    1,
                                     "Sport center ${randomSportCenterGenerator.next()}",
                                     randomPriceGenerator.next().toFloat(),
                                     true

@@ -6,7 +6,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.localDB.dao.EquipmentDao
 import it.polito.mad.sportapp.localDB.dao.PlaygroundSportDao
 import it.polito.mad.sportapp.localDB.dao.ReservationDao

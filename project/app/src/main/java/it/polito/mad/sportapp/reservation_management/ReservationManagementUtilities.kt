@@ -40,11 +40,19 @@ class ReservationManagementUtilities {
         fun createBundleFrom(reservation: DetailedReservation?, slotDuration: Duration): Bundle {
             return bundleOf(
                 "reservation_id" to reservation?.id,
-                "playground_id" to reservation?.playgroundId,
+
                 "start_slot" to reservation?.startLocalDateTime?.toString(),
                 "end_slot" to reservation?.endLocalDateTime?.minus(slotDuration)?.toString(),
-                "sport_id" to reservation?.sportId,
                 "slot_duration_mins" to 30,
+
+                "playground_id" to reservation?.playgroundId,
+                "playground_name" to reservation?.playgroundName,
+
+                "sport_id" to reservation?.sportId,
+                "sport_name" to reservation?.sportName,
+
+                "sport_center_id" to reservation?.sportCenterId,
+                "sport_center_name" to reservation?.sportCenterName
             )
         }
     }

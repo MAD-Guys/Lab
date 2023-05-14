@@ -3,8 +3,6 @@ package it.polito.mad.sportapp.localDB.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import it.polito.mad.sportapp.entities.PlaygroundSport
-import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.SportCenter
 
 @Dao

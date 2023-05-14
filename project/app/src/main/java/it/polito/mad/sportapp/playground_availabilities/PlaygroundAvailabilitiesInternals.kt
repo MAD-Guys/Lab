@@ -148,7 +148,11 @@ private fun PlaygroundAvailabilitiesFragment.navigateToManageEquipments() {
     val bundleEndSlot = selectedReservationInfo.getString("end_slot")
     val bundleSlotDurationMins = selectedReservationInfo.getInt("slot_duration_mins").toLong()
     val bundlePlaygroundId = selectedReservationInfo.getInt("playground_id")
+    val bundlePlaygroundName = selectedReservationInfo.getString("playground_name")
     val bundleSportId = selectedReservationInfo.getInt("sport_id")
+    val bundleSportName = selectedReservationInfo.getString("sport_name")
+    val bundleSportCenterId = selectedReservationInfo.getInt("sport_center_id")
+    val bundleSportCenterName = selectedReservationInfo.getString("sport_center_name")
 
     val errors = mutableListOf<String>()
 
@@ -159,10 +163,22 @@ private fun PlaygroundAvailabilitiesFragment.navigateToManageEquipments() {
         errors.add("the slot duration mins")
 
     if (bundlePlaygroundId == 0)
-        errors.add("a playground")
+        errors.add("a playground (id)")
+
+    if(bundlePlaygroundName == null)
+        errors.add("a playground (name)")
 
     if (bundleSportId == 0)
-        errors.add("a sport")
+        errors.add("a sport (id)")
+
+    if (bundleSportName == null)
+        errors.add("a sport (name)")
+
+    if(bundleSportCenterId == 0)
+        errors.add("a sport center (id)")
+
+    if(bundleSportCenterName == null)
+        errors.add("a sport center (name)")
 
     if (errors.isNotEmpty()) {
         showToasty("error", requireContext(), errors.joinToString(
@@ -329,8 +345,13 @@ internal fun PlaygroundAvailabilitiesFragment.initMonthAndDateObservers() {
         calendarView.notifyDateChanged(it)
 
         // update selected date label
-        selectedDateLabel.text = it.format(
-            DateTimeFormatter.ofPattern("EEEE, d MMMM y", Locale.ENGLISH))
+        selectedDateLabel.text = when(it) {
+            LocalDate.now() -> "Today"
+            LocalDate.now().plusDays(1) -> "Tomorrow"
+            LocalDate.now().minusDays(1) -> "Yesterday"
+            else -> it.format(
+                DateTimeFormatter.ofPattern("EEEE, d MMMM y", Locale.ENGLISH))
+        }
 
         // update recycler view data
         playgroundAvailabilitiesAdapter.selectedDate = it

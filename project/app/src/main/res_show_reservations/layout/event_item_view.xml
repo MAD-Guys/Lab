@@ -34,11 +34,11 @@
             android:includeFontPadding="false"
             android:lineSpacingExtra="2.5dp"
             android:paddingVertical="1dp"
-            android:textAllCaps="true"
+            android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="10sp"
+            android:textSize="10.5sp"
             tools:ignore="SmallSp,TextContrastCheck"
-            tools:text="THU" />
+            tools:text="Thu" />
 
         <!-- Event time text -->
         <TextView
@@ -63,11 +63,11 @@
             android:includeFontPadding="false"
             android:lineSpacingExtra="2.5dp"
             android:paddingVertical="1dp"
-            android:textAllCaps="true"
+            android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="10sp"
+            android:textSize="10.5sp"
             tools:ignore="SmallSp,TextContrastCheck"
-            tools:text="JUN 30" />
+            tools:text="Jun 30" />
 
     </LinearLayout>
 

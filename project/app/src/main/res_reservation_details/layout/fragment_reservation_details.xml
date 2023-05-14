@@ -57,7 +57,9 @@
                         android:text="Reservation number: 123456"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                         android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:includeFontPadding="false"
+                        android:layout_marginBottom="8sp"/>
 
                     <TextView
                         android:id="@+id/reservationDate"
@@ -66,14 +68,17 @@
                         android:fontFamily="@font/poppins_medium"
                         android:gravity="center_horizontal"
                         android:text="18/04/2023"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:includeFontPadding="false"
+                        android:layout_marginBottom="3sp"/>
 
                     <LinearLayout
                         android:id="@+id/reservationTime"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center_horizontal"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="5sp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -81,16 +86,18 @@
                             android:fontFamily="@font/poppins_medium"
                             android:text="From "
                             android:textColor="@color/black"
-                            android:textSize="20sp" />
+                            android:textSize="20sp"
+                            android:includeFontPadding="false"/>
 
                         <TextView
                             android:id="@+id/reservationStartTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
+                            android:fontFamily="@font/poppins_semibold"
                             android:text="10:00"
                             android:textColor="@color/black"
-                            android:textSize="20sp" />
+                            android:textSize="20sp"
+                            android:includeFontPadding="false"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -98,16 +105,18 @@
                             android:fontFamily="@font/poppins_medium"
                             android:text=" to "
                             android:textColor="@color/black"
-                            android:textSize="20sp" />
+                            android:textSize="20sp"
+                            android:includeFontPadding="false"/>
 
                         <TextView
                             android:id="@+id/reservationEndTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
+                            android:fontFamily="@font/poppins_semibold"
                             android:text="12:00"
                             android:textColor="@color/black"
-                            android:textSize="20sp" />
+                            android:textSize="20sp"
+                            android:includeFontPadding="false"/>
 
                     </LinearLayout>
 
@@ -122,6 +131,8 @@
                         android:textColor="@color/black"
                         android:textSize="24sp"
                         android:textStyle="bold"
+                        android:includeFontPadding="false"
+                        android:layout_marginBottom="5sp"
                         />
 
                     <LinearLayout
@@ -135,14 +146,16 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
                             android:text="By @"
-                            android:textSize="20sp" />
+                            android:textSize="17sp"
+                            android:includeFontPadding="false"/>
                         <TextView
                             android:id="@+id/reservationUsername"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
                             android:text="johndoe"
-                            android:textSize="20sp" />
+                            android:textSize="17sp"
+                            android:includeFontPadding="false"/>
 
                     </LinearLayout>
 
@@ -152,18 +165,20 @@
                         android:layout_height="1dp"
                         android:layout_weight="1"
                         android:background="?android:attr/listDivider"
-                        android:layout_marginVertical="16dp"
+                        android:layout_marginVertical="13dp"
                         />
 
                     <TextView
                         android:id="@+id/reservationPlaygroundName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_medium"
+                        android:fontFamily="@font/poppins_semibold"
                         android:gravity="center_horizontal"
                         android:text="Campo 1"
                         android:textColor="@color/black"
-                        android:textSize="24sp" />
+                        android:textSize="24sp"
+                        android:includeFontPadding="false"
+                        />
 
                     <TextView
                         android:id="@+id/reservationSportCenter"
@@ -172,7 +187,10 @@
                         android:fontFamily="@font/poppins_medium"
                         android:text="POLI Sport"
                         android:textSize="20sp"
+                        android:textColor="@color/black"
                         android:layout_gravity="center_horizontal"
+                        android:includeFontPadding="false"
+                        android:layout_marginBottom="5sp"
                         />
 
                     <TextView
@@ -184,7 +202,9 @@
                         android:fontFamily="@font/poppins_medium"
                         android:gravity="center_horizontal"
                         android:text="Corso Castelfidardo 24, Torino (TO)"
-                        android:textSize="16sp" />
+                        android:textSize="18sp"
+                        android:includeFontPadding="false"
+                        />
 
                     <Button
                         android:id="@+id/button_playground_details"
@@ -215,17 +235,19 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="?android:attr/listDivider"
-                        android:layout_marginVertical="16dp"
+                        android:layout_marginVertical="12dp"
                         />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Equipment"
+                        android:text="Equipments"
                         android:fontFamily="@font/poppins_medium"
                         android:gravity="center_horizontal"
                         android:textColor="@color/black"
-                        android:textSize="24sp"/>
+                        android:textSize="24sp"
+                        android:includeFontPadding="false"
+                        />
 
                     <LinearLayout
                         android:id="@+id/equipmentContainer"
@@ -298,6 +320,7 @@
                             android:text="Total price: "
                             android:textColor="@color/black"
                             android:textSize="24sp"
+                            android:includeFontPadding="false"
                             />
 
                         <TextView
@@ -307,7 +330,9 @@
                             android:fontFamily="@font/poppins_medium"
                             android:text="€ 15,50"
                             android:textColor="@color/black"
-                            android:textSize="24sp" />
+                            android:textSize="24sp"
+                            android:includeFontPadding="false"
+                            />
                     </LinearLayout>
                 </LinearLayout>
 

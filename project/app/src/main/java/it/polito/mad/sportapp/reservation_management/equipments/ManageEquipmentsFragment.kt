@@ -34,5 +34,4 @@ class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
         //  - attach menu containing available equipments to the addEquipment button
         //  - attach go to reservation summary
     }
-
 }

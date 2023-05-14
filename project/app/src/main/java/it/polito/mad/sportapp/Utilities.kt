@@ -495,10 +495,12 @@ internal fun toastyInit() {
 }
 
 /* PROGRESS BAR */
-internal fun showProgressBar(progressBar : View) {
+internal fun showProgressBar(progressBar : View, mainContent: View) {
     progressBar.visibility = View.VISIBLE
+    mainContent.visibility = View.INVISIBLE
 }
-internal fun hideProgressBar(progressBar : View) {
+internal fun hideProgressBar(progressBar : View, mainContent: View) {
     progressBar.visibility = View.GONE
+    mainContent.visibility = View.VISIBLE
 }
 
