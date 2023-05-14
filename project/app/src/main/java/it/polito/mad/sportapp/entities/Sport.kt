@@ -14,6 +14,10 @@ data class Sport(
     val maxPlayers: Int
 ) {
     override fun toString(): String {
-        return "$name $emoji"
+        return printWithEmoji(onTheLeft = false)
+    }
+
+    fun printWithEmoji(onTheLeft: Boolean = false): String {
+        return if(onTheLeft) "$emoji  $name" else "$name  $emoji"
     }
 }

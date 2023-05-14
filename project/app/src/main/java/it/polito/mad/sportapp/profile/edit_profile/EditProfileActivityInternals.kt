@@ -343,7 +343,7 @@ internal fun galleryImagesPermission(): String =
 internal fun EditProfileFragment.sportsInit() {
     val sportsContainer = requireView().findViewById<ChipGroup>(R.id.sports_container)
 
-    for (sport in sportsTemp.keys) {
+    for ((sportName,sport) in sportsTemp) {
         // create the horizontal sport chip wrapper
         // (it will contain the sport chip and the level badge, if any)
         val sportChipWrapper = LinearLayout(requireContext()).apply {
@@ -355,11 +355,11 @@ internal fun EditProfileFragment.sportsInit() {
         }
 
         // create the Sport Chip
-        val sportChip = createEditSportChip(sportsTemp[sport]!!.displayName, sportChipWrapper)
+        val sportChip = createEditSportChip(sportsTemp[sportName]!!.displayName, sportChipWrapper)
 
         // create the actual Sport level chip
         val sportActualLevelChip =
-            createEditSportLevelBadge(R.drawable.beginner_level_badge, sportChipWrapper)
+            createEditSportLevelBadge(R.drawable.beginner_level_badge, sportChipWrapper, sport.level)
 
         // build sport hierarchy
         sportChipWrapper.addView(sportChip)
@@ -369,7 +369,7 @@ internal fun EditProfileFragment.sportsInit() {
         sportsContainer.addView(sportChipWrapper)
 
         // save views
-        sports[sport] = SportChips(sport, sportChip, sportActualLevelChip)
+        sports[sportName] = SportChips(sportName, sportChip, sportActualLevelChip)
     }
 }
 
@@ -384,11 +384,12 @@ private fun EditProfileFragment.createEditSportChip(sportName: String, parent: V
 
 private fun EditProfileFragment.createEditSportLevelBadge(
     levelIconResource: Int,
-    parent: ViewGroup
+    parent: ViewGroup,
+    level: Level
 ): Chip {
     // inflate generic level badge
     val levelChip = layoutInflater.inflate(
-        if (levelIconResource == R.drawable.intermediate_level_badge)
+        if (level == Level.INTERMEDIATE)
             R.layout.edit_profile_sport_level_chip_big
         else
             R.layout.edit_profile_sport_level_chip,
@@ -448,6 +449,12 @@ internal fun EditProfileFragment.changeSportLevel(sportName: String, level: Leve
             R.dimen.chip_icon_size_big
         else
             R.dimen.chip_icon_size
+    )
+    sportChips.actualLevelChip.setIconStartPaddingResource(
+        if(level == Level.INTERMEDIATE)
+            R.dimen.chip_icon_padding_intermediate
+        else
+            R.dimen.chip_icon_padding
     )
 
     sportChips.actualLevelChip.visibility = Chip.VISIBLE

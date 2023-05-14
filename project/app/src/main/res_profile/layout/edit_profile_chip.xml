@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/edit_profile_sport_chip"
-    android:layout_width="wrap_content"
+    android:layout_width="200dp"
     android:layout_height="@dimen/chip_height"
     android:layout_marginEnd="@dimen/chip_margin_end"
     android:layout_gravity="center_vertical"

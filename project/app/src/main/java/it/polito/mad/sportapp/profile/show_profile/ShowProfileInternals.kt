@@ -202,7 +202,7 @@ private fun ShowProfileFragment.getDbSportName(sportName: String): String? {
     vm.sportsList.value?.let { sportList ->
         val sport = sportList.find { it.name == sportName }
         sport?.let {
-            return it.toString()
+            return it.printWithEmoji(onTheLeft = false)
         }
     }
 
@@ -388,6 +388,7 @@ internal fun ShowProfileFragment.createSportChip(sport: Sport, parent: ViewGroup
                     )
                 )
                 setChipIconSizeResource(R.dimen.chip_icon_size_big)
+                setIconStartPaddingResource(R.dimen.chip_icon_padding_intermediate)
             }
 
             Level.EXPERT -> {

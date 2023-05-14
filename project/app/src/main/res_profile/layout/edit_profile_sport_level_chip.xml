@@ -9,6 +9,7 @@
     android:checkable="true"
     app:chipBackgroundColor="@color/background_orange"
     app:chipIconSize="@dimen/chip_icon_size"
+    app:iconStartPadding="@dimen/chip_icon_padding"
     app:textEndPadding="0dp"
     app:textStartPadding="0dp"
     app:chipSurfaceColor="@color/background_orange"
