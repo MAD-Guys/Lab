@@ -15,8 +15,10 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.View
 import android.view.WindowMetrics
 import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -490,5 +492,13 @@ internal fun toastyInit() {
         .supportDarkTheme(true) // optional (whether to support dark theme or not)
         .setRTL(true) // optional (icon is on the right)
         .apply() // required
+}
+
+/* PROGRESS BAR */
+internal fun showProgressBar(progressBar : View) {
+    progressBar.visibility = View.VISIBLE
+}
+internal fun hideProgressBar(progressBar : View) {
+    progressBar.visibility = View.GONE
 }
 

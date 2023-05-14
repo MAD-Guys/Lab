@@ -12,4 +12,7 @@
 	<string name="playground_availabilities_button">Playground availabilities button</string>
 	<string name="list_view_button">List view button</string>
 
+	<!-- Progress Bar -->
+	<string name="loading_text">Loading...</string>
+
 </resources>

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.ProgressBar
 import android.widget.Spinner
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
@@ -13,8 +14,10 @@ import com.kizitonwose.calendar.view.CalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.Sport
+import it.polito.mad.sportapp.hideProgressBar
 import it.polito.mad.sportapp.playground_availabilities.recycler_view.PlaygroundAvailabilitiesAdapter
 import it.polito.mad.sportapp.reservation_management.ReservationManagementViewModel
+import it.polito.mad.sportapp.showProgressBar
 
 
 @AndroidEntryPoint
@@ -38,10 +41,17 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
     internal var playgroundAvailabilitiesRecyclerView: RecyclerView? = null
     internal lateinit var playgroundAvailabilitiesAdapter: PlaygroundAvailabilitiesAdapter
 
+    //Progress bar (Steph Curry GIF)
+    internal lateinit var progressBar : View
+
     internal var sportIdToShow: Int? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        /* Show progress bar */
+        progressBar = view.findViewById(R.id.progressBar)
+        showProgressBar(progressBar)
 
         /* add/edit mode setup */
         this.manageAddOrEditModeParams()
@@ -102,6 +112,13 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
         /* (if necessary) switch to add/edit mode */
         if (reservationVM.reservationManagementModeWrapper.mode != null) {
             this.setupAddOrEditModeView()
+        }
+
+        requireView().viewTreeObserver?.addOnGlobalLayoutListener {
+
+            if(playgroundsVM.availablePlaygroundsPerSlot.value?.isNotEmpty() == true)
+            //task completed: hide progress bar
+                hideProgressBar(progressBar)
         }
     }
 
