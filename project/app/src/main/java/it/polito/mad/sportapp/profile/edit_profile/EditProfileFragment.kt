@@ -37,7 +37,6 @@ import it.polito.mad.sportapp.profile.ProfileViewModel
 import it.polito.mad.sportapp.profile.Sport
 import it.polito.mad.sportapp.profile.SportChips
 import it.polito.mad.sportapp.rotateBitmap
-import it.polito.mad.sportapp.showToasty
 import it.polito.mad.sportapp.uriToBitmap
 
 @AndroidEntryPoint
@@ -271,10 +270,8 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
     override fun onPause() {
         super.onPause()
 
-        if (username.error == null) {
-            // save the user information on internal storage
-            saveInformationOnStorage()
-        }
+        // save the user information on internal storage
+        saveInformationOnStorage()
     }
 
     override fun onDestroy() {
