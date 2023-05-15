@@ -280,11 +280,13 @@ internal fun EditProfileFragment.saveInformationOnStorage() {
         )
     }
 
-    // update db user information
-    vm.updateDbUserInformation(1)
+    if (username.error == null) {
+        // update db user information
+        vm.updateDbUserInformation(1)
 
-    // showing feedback information
-    showToasty("success", requireContext(), "Information correctly saved!")
+        // showing feedback information
+        showToasty("success", requireContext(), "Information correctly saved!")
+    }
 }
 
 internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatcher {
