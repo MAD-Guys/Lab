@@ -1,5 +1,6 @@
 package it.polito.mad.sportapp.model
 
+import android.util.Log
 import it.polito.mad.sportapp.entities.Achievement
 import it.polito.mad.sportapp.entities.DetailedEquipmentReservation
 import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
@@ -167,7 +168,7 @@ class Repository @Inject constructor(
                             reservation.sportCenterId,
                             reservation.startTime.toString(),
                             reservation.endTime.toString(),
-                            reservation.startTime.toString(),
+                            LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME).toString(),
                             calculatePrice(reservation)
                         )
                     ).toInt()
@@ -178,7 +179,7 @@ class Repository @Inject constructor(
                                 id,
                                 it.equipmentId,
                                 it.selectedQuantity,
-                                LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME).toString(), //TODO
+                                LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME).toString(),
                                 it.unitPrice * it.selectedQuantity
                             )
                         )
@@ -193,6 +194,7 @@ class Repository @Inject constructor(
             }
             return Pair(reservation.id, null)
         } catch (e: Exception) {
+            Log.d("unexpected error", "(error)", e)
             return Pair(null, NewReservationError.UNEXPECTED_ERROR)
         }
     }
