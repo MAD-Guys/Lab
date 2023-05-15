@@ -189,12 +189,14 @@ private fun PlaygroundAvailabilitiesFragment.navigateToManageEquipments() {
         return
     }
 
-    val params = selectedReservationInfo.also {
-        if(bundleEndSlot == null) {
-            // just one slot has been selected -> put manually the end one (as the same as the start slot)
-            it.putString("end_slot", bundleStartSlot)
+    val params = bundleOf(
+        "reservation" to selectedReservationInfo.also {
+            if (bundleEndSlot == null) {
+                // just one slot has been selected -> put manually the end one (as the same as the start slot)
+                it.putString("end_slot", bundleStartSlot)
+            }
         }
-    }
+    )
 
     // go to manage equipments
     findNavController().navigate(

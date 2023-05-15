@@ -1,6 +1,7 @@
 package it.polito.mad.sportapp.model
 
 import it.polito.mad.sportapp.entities.Achievement
+import it.polito.mad.sportapp.entities.DetailedEquipmentReservation
 import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
 import it.polito.mad.sportapp.entities.Equipment
 import it.polito.mad.sportapp.entities.PlaygroundReservation
@@ -155,11 +156,20 @@ class Repository @Inject constructor(
 
     // * Equipment methods *
 
-    fun getEquipmentBySportCenterIdAndSportId(
+    fun getAvailableEquipmentsBySportCenterIdAndSportId(
         sportCenterId: Int,
         sportId: Int
-    ): MutableList<Equipment> {
-        return equipmentDao.findBySportCenterIdAndSportId(sportCenterId, sportId).toMutableList()
+    ): MutableMap<Int, Equipment> {
+        return equipmentDao
+            .findBySportCenterIdAndSportId(sportCenterId, sportId)
+            .associateBy{it.id}.toMutableMap()
+    }
+
+    fun getReservationEquipmentsQuantities(reservationId: Int): MutableMap<Int, DetailedEquipmentReservation> {
+        return equipmentDao
+            .findReservationEquipmentsByReservationId(reservationId)
+            .associateBy{it.equipmentId}
+            .toMutableMap()
     }
 
     fun addEquipmentReservation(equipment: Equipment, quantity: Int, playgroundReservationId: Int) {

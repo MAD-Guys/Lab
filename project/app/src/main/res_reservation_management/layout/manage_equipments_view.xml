@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="start"
+            android:gravity="start|center_vertical"
             >
 
             <Button
@@ -41,7 +41,7 @@
                 android:layout_width="@dimen/add_equipment_button_size"
                 android:layout_height="@dimen/add_equipment_button_size"
                 android:layout_marginVertical="20sp"
-                android:backgroundTint="@color/secondary_blue"
+                android:backgroundTint="@color/blue_selector"
                 android:contentDescription="@string/add_equipment_button_description"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
@@ -50,6 +50,19 @@
                 app:icon="@drawable/baseline_add_24"
                 app:iconSize="@dimen/add_equipment_button_size"
                 app:iconTint="@color/black" />
+
+            <TextView
+                android:id="@+id/add_equipment_button_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:textColor="@color/grey"
+                android:text="@string/add_new_equipment_message"
+                android:textSize="18sp"
+                android:includeFontPadding="false"
+                android:layout_marginStart="15sp"
+                />
+
         </LinearLayout>
 
 

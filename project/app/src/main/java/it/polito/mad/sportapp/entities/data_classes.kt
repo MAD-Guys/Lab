@@ -136,6 +136,8 @@ data class PlaygroundInfo(
     val playgroundId: Int,
     @ColumnInfo(name = "playground_name")
     val playgroundName: String,
+    @ColumnInfo(name ="sport_center_id")
+    val sportCenterId: Int,
     @ColumnInfo(name = "sport_center_name")
     val sportCenterName: String,
     @ColumnInfo(name = "sport_id")
@@ -182,4 +184,17 @@ enum class Achievement{
     AtLeastTenMatches,
     AtLeastTwentyFiveMatches
 }
+
+data class DetailedEquipmentReservation (
+    @ColumnInfo(name = "playground_reservation_id")
+    val playgroundReservationId: Int,
+    @ColumnInfo(name = "equipment_id")
+    val equipmentId: Int,
+    @ColumnInfo(name = "equipment_name")
+    val equipmentName: String,
+    @ColumnInfo(name = "selected_quantity")
+    var selectedQuantity: Int,
+    @ColumnInfo(name = "unit_price")
+    val unitPrice: Float
+)
 

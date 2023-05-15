@@ -25,7 +25,7 @@ interface PlaygroundSportDao {
             "WHERE SC.id == PS.sport_center_id AND PS.sport_id == :sportId AND S.id == PS.sport_id")
     fun findBySportId(sportId: Int): List<DetailedPlayground>
 
-    @Query("SELECT PS.id AS playground_id, PS.playground_name, SC.name AS sport_center_name, PS.sport_id, S.name AS sport_name, S.emoji AS sport_emoji,  SC.address AS sport_center_address, SC.opening_hour AS opening_time, SC.closing_hour AS closing_time, PS.cost_per_hour AS price_per_hour " +
+    @Query("SELECT PS.id AS playground_id, PS.playground_name, SC.id AS sport_center_id, SC.name AS sport_center_name, PS.sport_id, S.name AS sport_name, S.emoji AS sport_emoji,  SC.address AS sport_center_address, SC.opening_hour AS opening_time, SC.closing_hour AS closing_time, PS.cost_per_hour AS price_per_hour " +
             "FROM sport_center SC, playground_sport PS, SPORT S " +
             "WHERE SC.id == PS.sport_center_id AND S.id = PS.sport_id AND PS.id == :playgroundId")
     fun getPlaygroundInfo(playgroundId: Int): PlaygroundInfo

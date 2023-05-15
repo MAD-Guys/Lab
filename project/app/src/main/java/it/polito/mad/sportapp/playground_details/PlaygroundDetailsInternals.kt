@@ -131,8 +131,13 @@ internal fun PlaygroundDetailsFragment.handleAddReservationButton() {
         bundleOf(
             "reservation" to bundleOf(
                 "start_slot" to it,
+                "slot_duration_mins" to 30,
                 "playground_id" to viewModel.playground.value?.playgroundId,
-                "sport_id" to viewModel.playground.value?.sportId
+                "playground_name" to viewModel.playground.value?.playgroundName,
+                "sport_id" to viewModel.playground.value?.sportId,
+                "sport_name" to viewModel.playground.value?.sportName,
+                "sport_center_id" to viewModel.playground.value?.sportCenterId,
+                "sport_center_name" to viewModel.playground.value?.sportCenterName,
             )
         )
     }

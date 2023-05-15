@@ -6,4 +6,9 @@
     <string name="add_equipment_button_description">add equipment</string>
     <string name="increment_equipment_button_description">increment equipment by 1</string>
     <string name="decrement_equipment_button_description">decrement equipment by 1</string>
+
+    <!-- add new equipment button messages -->
+    <string name="add_new_equipment_message">Add a new equipment!</string>
+    <string name="no_more_available_equipments_message">No more available equipments</string>
+
 </resources>
