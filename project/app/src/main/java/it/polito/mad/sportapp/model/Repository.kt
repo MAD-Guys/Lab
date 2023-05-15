@@ -114,13 +114,11 @@ class Repository @Inject constructor(
     }
 
     // Reservation methods
-    fun getAllReservations(): List<PlaygroundReservation> {
-        return reservationDao.getAll()
-    }
 
     fun getDetailedReservationById(id: Int): DetailedReservation {
         val reservation = reservationDao.findDetailedReservationById(id)
-        reservation.equipments = equipmentDao.findReservationEquipmentsByReservationId(id).toMutableList()
+        reservation.equipments =
+            equipmentDao.findReservationEquipmentsByReservationId(id).toMutableList()
 
         if (reservation.equipments.isEmpty()) {
             reservation.equipments = mutableListOf()
@@ -144,8 +142,9 @@ class Repository @Inject constructor(
             // Check slots availability
             if (equipmentsAreAvailable(
                     reservation.selectedEquipments,
-                    reservation.playgroundId)
-            ){
+                    reservation.playgroundId
+                )
+            ) {
                 // Delete equipments if any
                 if (reservation.id != 0) {
                     equipmentDao.deleteEquipmentReservationByPlaygroundReservationId(reservation.id)
@@ -156,7 +155,8 @@ class Repository @Inject constructor(
                         reservation.playgroundId,
                         reservation.startTime,
                         reservation.endTime
-                )) {
+                    )
+                ) {
                     val id = reservationDao.insert(
                         PlaygroundReservation(
                             0,
@@ -184,12 +184,10 @@ class Repository @Inject constructor(
                         )
                     }
                     return Pair(id, null)
-                }
-                else {
+                } else {
                     return Pair(null, NewReservationError.EQUIPMENT_CONFLICT)
                 }
-            }
-            else {
+            } else {
                 return Pair(null, NewReservationError.SLOT_CONFLICT)
             }
         } catch (e: Exception) {
@@ -223,7 +221,8 @@ class Repository @Inject constructor(
         val duration = Duration.between(reservation.startTime, reservation.endTime)
         val hours = duration.toHours()
         val minutes = duration.toMinutes() - hours * 60
-        val pricePerHour = playgroundSportDao.getPlaygroundSportPricePerHour(reservation.playgroundId)
+        val pricePerHour =
+            playgroundSportDao.getPlaygroundSportPricePerHour(reservation.playgroundId)
         var cost = (hours * pricePerHour) + (minutes * pricePerHour / 60)
         reservation.selectedEquipments.forEach {
             cost += it.selectedQuantity * equipmentDao.getEquipmentUnitPrice(it.equipmentId)
@@ -283,51 +282,12 @@ class Repository @Inject constructor(
         equipmentDao.insertEquipmentReservation(equipmentReservation)
     }
 
-    fun updateEquipment(equipmentId: Int, quantity: Int, playgroundReservationId: Int) {
-        val price = equipmentDao.findPriceById(equipmentId)
-        if (quantity > 0) {
-            equipmentDao.reduceAvailabilityOfN(equipmentId, quantity)
-            equipmentDao.increaseQuantityOfN(
-                equipmentId,
-                playgroundReservationId,
-                price * quantity,
-                quantity
-            )
-            reservationDao.increasePrice(playgroundReservationId, price * quantity)
-        } else if (quantity < 0) {
-            equipmentDao.increaseAvailabilityOfN(equipmentId, -quantity)
-            equipmentDao.reduceQuantityOfN(
-                equipmentId,
-                playgroundReservationId,
-                price * -quantity,
-                -quantity
-            )
-            reservationDao.reducePrice(playgroundReservationId, price * -quantity)
-        }
-
-    }
-
-    fun deleteEquipmentReservation(equipmentReservation: EquipmentReservation) {
-        equipmentDao.increaseAvailabilityOfN(
-            equipmentReservation.equipmentId,
-            equipmentReservation.quantity
-        )
-        reservationDao.reducePrice(
-            equipmentReservation.playgroundReservationId,
-            equipmentReservation.totalPrice
-        )
-        equipmentDao.deleteReservation(
-            equipmentReservation.equipmentId,
-            equipmentReservation.playgroundReservationId
-        )
-    }
 
     fun deleteReservation(reservation: DetailedReservation) {
         // * first, delete associated equipments *
         reservation.equipments.forEach {
             equipmentDao.deleteReservation(it.equipmentId, it.playgroundReservationId)
         }
-
         // * then, delete the reservation *
         reservationDao.deleteById(reservation.id)
     }
