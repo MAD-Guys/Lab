@@ -149,9 +149,8 @@ class Repository @Inject constructor(
                 // Delete equipments if any
                 if (reservation.id != 0) {
                     equipmentDao.deleteEquipmentReservationByPlaygroundReservationId(reservation.id)
+                    reservationDao.deleteById(reservation.id)
                 }
-
-                reservationDao.deleteById(reservation.id)
 
                 if (slotsAreAvailable(
                         reservation.playgroundId,
