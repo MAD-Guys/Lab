@@ -68,7 +68,7 @@ data class DetailedReservation(
     var endTime: LocalTime = LocalTime.parse(endDateTime.substring(11, 19))
 
     @Ignore
-    var equipments: List<EquipmentReservation> = listOf()
+    var equipments: MutableList<DetailedEquipmentReservation> = mutableListOf()
 
     @Ignore
     val duration = Duration.between(
@@ -76,6 +76,12 @@ data class DetailedReservation(
             endDateTime.substring(11, 19)
         )
     ).toMinutes()
+
+    @Ignore
+    var endSlot: LocalDateTime = endLocalDateTime.minusMinutes(duration)
+    @Ignore
+    var startSlot: LocalDateTime = startLocalDateTime
+
 
     fun printSportNameWithEmoji(emojiOnTheLeft: Boolean = false): String {
         return if(emojiOnTheLeft) "$sportEmoji $sportName" else "$sportName $sportEmoji"
@@ -203,7 +209,9 @@ data class DetailedEquipmentReservation (
     @ColumnInfo(name = "selected_quantity")
     var selectedQuantity: Int,
     @ColumnInfo(name = "unit_price")
-    val unitPrice: Float
+    val unitPrice: Float,
+    @ColumnInfo(name = "total_price")
+    val totalPrice: Float
 )
 
 /* add/edit reservation */

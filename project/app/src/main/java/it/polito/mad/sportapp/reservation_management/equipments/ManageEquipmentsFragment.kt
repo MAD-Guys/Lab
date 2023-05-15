@@ -99,14 +99,16 @@ class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
                 viewModel.availableEquipments.value!!.contains(selectedEquipmentId) -> {
                     val equipment = viewModel.availableEquipments.value!![selectedEquipmentId]!!
                     val selectedEquipment = viewModel.selectedEquipments.value!![selectedEquipmentId]
+                    val newQty = (selectedEquipment?.selectedQuantity ?: 0) + 1
 
                     // add new equipment with qty 1
                     val newEquipmentReservation = DetailedEquipmentReservation(
                         viewModel.reservationBundle.getInt("reservation_id"),
                         selectedEquipmentId,
                         equipment.name,
-                        (selectedEquipment?.selectedQuantity ?: 0) + 1,
-                        equipment.price
+                        newQty,
+                        equipment.price,
+                        equipment.price * newQty
                     )
 
                     // save new equipment
