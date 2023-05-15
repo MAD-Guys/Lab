@@ -10,7 +10,8 @@ import it.polito.mad.sportapp.entities.EquipmentReservation
 @Dao
 interface EquipmentDao {
 
-
+    @Query("SELECT Count(ER.id) FROM equipment_reservation AS ER, playground_reservation AS PR WHERE ER.playground_reservation_id = PR.id AND PR.playground_id =:playgroundId AND ER.equipment_id =:equipmentId ")
+    fun getEquipmentIfAvailable(playgroundId:Int, equipmentId:Int):Int
     @Query("SELECT * FROM equipment WHERE sport_center_id LIKE :sportCenterId AND availability > 0")
     fun findBySportCenterId(sportCenterId: Int): List<Equipment>
 
@@ -32,8 +33,14 @@ interface EquipmentDao {
     @Insert
     fun insertEquipment(equipment : Equipment)
 
+    @Query("DELETE FROM equipment_reservation WHERE playground_reservation_id == :playgroundReservationId")
+    fun deleteEquipmentReservationByPlaygroundReservationId(playgroundReservationId: Int)
+
     @Query ("SELECT name FROM equipment WHERE id == :equipmentId")
     fun findEquipmentNameById(equipmentId: Int): String
+
+    @Query("SELECT unit_price FROM equipment WHERE id == :equipmentId")
+    fun getEquipmentUnitPrice(equipmentId: Int): Float
 
     @Query("UPDATE equipment SET availability = availability - :n WHERE id LIKE :equipmentId")
     fun reduceAvailabilityOfN(equipmentId: Int, n: Int)

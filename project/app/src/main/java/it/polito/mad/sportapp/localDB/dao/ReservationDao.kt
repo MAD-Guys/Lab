@@ -13,6 +13,9 @@ interface ReservationDao {
     @Query("SELECT * FROM playground_reservation")
     fun getAll(): List<PlaygroundReservation>
 
+    @Query("SELECT COUNT(id) FROM playground_reservation WHERE playground_id == :playgroundId AND datetime(start_date_time) < datetime(:endDateTime) AND datetime(end_date_time) > datetime(:startDateTime)")
+    fun getReservationIfAvailable(playgroundId: Int, startDateTime: String, endDateTime: String): Int
+
     @Query("SELECT * FROM playground_reservation WHERE playground_id == :playgroundId")
     fun findByPlaygroundId(playgroundId: Int): List<PlaygroundReservation>
 
@@ -51,7 +54,7 @@ interface ReservationDao {
     fun insertAll(vararg playgroundReservations: PlaygroundReservation)
 
     @Insert
-    fun insert(playgroundReservation: PlaygroundReservation)
+    fun insert(playgroundReservation: PlaygroundReservation): Long
 
     @Query("UPDATE playground_reservation SET total_price = total_price + :price WHERE id LIKE :reservationId")
     fun increasePrice(reservationId: Int, price: Float)
