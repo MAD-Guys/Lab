@@ -120,6 +120,7 @@ class TimeSlotVH(
                 bundle.putString("sport_name", playground.sportName)
                 bundle.putInt("sport_center_id", playground.sportCenterId)
                 bundle.putString("sport_center_name", playground.sportCenterName)
+                bundle.putFloat("playground_price_per_hour", playground.pricePerHour)
             }
             // (2) one (start) slot is already selected ->
             //      check if to either extend the same selection or restart a new one
@@ -144,6 +145,7 @@ class TimeSlotVH(
                     bundle.putString("sport_name", playground.sportName)
                     bundle.putInt("sport_center_id", playground.sportCenterId)
                     bundle.putString("sport_center_name", playground.sportCenterName)
+                    bundle.putFloat("playground_price_per_hour", playground.pricePerHour)
                 }
             }
             // (3) start and end slots were already selected -> ...
@@ -158,6 +160,7 @@ class TimeSlotVH(
                 bundle.putString("sport_name", playground.sportName)
                 bundle.putInt("sport_center_id", playground.sportCenterId)
                 bundle.putString("sport_center_name", playground.sportCenterName)
+                bundle.putFloat("playground_price_per_hour", playground.pricePerHour)
             }
 
             // update bundle live data to refresh everything
@@ -182,7 +185,8 @@ class TimeSlotVH(
             "sport_id" to playground.sportId,
             "sport_name" to playground.sportName,
             "sport_center_id" to playground.sportCenterId,
-            "sport_center_name" to playground.sportCenterName
+            "sport_center_name" to playground.sportCenterName,
+            "playground_price_per_hour" to playground.pricePerHour
         )
 
         // set the bundle and switch to edit mode
