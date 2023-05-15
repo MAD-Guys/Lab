@@ -12,11 +12,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
-import es.dmoral.toasty.Toasty
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.DetailedEquipmentReservation
 import it.polito.mad.sportapp.entities.Equipment
-import it.polito.mad.sportapp.showToasty
 
 @AndroidEntryPoint
 class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
@@ -97,37 +95,37 @@ class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
         Log.d("tapped item", item.title.toString())
 
         synchronized(viewModel.selectedEquipments) {
-        when {
-            viewModel.availableEquipments.value!!.contains(selectedEquipmentId) -> {
-                val equipment = viewModel.availableEquipments.value!![selectedEquipmentId]!!
-                val selectedEquipment = viewModel.selectedEquipments.value!![selectedEquipmentId]
+            when {
+                viewModel.availableEquipments.value!!.contains(selectedEquipmentId) -> {
+                    val equipment = viewModel.availableEquipments.value!![selectedEquipmentId]!!
+                    val selectedEquipment = viewModel.selectedEquipments.value!![selectedEquipmentId]
 
-                // add new equipment with qty 1
-                val newEquipmentReservation = DetailedEquipmentReservation(
-                    viewModel.reservationBundle.getInt("reservation_id"),
-                    selectedEquipmentId,
-                    equipment.name,
-                    (selectedEquipment?.selectedQuantity ?: 0) + 1,
-                    equipment.price
-                )
+                    // add new equipment with qty 1
+                    val newEquipmentReservation = DetailedEquipmentReservation(
+                        viewModel.reservationBundle.getInt("reservation_id"),
+                        selectedEquipmentId,
+                        equipment.name,
+                        (selectedEquipment?.selectedQuantity ?: 0) + 1,
+                        equipment.price
+                    )
 
-                // save new equipment
-                viewModel.selectedEquipments.value!![selectedEquipmentId] = newEquipmentReservation
+                    // save new equipment
+                    viewModel.selectedEquipments.value!![selectedEquipmentId] = newEquipmentReservation
 
-                // update viewModel data
-                viewModel.setSelectedEquipments(viewModel.selectedEquipments.value!!)
+                    // update viewModel data
+                    viewModel.setSelectedEquipments(viewModel.selectedEquipments.value!!)
 
-                return true
+                    return true
+                }
+                else -> return super.onContextItemSelected(item)
             }
-            else -> return super.onContextItemSelected(item)
-        }
         }
     }
 
     override fun onPause() {
         super.onPause()
 
-        // remove equipments rows
+        // clear equipments rows
         this.equipmentsRows.clear()
         this.equipmentsRowsById.clear()
     }

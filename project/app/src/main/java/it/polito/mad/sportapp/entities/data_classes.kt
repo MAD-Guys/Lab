@@ -204,3 +204,25 @@ data class DetailedEquipmentReservation (
     val unitPrice: Float
 )
 
+/* add/edit reservation */
+
+data class NewReservation(
+    val id: Int,
+    val startTime: LocalDateTime,
+    val endTime: LocalDateTime,
+    val playgroundId: Int,
+    val playgroundName: String,
+    val sportId: Int,
+    val sportName: String,
+    val sportCenterId: Int,
+    val sportCenterName: String,
+    val selectedEquipments: List<NewReservationEquipment>
+)
+
+data class NewReservationEquipment(
+    val equipmentId: Int,
+    val equipmentName: String,
+    val selectedQuantity: Int,
+    val unitPrice: Float
+)
+

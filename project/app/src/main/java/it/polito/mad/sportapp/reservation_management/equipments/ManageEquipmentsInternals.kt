@@ -69,6 +69,7 @@ private fun createEquipmentsBundleFrom(selectedEquipments: Map<Int, DetailedEqui
 
     selectedEquipments.map { (equipmentId, selectedEquipment) ->
         Pair(equipmentId.toString(), bundleOf(
+            "equipment_id" to selectedEquipment.equipmentId,
             "equipment_name" to selectedEquipment.equipmentName,
             "selected_quantity" to selectedEquipment.selectedQuantity,
             "unit_price" to selectedEquipment.unitPrice

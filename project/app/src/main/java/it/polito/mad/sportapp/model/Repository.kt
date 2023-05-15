@@ -10,6 +10,7 @@ import it.polito.mad.sportapp.entities.SportCenter
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.entities.EquipmentReservation
+import it.polito.mad.sportapp.entities.NewReservation
 import it.polito.mad.sportapp.entities.PlaygroundInfo
 import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.localDB.dao.EquipmentDao
@@ -131,8 +132,45 @@ class Repository @Inject constructor(
         return reservationDao.findBySportId(sportId)
     }
 
-    fun insertReservation(reservation: PlaygroundReservation) {
-        reservationDao.insert(reservation)
+    /**
+     * Create a new reservation in the DB, or override the existing one if any (with the same reservationId)
+     * Returns a Pair of (newReservationId, error), where:
+     * - 'newReservationId' is the new id assigned to the reservation
+     *  (or the same as the previous one, if any), if the save succeeds; 'null' otherwise
+     * - 'error' is an instance of NewReservationError reflecting the type of error occurred, or 'null' otherwise
+     */
+    fun overrideNewReservation(reservation: NewReservation): Pair<Int?, NewReservationError?> {
+        // TODO:
+        //   (transaction)
+        //  - delete previous existing reservation, if any
+        //  - check if the selected slots are all available (for the specified playground, sportCenter, date, ecc.);
+        //   if not, return Pair(null, NewReservationError.SLOT_CONFLICT)
+        //  - delete previous reservation equipments, if any
+        //  - check if the selected equipments are all available (for the selected playground, and the selected slot);
+        //   if not, return Pair(null, NewReservationError.EQUIPMENT_CONFLICT)
+        //  - save the new reservation
+        //  - catch any exception, and in that case return Pair(null, NewReservationError.UNEXPECTED_ERROR)
+        //  - if succeeded, return Pair(newReservationId, null)
+
+        var newReservationId: Int? = null
+        val error: NewReservationError? = null
+
+        // TODO
+        newReservationId = if (reservation.id != 0) reservation.id else 1
+
+        return Pair(newReservationId, error)
+    }
+
+    enum class NewReservationError(val message: String) {
+        SLOT_CONFLICT(
+            "Ouch! the selected slots have just been booked by someone else \uD83D\uDE41. Please select new ones for your reservation!"
+        ),
+        EQUIPMENT_CONFLICT(
+            "Ouch! the selected equipments have just been booked by someone else \uD83D\uDE41. Please select new ones for your reservation!"
+        ),
+        UNEXPECTED_ERROR(
+            "An unexpected error occurred while saving your reservation. Please try again or check your connection status."
+        )
     }
 
     fun getReservationPerDateByUserId(userId: Int): Map<LocalDate, List<DetailedReservation>> {
