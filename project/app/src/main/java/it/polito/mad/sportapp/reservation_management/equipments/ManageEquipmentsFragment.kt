@@ -1,6 +1,7 @@
 package it.polito.mad.sportapp.reservation_management.equipments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
@@ -51,15 +52,6 @@ class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
 
         /* add equipment button */
         this.initAddEquipmentButton()
-
-        // TODO:
-        //  + retrieve all the possible equipments for that playground (name + availableQty)
-        //  + if reservation id exists, retrieve the existing equipments (if any) for that reservation
-        //  + if any, increments/add those equipments quantities to the retrieved ones
-        //  + show those equipments in the view
-        //  + attach onClickListener to each qty button
-        //  + attach menu containing available equipments to the addEquipment button
-        //  - attach go to reservation summary
     }
 
     override fun onCreateContextMenu(
@@ -102,7 +94,9 @@ class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         val selectedEquipmentId = item.itemId - Menu.FIRST
+        Log.d("tapped item", item.title.toString())
 
+        synchronized(viewModel.selectedEquipments) {
         when {
             viewModel.availableEquipments.value!!.contains(selectedEquipmentId) -> {
                 val equipment = viewModel.availableEquipments.value!![selectedEquipmentId]!!
@@ -117,17 +111,24 @@ class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
                     equipment.price
                 )
 
-                // synchronized(viewModel.selectedEquipments) {
-                    // save new equipment
-                    viewModel.selectedEquipments.value!![selectedEquipmentId] = newEquipmentReservation
+                // save new equipment
+                viewModel.selectedEquipments.value!![selectedEquipmentId] = newEquipmentReservation
 
-                    // update viewModel data
-                    viewModel.setSelectedEquipments(viewModel.selectedEquipments.value!!)
+                // update viewModel data
+                viewModel.setSelectedEquipments(viewModel.selectedEquipments.value!!)
 
-                    return true
-                // }
+                return true
             }
             else -> return super.onContextItemSelected(item)
         }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        // remove equipments rows
+        this.equipmentsRows.clear()
+        this.equipmentsRowsById.clear()
     }
 }

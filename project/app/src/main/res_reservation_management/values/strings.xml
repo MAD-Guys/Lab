@@ -2,10 +2,12 @@
 <resources>
     <string name="add_reservation_button_description">add reservation</string>
     <string name="add_reservation_slot_button_description">add reservation slot</string>
-    <string name="save_equipments_button">save equipments</string>
+    <string name="save_equipments_button_description">save equipments</string>
     <string name="add_equipment_button_description">add equipment</string>
     <string name="increment_equipment_button_description">increment equipment by 1</string>
     <string name="decrement_equipment_button_description">decrement equipment by 1</string>
+    <string name="save_reservation_button_description">save reservation</string>
+
 
     <!-- add new equipment button messages -->
     <string name="add_new_equipment_message">Add a new equipment!</string>

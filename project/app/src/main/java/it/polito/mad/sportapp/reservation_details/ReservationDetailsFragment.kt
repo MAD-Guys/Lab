@@ -212,7 +212,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                     FormatStyle.SHORT
                 )
             )
-        reservationSport.text = viewModel.reservation.value?.sportName
+        reservationSport.text = viewModel.reservation.value?.printSportNameWithEmoji()
         reservationUsername.text = viewModel.reservation.value?.username
         reservationPlayground.text = viewModel.reservation.value?.playgroundName
         reservationSportCenter.text = viewModel.reservation.value?.sportCenterName

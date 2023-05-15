@@ -2,6 +2,7 @@ package it.polito.mad.sportapp.reservation_management.equipments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -9,8 +10,10 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.findNavController
 import es.dmoral.toasty.Toasty
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.DetailedEquipmentReservation
@@ -40,15 +43,41 @@ internal fun ManageEquipmentsFragment.initMenu() {
         override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
             return when (menuItem.itemId) {
                 R.id.save_equipments_button -> {
-                    // TODO: navigate to reservation summary
-                    showToasty("info", requireContext(), "Go to reservation summary")
-
+                    navigateToReservationSummary()
                     true
                 }
                 else -> false
             }
         }
     }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+}
+
+private fun ManageEquipmentsFragment.navigateToReservationSummary() {
+    // create a bundle containing all the selected equipments and the relative qty
+    val params = bundleOf(
+        "reservation" to viewModel.reservationBundle.also {
+            it.putBundle("equipments", createEquipmentsBundleFrom(viewModel.selectedEquipments.value!!))
+        }
+    )
+
+    // navigate to reservation summary view
+    findNavController().navigate(R.id.action_manageEquipmentsFragment_to_reservationSummaryFragment, params)
+}
+
+private fun createEquipmentsBundleFrom(selectedEquipments: Map<Int, DetailedEquipmentReservation>): Bundle {
+    val equipmentsBundle = Bundle()
+
+    selectedEquipments.map { (equipmentId, selectedEquipment) ->
+        Pair(equipmentId.toString(), bundleOf(
+            "equipment_name" to selectedEquipment.equipmentName,
+            "selected_quantity" to selectedEquipment.selectedQuantity,
+            "unit_price" to selectedEquipment.unitPrice
+        ))
+    }.forEach { (equipmentId, equipmentBundle) ->
+        equipmentsBundle.putBundle(equipmentId, equipmentBundle)
+    }
+
+    return equipmentsBundle
 }
 
 internal fun ManageEquipmentsFragment.initReservationBundle() {
@@ -108,23 +137,23 @@ internal fun ManageEquipmentsFragment.initEquipmentsObservers() {
                 // check that the current selected quantity is still below (or equal) to the max available one
                 val maxAvailableQty = newAvailableEquipments[equipmentId]?.availability ?: 0
 
-                val incrementQtyButton = equipmentsRowsById[selectedEquipment.equipmentId]!!.findViewById<Button>(R.id.increment_equipment_button)
-                val decrementQtyButton = equipmentsRowsById[selectedEquipment.equipmentId]!!.findViewById<Button>(R.id.decrement_equipment_button)
+                val incrementQtyButton = equipmentsRowsById[selectedEquipment.equipmentId]?.findViewById<Button>(R.id.increment_equipment_button)
+                val decrementQtyButton = equipmentsRowsById[selectedEquipment.equipmentId]?.findViewById<Button>(R.id.decrement_equipment_button)
 
                 if (selectedEquipment.selectedQuantity == maxAvailableQty) {
-                    incrementQtyButton.backgroundTintList = requireContext().getColorStateList(R.color.grey_selector)
+                    incrementQtyButton?.backgroundTintList = requireContext().getColorStateList(R.color.grey_selector)
                 }
                 else {
                     // restore orange color
-                    incrementQtyButton.backgroundTintList = requireContext().getColorStateList(R.color.orange_selector)
+                    incrementQtyButton?.backgroundTintList = requireContext().getColorStateList(R.color.orange_selector)
                 }
 
                 if (selectedEquipment.selectedQuantity == 1) {
-                    decrementQtyButton.backgroundTintList = requireContext().getColorStateList(R.color.red_selector)
+                    decrementQtyButton?.backgroundTintList = requireContext().getColorStateList(R.color.red_selector)
                 }
                 else {
                     // restore orange color
-                    decrementQtyButton.backgroundTintList = requireContext().getColorStateList(R.color.orange_selector)
+                    decrementQtyButton?.backgroundTintList = requireContext().getColorStateList(R.color.orange_selector)
                 }
             }
 
@@ -136,6 +165,7 @@ internal fun ManageEquipmentsFragment.initEquipmentsObservers() {
     // selected equipments observer
     viewModel.selectedEquipments.observe(this) { newSelectedEquipments ->
         val availableEquipments = viewModel.availableEquipments.value
+        val equipmentsToRemove = mutableListOf<Int>()
 
         for ((_, selectedEquipment) in newSelectedEquipments) {
             val selectedQty = selectedEquipment.selectedQuantity
@@ -166,7 +196,7 @@ internal fun ManageEquipmentsFragment.initEquipmentsObservers() {
 
                 // *increment* qty by 1
                 incrementQtyButton.setOnClickListener {
-                    // synchronized(viewModel.selectedEquipments) {
+                    synchronized(viewModel.selectedEquipments) {
                         val currentSelectedQuantity = viewModel.selectedEquipments.value!![selectedEquipment.equipmentId]?.selectedQuantity ?: 0
                         val maxQuantity = viewModel.availableEquipments.value!![selectedEquipment.equipmentId]?.availability ?: 0
 
@@ -177,12 +207,12 @@ internal fun ManageEquipmentsFragment.initEquipmentsObservers() {
                         viewModel.setSelectedEquipments(viewModel.selectedEquipments.value!!.also {
                             it[selectedEquipment.equipmentId]!!.selectedQuantity = currentSelectedQuantity + 1
                         })
-                    // }
+                    }
                 }
 
                 // *decrement* qty by 1
                 decrementQtyButton.setOnClickListener {
-                    // synchronized(viewModel.selectedEquipments) {
+                    synchronized(viewModel.selectedEquipments) {
                         val currentSelectedQuantity = viewModel.selectedEquipments.value!![selectedEquipment.equipmentId]?.selectedQuantity ?: 0
 
                         if (currentSelectedQuantity <= 0)
@@ -192,7 +222,7 @@ internal fun ManageEquipmentsFragment.initEquipmentsObservers() {
                         viewModel.setSelectedEquipments(viewModel.selectedEquipments.value!!.also {
                             it[selectedEquipment.equipmentId]!!.selectedQuantity = currentSelectedQuantity - 1
                         })
-                    // }
+                    }
                 }
 
                 // attach equipment to the view
@@ -209,19 +239,23 @@ internal fun ManageEquipmentsFragment.initEquipmentsObservers() {
             else {
                 // * already existing equipment *
 
-                if (selectedQty == 0) {
+                if (selectedQty <= 0) {
                     // remove the equipment row
                     val equipmentIndex = equipmentsRows.indexOf(previousEquipmentRow)
-                    equipmentsContainer.removeViewAt(equipmentIndex)    // TODO: check if change happens in the view
+                    Log.d("index of item to remove", equipmentIndex.toString())
+                    equipmentsContainer.removeViewAt(equipmentIndex)
 
                     // delete reference
                     equipmentsRowsById.remove(selectedEquipment.equipmentId)
                     equipmentsRows.removeAt(equipmentIndex)
+
+                    // delete entry with qty 0
+                    equipmentsToRemove.add(selectedEquipment.equipmentId)
                 }
                 else {
                     // change equipment quantity shown
                     val equipmentQuantityText = previousEquipmentRow.findViewById<TextView>(R.id.equipment_quantity)
-                    equipmentQuantityText.text = selectedQty.toString()     // TODO: check if change happens in the view
+                    equipmentQuantityText.text = selectedQty.toString()
 
                     if (availableEquipments == null)  // first set
                         return@observe
@@ -253,6 +287,9 @@ internal fun ManageEquipmentsFragment.initEquipmentsObservers() {
                 }
             }
         }
+
+        // remove equipments with qty 0
+        equipmentsToRemove.forEach{ newSelectedEquipments.remove(it) }
 
         if (availableEquipments == null)  // first set
             return@observe
@@ -291,7 +328,7 @@ internal fun ManageEquipmentsFragment.checkAtLeastOneAvailableEquipment(
 
 internal fun ManageEquipmentsFragment.initAddEquipmentButton() {
     addEquipmentButtonMessage = requireView().findViewById(R.id.add_equipment_button_message)
-    addEquipmentButton = requireView().findViewById<Button>(R.id.add_equipment_button)
+    addEquipmentButton = requireView().findViewById(R.id.add_equipment_button)
 
     registerForContextMenu(addEquipmentButton)
 

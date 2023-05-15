@@ -150,6 +150,20 @@
         android:id="@+id/manageEquipmentsFragment"
         android:name="it.polito.mad.sportapp.reservation_management.equipments.ManageEquipmentsFragment"
         android:label="manage_equipments_view"
-        tools:layout="@layout/manage_equipments_view" />
+        tools:layout="@layout/manage_equipments_view" >
+        <action
+            android:id="@+id/action_manageEquipmentsFragment_to_reservationSummaryFragment"
+            app:destination="@id/reservationSummaryFragment"
+            app:enterAnim="@anim/custom_animation_slide_in_from_right"
+            app:exitAnim="@anim/custom_animation_slide_out_to_left"
+            app:popEnterAnim="@anim/custom_animation_slide_in_from_left"
+            app:popExitAnim="@anim/custom_animation_slide_out_to_right"
+            app:popUpTo="@id/manageEquipmentsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/reservationSummaryFragment"
+        android:name="it.polito.mad.sportapp.reservation_management.summary.ReservationSummaryFragment"
+        android:label="reservation_summary_view"
+        tools:layout="@layout/reservation_summary_view" />
 
 </navigation>

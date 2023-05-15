@@ -40,22 +40,27 @@ import kotlin.math.min
 
 /* add/edit mode setup */
 internal fun PlaygroundAvailabilitiesFragment.manageAddOrEditModeParams() {
-    if(reservationVM.reservationManagementModeWrapper.mode != null)
-        return
+    if(reservationVM.reservationManagementModeWrapper.mode == null && arguments?.getString("mode") != null) {
+        // NOT coming from a next view (with back arrow navigation)
+        reservationVM.reservationManagementModeWrapper.mode = ReservationManagementMode.from(
+            arguments?.getString("mode")!!
+        )
+    }
 
     // determine if we are in 'add mode' or in 'edit mode' (or none)
-    reservationVM.reservationManagementModeWrapper.mode = ReservationManagementMode.from(
-        arguments?.getString("mode")
-    )?.also { mode ->
+    reservationVM.reservationManagementModeWrapper.mode?.also { mode ->
         // * if so, save the received reservation bundle  *
         arguments?.getBundle("reservation")?.let { bundle ->
-            reservationVM.setReservationBundle(bundle)
+            if (reservationVM.reservationBundle.value!!.getString("start_slot") == null) {
+                // NOT coming from a next view (with back arrow navigation)
+                reservationVM.setReservationBundle(bundle)
 
-            if (mode == ReservationManagementMode.EDIT_MODE)
-                reservationVM.originalReservationBundle = bundle
+                if (mode == ReservationManagementMode.EDIT_MODE)
+                    reservationVM.originalReservationBundle = bundle
+            }
 
             // change selected date to the one of the selected slot, if there
-            bundle.getString("start_slot")?.let {
+            reservationVM.reservationBundle.value!!.getString("start_slot")?.let {
                 val startSlot = LocalDateTime.parse(it)
                 playgroundsVM.setSelectedDate(startSlot.toLocalDate())
             }

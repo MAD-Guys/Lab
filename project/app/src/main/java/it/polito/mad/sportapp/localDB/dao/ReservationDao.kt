@@ -16,13 +16,13 @@ interface ReservationDao {
     @Query("SELECT * FROM playground_reservation WHERE playground_id == :playgroundId")
     fun findByPlaygroundId(playgroundId: Int): List<PlaygroundReservation>
 
-    @Query("SELECT PR.id, PR.user_id, PR.playground_id , U.username, SC.name AS sport_center_name, SC.address, S.name AS sport_name," +
+    @Query("SELECT PR.id, PR.user_id, PR.playground_id , U.username, SC.name AS sport_center_name, SC.address, S.name AS sport_name, S.emoji AS sport_emoji, " +
             "PR.start_date_time, PR.end_date_time, PS.playground_name, PR.total_price, PS.sport_id, PS.sport_center_id " +
             " FROM sport AS S, playground_sport AS PS, playground_reservation as PR, sport_center AS SC, USER AS U " +
             "WHERE PR.sport_id = S.id AND PR.playground_id = PS.id AND PR.sport_center_id = SC.id AND PR.user_id = :userId AND user_id = U.id")
     fun findByUserId(userId: Int): List<DetailedReservation>
 
-    @Query("SELECT PR.id, PR.user_id, PR.playground_id, U.username, SC.name AS sport_center_name, SC.address, S.name AS sport_name," +
+    @Query("SELECT PR.id, PR.user_id, PR.playground_id, U.username, SC.name AS sport_center_name, SC.address, S.name AS sport_name, S.emoji AS sport_emoji, " +
             "PR.start_date_time, PR.end_date_time, PS.playground_name, PR.total_price, PS.sport_id, PS.sport_center_id " +
             " FROM sport AS S, playground_sport AS PS, playground_reservation as PR, sport_center AS SC, user AS U " +
             "WHERE PR.sport_id = S.id AND PR.playground_id = PS.id AND PR.sport_center_id = SC.id AND PR.sport_id = :sportId AND user_id = U.id")
@@ -32,7 +32,7 @@ interface ReservationDao {
     fun findById(id: Int): PlaygroundReservation
 
     @Query(
-        "SELECT PR.id, PR.user_id, PR.playground_id, U.username, SC.name AS sport_center_name, SC.address, S.name AS sport_name , " +
+        "SELECT PR.id, PR.user_id, PR.playground_id, U.username, SC.name AS sport_center_name, SC.address, S.name AS sport_name, S.emoji AS sport_emoji, " +
                 "PR.start_date_time, PR.end_date_time, PS.playground_name, PR.total_price, PS.sport_id, PS.sport_center_id " +
                 "FROM sport AS S, playground_sport AS PS, playground_reservation as PR, sport_center AS SC, user AS U " +
                 "WHERE PR.sport_id = S.id AND PR.playground_id = PS.id AND PR.sport_center_id = SC.id AND PR.id = :id AND user_id = U.id"

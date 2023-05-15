@@ -31,6 +31,8 @@ data class DetailedReservation(
     val sportCenterId: Int,
     @ColumnInfo(name = "sport_id")
     val sportId: Int,
+    @ColumnInfo(name = "sport_emoji")
+    val sportEmoji: String,
     @ColumnInfo(name = "sport_center_name")
     val sportCenterName: String,
     @ColumnInfo(name = "address")
@@ -72,6 +74,10 @@ data class DetailedReservation(
             endDateTime.substring(11, 19)
         )
     ).toMinutes()
+
+    fun printSportNameWithEmoji(emojiOnTheLeft: Boolean = false): String {
+        return if(emojiOnTheLeft) "$sportEmoji $sportName" else "$sportName $sportEmoji"
+    }
 }
 
 data class DetailedReservationForAvailablePlaygrounds(

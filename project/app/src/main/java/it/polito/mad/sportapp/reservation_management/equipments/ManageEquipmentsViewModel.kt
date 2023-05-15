@@ -18,12 +18,12 @@ class ManageEquipmentsViewModel @Inject constructor(
     internal lateinit var reservationBundle: Bundle
 
     // all the (max) available equipments for that playground
-    private val _availableEquipmentsQuantities = MutableLiveData<Map<Int, Equipment>>()
-    internal val availableEquipments: LiveData<Map<Int, Equipment>> = _availableEquipmentsQuantities
+    private val _availableEquipments = MutableLiveData<Map<Int, Equipment>>()
+    internal val availableEquipments: LiveData<Map<Int, Equipment>> = _availableEquipments
 
     // current equipments selected by the user
-    private val _selectedEquipmentsQuantities = MutableLiveData<MutableMap<Int, DetailedEquipmentReservation>>()
-    internal val selectedEquipments: LiveData<MutableMap<Int, DetailedEquipmentReservation>> = _selectedEquipmentsQuantities
+    private val _selectedEquipments = MutableLiveData<MutableMap<Int, DetailedEquipmentReservation>>()
+    internal val selectedEquipments: LiveData<MutableMap<Int, DetailedEquipmentReservation>> = _selectedEquipments
 
 
     internal fun loadEquipmentsQuantitiesAsync() {
@@ -46,7 +46,10 @@ class ManageEquipmentsViewModel @Inject constructor(
                     reservationId
                 )
 
-                _selectedEquipmentsQuantities.postValue(reservationEquipmentsQuantities)
+                if (_selectedEquipments.value == null)
+                    _selectedEquipments.postValue(reservationEquipmentsQuantities)
+                else // maintain previous data, if any (e.g.) when coming back from another view
+                    _selectedEquipments.postValue(_selectedEquipments.value)
 
                 // increment equipments' availabilities by the selected equipments' ones
                 for ((_, selectedEquipment) in reservationEquipmentsQuantities) {
@@ -75,16 +78,17 @@ class ManageEquipmentsViewModel @Inject constructor(
             }
             else {
                 // this is a new reservation (no previous equipments)
-                _selectedEquipmentsQuantities.postValue(mutableMapOf()) // (empty map)
+                // maintain previous selections, if any
+                _selectedEquipments.postValue(_selectedEquipments.value ?: mutableMapOf()) // (empty map)
             }
 
-            _availableEquipmentsQuantities.postValue(availableEquipmentsQuantities)
+            _availableEquipments.postValue(availableEquipmentsQuantities)
         }.start()
     }
 
     fun setSelectedEquipments(
         selectedEquipments: MutableMap<Int, DetailedEquipmentReservation>
     ) {
-        this._selectedEquipmentsQuantities.value = selectedEquipments
+        this._selectedEquipments.value = selectedEquipments
     }
 }

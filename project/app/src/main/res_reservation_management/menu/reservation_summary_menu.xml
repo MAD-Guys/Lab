@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/save_equipments_button"
+        android:id="@+id/save_reservation_button"
         android:title="@string/save_equipments_button_description"
-        android:icon="@drawable/baseline_add_shopping_cart_24"
+        android:icon="@drawable/baseline_add_task_24"
         app:showAsAction="always"
         />
 </menu>
