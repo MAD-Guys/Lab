@@ -214,6 +214,7 @@ data class NewReservation(
     val endTime: LocalDateTime,
     val playgroundId: Int,
     val playgroundName: String,
+    val playgroundPricePerHour: Float,
     val sportId: Int,
     val sportName: String,
     val sportCenterId: Int,

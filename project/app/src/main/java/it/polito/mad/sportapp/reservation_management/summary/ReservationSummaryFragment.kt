@@ -6,6 +6,8 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
@@ -20,17 +22,37 @@ import it.polito.mad.sportapp.entities.NewReservation
 import it.polito.mad.sportapp.entities.NewReservationEquipment
 import it.polito.mad.sportapp.showToasty
 import java.time.Duration
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @AndroidEntryPoint
 class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
     private val viewModel by viewModels<ReservationSummaryViewModel>()
 
+    // fragment dialogs
     private lateinit var confirmReservationDialog: AlertDialog
+    private lateinit var deleteReservationDialog: AlertDialog
 
+    // fragment views
+    private lateinit var summarySportCenterName: TextView
+    private lateinit var summaryPlaygroundName: TextView
+    private lateinit var summarySportName: TextView
+    private lateinit var summaryAddress: TextView
+    private lateinit var summaryDate: TextView
+    private lateinit var summaryStartTime: TextView
+    private lateinit var summaryEndTime: TextView
+    private lateinit var pricePerHour: TextView
+
+    // fragment buttons
+    private lateinit var summaryConfirmButton: Button
+    private lateinit var summaryDeleteButton: Button
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //TODO: retrieve sport emoji and sport center street
 
         showToasty(
             "info",
@@ -40,6 +62,7 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
         )
 
         this.initConfirmReservationDialog()
+        this.initDeleteReservationDialog()
 
         /* app bar and menu */
         this.initAppBar()
@@ -47,8 +70,11 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
 
         this.checkAndInitReservationData()
 
+        /* init views */
+        this.initViews()
 
-        // TODO
+        /* init buttons */
+        this.initButtons()
     }
 
     /* app bar and menu */
@@ -60,7 +86,7 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
             // show back arrow and the right title
             it.setDisplayHomeAsUpEnabled(true)
             it.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
-            it.title = "Reservation summary"
+            it.title = "Reservation Summary"
         }
     }
 
@@ -79,10 +105,63 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
                         confirmReservationDialog.show()
                         true
                     }
+
                     else -> false
                 }
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    /* views */
+    private fun initViews() {
+
+        //retrieve views
+        summarySportCenterName =
+            requireView().findViewById(R.id.reservation_summary_sport_center_name)
+        summaryPlaygroundName = requireView().findViewById(R.id.reservation_summary_playground_name)
+        summarySportName = requireView().findViewById(R.id.reservation_summary_sport_name)
+        summaryAddress = requireView().findViewById(R.id.reservation_summary_playground_address)
+        summaryDate = requireView().findViewById(R.id.reservation_summary_date)
+        summaryStartTime = requireView().findViewById(R.id.reservation_summary_start_time)
+        summaryEndTime = requireView().findViewById(R.id.reservation_summary_end_time)
+        pricePerHour =
+            requireView().findViewById(R.id.reservation_summary_playground_price_per_hour)
+
+        // set text in views
+        summarySportCenterName.text = viewModel.reservation.value?.sportCenterName
+        summaryPlaygroundName.text = viewModel.reservation.value?.playgroundName
+        summarySportName.text = viewModel.reservation.value?.sportName
+
+        viewModel.reservation.value?.startTime?.let {
+            summaryDate.text = when (it.toLocalDate()) {
+                LocalDate.now() -> "Today"
+                LocalDate.now().plusDays(1) -> "Tomorrow"
+                LocalDate.now().minusDays(1) -> "Yesterday"
+                else -> it.format(
+                    DateTimeFormatter.ofPattern("EEEE, d MMMM y", Locale.ENGLISH)
+                )
+            }
+        }
+
+        summaryStartTime.text = viewModel.reservation.value?.startTime?.toLocalTime().toString()
+        summaryEndTime.text = viewModel.reservation.value?.endTime?.toLocalTime().toString()
+        pricePerHour.text =
+            String.format("%.2f", viewModel.reservation.value?.playgroundPricePerHour)
+
+    }
+
+    /* buttons */
+    private fun initButtons() {
+        summaryConfirmButton = requireView().findViewById(R.id.reservation_summary_confirm_button)
+        summaryDeleteButton = requireView().findViewById(R.id.reservation_summary_delete_button)
+
+        summaryConfirmButton.setOnClickListener {
+            confirmReservationDialog.show()
+        }
+
+        summaryDeleteButton.setOnClickListener {
+            deleteReservationDialog.show()
+        }
     }
 
     /* Confirm reservation dialog */
@@ -108,8 +187,7 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
                     // go to the new reservation detail
                     val params = bundleOf("id_event" to newReservationId)
                     findNavController().navigate(R.id.reservationDetailsFragment, params)
-                }
-                else if (error != null && newReservationId == null) {
+                } else if (error != null && newReservationId == null) {
                     // an error occurred during reservation update
                     showToasty(
                         "error",
@@ -123,12 +201,33 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
             .create()
     }
 
+    /* Delete reservation dialog */
+    private fun initDeleteReservationDialog() {
+        deleteReservationDialog = AlertDialog.Builder(requireContext())
+            .setMessage("Do you want to delete this reservation?")
+            .setPositiveButton("YES") { _, _ ->
+                // * reservation correctly deleted *
+
+                showToasty(
+                    "success",
+                    requireContext(),
+                    "Reservation correctly deleted",
+                    Toasty.LENGTH_LONG
+                )
+
+                // navigate back to the home
+                findNavController().popBackStack(R.id.showReservationsFragment, false)
+            }
+            .setNegativeButton("NO") { d, _ -> d.cancel() }
+            .create()
+    }
+
     /* reservation */
 
     private fun checkAndInitReservationData() {
         val reservationBundle = arguments?.getBundle("reservation")
 
-        if(reservationBundle == null) {
+        if (reservationBundle == null) {
             showToasty(
                 "error",
                 requireContext(),
@@ -155,50 +254,53 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
         if (startSlotStr == null)
             inputErrors.add("start_slot")
 
-        if(endSlotStr == null)
+        if (endSlotStr == null)
             inputErrors.add("end_slot")
 
-        if(slotDurationMins == 0)
+        if (slotDurationMins == 0)
             inputErrors.add("slot_duration_mins")
 
-        if(playgroundId == 0)
+        if (playgroundId == 0)
             inputErrors.add("playground_id")
 
         if (playgroundName == null)
             inputErrors.add("playground_name")
 
-        if(sportId == 0)
+        if (sportId == 0)
             inputErrors.add("sport_id")
 
-        if(sportName == null)
+        if (sportName == null)
             inputErrors.add("sport_name")
 
-        if(sportCenterId == 0)
+        if (sportCenterId == 0)
             inputErrors.add("sport_center_id")
 
-        if(sportCenterName == null)
+        if (sportCenterName == null)
             inputErrors.add("sport_center_name")
 
-        if(equipmentsBundle == null)
+        if (equipmentsBundle == null)
             inputErrors.add("equipments")
 
-        if(playgroundPricePerHour == 0f)
+        if (playgroundPricePerHour == 0f)
             inputErrors.add("playground_price_per_hour")
 
-        if(inputErrors.isNotEmpty()) {
+        if (inputErrors.isNotEmpty()) {
             // some input fields is/are missing
             showToasty(
                 "error",
                 requireContext(),
-                inputErrors.joinToString(separator=", ",
-                    prefix="Error: the following input fields are missing: "),
+                inputErrors.joinToString(
+                    separator = ", ",
+                    prefix = "Error: the following input fields are missing: "
+                ),
                 Toasty.LENGTH_LONG
             )
         }
 
         // * all data are available here *
         val startTime = LocalDateTime.parse(startSlotStr)
-        val endTime = LocalDateTime.parse(endSlotStr).plus(Duration.ofMinutes(slotDurationMins.toLong()))
+        val endTime =
+            LocalDateTime.parse(endSlotStr).plus(Duration.ofMinutes(slotDurationMins.toLong()))
         val selectedEquipments = mutableListOf<NewReservationEquipment>()
 
         equipmentsBundle!!.keySet().forEach { equipmentId ->
@@ -226,6 +328,7 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
             endTime,
             playgroundId,
             playgroundName!!,
+            playgroundPricePerHour,
             sportId,
             sportName!!,
             sportCenterId,

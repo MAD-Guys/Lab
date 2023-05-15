@@ -13,4 +13,34 @@
     <string name="add_new_equipment_message">Add a new equipment!</string>
     <string name="no_more_available_equipments_message">No more available equipments</string>
 
+    <!--
+        reservation summary strings
+     -->
+
+    <string name="reservation_summary_title">Summary</string>
+    <string name="reservation_summary_sport_center_name">Awesome Sport Center</string>
+    <string name="reservation_summary_playground_name">Pantheon Arena</string>
+    <string name="reservation_summary_sport_name">Basketball</string>
+    <string name="reservation_summary_sport_center_address">Via Roma 1, Turin</string>
+    <string name="reservation_summary_date">Thursday, 25 May 2023</string>
+    <string name="reservation_summary_start_time">10:00</string>
+    <string name="reservation_summary_end_time">11:30</string>
+    <string name="reservation_summary_price_per_hour">20</string>
+    <string name="reservation_summary_total_price">10.00€</string>
+
+    <string name="price_icon_content_description">Price per hour</string>
+    <string name="calendar_icon_content_description">Date</string>
+
+    <string name="delete_button_content_description">Delete button</string>
+    <string name="delete_button_message">Delete</string>
+    <string name="delete_button_message_confirmation">Are you sure you want to delete this reservation?</string>
+    <string name="delete_button_message_confirmation_yes">Yes</string>
+    <string name="delete_button_message_confirmation_no">No</string>
+
+    <string name="confirm_button_content_description">Save button</string>
+    <string name="confirm_button_message">Confirm</string>
+    <string name="confirm_button_message_confirmation">Are you sure you want to confirm this reservation?</string>
+    <string name="confirm_button_message_confirmation_yes">Yes</string>
+    <string name="confirm_button_message_confirmation_no">No</string>
+
 </resources>
