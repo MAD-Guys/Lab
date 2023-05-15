@@ -30,4 +30,7 @@ interface PlaygroundSportDao {
             "WHERE SC.id == PS.sport_center_id AND S.id = PS.sport_id AND PS.id == :playgroundId")
     fun getPlaygroundInfo(playgroundId: Int): PlaygroundInfo
 
+    @Query ("SELECT cost_per_hour FROM playground_sport WHERE id == :playgroundId")
+    fun getPlaygroundSportPricePerHour(playgroundId: Int): Float
+
 }

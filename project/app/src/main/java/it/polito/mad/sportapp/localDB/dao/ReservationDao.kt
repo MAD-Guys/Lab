@@ -13,17 +13,20 @@ interface ReservationDao {
     @Query("SELECT * FROM playground_reservation")
     fun getAll(): List<PlaygroundReservation>
 
+    @Query("SELECT COUNT(id) FROM playground_reservation WHERE playground_id == :playgroundId AND datetime(start_date_time) < datetime(:endDateTime) AND datetime(end_date_time) > datetime(:startDateTime)")
+    fun getReservationIfAvailable(playgroundId: Int, startDateTime: String, endDateTime: String): Int
+
     @Query("SELECT * FROM playground_reservation WHERE playground_id == :playgroundId")
     fun findByPlaygroundId(playgroundId: Int): List<PlaygroundReservation>
 
     @Query("SELECT PR.id, PR.user_id, PR.playground_id , U.username, SC.name AS sport_center_name, SC.address, S.name AS sport_name, S.emoji AS sport_emoji, " +
-            "PR.start_date_time, PR.end_date_time, PS.playground_name, PR.total_price, PS.sport_id, PS.sport_center_id " +
+            "PR.start_date_time, PR.end_date_time, PS.playground_name, PR.total_price, PS.sport_id, PS.sport_center_id, PS.cost_per_hour AS playground_price_per_hour " +
             " FROM sport AS S, playground_sport AS PS, playground_reservation as PR, sport_center AS SC, USER AS U " +
             "WHERE PR.sport_id = S.id AND PR.playground_id = PS.id AND PR.sport_center_id = SC.id AND PR.user_id = :userId AND user_id = U.id")
     fun findByUserId(userId: Int): List<DetailedReservation>
 
     @Query("SELECT PR.id, PR.user_id, PR.playground_id, U.username, SC.name AS sport_center_name, SC.address, S.name AS sport_name, S.emoji AS sport_emoji, " +
-            "PR.start_date_time, PR.end_date_time, PS.playground_name, PR.total_price, PS.sport_id, PS.sport_center_id " +
+            "PR.start_date_time, PR.end_date_time, PS.playground_name, PR.total_price, PS.sport_id, PS.sport_center_id, PS.cost_per_hour AS playground_price_per_hour " +
             " FROM sport AS S, playground_sport AS PS, playground_reservation as PR, sport_center AS SC, user AS U " +
             "WHERE PR.sport_id = S.id AND PR.playground_id = PS.id AND PR.sport_center_id = SC.id AND PR.sport_id = :sportId AND user_id = U.id")
     fun findBySportId(sportId: Int): List<DetailedReservation>
@@ -33,7 +36,7 @@ interface ReservationDao {
 
     @Query(
         "SELECT PR.id, PR.user_id, PR.playground_id, U.username, SC.name AS sport_center_name, SC.address, S.name AS sport_name, S.emoji AS sport_emoji, " +
-                "PR.start_date_time, PR.end_date_time, PS.playground_name, PR.total_price, PS.sport_id, PS.sport_center_id " +
+                "PR.start_date_time, PR.end_date_time, PS.playground_name, PR.total_price, PS.sport_id, PS.sport_center_id, PS.cost_per_hour AS playground_price_per_hour " +
                 "FROM sport AS S, playground_sport AS PS, playground_reservation as PR, sport_center AS SC, user AS U " +
                 "WHERE PR.sport_id = S.id AND PR.playground_id = PS.id AND PR.sport_center_id = SC.id AND PR.id = :id AND user_id = U.id"
     )
@@ -51,7 +54,7 @@ interface ReservationDao {
     fun insertAll(vararg playgroundReservations: PlaygroundReservation)
 
     @Insert
-    fun insert(playgroundReservation: PlaygroundReservation)
+    fun insert(playgroundReservation: PlaygroundReservation): Long
 
     @Query("UPDATE playground_reservation SET total_price = total_price + :price WHERE id LIKE :reservationId")
     fun increasePrice(reservationId: Int, price: Float)

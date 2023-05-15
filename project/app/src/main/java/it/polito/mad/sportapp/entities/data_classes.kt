@@ -47,6 +47,8 @@ data class DetailedReservation(
     val playgroundId: Int,
     @ColumnInfo(name = "playground_name")
     val playgroundName: String,
+    @ColumnInfo(name = "playground_price_per_hour")
+    val playgroundPricePerHour: Float,
     @ColumnInfo(name = "total_price")
     val totalPrice: Float,
 ) {
