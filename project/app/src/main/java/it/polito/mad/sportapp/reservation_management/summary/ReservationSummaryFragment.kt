@@ -148,6 +148,7 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
         val sportCenterId = reservationBundle.getInt("sport_center_id")
         val sportCenterName = reservationBundle.getString("sport_center_name")
         val equipmentsBundle = reservationBundle.getBundle("equipments")
+        val playgroundPricePerHour = reservationBundle.getFloat("playground_price_per_hour")
 
         val inputErrors = mutableListOf<String>()
 
@@ -180,6 +181,9 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
 
         if(equipmentsBundle == null)
             inputErrors.add("equipments")
+
+        if(playgroundPricePerHour == 0f)
+            inputErrors.add("playground_price_per_hour")
 
         if(inputErrors.isNotEmpty()) {
             // some input fields is/are missing

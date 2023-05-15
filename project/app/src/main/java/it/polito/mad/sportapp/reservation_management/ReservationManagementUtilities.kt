@@ -47,6 +47,7 @@ class ReservationManagementUtilities {
 
                 "playground_id" to reservation?.playgroundId,
                 "playground_name" to reservation?.playgroundName,
+                "playground_price_per_hour" to reservation?.playgroundPricePerHour,
 
                 "sport_id" to reservation?.sportId,
                 "sport_name" to reservation?.sportName,
