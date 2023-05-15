@@ -236,7 +236,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                 val equipmentPrice = row.findViewById<TextView>(R.id.equipmentPrice)
 
                 equipmentName.text = e.equipmentName
-                equipmentQuantity.text = String.format("%d", e.quantity)
+                equipmentQuantity.text = String.format("%d", e.selectedQuantity)
                 equipmentPrice.text = String.format("%.2f", e.totalPrice)
 
                 equipment.addView(row, index)

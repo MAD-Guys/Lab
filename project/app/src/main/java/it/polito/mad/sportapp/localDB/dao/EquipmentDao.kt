@@ -18,7 +18,7 @@ interface EquipmentDao {
     fun findBySportCenterIdAndSportId(sportCenterId: Int, sportId: Int): List<Equipment>
 
     @Query(
-        "SELECT ER.playground_reservation_id AS playground_reservation_id, E.id AS equipment_id, E.name AS equipment_name, ER.quantity AS selected_quantity, E.unit_price AS unit_price " +
+        "SELECT ER.playground_reservation_id AS playground_reservation_id, E.id AS equipment_id, E.name AS equipment_name, ER.quantity AS selected_quantity, E.unit_price AS unit_price, ER.total_price AS total_price " +
         "FROM equipment_reservation ER, equipment E " +
                 "WHERE E.id == ER.equipment_id AND ER.playground_reservation_id == :reservationId "
     )

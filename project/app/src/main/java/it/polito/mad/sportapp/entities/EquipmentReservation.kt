@@ -30,8 +30,6 @@ data class EquipmentReservation(
     val totalPrice: Float,
 )
 {
-    @Ignore
-    var equipmentName: String = ""
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

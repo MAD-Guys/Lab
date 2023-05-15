@@ -118,12 +118,10 @@ class Repository @Inject constructor(
 
     fun getDetailedReservationById(id: Int): DetailedReservation {
         val reservation = reservationDao.findDetailedReservationById(id)
-        reservation.equipments = equipmentDao.findEquipmentReservationByPlaygroundId(id)
-        reservation.equipments.forEach {
-            it.equipmentName = equipmentDao.findEquipmentNameById(it.equipmentId)
-        }
+        reservation.equipments = equipmentDao.findReservationEquipmentsByReservationId(id).toMutableList()
+
         if (reservation.equipments.isEmpty()) {
-            reservation.equipments = listOf()
+            reservation.equipments = mutableListOf()
         }
         return reservation
     }
@@ -173,7 +171,7 @@ class Repository @Inject constructor(
         )
     }
 
-    fun getReservationPerDateByUserId(userId: Int): Map<LocalDate, List<DetailedReservation>> {
+    fun getReservationsPerDateByUserId(userId: Int): Map<LocalDate, List<DetailedReservation>> {
         val userReservations = reservationDao.findByUserId(userId)
         return userReservations.sortedBy { LocalDateTime.parse(it.startDateTime) }
             .groupBy { it.date }
