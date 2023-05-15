@@ -13,6 +13,6 @@
 	<string name="list_view_button">List view button</string>
 
 	<!-- Progress Bar -->
-	<string name="loading_text">Loading...</string>
+	<string name="loading_text">Loading…</string>
 
 </resources>

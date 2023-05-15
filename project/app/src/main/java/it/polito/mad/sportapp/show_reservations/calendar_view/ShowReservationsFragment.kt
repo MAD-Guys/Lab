@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.view.CalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.hideProgressBar
+import it.polito.mad.sportapp.showProgressBar
 import it.polito.mad.sportapp.show_reservations.ShowReservationsViewModel
 import it.polito.mad.sportapp.show_reservations.calendar_view.events_recycler_view.EventsAdapter
 
@@ -33,6 +35,9 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
 
     // action bar
     internal var actionBar: ActionBar? = null
+
+    // progress bar (Steph Curry GIF)
+    private lateinit var progressBar: View
 
     // navigation controller
     internal lateinit var navController: NavController
@@ -71,6 +76,10 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
         // initialize RecyclerView from layout
         recyclerView = requireView().findViewById(R.id.calendar_recycler_view)
 
+        /* show progress bar */
+        progressBar = view.findViewById(R.id.progressBar)
+        showProgressBar(progressBar, recyclerView)
+
         recyclerView.apply {
             layoutManager =
                 LinearLayoutManager(context, RecyclerView.VERTICAL, false)
@@ -79,6 +88,13 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
 
         /* bottom bar */
         setupBottomBar()
+
+        requireView().viewTreeObserver?.addOnGlobalLayoutListener {
+
+            if(vm.userEvents.value?.isNotEmpty() == true)
+            // task completed: hide progress bar
+                hideProgressBar(progressBar, recyclerView)
+        }
     }
 
     override fun onResume() {
