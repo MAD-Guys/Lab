@@ -142,23 +142,23 @@ class Repository @Inject constructor(
      */
     fun overrideNewReservation(reservation: NewReservation): Pair<Int?, NewReservationError?> {
         try {
-            reservationDao.deleteById(reservation.id)
+
             // Check slots availability
-            if (slotsAreAvailable(
-                    reservation.playgroundId,
-                    reservation.startTime,
-                    reservation.endTime
-                )
+            if (equipmentsAreAvailable(
+                    reservation.selectedEquipments,
+                    reservation.playgroundId)
             ) {
                 //Delete equipments if any
                 if (reservation.id != 0) {
                     equipmentDao.deleteEquipmentReservationByPlaygroundReservationId(reservation.id)
                 }
+                reservationDao.deleteById(reservation.id)
 
-                if (equipmentsAreAvailable(
-                        reservation.selectedEquipments,
-                        reservation.playgroundId
-                    )
+                if (slotsAreAvailable(
+                        reservation.playgroundId,
+                        reservation.startTime,
+                        reservation.endTime
+                )
                 ) {
                     val id = reservationDao.insert(
                         PlaygroundReservation(
