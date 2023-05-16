@@ -109,7 +109,7 @@ internal fun PlaygroundDetailsFragment.menuInit() {
 }
 
 internal fun PlaygroundDetailsFragment.chooseImage(view: ImageView) {
-    lateinit var image: Drawable
+    lateinit var image: android.graphics.drawable.Drawable
     when (viewModel.playground.value?.sportId) {
         1 -> image = ResourcesCompat.getDrawable(resources, R.drawable._01_tennis, null)!!
         2 -> image = ResourcesCompat.getDrawable(resources, R.drawable._02_table_tennis, null)!!

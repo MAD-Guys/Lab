@@ -46,7 +46,6 @@ class ManageEquipmentsViewModel @Inject constructor(
                 reservationId,
                 LocalDateTime.parse(startSlot),
                 LocalDateTime.parse(endSlot).plusMinutes(slotDurationMins.toLong())
-
             )
 
             if (reservationId != 0) {
@@ -108,41 +107,10 @@ class ManageEquipmentsViewModel @Inject constructor(
                                 previousSelectedEquipments.remove(equipmentId)
                             }
                         }
-                        else {
+                        // else {
                             // (3) sport center did not change and slots neither
-
-                            /*
-                            (if availableEquipmentsQuantities contains all the equipments, even with qty 0,
-                            and already considers the current reservation equipments, in this case nothing is due)
-
-                            // manage the existence of previous equipments in this reservation
-                            for ((equipmentId, selectedEquipment) in previousSelectedEquipments) {
-                                if (availableEquipmentsQuantities.containsKey(equipmentId)) {
-                                    // increment availability of this equipment
-                                    val oldQty = availableEquipmentsQuantities[equipmentId]!!.availability
-                                    availableEquipmentsQuantities[equipmentId]!!.availability = oldQty + selectedEquipment.selectedQuantity
-                                }
-                                else {
-                                    // this previous selected equipment does *not* appear among
-                                    // the available ones , so this reservation's quantities are the
-                                    // only available left for that slot
-
-                                    // set a new equipment having that availability
-                                    val equipment = Equipment(
-                                        equipmentId,
-                                        selectedEquipment.equipmentName,
-                                        previousReservation.sportId,
-                                        previousReservation.sportCenterId,
-                                        selectedEquipment.unitPrice,
-                                        selectedEquipment.selectedQuantity    // left availability coincides with the selected qty                        )
-                                    )
-
-                                    // create manually and add these equipment's quantities
-                                    availableEquipmentsQuantities[equipmentId] = equipment
-                                }
-                            }
-                            */
-                        }
+                            //     * nothing to do in this case *
+                        // }
                     }
 
                     _selectedEquipments.postValue(previousSelectedEquipments)

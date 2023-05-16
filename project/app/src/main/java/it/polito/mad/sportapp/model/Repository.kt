@@ -28,7 +28,6 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
-import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -295,15 +294,15 @@ class Repository @Inject constructor(
         val startSlot = startDateTime
         val endSlot = endDateTime.minusMinutes(30)
 
-        val availableEquipmentsInSlotsPerId =
+        val equipmentsAvailableQuantitiesInSlots =
             equipmentReservations.asSequence().flatMap { equipmentReservation ->
-                val startDateTime = equipmentReservation.startLocalDateTime
-                val endDateTime = equipmentReservation.endLocalDateTime
+                val reservationStartDateTime = equipmentReservation.startLocalDateTime
+                val reservationEndDateTime = equipmentReservation.endLocalDateTime
 
                 val equipmentReservationsPerSlot =
                     mutableListOf<Pair<LocalDateTime, EquipmentReservationForAvailabilities>>()
-                var currentDateTime = startDateTime
-                while (currentDateTime <= endDateTime) {
+                var currentDateTime = reservationStartDateTime
+                while (currentDateTime <= reservationEndDateTime) {
                     equipmentReservationsPerSlot.add(
                         Pair(
                             currentDateTime,
@@ -339,13 +338,13 @@ class Repository @Inject constructor(
                 slot >= startSlot && slot <= endSlot
             }.asSequence()
                 .groupBy { (slotEquipmentPair, _) ->
-                    val equipmentId = slotEquipmentPair.second.id  // equipment id
-                    equipmentId
+                    val equipment = slotEquipmentPair.second
+                    equipment
                 }.mapValues { (_, equipmentQuantitiesPerSlotAndId) ->
                     val maxSelectedQuantityInSlots =
                         equipmentQuantitiesPerSlotAndId.maxOf { (_, equipmentQuantities) ->
-                            val maxSelectedQtyInSlots = equipmentQuantities.first
-                            maxSelectedQtyInSlots
+                            val selectedQtyInSlots = equipmentQuantities.first
+                            selectedQtyInSlots
                         }
 
                     val (_, maxAvailability) = equipmentQuantitiesPerSlotAndId.first().value
@@ -353,22 +352,33 @@ class Repository @Inject constructor(
                     // compute available equipments left
                     val availableEquipmentsLeft = maxAvailability - maxSelectedQuantityInSlots
 
-
-                    equipmentQuantitiesPerSlotAndId.first().key.second.availability = availableEquipmentsLeft
-                    equipmentQuantitiesPerSlotAndId.first().key.second
-
+                    // equipmentQuantitiesPerSlotAndId.first().key.second.availability = availableEquipmentsLeft
+                    // equipmentQuantitiesPerSlotAndId.first().key.second
+                    availableEquipmentsLeft
                 }
-        val notReservedEquipment = equipmentDao.findEquipmentNotReserved(
-            reservationId,
-            sportCenterId,
-            sportId,
-            startDateTime.toString(),
-            endDateTime.toString()
-        ).associateBy { equipment ->
-            equipment.id
+
+        // (they still miss the ones with full availability)
+        val equipmentsWithCurrentAvailability =
+            equipmentsAvailableQuantitiesInSlots.map { (equipment, availableQty) ->
+                equipment.availability = availableQty
+                equipment
+        }.toMutableList()
+
+        // take all equipments and add the ones with full availability
+        val allEquipments = equipmentDao.findBySportCenterIdAndSportId(sportCenterId, sportId)
+
+        for (virginEquipment in allEquipments) {
+            if (!equipmentsWithCurrentAvailability.contains(virginEquipment)) {
+                equipmentsWithCurrentAvailability.add(virginEquipment)
+            }
         }
-        availableEquipmentsInSlotsPerId.toMutableMap().putAll(notReservedEquipment)
-        return availableEquipmentsInSlotsPerId.toMutableMap()
+
+        // now equipmentsWithCurrentAvailability contains all the equipments (even with qty = 0),
+        // with the actual availability
+
+        return equipmentsWithCurrentAvailability
+            .associateBy { equipment -> equipment.id }
+            .toMutableMap()
     }
 
     fun getReservationEquipmentsQuantities(reservationId: Int): MutableMap<Int, DetailedEquipmentReservation> {

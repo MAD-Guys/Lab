@@ -46,6 +46,8 @@ interface EquipmentDao {
     fun findEquipmentNotReserved(reservationId: Int, sportCenterId: Int, sportId: Int, startDateTime: String, endDateTime: String): List<Equipment>
 
 
+
+
     @Query(
         "SELECT ER.playground_reservation_id AS playground_reservation_id, E.id AS equipment_id, E.name AS equipment_name, ER.quantity AS selected_quantity, E.unit_price AS unit_price, ER.total_price AS total_price " +
                 "FROM equipment_reservation ER, equipment E " +

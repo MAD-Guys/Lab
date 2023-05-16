@@ -288,7 +288,7 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
                 showToasty(
                     "success",
                     requireContext(),
-                    "Reservation correctly deleted",
+                    "Reservation correctly canceled",
                     Toasty.LENGTH_LONG
                 )
 
