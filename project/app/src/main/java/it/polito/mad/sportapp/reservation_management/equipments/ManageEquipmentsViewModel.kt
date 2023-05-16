@@ -38,14 +38,15 @@ class ManageEquipmentsViewModel @Inject constructor(
         Thread {
             // * retrieve all the available quantities left for each equipment *
             // in the specified sport center and sport, for the specified timeslots
-            // if reservationId != null, it must count this reservation equipments as available
-            // it has to return all the equipments, even with qty 0
+            // • if reservationId != null, it must count this reservation equipments as available
+            // • it has to return all the equipments, even with qty 0
             val availableEquipmentsQuantities = repository.getAvailableEquipmentsBySportCenterIdAndSportId(
                 sportCenterId,
                 sportId,
-                // LocalDateTime.parse(startSlot),
-                // LocalDateTime.parse(endSlot).plusMinutes(slotDurationMins.toLong())
-                // reservationId
+                reservationId,
+                LocalDateTime.parse(startSlot),
+                LocalDateTime.parse(endSlot).plusMinutes(slotDurationMins.toLong())
+
             )
 
             if (reservationId != 0) {

@@ -79,12 +79,13 @@ data class DetailedReservation(
 
     @Ignore
     var endSlot: LocalDateTime = endLocalDateTime.minusMinutes(duration)
+
     @Ignore
     var startSlot: LocalDateTime = startLocalDateTime
 
 
     fun printSportNameWithEmoji(emojiOnTheLeft: Boolean = false): String {
-        return if(emojiOnTheLeft) "$sportEmoji $sportName" else "$sportName $sportEmoji"
+        return if (emojiOnTheLeft) "$sportEmoji $sportName" else "$sportName $sportEmoji"
     }
 }
 
@@ -150,7 +151,7 @@ data class PlaygroundInfo(
     val playgroundId: Int,
     @ColumnInfo(name = "playground_name")
     val playgroundName: String,
-    @ColumnInfo(name ="sport_center_id")
+    @ColumnInfo(name = "sport_center_id")
     val sportCenterId: Int,
     @ColumnInfo(name = "sport_center_name")
     val sportCenterName: String,
@@ -190,7 +191,7 @@ data class PlaygroundInfo(
     var reviewList: List<Review> = listOf()
 }
 
-enum class Achievement{
+enum class Achievement {
     AtLeastOneSport,
     AtLeastFiveSports,
     AllSports,
@@ -199,7 +200,7 @@ enum class Achievement{
     AtLeastTwentyFiveMatches
 }
 
-data class DetailedEquipmentReservation (
+data class DetailedEquipmentReservation(
     @ColumnInfo(name = "playground_reservation_id")
     val playgroundReservationId: Int,
     @ColumnInfo(name = "equipment_id")
@@ -213,6 +214,48 @@ data class DetailedEquipmentReservation (
     @ColumnInfo(name = "total_price")
     val totalPrice: Float
 )
+
+data class EquipmentReservationForAvailabilities(
+    @ColumnInfo(name = "start_date_time")
+    val startDateTime: String,
+    @ColumnInfo(name = "end_date_time")
+    val endDateTime: String,
+    @ColumnInfo(name = "equipment_id")
+    val equipmentId: Int,
+    @ColumnInfo(name = "equipment_name")
+    val equipmentName: String,
+    @ColumnInfo(name = "selected_quantity")
+    val selectedQuantity: Int,
+    @ColumnInfo(name = "availability")
+    val availability: Int,
+    @ColumnInfo(name = "unit_price")
+    val unitPrice: Float,
+    @ColumnInfo(name = "sport_id")
+    val sportId: Int,
+    @ColumnInfo(name = "sport_center_id")
+    val sportCenterId: Int,
+) {
+
+    @Ignore
+    var startLocalDateTime: LocalDateTime = LocalDateTime.parse(startDateTime)
+
+    @Ignore
+    var endLocalDateTime: LocalDateTime = LocalDateTime.parse(endDateTime)
+
+    fun clone(): EquipmentReservationForAvailabilities {
+        return EquipmentReservationForAvailabilities(
+            startDateTime,
+            endDateTime,
+            equipmentId,
+            equipmentName,
+            selectedQuantity,
+            availability,
+            unitPrice,
+            sportId,
+            sportCenterId
+        )
+    }
+}
 
 /* add/edit reservation */
 
@@ -236,4 +279,5 @@ data class NewReservationEquipment(
     val selectedQuantity: Int,
     val unitPrice: Float
 )
+
 

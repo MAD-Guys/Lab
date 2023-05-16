@@ -11,6 +11,7 @@ import it.polito.mad.sportapp.entities.SportCenter
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.entities.EquipmentReservation
+import it.polito.mad.sportapp.entities.EquipmentReservationForAvailabilities
 import it.polito.mad.sportapp.entities.NewReservation
 import it.polito.mad.sportapp.entities.NewReservationEquipment
 import it.polito.mad.sportapp.entities.PlaygroundInfo
@@ -142,7 +143,11 @@ class Repository @Inject constructor(
             // Check slots availability
             if (equipmentsAreAvailable(
                     reservation.selectedEquipments,
-                    reservation.playgroundId
+                    reservation.id,
+                    reservation.startTime,
+                    reservation.endTime,
+                    reservation.sportCenterId,
+                    reservation.sportId
                 )
             ) {
                 // Delete equipments if any
@@ -210,11 +215,29 @@ class Repository @Inject constructor(
 
     private fun equipmentsAreAvailable(
         equipments: List<NewReservationEquipment>,
-        playgroundId: Int
+        reservationId: Int,
+        startDateTime: LocalDateTime,
+        endDateTime: LocalDateTime,
+        sportCenterId: Int,
+        sportId: Int
     ): Boolean {
-        // TODO check if the selected equipments are all available (for the selected playground, and the selected slot);
+        equipmentDao.findEquipmentReservationsForSpecifiedTimeInterval(
+            reservationId,
+            sportCenterId,
+            sportId,
+            startDateTime.toString(),
+            endDateTime.toString()
+        )
+            .forEach { busyEquipment ->
+                equipments.forEach { selectedEquipment ->
+                    if (busyEquipment.equipmentId == selectedEquipment.equipmentId) {
+                        if (busyEquipment.availability - busyEquipment.selectedQuantity < selectedEquipment.selectedQuantity) {
+                            return false
+                        }
+                    }
+                }
+            }
         return true
-
     }
 
     private fun calculatePrice(reservation: NewReservation): Float {
@@ -255,11 +278,98 @@ class Repository @Inject constructor(
 
     fun getAvailableEquipmentsBySportCenterIdAndSportId(
         sportCenterId: Int,
-        sportId: Int
+        sportId: Int,
+        reservationId: Int,
+        startDateTime: LocalDateTime,
+        endDateTime: LocalDateTime
     ): MutableMap<Int, Equipment> {
-        return equipmentDao
-            .findBySportCenterIdAndSportId(sportCenterId, sportId)
-            .associateBy { it.id }.toMutableMap()
+        // retrieve equipment reservations happening in the specified time interval,
+        // for the specified sport center and sport (and excluding the specified reservation ones)
+        val equipmentReservations = equipmentDao.findEquipmentReservationsForSpecifiedTimeInterval(
+            reservationId,
+            sportCenterId,
+            sportId,
+            startDateTime.toString(),
+            endDateTime.toString()
+        )
+
+        val startSlot = startDateTime
+        val endSlot = endDateTime.minusMinutes(30)
+
+        val availableEquipmentsInSlotsPerId =
+            equipmentReservations.asSequence().flatMap { equipmentReservation ->
+                val startDateTime = equipmentReservation.startLocalDateTime
+                val endDateTime = equipmentReservation.endLocalDateTime
+
+                val equipmentReservationsPerSlot =
+                    mutableListOf<Pair<LocalDateTime, EquipmentReservationForAvailabilities>>()
+                var currentDateTime = startDateTime
+                while (currentDateTime <= endDateTime) {
+                    equipmentReservationsPerSlot.add(
+                        Pair(
+                            currentDateTime,
+                            equipmentReservation.clone()
+                        )
+                    )
+                    currentDateTime = currentDateTime.plusMinutes(30)
+                }
+
+                equipmentReservationsPerSlot
+            }.groupBy { (slot, equipmentReservation) ->
+                // create Equipment entity
+                // create equals() and hashCode() for id Equipment only
+                // pass it to the Pair constructor instead of equipment Id
+                val equipment = Equipment(
+                    equipmentReservation.equipmentId,
+                    equipmentReservation.equipmentName,
+                    equipmentReservation.sportId,
+                    equipmentReservation.sportCenterId,
+                    equipmentReservation.unitPrice,
+                    equipmentReservation.availability
+                )
+                Pair(slot, equipment)
+            }.mapValues { (_, pairList) ->
+                val equipmentTotalSelectedQuantity =
+                    pairList.sumOf { (_, equipmentReservation) -> equipmentReservation.selectedQuantity }
+                val equipmentAvailability = pairList.first().second.availability
+
+                Pair(equipmentTotalSelectedQuantity, equipmentAvailability)
+            }.filter { (slotEquipmentPair, _) ->
+                val slot = slotEquipmentPair.first
+
+                slot >= startSlot && slot <= endSlot
+            }.asSequence()
+                .groupBy { (slotEquipmentPair, _) ->
+                    val equipmentId = slotEquipmentPair.second.id  // equipment id
+                    equipmentId
+                }.mapValues { (_, equipmentQuantitiesPerSlotAndId) ->
+                    val maxSelectedQuantityInSlots =
+                        equipmentQuantitiesPerSlotAndId.maxOf { (_, equipmentQuantities) ->
+                            val maxSelectedQtyInSlots = equipmentQuantities.first
+                            maxSelectedQtyInSlots
+                        }
+
+                    val (_, maxAvailability) = equipmentQuantitiesPerSlotAndId.first().value
+
+                    // compute available equipments left
+                    val availableEquipmentsLeft = maxAvailability - maxSelectedQuantityInSlots
+
+
+                    equipmentQuantitiesPerSlotAndId.first().key.second.availability = availableEquipmentsLeft
+                    equipmentQuantitiesPerSlotAndId.first().key.second
+
+                }
+        val notReservedEquipment = equipmentDao.findEquipmentNotReserved(
+            reservationId,
+            sportCenterId,
+            sportId,
+            startDateTime.toString(),
+            endDateTime.toString()
+        ).associateBy { equipment ->
+            equipment.id
+        }
+        availableEquipmentsInSlotsPerId.toMutableMap().putAll(notReservedEquipment)
+        return availableEquipmentsInSlotsPerId.toMutableMap()
     }
 
     fun getReservationEquipmentsQuantities(reservationId: Int): MutableMap<Int, DetailedEquipmentReservation> {
