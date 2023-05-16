@@ -1,187 +1,205 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_calendar"
-    android:fillViewport="true"
+    android:layout_width="match_parent"
     tools:context=".playground_availabilities.PlaygroundAvailabilitiesFragment">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:orientation="vertical">
-
-        <!-- Month bar -->
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/app_bar_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/current_month_background_color"
-            android:theme="@style/AppTheme.AppBarOverlay">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp">
-
-                <!-- Previous month button -->
-                <ImageView
-                    android:id="@+id/previous_month_button"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="@string/previous_month_button_description"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_chevron_left"
-                    app:tint="@color/white"
-                    tools:ignore="ImageContrastCheck,RedundantDescriptionCheck" />
-
-                <!-- Month label -->
-                <TextView
-                    android:id="@+id/month_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:paddingTop="3dp"
-                    android:text="@string/default_month"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="22sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/next_month_button"
-                    app:layout_constraintStart_toEndOf="@+id/previous_month_button"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="TextContrastCheck" />
-
-                <!-- Next month button -->
-                <ImageView
-                    android:id="@+id/next_month_button"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="@string/next_month_button_description"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_chevron_right"
-                    app:tint="@color/white"
-                    tools:ignore="ImageContrastCheck,RedundantDescriptionCheck" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <!-- Sport selection -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="33dp"
-            android:layout_marginHorizontal="1dp"
-            android:layout_marginVertical="3dp"
-            tools:ignore="TextSizeCheck">
-
-            <Spinner
-                android:id="@+id/selected_sport_spinner"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/spinner_bg"
-                android:hapticFeedbackEnabled="true"
-                android:paddingStart="0dp"
-                android:paddingEnd="0dp"
-                android:textAlignment="center"
-                tools:ignore="TouchTargetSizeCheck,DuplicateSpeakableTextCheck" />
-
-        </LinearLayout>
+        android:layout_height="match_parent"
+        android:background="@color/background_calendar"
+        android:fillViewport="true">
 
         <LinearLayout
-            android:id="@+id/main_content_wrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:clickable="true"
-            android:focusable="true">
-            <!-- Calendar -->
-            <com.kizitonwose.calendar.view.CalendarView
-                android:id="@+id/calendar_view"
+            android:focusable="true"
+            android:orientation="vertical">
+
+            <!-- Month bar -->
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/app_bar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="1dp"
-                app:cv_dayViewResource="@layout/playground_availabilities_calendar_day_container"
-                app:cv_monthHeaderResource="@layout/calendar_header"
-                app:cv_outDateStyle="endOfGrid"
-                app:cv_scrollPaged="true">
+                android:background="@color/current_month_background_color"
+                android:theme="@style/AppTheme.AppBarOverlay">
 
-            </com.kizitonwose.calendar.view.CalendarView>
-
-            <!-- progress bar -->
-            <FrameLayout
-                android:id="@+id/progressBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="-10sp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/loading_text"
-                    android:layout_gravity="center"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp"
-                    android:includeFontPadding="false"
-                    tools:ignore="VisualLintOverlap" />
-
-                <ProgressBar
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="360dp"
-                    android:layout_height="210dp"
-                    android:layout_marginStart="80dp"
-                    android:indeterminateDrawable="@drawable/steph_curry_gif" />
-            </FrameLayout>
-
-            <!-- slot availabilities section -->
-            <LinearLayout
-                android:id="@+id/slot_availabilities_section"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <!-- selected date label container -->
-                <RelativeLayout
-                    android:id="@+id/selected_date_label_box"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="20sp"
-                    android:layout_margin="1dp"
-                    android:background="@drawable/time_slot_bg"
-                    tools:ignore="TextSizeCheck">
+                    android:layout_height="wrap_content"
+                    android:padding="10dp">
 
+                    <!-- Previous month button -->
+                    <ImageView
+                        android:id="@+id/previous_month_button"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/previous_month_button_description"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_chevron_left"
+                        app:tint="@color/white"
+                        tools:ignore="ImageContrastCheck,RedundantDescriptionCheck" />
+
+                    <!-- Month label -->
                     <TextView
-                        android:id="@+id/selected_date_label"
+                        android:id="@+id/month_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:includeFontPadding="false"
-                        android:text="@string/selected_date_text"
-                        android:textAlignment="center"
-                        android:textColor="@color/time_slot_text"
-                        android:textSize="@dimen/selected_date_label_text_size"
+                        android:fontFamily="@font/poppins_medium"
+                        android:paddingTop="3dp"
+                        android:text="@string/default_month"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="22sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/next_month_button"
+                        app:layout_constraintStart_toEndOf="@+id/previous_month_button"
+                        app:layout_constraintTop_toTopOf="parent"
                         tools:ignore="TextContrastCheck" />
 
-                </RelativeLayout>
+                    <!-- Next month button -->
+                    <ImageView
+                        android:id="@+id/next_month_button"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/next_month_button_description"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_chevron_right"
+                        app:tint="@color/white"
+                        tools:ignore="ImageContrastCheck,RedundantDescriptionCheck" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.appbar.AppBarLayout>
 
-                <!-- Selected date slots' playground availabilities -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/playground_availabilities_rv"
+            <!-- Sport selection -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="33dp"
+                android:layout_marginHorizontal="1dp"
+                android:layout_marginVertical="3dp"
+                tools:ignore="TextSizeCheck">
+
+                <Spinner
+                    android:id="@+id/selected_sport_spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/spinner_bg"
+                    android:hapticFeedbackEnabled="true"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="0dp"
+                    android:textAlignment="center"
+                    tools:ignore="TouchTargetSizeCheck,DuplicateSpeakableTextCheck" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/main_content_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:orientation="vertical">
+                <!-- Calendar -->
+                <com.kizitonwose.calendar.view.CalendarView
+                    android:id="@+id/calendar_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false" />
+                    android:layout_marginHorizontal="1dp"
+                    app:cv_dayViewResource="@layout/playground_availabilities_calendar_day_container"
+                    app:cv_monthHeaderResource="@layout/calendar_header"
+                    app:cv_outDateStyle="endOfGrid"
+                    app:cv_scrollPaged="true">
+
+                </com.kizitonwose.calendar.view.CalendarView>
+
+                <!-- progress bar -->
+                <FrameLayout
+                    android:id="@+id/progressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-10sp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/poppins_medium"
+                        android:includeFontPadding="false"
+                        android:text="@string/loading_text"
+                        android:textSize="18sp"
+                        tools:ignore="VisualLintOverlap" />
+
+                    <ProgressBar
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="360dp"
+                        android:layout_height="210dp"
+                        android:layout_marginStart="80dp"
+                        android:indeterminateDrawable="@drawable/steph_curry_gif" />
+                </FrameLayout>
+
+                <!-- slot availabilities section -->
+                <LinearLayout
+                    android:id="@+id/slot_availabilities_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <!-- selected date label container -->
+                    <RelativeLayout
+                        android:id="@+id/selected_date_label_box"
+                        android:layout_width="match_parent"
+                        android:layout_height="20sp"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/time_slot_bg"
+                        tools:ignore="TextSizeCheck">
+
+                        <TextView
+                            android:id="@+id/selected_date_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:includeFontPadding="false"
+                            android:text="@string/selected_date_text"
+                            android:textAlignment="center"
+                            android:textColor="@color/time_slot_text"
+                            android:textSize="@dimen/selected_date_label_text_size"
+                            tools:ignore="TextContrastCheck" />
+
+                    </RelativeLayout>
+
+                    <!-- Selected date slots' playground availabilities -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/playground_availabilities_rv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false" />
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-</androidx.core.widget.NestedScrollView>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@drawable/baseline_done_24"
+        app:backgroundTint="@color/primary_orange"
+        app:fabCustomSize="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:maxImageSize="48dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

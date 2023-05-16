@@ -135,6 +135,20 @@ internal fun PlaygroundAvailabilitiesFragment.initMenu() {
     }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 }
 
+internal fun PlaygroundAvailabilitiesFragment.initFloatingButton() {
+    floatingButton = requireView().findViewById(R.id.floatingButton)
+    floatingButton.setOnClickListener {
+        if(reservationVM.isStartSlotSet())
+            navigateToManageEquipments()
+    }
+    if(reservationVM.isStartSlotSet()){
+        floatingButton.visibility = View.VISIBLE
+    } else {
+        floatingButton.visibility = View.GONE
+    }
+
+}
+
 private fun PlaygroundAvailabilitiesFragment.navigateToAddReservation() {
     // go to add/edit mode
     findNavController().navigate(R.id.action_playgroundAvailabilitiesFragment_self)
@@ -488,6 +502,10 @@ internal fun PlaygroundAvailabilitiesFragment.setupAddOrEditModeView() {
     // show only add slot button
     addReservationButton?.isVisible = false
     addReservationSlotButton?.isVisible = true
+
+    if(reservationVM.isStartSlotSet()){
+        floatingButton.visibility = View.VISIBLE
+    }
 
     /* month and date colors */
 

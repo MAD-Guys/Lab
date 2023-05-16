@@ -9,6 +9,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.kizitonwose.calendar.view.CalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
@@ -29,6 +30,9 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
     // menu icons
     internal var addReservationButton: MenuItem? = null
     internal var addReservationSlotButton: MenuItem? = null
+
+    // floating action button
+    internal lateinit var floatingButton: FloatingActionButton
 
     // calendar
     internal lateinit var calendarView: CalendarView
@@ -63,6 +67,9 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
         /* init app bar and menu */
         this.initAppBar()
         this.initMenu()
+
+        /* init floating action button */
+        this.initFloatingButton()
 
         /* initialize calendar view */
         this.initCalendar()
@@ -101,14 +108,26 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
             )
 
             // check if at least a slot has been selected
-            addReservationSlotButton?.icon = AppCompatResources.getDrawable(
-                requireContext(),
-                if(newBundle.getString("start_slot") != null)
-                // a slot has been selected -> set white icon
+            if(newBundle.getString("start_slot") != null) {
+                // * a slot has been selected *
+
+                // set white icon
+                addReservationSlotButton?.icon = AppCompatResources.getDrawable(
+                    requireContext(),
                     R.drawable.baseline_more_time_24
-                else // no slot is still selected -> set blurred icon
+                )
+
+                // show floating button
+                floatingButton.visibility = View.VISIBLE
+            }
+            else {
+                // no slot is still selected -> set blurred icon
+                addReservationSlotButton?.icon = AppCompatResources.getDrawable(
+                    requireContext(),
                     R.drawable.baseline_more_time_24_blurred
-            )
+                )
+            }
+
         }
 
         /* (if necessary) switch to add/edit mode */

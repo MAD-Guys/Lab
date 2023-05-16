@@ -52,6 +52,13 @@ internal fun ManageEquipmentsFragment.initMenu() {
     }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 }
 
+internal fun ManageEquipmentsFragment.initFloatingButton() {
+    floatingButton = requireView().findViewById(R.id.floatingButton)
+    floatingButton.setOnClickListener {
+        navigateToReservationSummary()
+    }
+}
+
 private fun ManageEquipmentsFragment.navigateToReservationSummary() {
     // create a bundle containing all the selected equipments and the relative qty
     val params = bundleOf(

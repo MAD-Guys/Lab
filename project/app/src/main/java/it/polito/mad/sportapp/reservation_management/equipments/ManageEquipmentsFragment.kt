@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.viewModels
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.DetailedEquipmentReservation
@@ -30,12 +31,16 @@ class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
     internal lateinit var addEquipmentButtonMessage: TextView
     internal lateinit var addEquipmentButton: Button
 
+    // floating action button
+    internal lateinit var floatingButton: FloatingActionButton
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         /* app bar and menu */
         this.initAppBar()
         this.initMenu()
+        this.initFloatingButton()
 
         /* retrieve reservation data passed after slots selection */
         this.initReservationBundle()
