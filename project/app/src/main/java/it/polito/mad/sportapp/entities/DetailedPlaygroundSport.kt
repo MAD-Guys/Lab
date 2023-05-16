@@ -4,9 +4,11 @@ data class DetailedPlaygroundSport(
     val playgroundId: Int,
     val playgroundName: String,
     val sportId: Int,
+    val sportEmoji: String,
     val sportName: String,
     val sportCenterId: Int,
     val sportCenterName: String,
+    val sportCenterAddress: String,
     val pricePerHour: Float,
     var available: Boolean = false
 ) {
@@ -38,9 +40,11 @@ data class DetailedPlaygroundSport(
         playgroundId,
         playgroundName,
         sportId,
+        sportEmoji,
         sportName,
         sportCenterId,
         sportCenterName,
+        sportCenterAddress,
         pricePerHour,
         available
     )

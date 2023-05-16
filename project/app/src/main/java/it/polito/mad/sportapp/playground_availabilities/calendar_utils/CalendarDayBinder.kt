@@ -44,7 +44,7 @@ class CalendarDayBinder(
 
             // if this day is completely full (no existing available playgrounds), show a red dot
             if (isAvailablePlaygroundsLoaded() && availabilityPercentage == 0.0f) {
-                val notAvailableColor = Color.rgb(255, 80, 80)    // red
+                val notAvailableColor = Color.rgb(205, 70, 49)    // jasper red
                 container.setAvailabilityTagColor(notAvailableColor)
             }
         }

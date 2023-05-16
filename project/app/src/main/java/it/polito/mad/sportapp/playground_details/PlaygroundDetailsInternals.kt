@@ -135,9 +135,11 @@ internal fun PlaygroundDetailsFragment.handleAddReservationButton() {
                 "playground_id" to viewModel.playground.value?.playgroundId,
                 "playground_name" to viewModel.playground.value?.playgroundName,
                 "sport_id" to viewModel.playground.value?.sportId,
+                "sport_emoji" to viewModel.playground.value?.sportEmoji,
                 "sport_name" to viewModel.playground.value?.sportName,
                 "sport_center_id" to viewModel.playground.value?.sportCenterId,
                 "sport_center_name" to viewModel.playground.value?.sportCenterName,
+                "sport_center_address" to viewModel.playground.value?.sportCenterAddress,
                 "playground_price_per_hour" to viewModel.playground.value?.pricePerHour,
             )
         )

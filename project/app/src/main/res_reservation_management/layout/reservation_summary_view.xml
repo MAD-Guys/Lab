@@ -78,7 +78,7 @@
                     app:srcCompat="@drawable/baseline_sports_basketball_24" />
 
                 <TextView
-                    android:id="@+id/sportEmoji"
+                    android:id="@+id/sport_emoji"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="🏀"

@@ -7,7 +7,6 @@ import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
 import it.polito.mad.sportapp.entities.Equipment
 import it.polito.mad.sportapp.entities.PlaygroundReservation
 import it.polito.mad.sportapp.entities.Sport
-import it.polito.mad.sportapp.entities.SportCenter
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.entities.EquipmentReservation
@@ -446,9 +445,11 @@ class Repository @Inject constructor(
                     it.playgroundId,
                     it.playgroundName,
                     it.sportId,
+                    it.sportEmoji,
                     it.sportName,
                     it.sportCenterId,
                     it.sportCenterName,
+                    it.sportCenterAddress,
                     it.pricePerHour
                 )
             )
@@ -487,9 +488,11 @@ class Repository @Inject constructor(
                     it.playgroundId,
                     it.playgroundName,
                     it.sportId,
+                    it.sportEmoji,
                     it.sportName,
                     it.sportCenterId,
                     it.sportCenterName,
+                    it.sportCenterAddress,
                     it.pricePerHour,
                     true
                 )

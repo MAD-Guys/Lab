@@ -37,6 +37,7 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
     private lateinit var deleteReservationDialog: AlertDialog
 
     // fragment views
+    private lateinit var summarySportEmoji: TextView
     private lateinit var summarySportCenterName: TextView
     private lateinit var summaryPlaygroundName: TextView
     private lateinit var summarySportName: TextView
@@ -55,8 +56,6 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        //TODO: retrieve sport emoji and sport center street
 
         this.initConfirmReservationDialog()
         this.initDeleteReservationDialog()
@@ -113,6 +112,7 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
     private fun initViews() {
 
         //retrieve views
+        summarySportEmoji = requireView().findViewById(R.id.sport_emoji)
         summarySportCenterName =
             requireView().findViewById(R.id.reservation_summary_sport_center_name)
         summaryPlaygroundName = requireView().findViewById(R.id.reservation_summary_playground_name)
@@ -130,11 +130,11 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
         summaryTotalPrice = requireView().findViewById(R.id.reservation_summary_total_price)
 
         // set text in views
+        summarySportEmoji.text = viewModel.reservation.value?.sportEmoji
         summarySportCenterName.text = viewModel.reservation.value?.sportCenterName
         summaryPlaygroundName.text = viewModel.reservation.value?.playgroundName
         summarySportName.text = viewModel.reservation.value?.sportName
-        //TODO: retrieve sport center address
-        //summaryAddress.text = viewModel.reservation.value?.sportCenterAddress
+        summaryAddress.text = viewModel.reservation.value?.sportCenterAddress
 
         viewModel.reservation.value?.startTime?.let {
             summaryDate.text = when (it.toLocalDate()) {
@@ -200,7 +200,10 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
     }
 
     /* equipment list */
-    private fun inflateEquipmentList(equipmentList: List<NewReservationEquipment>, container: LinearLayout) {
+    private fun inflateEquipmentList(
+        equipmentList: List<NewReservationEquipment>,
+        container: LinearLayout
+    ) {
 
         equipmentList.forEach {
             val equipmentView = layoutInflater.inflate(
@@ -317,9 +320,11 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
         val playgroundId = reservationBundle.getInt("playground_id")
         val playgroundName = reservationBundle.getString("playground_name")
         val sportId = reservationBundle.getInt("sport_id")
+        val sportEmoji = reservationBundle.getString("sport_emoji")
         val sportName = reservationBundle.getString("sport_name")
         val sportCenterId = reservationBundle.getInt("sport_center_id")
         val sportCenterName = reservationBundle.getString("sport_center_name")
+        val sportCenterAddress = reservationBundle.getString("sport_center_address")
         val equipmentsBundle = reservationBundle.getBundle("equipments")
         val playgroundPricePerHour = reservationBundle.getFloat("playground_price_per_hour")
 
@@ -343,6 +348,9 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
         if (sportId == 0)
             inputErrors.add("sport_id")
 
+        if (sportEmoji == null)
+            inputErrors.add("sport_emoji")
+
         if (sportName == null)
             inputErrors.add("sport_name")
 
@@ -351,6 +359,9 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
 
         if (sportCenterName == null)
             inputErrors.add("sport_center_name")
+
+        if (sportCenterAddress == null)
+            inputErrors.add("sport_center_address")
 
         if (equipmentsBundle == null)
             inputErrors.add("equipments")
@@ -404,9 +415,11 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
             playgroundName!!,
             playgroundPricePerHour,
             sportId,
+            sportEmoji!!,
             sportName!!,
             sportCenterId,
             sportCenterName!!,
+            sportCenterAddress!!,
             selectedEquipments
         )
 

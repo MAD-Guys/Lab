@@ -117,9 +117,11 @@ class TimeSlotVH(
                 bundle.putInt("playground_id", playground.playgroundId)
                 bundle.putString("playground_name", playground.playgroundName)
                 bundle.putInt("sport_id", playground.sportId)
+                bundle.putString("sport_emoji", playground.sportEmoji)
                 bundle.putString("sport_name", playground.sportName)
                 bundle.putInt("sport_center_id", playground.sportCenterId)
                 bundle.putString("sport_center_name", playground.sportCenterName)
+                bundle.putString("sport_center_address", playground.sportCenterAddress)
                 bundle.putFloat("playground_price_per_hour", playground.pricePerHour)
             }
             // (2) one (start) slot is already selected ->
@@ -142,9 +144,11 @@ class TimeSlotVH(
                     bundle.putInt("playground_id", playground.playgroundId)
                     bundle.putString("playground_name", playground.playgroundName)
                     bundle.putInt("sport_id", playground.sportId)
+                    bundle.putString("sport_emoji", playground.sportEmoji)
                     bundle.putString("sport_name", playground.sportName)
                     bundle.putInt("sport_center_id", playground.sportCenterId)
                     bundle.putString("sport_center_name", playground.sportCenterName)
+                    bundle.putString("sport_center_address", playground.sportCenterAddress)
                     bundle.putFloat("playground_price_per_hour", playground.pricePerHour)
                 }
             }
@@ -157,9 +161,11 @@ class TimeSlotVH(
                 bundle.putInt("playground_id", playground.playgroundId)
                 bundle.putString("playground_name", playground.playgroundName)
                 bundle.putInt("sport_id", playground.sportId)
+                bundle.putString("sport_emoji", playground.sportEmoji)
                 bundle.putString("sport_name", playground.sportName)
                 bundle.putInt("sport_center_id", playground.sportCenterId)
                 bundle.putString("sport_center_name", playground.sportCenterName)
+                bundle.putString("sport_center_address", playground.sportCenterAddress)
                 bundle.putFloat("playground_price_per_hour", playground.pricePerHour)
             }
 
@@ -183,9 +189,11 @@ class TimeSlotVH(
             "playground_id" to playground.playgroundId,
             "playground_name" to playground.playgroundName,
             "sport_id" to playground.sportId,
+            "sport_emoji" to playground.sportEmoji,
             "sport_name" to playground.sportName,
             "sport_center_id" to playground.sportCenterId,
             "sport_center_name" to playground.sportCenterName,
+            "sport_center_address" to playground.sportCenterAddress,
             "playground_price_per_hour" to playground.pricePerHour
         )
 

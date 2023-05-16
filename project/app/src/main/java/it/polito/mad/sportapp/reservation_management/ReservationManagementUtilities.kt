@@ -50,10 +50,12 @@ class ReservationManagementUtilities {
                 "playground_price_per_hour" to reservation?.playgroundPricePerHour,
 
                 "sport_id" to reservation?.sportId,
+                "sport_emoji" to reservation?.sportEmoji,
                 "sport_name" to reservation?.sportName,
 
                 "sport_center_id" to reservation?.sportCenterId,
-                "sport_center_name" to reservation?.sportCenterName
+                "sport_center_name" to reservation?.sportCenterName,
+                "sport_center_address" to reservation?.location
             )
         }
     }

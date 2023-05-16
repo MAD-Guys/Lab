@@ -169,9 +169,11 @@ private fun PlaygroundAvailabilitiesFragment.navigateToManageEquipments() {
     val bundlePlaygroundId = selectedReservationInfo.getInt("playground_id")
     val bundlePlaygroundName = selectedReservationInfo.getString("playground_name")
     val bundleSportId = selectedReservationInfo.getInt("sport_id")
+    val bundleSportEmoji = selectedReservationInfo.getString("sport_emoji")
     val bundleSportName = selectedReservationInfo.getString("sport_name")
     val bundleSportCenterId = selectedReservationInfo.getInt("sport_center_id")
     val bundleSportCenterName = selectedReservationInfo.getString("sport_center_name")
+    val bundleSportCenterAddress = selectedReservationInfo.getString("sport_center_address")
     val bundlePlaygroundPricePerHour = selectedReservationInfo.getFloat("playground_price_per_hour")
 
     val errors = mutableListOf<String>()
@@ -191,6 +193,9 @@ private fun PlaygroundAvailabilitiesFragment.navigateToManageEquipments() {
     if (bundleSportId == 0)
         errors.add("a sport (id)")
 
+    if (bundleSportEmoji == null)
+        errors.add("a sport (emoji)")
+
     if (bundleSportName == null)
         errors.add("a sport (name)")
 
@@ -199,6 +204,9 @@ private fun PlaygroundAvailabilitiesFragment.navigateToManageEquipments() {
 
     if(bundleSportCenterName == null)
         errors.add("a sport center (name)")
+
+    if(bundleSportCenterAddress == null)
+        errors.add("a sport center (address)")
 
     if(bundlePlaygroundPricePerHour == 0f)
         errors.add("a playground price per hour")

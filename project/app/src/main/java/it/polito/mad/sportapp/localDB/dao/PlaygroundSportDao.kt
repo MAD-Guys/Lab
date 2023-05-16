@@ -20,7 +20,7 @@ interface PlaygroundSportDao {
     @Query("SELECT * FROM playground_sport")
     fun getAll(): List<PlaygroundSport>
 
-    @Query("SELECT PS.sport_id, S.name AS sport_name, SC.id AS sport_center_id, SC.name AS sport_center_name, PS.playground_name, PS.cost_per_hour, SC.opening_hour, SC.closing_hour , PS.id AS playground_id " +
+    @Query("SELECT PS.sport_id, S.emoji AS sport_emoji , S.name AS sport_name, SC.id AS sport_center_id, SC.name AS sport_center_name, SC.address AS sport_center_address, PS.playground_name, PS.cost_per_hour, SC.opening_hour, SC.closing_hour , PS.id AS playground_id " +
             "FROM sport_center SC, playground_sport PS, sport S " +
             "WHERE SC.id == PS.sport_center_id AND PS.sport_id == :sportId AND S.id == PS.sport_id")
     fun findBySportId(sportId: Int): List<DetailedPlayground>
