@@ -372,6 +372,8 @@ internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatche
 
                     if (s.toString() == "") {
                         username.error = getString(R.string.username_empty_error)
+                    } else if (s.toString().contains(' ')) {
+                        username.error = getString(R.string.username_space_error)
                     }
                 }
 
