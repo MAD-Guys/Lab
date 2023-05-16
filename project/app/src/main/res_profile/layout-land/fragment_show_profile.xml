@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_orange"
-    android:baselineAligned="false">
+    android:baselineAligned="false"
+    tools:context=".profile.show_profile.ShowProfileFragment">
 
     <!-- Profile picture box
     (put a default length which will be programmatically overwritten at run time) -->
@@ -366,6 +367,7 @@
 
             <!-- Section 3: Bio -->
             <LinearLayout
+                android:id="@+id/bio_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"

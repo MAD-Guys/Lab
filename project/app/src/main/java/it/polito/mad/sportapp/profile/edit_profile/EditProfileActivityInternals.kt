@@ -280,13 +280,39 @@ internal fun EditProfileFragment.saveInformationOnStorage() {
         )
     }
 
-    if (username.error == null) {
+    if (isErrorFree()) {
         // update db user information
         vm.updateDbUserInformation(1)
 
         // showing feedback information
         showToasty("success", requireContext(), "Information correctly saved!")
     }
+}
+
+internal fun EditProfileFragment.isErrorFree(): Boolean {
+
+    // check if there are errors in the edit text fields
+    if (firstName.error != null) {
+        return false
+    }
+
+    if (lastName.error != null) {
+        return false
+    }
+
+    if (username.error != null) {
+        return false
+    }
+
+    if (age.error != null) {
+        return false
+    }
+
+    if (location.error != null) {
+        return false
+    }
+
+    return true
 }
 
 internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatcher {
@@ -324,12 +350,44 @@ internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatche
 
         override fun afterTextChanged(s: Editable?) {
             when (fieldName) {
+                "firstName" -> {
+                    firstNameTemp = firstName.text.toString()
+
+                    if (s.toString() == "") {
+                        firstName.error = getString(R.string.first_name_empty_error)
+                    }
+                }
+
+                "lastName" -> {
+                    lastNameTemp = lastName.text.toString()
+
+                    if (s.toString() == "") {
+                        lastName.error = getString(R.string.last_name_empty_error)
+                    }
+                }
+
                 "username" -> {
                     // check if the username already exists
                     vm.checkUsername(s.toString())
 
                     if (s.toString() == "") {
                         username.error = getString(R.string.username_empty_error)
+                    }
+                }
+
+                "age" -> {
+                    ageTemp = age.text.toString()
+
+                    if (s.toString() == "") {
+                        age.error = getString(R.string.age_empty_error)
+                    }
+                }
+
+                "location" -> {
+                    locationTemp = location.text.toString()
+
+                    if (s.toString() == "") {
+                        location.error = getString(R.string.location_empty_error)
                     }
                 }
             }

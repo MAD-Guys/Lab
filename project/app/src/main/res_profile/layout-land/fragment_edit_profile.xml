@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_orange"
-    android:baselineAligned="false">
+    android:baselineAligned="false"
+    tools:context=".profile.edit_profile.EditProfileFragment">
 
     <!-- Profile picture box
     (put a default height which will be programmatically overwritten at run time) -->
@@ -95,7 +96,7 @@
                         android:layout_marginRight="@dimen/edit_text_margin"
                         android:autofillHints="name"
                         android:fontFamily="@font/poppins_medium"
-                        android:hint="@string/first_name_header"
+                        android:hint="@string/first_name_placeholder"
                         android:includeFontPadding="false"
                         android:inputType="textPersonName"
                         android:paddingTop="@dimen/edit_text_padding_top"
@@ -130,7 +131,7 @@
                         android:layout_marginRight="@dimen/edit_text_margin"
                         android:autofillHints="name"
                         android:fontFamily="@font/poppins_medium"
-                        android:hint="@string/last_name_header"
+                        android:hint="@string/last_name_placeholder"
                         android:includeFontPadding="false"
                         android:inputType="textPersonName"
                         android:paddingTop="@dimen/edit_text_padding_top"
@@ -165,7 +166,7 @@
                         android:layout_marginRight="@dimen/edit_text_margin"
                         android:autofillHints="name"
                         android:fontFamily="@font/poppins_medium"
-                        android:hint="@string/username_header"
+                        android:hint="@string/username_placeholder"
                         android:includeFontPadding="false"
                         android:inputType="textPersonName"
                         android:paddingTop="@dimen/edit_text_padding_top"
@@ -262,7 +263,7 @@
                         android:layout_marginRight="@dimen/edit_text_margin"
                         android:autofillHints="age"
                         android:fontFamily="@font/poppins_medium"
-                        android:hint="@string/age_header"
+                        android:hint="@string/age_placeholder"
                         android:includeFontPadding="false"
                         android:inputType="number"
                         android:paddingTop="@dimen/edit_text_padding_top"
@@ -297,7 +298,7 @@
                         android:layout_marginRight="@dimen/edit_text_margin"
                         android:autofillHints="location"
                         android:fontFamily="@font/poppins_medium"
-                        android:hint="@string/location_header"
+                        android:hint="@string/location_placeholder"
                         android:includeFontPadding="false"
                         android:inputType="text"
                         android:paddingTop="@dimen/edit_text_padding_top"

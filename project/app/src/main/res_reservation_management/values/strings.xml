@@ -31,13 +31,24 @@
     <string name="price_icon_content_description">Price per hour</string>
     <string name="calendar_icon_content_description">Date</string>
 
-    <string name="delete_button_content_description">Delete button</string>
-    <string name="delete_button_message">Delete</string>
-    <string name="delete_button_message_confirmation">Are you sure you want to delete this reservation?</string>
-    <string name="delete_button_message_confirmation_yes">Yes</string>
-    <string name="delete_button_message_confirmation_no">No</string>
+    <string name="reservation_summary_equipments">Equipments</string>
+    <string name="reservation_summary_equipments_no_equipments">No equipments</string>
 
-    <string name="confirm_button_content_description">Save button</string>
+    <string name="equipments_title">Equipments</string>
+    <string name="reservation_summary_total_price_summary">Prices</string>
+    <string name="total_playground_price_title">Playground: </string>
+    <string name="total_equipments_price_title">Equipments: </string>
+    <string name="reservation_summary_price_text">25.00</string>
+
+    <string name="total_price_title">Total: </string>
+
+    <string name="cancel_button_content_description">Cancel button</string>
+    <string name="cancel_button_message">Cancel</string>
+    <string name="cancel_button_message_confirmation">Are you sure you want to cancel this reservation?</string>
+    <string name="cancel_button_message_confirmation_yes">Yes</string>
+    <string name="cancel_button_message_confirmation_no">No</string>
+
+    <string name="confirm_button_content_description">Confirm button</string>
     <string name="confirm_button_message">Confirm</string>
     <string name="confirm_button_message_confirmation">Are you sure you want to confirm this reservation?</string>
     <string name="confirm_button_message_confirmation_yes">Yes</string>

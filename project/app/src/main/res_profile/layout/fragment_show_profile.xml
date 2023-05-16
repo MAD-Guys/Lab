@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_orange">
+    android:background="@color/background_orange"
+    tools:context=".profile.show_profile.ShowProfileFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -351,6 +352,7 @@
 
                 <!-- Section 4: Bio -->
                 <LinearLayout
+                    android:id="@+id/bio_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"

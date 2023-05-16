@@ -17,9 +17,13 @@
     <string name="last_name">Doe</string>
     <string name="username">johndoe</string>
 
-    <!-- username errors -->
-    <string name="username_empty_error">Username cannot be empty</string>
+    <!-- errors -->
+    <string name="first_name_empty_error">First Name is required</string>
+    <string name="last_name_empty_error">Last Name is required</string>
+    <string name="username_empty_error">Username is required</string>
     <string name="username_already_exists_error">Username already exists</string>
+    <string name="age_empty_error">Age is required</string>
+    <string name="location_empty_error">Location is required</string>
 
     <!-- user age, location, gender -->
     <string name="user_gender">Male</string>
@@ -87,11 +91,16 @@
 
     <!-- user info headers -->
     <string name="first_name_header">First Name</string>
+    <string name="first_name_placeholder">First Name *</string>
     <string name="last_name_header">Last Name</string>
+    <string name="last_name_placeholder">Last Name *</string>
     <string name="username_header">Username</string>
+    <string name="username_placeholder">Username *</string>
     <string name="gender_header">Gender</string>
     <string name="age_header">Age</string>
+    <string name="age_placeholder">Age *</string>
     <string name="location_header">Location</string>
+    <string name="location_placeholder">Location *</string>
 
     <!-- *default values* -->
     <string name="male_gender">Male</string>

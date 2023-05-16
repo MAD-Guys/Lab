@@ -7,6 +7,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -44,6 +45,9 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
     private lateinit var summaryStartTime: TextView
     private lateinit var summaryEndTime: TextView
     private lateinit var pricePerHour: TextView
+    private lateinit var summaryTotalPlaygroundPrice: TextView
+    private lateinit var summaryTotalEquipmentPrice: TextView
+    private lateinit var summaryTotalPrice: TextView
 
     // fragment buttons
     private lateinit var summaryConfirmButton: Button
@@ -53,13 +57,6 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
         super.onViewCreated(view, savedInstanceState)
 
         //TODO: retrieve sport emoji and sport center street
-
-        showToasty(
-            "info",
-            requireContext(),
-            "reservation=${arguments?.getBundle("reservation")?.toString()}",
-            Toasty.LENGTH_LONG
-        )
 
         this.initConfirmReservationDialog()
         this.initDeleteReservationDialog()
@@ -126,11 +123,18 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
         summaryEndTime = requireView().findViewById(R.id.reservation_summary_end_time)
         pricePerHour =
             requireView().findViewById(R.id.reservation_summary_playground_price_per_hour)
+        summaryTotalPlaygroundPrice =
+            requireView().findViewById(R.id.reservation_summary_playground_total_price)
+        summaryTotalEquipmentPrice =
+            requireView().findViewById(R.id.reservation_summary_equipment_total_price)
+        summaryTotalPrice = requireView().findViewById(R.id.reservation_summary_total_price)
 
         // set text in views
         summarySportCenterName.text = viewModel.reservation.value?.sportCenterName
         summaryPlaygroundName.text = viewModel.reservation.value?.playgroundName
         summarySportName.text = viewModel.reservation.value?.sportName
+        //TODO: retrieve sport center address
+        //summaryAddress.text = viewModel.reservation.value?.sportCenterAddress
 
         viewModel.reservation.value?.startTime?.let {
             summaryDate.text = when (it.toLocalDate()) {
@@ -145,9 +149,79 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
 
         summaryStartTime.text = viewModel.reservation.value?.startTime?.toLocalTime().toString()
         summaryEndTime.text = viewModel.reservation.value?.endTime?.toLocalTime().toString()
+
+        // equipment list
+        viewModel.reservation.value?.selectedEquipments?.let {
+
+            val equipmentListContainer =
+                requireView().findViewById<LinearLayout>(R.id.reservation_summary_equipment_list_container)
+
+            val equipmentDivider =
+                requireView().findViewById<View>(R.id.reservation_summary_equipment_divider)
+
+            if (it.isNotEmpty()) {
+                equipmentListContainer.visibility = View.VISIBLE
+                equipmentDivider.visibility = View.VISIBLE
+                inflateEquipmentList(it, equipmentListContainer)
+            } else {
+                equipmentListContainer.visibility = View.GONE
+                equipmentDivider.visibility = View.GONE
+            }
+        }
+
+        // prices computation and display
         pricePerHour.text =
             String.format("%.2f", viewModel.reservation.value?.playgroundPricePerHour)
 
+        val duration = Duration.between(
+            viewModel.reservation.value?.startTime,
+            viewModel.reservation.value?.endTime
+        ).toMinutes()
+
+        val totalPlaygroundPrice =
+            duration * viewModel.reservation.value?.playgroundPricePerHour!! / 60
+
+        val totalEquipmentPrice = viewModel.reservation.value?.selectedEquipments?.sumOf {
+            it.selectedQuantity * it.unitPrice.toDouble()
+        }
+
+        if (totalEquipmentPrice == 0.0) {
+            val equipmentPriceLayout =
+                requireView().findViewById<LinearLayout>(R.id.reservation_summary_equipment_price_layout)
+            equipmentPriceLayout.visibility = View.GONE
+        }
+
+        val totalPrice = totalPlaygroundPrice + (totalEquipmentPrice ?: 0.0)
+
+        summaryTotalPlaygroundPrice.text = String.format("%.2f", totalPlaygroundPrice)
+        summaryTotalEquipmentPrice.text = String.format("%.2f", totalEquipmentPrice)
+        summaryTotalPrice.text = String.format("%.2f", totalPrice)
+
+    }
+
+    /* equipment list */
+    private fun inflateEquipmentList(equipmentList: List<NewReservationEquipment>, container: LinearLayout) {
+
+        equipmentList.forEach {
+            val equipmentView = layoutInflater.inflate(
+                R.layout.equipment_list_item,
+                container,
+                false
+            )
+
+            val equipmentName =
+                equipmentView.findViewById<TextView>(R.id.equipment_name)
+            val equipmentQuantity =
+                equipmentView.findViewById<TextView>(R.id.equipment_quantity)
+            val equipmentPrice =
+                equipmentView.findViewById<TextView>(R.id.equipment_unit_price)
+
+            equipmentName.text = it.equipmentName
+            equipmentQuantity.text = it.selectedQuantity.toString()
+            equipmentPrice.text = String.format("%.2f", it.unitPrice.toDouble())
+
+            container.addView(equipmentView)
+        }
     }
 
     /* buttons */

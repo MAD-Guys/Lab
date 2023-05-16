@@ -1,320 +1,519 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:scrollbars="none">
+    android:layout_height="match_parent"
+    android:background="@color/background_orange"
+    android:orientation="vertical"
+    tools:context=".reservation_management.summary.ReservationSummaryFragment">
 
-    <LinearLayout
-        android:id="@+id/reservation_summary_container"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/background_orange"
-        android:orientation="vertical"
-        android:padding="18dp"
-        tools:context=".reservation_management.summary.ReservationSummaryFragment"
+        android:fillViewport="true"
+        android:scrollbars="none"
         tools:ignore="UselessParent">
 
-        <TextView
-            android:id="@+id/reservation_summary_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="18dp"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/poppins_semibold"
-            android:includeFontPadding="false"
-            android:text="@string/reservation_summary_title"
-            android:textColor="@color/black"
-            android:textSize="32sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/reservation_summary_playground_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_semibold"
-            android:includeFontPadding="false"
-            android:text="@string/reservation_summary_playground_name"
-            android:textColor="@color/black"
-            android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/reservation_summary_sport_center_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_medium"
-            android:includeFontPadding="false"
-            android:text="@string/reservation_summary_sport_center_name"
-            android:textColor="@color/light_grey"
-            android:textSize="19sp"
-            android:layout_marginTop="-3dp"/>
-
-        <!-- Sport -->
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14sp"
-            android:orientation="horizontal">
-
-            <!-- icon -->
-            <ImageView
-                android:id="@+id/reservation_summary_sport_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:contentDescription="@string/image_location_content_description"
-                android:visibility="gone"
-                app:srcCompat="@drawable/baseline_sports_basketball_24" />
-
-            <TextView
-                android:id="@+id/sportEmoji"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="🏀"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                tools:ignore="HardcodedText, TextContrastCheck" />
-
-            <TextView
-                android:id="@+id/reservation_summary_sport_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="5sp"
-                android:fontFamily="@font/poppins_medium"
-                android:includeFontPadding="false"
-                android:text="@string/reservation_summary_sport_name"
-                android:textColor="@color/black"
-                android:textSize="@dimen/default_text_size" />
-
-        </LinearLayout>
-
-        <!-- Address -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4sp"
-            android:orientation="horizontal"
-            tools:ignore="UseCompoundDrawables">
-
-            <!-- icon -->
-            <ImageView
-                android:id="@+id/location_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:contentDescription="@string/image_location_content_description"
-                app:srcCompat="@drawable/baseline_location_on_24" />
-
-            <TextView
-                android:id="@+id/reservation_summary_playground_address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="5sp"
-                android:fontFamily="@font/poppins_medium"
-                android:includeFontPadding="false"
-                android:text="@string/reservation_summary_sport_center_address"
-                android:textColor="@color/black"
-                android:textSize="@dimen/default_text_size" />
-
-        </LinearLayout>
-
-        <!-- Date -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4sp"
-            android:orientation="horizontal"
-            tools:ignore="UseCompoundDrawables">
-
-            <!-- icon -->
-            <ImageView
-                android:id="@+id/date_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:contentDescription="@string/calendar_icon_content_description"
-                app:srcCompat="@drawable/baseline_calendar_month_24_reservation_summary" />
-
-            <TextView
-                android:id="@+id/reservation_summary_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="5sp"
-                android:fontFamily="@font/poppins_medium"
-                android:includeFontPadding="false"
-                android:text="@string/reservation_summary_date"
-                android:textColor="@color/black"
-                android:textSize="@dimen/default_text_size" />
-
-        </LinearLayout>
-
-        <!-- Time -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4sp"
-            android:orientation="horizontal">
-
-            <!-- icon -->
-            <ImageView
-                android:id="@+id/time_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:contentDescription="@string/image_location_content_description"
-                app:srcCompat="@drawable/baseline_access_time_24"
-                app:tint="@color/black" />
-
-            <TextView
-                android:id="@+id/reservation_summary_start_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="5sp"
-                android:fontFamily="@font/poppins_medium"
-                android:includeFontPadding="false"
-                android:text="@string/reservation_summary_start_time"
-                android:textColor="@color/black"
-                android:textSize="@dimen/default_text_size" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="5sp"
-                android:fontFamily="@font/poppins_medium"
-                android:includeFontPadding="false"
-                android:text="-"
-                android:textColor="@color/black"
-                android:textSize="@dimen/default_text_size"
-                tools:ignore="HardcodedText" />
-
-            <TextView
-                android:id="@+id/reservation_summary_end_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="5sp"
-                android:fontFamily="@font/poppins_medium"
-                android:includeFontPadding="false"
-                android:text="@string/reservation_summary_end_time"
-                android:textColor="@color/black"
-                android:textSize="@dimen/default_text_size" />
-
-        </LinearLayout>
-
-        <!-- Price per hour -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4sp"
-            android:orientation="horizontal">
-
-            <!-- icon -->
-            <ImageView
-                android:id="@+id/price_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:contentDescription="@string/price_icon_content_description"
-                app:srcCompat="@drawable/baseline_attach_money_24" />
-
-            <TextView
-                android:id="@+id/reservation_summary_playground_price_per_hour"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="5sp"
-                android:fontFamily="@font/poppins_medium"
-                android:includeFontPadding="false"
-                android:text="@string/reservation_summary_price_per_hour"
-                android:textColor="@color/black"
-                android:textSize="@dimen/default_text_size" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="5sp"
-                android:fontFamily="@font/poppins_medium"
-                android:includeFontPadding="false"
-                android:text="€/h"
-                android:textColor="@color/black"
-                android:textSize="@dimen/default_text_size"
-                tools:ignore="HardcodedText" />
-
-        </LinearLayout>
-
-        <LinearLayout
+            android:id="@+id/reservation_summary_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="15dp"
-            android:orientation="horizontal">
+            android:background="@color/background_orange"
+            android:orientation="vertical"
+            android:padding="18dp"
+            tools:ignore="UselessParent">
 
-            <!-- Delete button -->
-            <Button
-                android:id="@+id/reservation_summary_delete_button"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/reservation_summary_title"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="10sp"
-                android:layout_marginEnd="8sp"
-                android:layout_weight="1"
-                android:backgroundTint="@color/pale_grey"
-                android:clickable="true"
-                android:contentDescription="@string/delete_button_content_description"
-                android:focusable="true"
-                android:fontFamily="@font/poppins_bold"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="18dp"
+                android:fontFamily="@font/poppins_semibold"
                 android:includeFontPadding="false"
-                android:paddingTop="11dp"
-                android:paddingEnd="16dp"
-                android:paddingBottom="11dp"
-                android:text="@string/delete_button_message"
-                android:textAlignment="center"
-                android:textAllCaps="false"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="@color/button_text_color"
-                android:textSize="16sp"
-                app:icon="@drawable/baseline_delete_24"
-                app:iconGravity="textStart"
-                app:iconTint="@color/button_text_color"
-                tools:ignore="RtlSymmetry" />
+                android:text="@string/reservation_summary_title"
+                android:textColor="@color/black"
+                android:textSize="32sp"
+                android:textStyle="bold" />
 
-            <!-- Confirm Button -->
-            <Button
-                android:id="@+id/reservation_summary_confirm_button"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/reservation_summary_playground_name"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="10sp"
-                android:layout_marginStart="8sp"
-                android:layout_weight="1"
-                android:backgroundTint="@color/primary_orange"
-                android:clickable="true"
-                android:contentDescription="@string/confirm_button_content_description"
-                android:focusable="true"
-                android:fontFamily="@font/poppins_bold"
+                android:fontFamily="@font/poppins_semibold"
                 android:includeFontPadding="false"
-                android:paddingTop="11dp"
-                android:paddingEnd="13dp"
-                android:paddingBottom="11dp"
-                android:text="@string/confirm_button_message"
-                android:textAlignment="center"
-                android:textAllCaps="false"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/button_text_color"
-                android:textSize="16sp"
-                app:icon="@drawable/baseline_add_task_24_reservation_summary"
-                app:iconGravity="textStart"
-                app:iconTint="@color/button_text_color"
-                tools:ignore="RtlSymmetry" />
+                android:text="@string/reservation_summary_playground_name"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/reservation_summary_sport_center_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-3dp"
+                android:fontFamily="@font/poppins_medium"
+                android:includeFontPadding="false"
+                android:text="@string/reservation_summary_sport_center_name"
+                android:textColor="@color/light_grey"
+                android:textSize="19sp" />
+
+            <!-- Sport -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14sp"
+                android:orientation="horizontal">
+
+                <!-- icon -->
+                <ImageView
+                    android:id="@+id/reservation_summary_sport_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/image_location_content_description"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/baseline_sports_basketball_24" />
+
+                <TextView
+                    android:id="@+id/sportEmoji"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="🏀"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText, TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/reservation_summary_sport_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="@string/reservation_summary_sport_name"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size" />
+
+            </LinearLayout>
+
+            <!-- Address -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4sp"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <!-- icon -->
+                <ImageView
+                    android:id="@+id/location_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/image_location_content_description"
+                    app:srcCompat="@drawable/baseline_location_on_24" />
+
+                <TextView
+                    android:id="@+id/reservation_summary_playground_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="@string/reservation_summary_sport_center_address"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size" />
+
+            </LinearLayout>
+
+            <!-- Date -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4sp"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <!-- icon -->
+                <ImageView
+                    android:id="@+id/date_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/calendar_icon_content_description"
+                    app:srcCompat="@drawable/baseline_calendar_month_24_reservation_summary" />
+
+                <TextView
+                    android:id="@+id/reservation_summary_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="@string/reservation_summary_date"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size" />
+
+            </LinearLayout>
+
+            <!-- Time -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4sp"
+                android:orientation="horizontal">
+
+                <!-- icon -->
+                <ImageView
+                    android:id="@+id/time_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/image_location_content_description"
+                    app:srcCompat="@drawable/baseline_access_time_24"
+                    app:tint="@color/black" />
+
+                <TextView
+                    android:id="@+id/reservation_summary_start_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="@string/reservation_summary_start_time"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="-"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:id="@+id/reservation_summary_end_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="@string/reservation_summary_end_time"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size" />
+
+            </LinearLayout>
+
+            <!-- Price per hour -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4sp"
+                android:orientation="horizontal">
+
+                <!-- icon -->
+                <ImageView
+                    android:id="@+id/price_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/price_icon_content_description"
+                    app:srcCompat="@drawable/baseline_attach_money_24" />
+
+                <TextView
+                    android:id="@+id/reservation_summary_playground_price_per_hour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="@string/reservation_summary_price_per_hour"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="€/h"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size"
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/reservation_summary_equipment_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="16dp"
+                android:background="?android:attr/listDivider" />
+
+            <!-- Equipment list -->
+
+            <LinearLayout
+                android:id="@+id/reservation_summary_equipment_list_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="12dp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:includeFontPadding="false"
+                    android:text="@string/equipments_title"
+                    android:textColor="@color/black"
+                    android:textSize="21sp" />
+
+                <!-- add equipment list programmatically here -->
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="16dp"
+                android:background="?android:attr/listDivider" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="12dp"
+                android:fontFamily="@font/poppins_semibold"
+                android:includeFontPadding="false"
+                android:text="@string/reservation_summary_total_price_summary"
+                android:textColor="@color/black"
+                android:textSize="21sp" />
+
+            <!-- Total playground price -->
+            <LinearLayout
+                android:id="@+id/reservation_summary_total_playground_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4sp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="@string/total_playground_price_title"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size" />
+
+                <TextView
+                    android:id="@+id/reservation_summary_playground_total_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="@string/reservation_summary_price_text"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="€"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size"
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
+
+            <!-- Total equipment price -->
+            <LinearLayout
+                android:id="@+id/reservation_summary_equipment_price_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4sp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="@string/total_equipments_price_title"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size" />
+
+                <TextView
+                    android:id="@+id/reservation_summary_equipment_total_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="@string/reservation_summary_price_text"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="€"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size"
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
+
+            <!-- Total reservation price -->
+            <LinearLayout
+                android:id="@+id/reservation_summary_total_price_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8sp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="@string/total_price_title"
+                    android:textColor="@color/black"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/reservation_summary_total_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:includeFontPadding="false"
+                    android:text="@string/reservation_summary_price_text"
+                    android:textColor="@color/black"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="€"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="16dp"
+                android:background="?android:attr/listDivider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- Delete button -->
+                <Button
+                    android:id="@+id/reservation_summary_delete_button"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10sp"
+                    android:layout_marginEnd="8sp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/pale_grey"
+                    android:clickable="true"
+                    android:contentDescription="@string/cancel_button_content_description"
+                    android:focusable="true"
+                    android:fontFamily="@font/poppins_bold"
+                    android:includeFontPadding="false"
+                    android:paddingTop="11dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="11dp"
+                    android:text="@string/cancel_button_message"
+                    android:textAlignment="center"
+                    android:textAllCaps="false"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textColor="@color/button_text_color"
+                    android:textSize="16sp"
+                    app:icon="@drawable/baseline_delete_24"
+                    app:iconGravity="textStart"
+                    app:iconTint="@color/button_text_color"
+                    tools:ignore="RtlSymmetry" />
+
+                <!-- Confirm Button -->
+                <Button
+                    android:id="@+id/reservation_summary_confirm_button"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10sp"
+                    android:layout_marginStart="8sp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/primary_orange"
+                    android:clickable="true"
+                    android:contentDescription="@string/confirm_button_content_description"
+                    android:focusable="true"
+                    android:fontFamily="@font/poppins_bold"
+                    android:includeFontPadding="false"
+                    android:paddingTop="11dp"
+                    android:paddingEnd="13dp"
+                    android:paddingBottom="11dp"
+                    android:text="@string/confirm_button_message"
+                    android:textAlignment="center"
+                    android:textAllCaps="false"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/button_text_color"
+                    android:textSize="16sp"
+                    app:icon="@drawable/baseline_add_task_24_reservation_summary"
+                    app:iconGravity="textStart"
+                    app:iconTint="@color/button_text_color"
+                    tools:ignore="RtlSymmetry" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
 
-</ScrollView>
+</LinearLayout>

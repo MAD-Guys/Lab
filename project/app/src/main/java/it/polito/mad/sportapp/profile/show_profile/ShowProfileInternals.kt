@@ -119,7 +119,20 @@ internal fun ShowProfileFragment.observersSetup() {
 
     // user bio observer
     vm.userBio.observe(viewLifecycleOwner) {
-        bio.text = it
+
+        val bioDivider = requireView().findViewById<View>(R.id.bio_divider)
+        val bioContainer = requireView().findViewById<LinearLayout>(R.id.bio_container)
+
+        // hide bio if empty
+        if (it.isEmpty()) {
+            bioDivider.visibility = View.GONE
+            bioContainer.visibility = View.GONE
+            return@observe
+        } else {
+            bioDivider.visibility = View.VISIBLE
+            bioContainer.visibility = View.VISIBLE
+            bio.text = it
+        }
     }
 
     vm.sportsList.observe(viewLifecycleOwner) {
