@@ -483,7 +483,7 @@ internal fun formatDuration(duration: Long): String {
 internal fun toastyInit() {
     // configure toasts appearance
     Toasty.Config.getInstance()
-        .allowQueue(true) // optional (prevents several Toastys from queuing)
+        .allowQueue(false) // optional (prevents several Toastys from queuing)
         .setGravity(
             Gravity.TOP or Gravity.CENTER_HORIZONTAL,
             0,

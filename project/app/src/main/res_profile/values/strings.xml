@@ -18,12 +18,12 @@
     <string name="username">johndoe</string>
 
     <!-- errors -->
-    <string name="first_name_empty_error">First Name is required</string>
-    <string name="last_name_empty_error">Last Name is required</string>
-    <string name="username_empty_error">Username is required</string>
-    <string name="username_already_exists_error">Username already exists</string>
-    <string name="age_empty_error">Age is required</string>
-    <string name="location_empty_error">Location is required</string>
+    <string name="first_name_empty_error">First name is required!</string>
+    <string name="last_name_empty_error">Last name is required!</string>
+    <string name="username_empty_error">Username is required!</string>
+    <string name="username_already_exists_error">Username already exists!</string>
+    <string name="age_empty_error">Age is required!</string>
+    <string name="location_empty_error">Location is required!</string>
 
     <!-- user age, location, gender -->
     <string name="user_gender">Male</string>

@@ -70,7 +70,7 @@ internal fun EditProfileFragment.menuInit() {
                 R.id.confirm_button -> {
                     // (the information will be persistently saved in the onPause method)
 
-                    if (username.error == null) {
+                    if (isErrorFree()) {
                         // navigate back to show profile fragment
                         navController.popBackStack()
                     } else {
@@ -211,7 +211,7 @@ internal fun EditProfileFragment.setupOnBackPressedCallback() {
         override fun handleOnBackPressed() {
             // (the information will be persistently saved in the onPause method)
 
-            if (username.error == null) {
+            if (isErrorFree()) {
                 // navigate back to show profile fragment
                 navController.popBackStack()
             } else {
