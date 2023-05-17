@@ -4,6 +4,7 @@ plugins {
     id 'org.jetbrains.kotlin.kapt' apply true
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -73,6 +74,12 @@ dependencies {
     /* live data & view model*/
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
+
+    /* google firebase libraries */
+    implementation platform('com.google.firebase:firebase-bom:32.0.0')
+
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-firestore'
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
 
