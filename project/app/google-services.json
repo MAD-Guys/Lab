@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "77436636444",
+    "project_id": "sportapp-project",
+    "storage_bucket": "sportapp-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:77436636444:android:0e359db6f8501d9f3fbed9",
+        "android_client_info": {
+          "package_name": "it.polito.mad.sportapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "77436636444-hqclbr3rod85ae0ma6o9lknru2op0ni2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrkNU5K6HnRVvNZIZ501fqLVmziuCu-yA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "77436636444-hqclbr3rod85ae0ma6o9lknru2op0ni2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
