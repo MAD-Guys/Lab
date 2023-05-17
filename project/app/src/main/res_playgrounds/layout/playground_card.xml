@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="30dp"
+    android:paddingBottom="25dp"
+    android:paddingHorizontal="30dp"
+    android:background="@color/background_orange">
+
+    <!-- Playground image -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        app:srcCompat="@drawable/_04_basket"
+        android:adjustViewBounds="true"
+        android:contentDescription="playground image" />
+
+    <!-- Playground rating start -->
+    <RatingBar
+        android:id="@+id/playground_rating"
+        style="@style/Widget.AppCompat.RatingBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="3dp"
+        android:layout_gravity="center_horizontal"
+        android:isIndicator="true"
+        android:progressTint="@color/primary_orange"
+        android:rating="3.5" />
+
+    <!-- Playground name -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Playground Name"
+        android:textSize="22sp"
+        android:fontFamily="@font/poppins_semibold"
+        android:includeFontPadding="false"
+        android:textColor="@color/black" />
+
+    <!-- Sport center name -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-3dp"
+        android:text="Sport Center Name"
+        android:textSize="16sp"
+        android:fontFamily="@font/poppins_medium"
+        android:includeFontPadding="false"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="1dp"
+        android:layout_marginVertical="5dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <!-- Sport -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4sp"
+                android:orientation="horizontal">
+
+                <!-- icon -->
+                <TextView
+                    android:id="@+id/sportEmoji"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="3dp"
+                    android:text="🏀"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/playground_card_text_size"
+                    />
+
+                <TextView
+                    android:id="@+id/playgroundSport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="4sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="Basketball"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/playground_card_text_size"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
+
+            <!-- Address -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4sp"
+                android:orientation="horizontal">
+
+                <!-- icon -->
+                <ImageView
+                    android:id="@+id/location_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/image_location_content_description"
+                    app:srcCompat="@drawable/baseline_location_on_24" />
+
+                <TextView
+                    android:id="@+id/playgroundAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="4sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="Via Roma 1, Turin"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/playground_card_text_size"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <!-- Opening time -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4sp"
+                android:orientation="horizontal">
+
+                <!-- icon -->
+                <ImageView
+                    android:id="@+id/time_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/image_location_content_description"
+                    app:srcCompat="@drawable/baseline_access_time_24"
+                    app:tint="@color/black" />
+
+                <TextView
+                    android:id="@+id/playgroundOpeningTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="4sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="9:00"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/playground_card_text_size"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="4sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="-"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/playground_card_text_size"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:id="@+id/playgroundClosingTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="4sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="19:00"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/playground_card_text_size"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
+
+            <!-- Price -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4sp"
+                android:orientation="horizontal">
+
+                <!-- icon -->
+                <ImageView
+                    android:id="@+id/price_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    app:srcCompat="@drawable/baseline_attach_money_24" />
+
+                <TextView
+                    android:id="@+id/playgroundPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="4sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="20"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/playground_card_text_size"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="4sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="€/h"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/playground_card_text_size"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

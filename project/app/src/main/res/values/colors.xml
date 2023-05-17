@@ -49,4 +49,8 @@
     <color name="primary_blue">#0A5A87</color>
     <color name="secondary_blue">#67C0F3</color>
 
+    <!-- overlay bottom bar -->
+    <color name="overlay_bar_button_unselected_color">@color/white</color>
+    <color name="overlay_bar_button_selected_color">@color/primary_orange</color>
+
 </resources>

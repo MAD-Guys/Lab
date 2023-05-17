@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@drawable/spinner_arrow_ripple_color_state"
+    android:radius="35dp" />

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/overlay_bottom_bar"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    android:layout_marginBottom="80dp"
+    android:paddingHorizontal="7dp"
+    android:background="@drawable/overlay_tab_bg"
+    android:visibility="gone">
+
+    <!-- Sports button -->
+    <LinearLayout
+        android:id="@+id/overlay_bar_sport_button"
+        android:layout_width="@dimen/overlay_bar_button_width"
+        android:layout_height="@dimen/overlay_bar_button_height"
+        android:background="@drawable/overlay_tab_button_bg"
+        android:paddingHorizontal="@dimen/overlay_bar_button_padding_horizontal"
+        android:paddingTop="@dimen/overlay_bar_button_padding_top"
+        android:paddingBottom="@dimen/overlay_bar_button_padding_bottom"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="true">
+
+        <!-- sport icon -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="@integer/overlay_bar_button_image_weight"
+            android:padding="@dimen/overlay_bar_button_image_padding"
+            android:contentDescription="@string/overlay_button_bar_sport_button_description"
+            android:src="@drawable/baseline_sports_basketball_48"
+            app:tint="@color/overlay_bar_button_selected_color" />
+            <!-- when selected, change app:tint to @color/overlay_bar_button_selected_color -->
+
+        <!-- sport title -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="@integer/overlay_bar_button_label_weight"
+            android:paddingHorizontal="@dimen/overlay_bar_button_label_padding_horizontal"
+            android:text="@string/overlay_button_bar_sport_label"
+            android:singleLine="true"
+            android:gravity="center"
+            android:textSize="@dimen/overlay_bar_button_label_text_size"
+            android:textColor="@color/overlay_bar_button_selected_color"
+            android:includeFontPadding="false"
+            tools:ignore="ButtonStyle" />
+            <!-- when selected, change android:textColor to @color/overlay_bar_button_selected_color -->
+
+    </LinearLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="1dp"
+        android:layout_height="35dp"
+        app:dividerColor="#444444"
+        android:layout_gravity="center"/>
+
+    <!-- Sport centers button -->
+    <LinearLayout
+        android:id="@+id/overlay_bar_center_button"
+        android:layout_width="@dimen/overlay_bar_button_width"
+        android:layout_height="@dimen/overlay_bar_button_height"
+        android:background="@drawable/overlay_tab_button_bg"
+        android:paddingHorizontal="@dimen/overlay_bar_button_padding_horizontal"
+        android:paddingTop="@dimen/overlay_bar_button_padding_top"
+        android:paddingBottom="@dimen/overlay_bar_button_padding_bottom"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="@integer/overlay_bar_button_image_weight"
+            android:padding="@dimen/overlay_bar_button_image_padding"
+            android:contentDescription="@string/overlay_button_bar_sport_button_description"
+            android:src="@drawable/baseline_place_24"
+            app:tint="@color/overlay_bar_button_unselected_color"/>
+            <!-- when selected, change app:tint to @color/overlay_bar_button_selected_color -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="@integer/overlay_bar_button_label_weight"
+            android:paddingHorizontal="@dimen/overlay_bar_button_label_padding_horizontal"
+            android:text="@string/overlay_button_bar_center_label"
+            android:singleLine="true"
+            android:gravity="center"
+            android:textSize="@dimen/overlay_bar_button_label_text_size"
+            android:textColor="@color/overlay_bar_button_unselected_color"
+            android:includeFontPadding="false"
+            tools:ignore="ButtonStyle" />
+            <!-- when selected, change android:textColor to @color/overlay_bar_button_selected_color -->
+
+    </LinearLayout>
+</LinearLayout>

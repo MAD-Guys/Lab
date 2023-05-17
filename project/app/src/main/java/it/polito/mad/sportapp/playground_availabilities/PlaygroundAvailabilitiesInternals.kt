@@ -361,7 +361,7 @@ internal fun PlaygroundAvailabilitiesFragment.initMonthAndDateObservers() {
     /* months view model observers */
     val monthLabel = requireView().findViewById<TextView>(R.id.month_label)
 
-    playgroundsVM.currentMonth.observe(this) { newMonth ->
+    playgroundsVM.currentMonth.observe(viewLifecycleOwner) { newMonth ->
         // change month label
         monthLabel.text = capitalize(
             newMonth.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH)))
@@ -373,7 +373,7 @@ internal fun PlaygroundAvailabilitiesFragment.initMonthAndDateObservers() {
     /* dates view model observers */
     val selectedDateLabel = requireView().findViewById<TextView>(R.id.selected_date_label)
 
-    playgroundsVM.selectedDate.observe(this) {
+    playgroundsVM.selectedDate.observe(viewLifecycleOwner) {
         // update calendar selected date
         calendarView.notifyDateChanged(it)
 
@@ -395,14 +395,14 @@ internal fun PlaygroundAvailabilitiesFragment.initMonthAndDateObservers() {
         )
     }
 
-    playgroundsVM.previousSelectedDate.observe(this) {
+    playgroundsVM.previousSelectedDate.observe(viewLifecycleOwner) {
         calendarView.notifyDateChanged(it)
     }
 }
 
 internal fun PlaygroundAvailabilitiesFragment.initAvailablePlaygroundsObserver() {
     /* playground availabilities observer to change dates' colors */
-    playgroundsVM.availablePlaygroundsPerSlot.observe(this) {
+    playgroundsVM.availablePlaygroundsPerSlot.observe(viewLifecycleOwner) {
         // * update calendar dates' dots *
 
         // update current, previous and next months
@@ -430,7 +430,7 @@ internal fun PlaygroundAvailabilitiesFragment.initAvailablePlaygroundsObserver()
 
 internal fun PlaygroundAvailabilitiesFragment.initSelectedSportObservers() {
     // sports observer
-    playgroundsVM.sports.observe(this) {
+    playgroundsVM.sports.observe(viewLifecycleOwner) {
         // add new sports list
         try {
             selectedSportSpinnerAdapter.clear()
@@ -440,7 +440,7 @@ internal fun PlaygroundAvailabilitiesFragment.initSelectedSportObservers() {
     }
 
     // selected sport observer
-    playgroundsVM.selectedSport.observe(this) {
+    playgroundsVM.selectedSport.observe(viewLifecycleOwner) {
         // empty current playground availabilities
         playgroundsVM.clearAvailablePlaygroundsPerSlot()
 
@@ -490,7 +490,7 @@ internal fun PlaygroundAvailabilitiesFragment.setupBottomBar() {
 
     // show bottom bar with the right selected button
     bottomBar.visibility = View.VISIBLE
-    bottomBar.menu.findItem(R.id.playgrounds).isChecked = true
+    bottomBar.menu.findItem(R.id.slots).isChecked = true
 }
 
 /* add/edit mode */

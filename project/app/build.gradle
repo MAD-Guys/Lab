@@ -33,7 +33,7 @@ android {
                             'src/main/res_show_reservations',
                             'src/main/res_profile', 'src/main/res_events_list_view',
                             'src/main/res', 'src/main/res_playground_availabilities',
-                            'src/main/res_playground_details', 'src/main/res_reservation_management'
+                            'src/main/res_playground_details', 'src/main/res_reservation_management', 'src/main/res_playgrounds'
                     ]
         }
     }

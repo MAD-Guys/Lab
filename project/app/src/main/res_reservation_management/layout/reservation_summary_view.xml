@@ -75,7 +75,7 @@
                     android:layout_gravity="center_vertical"
                     android:contentDescription="@string/image_location_content_description"
                     android:visibility="gone"
-                    app:srcCompat="@drawable/baseline_sports_basketball_24" />
+                    app:srcCompat="@drawable/baseline_sports_basketball_48" />
 
                 <TextView
                     android:id="@+id/sport_emoji"

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".events_list_view.EventsListViewActivity">
+    tools:context=".show_reservations.events_list_view.EventsListFragment">
 
     <!-- Events list view -->
     <androidx.recyclerview.widget.RecyclerView

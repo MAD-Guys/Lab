@@ -59,7 +59,7 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
                 return true
             }
 
-            R.id.playgrounds -> {
+            R.id.slots -> {
                 if (currentFragment != R.id.playgroundAvailabilitiesFragment) {
                     navController.navigate(R.id.playgroundAvailabilitiesFragment)
                 }

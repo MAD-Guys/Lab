@@ -108,7 +108,7 @@ internal fun ManageEquipmentsFragment.initReservationBundle() {
 @SuppressLint("SetTextI18n")
 internal fun ManageEquipmentsFragment.initEquipmentsObservers() {
     // available equipments observer
-    viewModel.availableEquipments.observe(this) { newAvailableEquipments ->
+    viewModel.availableEquipments.observe(viewLifecycleOwner) { newAvailableEquipments ->
         viewModel.selectedEquipments.value?.let { selectedEquipments ->
             val changedEquipments = mutableListOf<String>()
 
@@ -171,7 +171,7 @@ internal fun ManageEquipmentsFragment.initEquipmentsObservers() {
     }
 
     // selected equipments observer
-    viewModel.selectedEquipments.observe(this) { newSelectedEquipments ->
+    viewModel.selectedEquipments.observe(viewLifecycleOwner) { newSelectedEquipments ->
         val availableEquipments = viewModel.availableEquipments.value
         val equipmentsToRemove = mutableListOf<Int>()
 

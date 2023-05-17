@@ -6,9 +6,17 @@
         android:id="@+id/reservations"
         android:icon="@drawable/baseline_calendar_month_24"/>
     <item
+        android:title="@string/slots"
+        android:id="@+id/slots"
+        android:icon="@drawable/baseline_access_time_filled_32"/>
+    <item
         android:title="@string/playgrounds"
         android:id="@+id/playgrounds"
         android:icon="@drawable/baseline_stadium_24"/>
+    <item
+        android:title="@string/alerts"
+        android:id="@+id/alerts"
+        android:icon="@drawable/baseline_notifications_32"/>
     <item
         android:title="@string/profile"
         android:id="@+id/profile"

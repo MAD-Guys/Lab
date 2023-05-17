@@ -3,7 +3,9 @@
 
 	<!-- Bottom navigation menu -->
 	<string name="reservations">Reservations</string>
+	<string name="slots">Slots</string>
 	<string name="playgrounds">Playgrounds</string>
+	<string name="alerts">Alerts</string>
 	<string name="profile">Profile</string>
 
 	<!-- top bar buttons -->
@@ -14,5 +16,11 @@
 
 	<!-- Progress Bar -->
 	<string name="loading_text">Loading…</string>
+
+	<!-- overlay button bar -->
+	<string name="overlay_button_bar_sport_button_description">Playgrounds by sport tab</string>
+	<string name="overlay_button_bar_center_button_description">Playgrounds by sport center tab</string>
+	<string name="overlay_button_bar_sport_label">Sport</string>
+	<string name="overlay_button_bar_center_label">Center</string>
 
 </resources>
