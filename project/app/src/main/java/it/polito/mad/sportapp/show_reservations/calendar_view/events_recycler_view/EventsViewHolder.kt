@@ -21,6 +21,7 @@ import java.util.Locale
 internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     private val containerLayout = view.findViewById<ConstraintLayout>(R.id.event_item_container)
+    private val dateTimeContainer = view.findViewById<LinearLayout>(R.id.event_date_time_container)
 
     private val itemLayout = view.findViewById<LinearLayout>(R.id.event_information_container)
     private val dayText = view.findViewById<TextView>(R.id.event_day_text)
@@ -36,6 +37,12 @@ internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         // set item background color
         if (event.startLocalDateTime.isBefore(LocalDateTime.now())) {
+            dateTimeContainer.setBackgroundColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    R.color.past_event_tag_color
+                )
+            )
             containerLayout.setBackgroundColor(
                 ContextCompat.getColor(
                     itemView.context,
@@ -43,6 +50,12 @@ internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                 )
             )
         } else {
+            dateTimeContainer.setBackgroundColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    R.color.event_color
+                )
+            )
             containerLayout.setBackgroundColor(
                 ContextCompat.getColor(
                     itemView.context,
@@ -56,7 +69,7 @@ internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val displayWidth = displayMetrics.widthPixels
 
         dayText.text = DateTimeFormatter.ofPattern("EEE", Locale.ENGLISH).format(event.date)
-        dateText.text = when(event.date) {
+        dateText.text = when (event.date) {
             LocalDate.now() -> "Today"
             LocalDate.now().plusDays(1) -> "Tomorrow"
             LocalDate.now().minusDays(1) -> "Yesterday"
@@ -87,7 +100,10 @@ internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val bundle = bundleOf("id_event" to event.id)
 
             // navigate to reservation details fragment
-            navController.navigate(R.id.action_showReservationsFragment_to_reservationDetailsFragment, bundle)
+            navController.navigate(
+                R.id.action_showReservationsFragment_to_reservationDetailsFragment,
+                bundle
+            )
         }
 
     }

@@ -51,7 +51,7 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         toastyInit()
 
         //TODO: setup firestore db properly and delete these functions
-        tryWriteFirestoreDb()
+        //tryWriteFirestoreDb()
         tryReadFirestoreDb()
     }
 

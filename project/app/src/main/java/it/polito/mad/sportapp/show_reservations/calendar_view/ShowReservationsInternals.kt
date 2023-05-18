@@ -125,6 +125,17 @@ internal fun ShowReservationsFragment.calendarInit() {
                 if (events != null) {
                     eventTag.visibility = View.VISIBLE
 
+                    if (data.date.isBefore(currentDate)) {
+                        eventTag.setColorFilter(
+                            getColor(
+                                requireContext(),
+                                R.color.past_event_tag_color
+                            )
+                        )
+                    } else {
+                        eventTag.setColorFilter(getColor(requireContext(), R.color.event_tag_color))
+                    }
+
                     if (YearMonth.from(data.date) == vm.currentMonth.value && data.date == vm.selectedDate.value) {
 
                         // perform haptic feedback if the day clicked has at least one event
@@ -132,6 +143,9 @@ internal fun ShowReservationsFragment.calendarInit() {
                         updateAdapterForDate(data.date)
                     }
                 } else {
+
+                    eventTag.visibility = View.GONE
+
                     if (YearMonth.from(data.date) == vm.currentMonth.value && data.date == vm.selectedDate.value) {
                         updateAdapterForDate(null)
                     }

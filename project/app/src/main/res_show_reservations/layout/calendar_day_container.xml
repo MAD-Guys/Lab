@@ -42,7 +42,7 @@
             android:translationY="-4dp"
             android:visibility="gone"
             app:srcCompat="@drawable/baseline_lens_24"
-            app:tint="@color/event_tag_color" />
+            app:tint="@color/past_event_tag_color" />
 
     </RelativeLayout>
 
