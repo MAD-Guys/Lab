@@ -85,7 +85,7 @@ class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
 
                 // show menu options
                 availableEquipmentsOptions.forEach{(id, equipment) ->
-                    val optionText = "+   ${equipment.name} €${String.format("%.2f", equipment.price)}  (${equipment.availability} left)"
+                    val optionText = "+   ${equipment.name} €${String.format("%.2f", equipment.unitPrice)}  (${equipment.availability} left)"
                     val optionId = Menu.FIRST + id
                     menu.add(ContextMenu.NONE, optionId, ContextMenu.NONE, optionText)
                 }
@@ -112,8 +112,8 @@ class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
                         selectedEquipmentId,
                         equipment.name,
                         newQty,
-                        equipment.price,
-                        equipment.price * newQty
+                        equipment.unitPrice,
+                        equipment.unitPrice * newQty
                     )
 
                     // save new equipment

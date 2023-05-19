@@ -25,7 +25,7 @@ data class Equipment(
     @ColumnInfo(name = "sport_center_id", index = true)
     val sportCenterId: Int,
     @ColumnInfo(name = "unit_price")
-    val price: Float,
+    val unitPrice: Float,
     @ColumnInfo(name = "availability")
     var availability: Int,
 ) {
@@ -49,7 +49,7 @@ data class Equipment(
         name,
         sportId,
         sportCenterId,
-        price,
+        unitPrice,
         availability
     )
 }

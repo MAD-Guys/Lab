@@ -229,7 +229,7 @@ class Repository @Inject constructor(
             .forEach { busyEquipment ->
                 equipments.forEach { selectedEquipment ->
                     if (busyEquipment.equipmentId == selectedEquipment.equipmentId) {
-                        if (busyEquipment.availability - busyEquipment.selectedQuantity < selectedEquipment.selectedQuantity) {
+                        if (busyEquipment.maxQuantity - busyEquipment.selectedQuantity < selectedEquipment.selectedQuantity) {
                             return false
                         }
                     }
@@ -323,13 +323,13 @@ class Repository @Inject constructor(
                     equipmentReservation.sportId,
                     equipmentReservation.sportCenterId,
                     equipmentReservation.unitPrice,
-                    equipmentReservation.availability
+                    equipmentReservation.maxQuantity
                 )
                 Pair(slot, equipment)
             }.mapValues { (_, pairList) ->
                 val equipmentTotalSelectedQuantity =
                     pairList.sumOf { (_, equipmentReservation) -> equipmentReservation.selectedQuantity }
-                val equipmentAvailability = pairList.first().second.availability
+                val equipmentAvailability = pairList.first().second.maxQuantity
 
                 Pair(equipmentTotalSelectedQuantity, equipmentAvailability)
             }.filter { (slotEquipmentPair, _) ->
@@ -394,10 +394,10 @@ class Repository @Inject constructor(
             equipmentId = equipment.id,
             playgroundReservationId = playgroundReservationId,
             quantity = quantity,
-            totalPrice = equipment.price,
+            totalPrice = equipment.unitPrice,
             timestamp = LocalDateTime.now().toString(),
         )
-        reservationDao.increasePrice(playgroundReservationId, equipment.price * quantity)
+        reservationDao.increasePrice(playgroundReservationId, equipment.unitPrice * quantity)
         equipmentDao.insertEquipmentReservation(equipmentReservation)
     }
 

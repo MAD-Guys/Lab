@@ -36,7 +36,7 @@ data class DetailedReservation(
     @ColumnInfo(name = "sport_center_name")
     val sportCenterName: String,
     @ColumnInfo(name = "address")
-    val location: String,
+    val address: String,
     @ColumnInfo(name = "sport_name")
     val sportName: String,
     @ColumnInfo(name = "start_date_time")
@@ -235,7 +235,7 @@ data class EquipmentReservationForAvailabilities(
     @ColumnInfo(name = "selected_quantity")
     val selectedQuantity: Int,
     @ColumnInfo(name = "availability")
-    val availability: Int,
+    val maxQuantity: Int,
     @ColumnInfo(name = "unit_price")
     val unitPrice: Float,
     @ColumnInfo(name = "sport_id")
@@ -257,7 +257,7 @@ data class EquipmentReservationForAvailabilities(
             equipmentId,
             equipmentName,
             selectedQuantity,
-            availability,
+            maxQuantity,
             unitPrice,
             sportId,
             sportCenterId
