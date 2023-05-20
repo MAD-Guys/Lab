@@ -1,11 +1,11 @@
 <resources>
-	<string name="app_name">Sport App</string>
+	<string name="app_name">EzSport</string>
 
 	<!-- Bottom navigation menu -->
 	<string name="reservations">Reservations</string>
 	<string name="slots">Slots</string>
 	<string name="playgrounds">Playgrounds</string>
-	<string name="alerts">Alerts</string>
+	<string name="notifications">Notifications</string>
 	<string name="profile">Profile</string>
 
 	<!-- top bar buttons -->
@@ -13,6 +13,7 @@
 	<string name="show_reservations_button">Show reservations button</string>
 	<string name="playground_availabilities_button">Playground availabilities button</string>
 	<string name="list_view_button">List view button</string>
+	<string name="log_out_button">Log out button</string>
 
 	<!-- Progress Bar -->
 	<string name="loading_text">Loading…</string>

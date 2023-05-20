@@ -278,19 +278,11 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
             .create()
     }
 
-    /* Delete reservation dialog */
+    /* Cancel reservation dialog */
     private fun initDeleteReservationDialog() {
         deleteReservationDialog = AlertDialog.Builder(requireContext())
-            .setMessage("Do you want to delete this reservation?")
+            .setMessage("Do you want exit without saving?")
             .setPositiveButton("YES") { _, _ ->
-                // * reservation correctly deleted *
-
-                showToasty(
-                    "success",
-                    requireContext(),
-                    "Reservation correctly canceled",
-                    Toasty.LENGTH_LONG
-                )
 
                 // navigate back to the home
                 findNavController().popBackStack(R.id.showReservationsFragment, false)

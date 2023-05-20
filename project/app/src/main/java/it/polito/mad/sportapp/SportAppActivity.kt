@@ -6,10 +6,12 @@ import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.navigation.NavigationBarView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,6 +19,9 @@ import dagger.hilt.android.AndroidEntryPoint
 class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener {
 
     val db = FirebaseFirestore.getInstance()
+
+    // activity view model
+    private lateinit var vm: SportAppViewModel
 
     private lateinit var bottomNavigationView: NavigationBarView
     private lateinit var navController: NavController
@@ -32,6 +37,13 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
 
         // set light theme as default
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+        // initialize activity view model
+        vm = ViewModelProvider(this)[SportAppViewModel::class.java]
+
+        // get new notifications from db
+        //TODO: setup firestore db properly and change the following line of code
+        vm.initializeNotificationsList()
 
         /* bottom bar */
 
@@ -51,8 +63,8 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         toastyInit()
 
         //TODO: setup firestore db properly and delete these functions
-        tryWriteFirestoreDb()
-        tryReadFirestoreDb()
+        //tryWriteFirestoreDb()
+        //tryReadFirestoreDb()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -84,15 +96,12 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
                 return true
             }
 
-            /*
             R.id.notifications -> {
                 if (currentFragment != R.id.notificationsFragment) {
                     navController.navigate(R.id.notificationsFragment)
                 }
-
                 return true
             }
-            */
 
             R.id.profile -> {
                 if (currentFragment != R.id.showProfileFragment) {
@@ -102,6 +111,30 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
             }
 
             else -> return false
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        //TODO: setup firestore db properly and uncomment the following line of code
+        vm.sendNotification(this)
+
+        // check if user is already logged in
+        if (checkIfUserIsLoggedIn()) {
+
+            //TODO: setup firestore db properly and uncomment the following lines of code
+            // check if user already exists in firestore db
+            /*
+            if (vm.checkIfUserAlreadyExists(FirebaseAuth.getInstance().currentUser!!.uid)) {
+                vm.addUserOnDb()
+            }*/
+
+            // navigate to showReservations fragment
+            navController.navigate(R.id.showReservationsFragment)
+        } else {
+            // navigate to login fragment
+            navController.navigate(R.id.loginFragment)
         }
     }
 
@@ -161,6 +194,4 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
                 Log.w(TAG, "Error getting documents.", exception)
             }
     }
-
-
 }

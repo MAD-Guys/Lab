@@ -216,7 +216,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         reservationUsername.text = viewModel.reservation.value?.username
         reservationPlayground.text = viewModel.reservation.value?.playgroundName
         reservationSportCenter.text = viewModel.reservation.value?.sportCenterName
-        reservationSportCenterAddress.text = viewModel.reservation.value?.location
+        reservationSportCenterAddress.text = viewModel.reservation.value?.address
         reservationTotalPrice.text =
             "€ " + String.format("%.2f", viewModel.reservation.value?.totalPrice)
     }

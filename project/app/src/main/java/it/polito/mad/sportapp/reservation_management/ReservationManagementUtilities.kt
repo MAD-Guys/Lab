@@ -55,7 +55,7 @@ class ReservationManagementUtilities {
 
                 "sport_center_id" to reservation?.sportCenterId,
                 "sport_center_name" to reservation?.sportCenterName,
-                "sport_center_address" to reservation?.location
+                "sport_center_address" to reservation?.address
             )
         }
     }

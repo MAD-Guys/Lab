@@ -14,12 +14,13 @@
     <!-- selected date -->
     <color name="selected_date_text_color">@color/blue_500</color>
     <!-- in and out dates -->
-    <color name="out_date_background_color">#E3F6FF</color>
-    <color name="out_date_text_color">@color/event_tag_color</color>
+    <color name="out_date_background_color">@color/background_blue</color>
+    <color name="out_date_text_color">#9A9A9A</color>
 
     <!-- Event colors -->
-    <color name="event_color">#9A9A9A</color>
-    <color name="event_tag_color">#9A9A9A</color>
+    <color name="event_color">@color/primary_orange</color>
+    <color name="past_event_tag_color">#9A9A9A</color>
+    <color name="event_tag_color">@color/event_color</color>
     <color name="past_event_color">#E0E0E0</color>
 
 </resources>

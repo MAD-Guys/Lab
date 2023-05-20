@@ -8,16 +8,20 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.children
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.view.MonthDayBinder
+import it.polito.mad.sportapp.logOut
 import it.polito.mad.sportapp.R
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -125,6 +129,17 @@ internal fun ShowReservationsFragment.calendarInit() {
                 if (events != null) {
                     eventTag.visibility = View.VISIBLE
 
+                    if (data.date.isBefore(currentDate)) {
+                        eventTag.setColorFilter(
+                            getColor(
+                                requireContext(),
+                                R.color.past_event_tag_color
+                            )
+                        )
+                    } else {
+                        eventTag.setColorFilter(getColor(requireContext(), R.color.event_tag_color))
+                    }
+
                     if (YearMonth.from(data.date) == vm.currentMonth.value && data.date == vm.selectedDate.value) {
 
                         // perform haptic feedback if the day clicked has at least one event
@@ -132,6 +147,9 @@ internal fun ShowReservationsFragment.calendarInit() {
                         updateAdapterForDate(data.date)
                     }
                 } else {
+
+                    eventTag.visibility = View.GONE
+
                     if (YearMonth.from(data.date) == vm.currentMonth.value && data.date == vm.selectedDate.value) {
                         updateAdapterForDate(null)
                     }
@@ -229,8 +247,9 @@ internal fun ShowReservationsFragment.menuInit() {
                 it.title = "My Reservations"
             }
 
-            // change visibility of the show reservations menu item
+            // change visibility of the show reservations menu items
             menu.findItem(R.id.events_list_button).isVisible = true
+            menu.findItem(R.id.log_out_button).isVisible = true
         }
 
         override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -238,6 +257,11 @@ internal fun ShowReservationsFragment.menuInit() {
             return when (menuItem.itemId) {
                 R.id.events_list_button -> {
                     navController.navigate(R.id.action_showReservationsFragment_to_eventsListFragment)
+                    true
+                }
+
+                R.id.log_out_button -> {
+                    exitDialog.show()
                     true
                 }
 
@@ -256,6 +280,33 @@ internal fun ShowReservationsFragment.setupBottomBar() {
 
     // set the right button
     bottomNavigationBar.menu.findItem(R.id.reservations).isChecked = true
+}
+
+// setup on back pressed callback
+internal fun ShowReservationsFragment.setupOnBackPressedCallback() {
+    val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            exitDialog.show()
+        }
+    }
+    requireActivity().onBackPressedDispatcher.addCallback(
+        viewLifecycleOwner, // LifecycleOwner
+        callback
+    )
+}
+
+/* Exit and logout dialog */
+internal fun ShowReservationsFragment.exitDialogInit() {
+    exitDialog = AlertDialog.Builder(requireContext())
+        .setMessage("Do you want exit from the application?")
+        .setPositiveButton("YES") { _, _ ->
+            // logout
+            logOut(requireContext())
+            // navigate back to the login fragment
+            findNavController().navigate(R.id.action_showReservationsFragment_to_loginFragment)
+        }
+        .setNegativeButton("NO") { d, _ -> d.cancel() }
+        .create()
 }
 
 // perform haptic feedback if android version is lower than 13

@@ -20,6 +20,7 @@ import java.util.Locale
 internal class EventsListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     private val containerLayout = view.findViewById<ConstraintLayout>(R.id.event_item_container)
+    private val dateTimeContainer = view.findViewById<LinearLayout>(R.id.event_date_time_container)
 
     private val itemLayout = view.findViewById<LinearLayout>(R.id.event_information_container)
     private val dayText = view.findViewById<TextView>(R.id.event_day_text)
@@ -35,6 +36,12 @@ internal class EventsListViewHolder(view: View) : RecyclerView.ViewHolder(view) 
 
         // set item background color
         if (event.startLocalDateTime.isBefore(LocalDateTime.now())) {
+            dateTimeContainer.setBackgroundColor(
+                getColor(
+                    itemView.context,
+                    R.color.past_event_tag_color
+                )
+            )
             containerLayout.setBackgroundColor(
                 getColor(
                     itemView.context,
@@ -42,6 +49,12 @@ internal class EventsListViewHolder(view: View) : RecyclerView.ViewHolder(view) 
                 )
             )
         } else {
+            dateTimeContainer.setBackgroundColor(
+                getColor(
+                    itemView.context,
+                    R.color.event_color
+                )
+            )
             containerLayout.setBackgroundColor(
                 getColor(
                     itemView.context,
@@ -81,7 +94,10 @@ internal class EventsListViewHolder(view: View) : RecyclerView.ViewHolder(view) 
             val bundle = bundleOf("id_event" to event.id)
 
             // navigate to reservation details fragment
-            navController.navigate(R.id.action_eventsListFragment_to_reservationDetailsFragment, bundle)
+            navController.navigate(
+                R.id.action_eventsListFragment_to_reservationDetailsFragment,
+                bundle
+            )
         }
 
     }

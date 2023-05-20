@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
@@ -27,6 +28,9 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
     internal val eventsAdapter = EventsAdapter()
 
     private lateinit var recyclerView: RecyclerView
+
+    // fragment dialog
+    internal lateinit var exitDialog: AlertDialog
 
     // calendar view
     internal lateinit var calendarView: CalendarView
@@ -61,6 +65,12 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
         // initialize menu
         menuInit()
 
+        // initialize exit dialog
+        exitDialogInit()
+
+        // setup back button
+        setupOnBackPressedCallback()
+
         // initialize month buttons
         monthButtonsInit()
 
@@ -91,7 +101,7 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
 
         requireView().viewTreeObserver?.addOnGlobalLayoutListener {
 
-            if(vm.userEvents.value?.isNotEmpty() == true)
+            if (vm.userEvents.value?.isNotEmpty() == true)
             // task completed: hide progress bar
                 hideProgressBar(progressBar, recyclerView)
         }

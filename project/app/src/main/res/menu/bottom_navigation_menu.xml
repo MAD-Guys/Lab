@@ -14,8 +14,8 @@
         android:id="@+id/playgrounds"
         android:icon="@drawable/baseline_stadium_24"/>
     <item
-        android:title="@string/alerts"
-        android:id="@+id/alerts"
+        android:title="@string/notifications"
+        android:id="@+id/notifications"
         android:icon="@drawable/baseline_notifications_32"/>
     <item
         android:title="@string/profile"
