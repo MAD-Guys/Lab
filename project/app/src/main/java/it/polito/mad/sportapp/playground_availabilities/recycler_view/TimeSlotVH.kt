@@ -20,8 +20,8 @@ class TimeSlotVH(
     private val reservationBundle: Bundle?,
     private val setReservationBundle: (Bundle) -> Unit,
     private val switchToAddMode: () -> Unit
-) : AbstractTimeSlotVH(view)
-{
+) : AbstractTimeSlotVH(view) {
+    private val currentDate = LocalDateTime.now()
     private val startTimeSlotText = view.findViewById<TextView>(R.id.start_time_slot)
     private val endTimeSlotText = view.findViewById<TextView>(R.id.end_time_slot)
     private val availablePlaygroundsContainer =
@@ -38,14 +38,22 @@ class TimeSlotVH(
     }
 
     fun setTimeSlotTimes(start: LocalDateTime, end: LocalDateTime, slotDuration: Duration) {
+
+        val timeSlotBox = view.findViewById<View>(R.id.time_slot_box)
+
         slot = start
         this.slotDuration = slotDuration
 
         startTimeSlotText.text = start.format(DateTimeFormatter.ofPattern("HH:mm"))
         endTimeSlotText.text = end.format(DateTimeFormatter.ofPattern("HH:mm"))
 
+        if (currentDate.isAfter(start)) {
+            timeSlotBox.setBackgroundResource(R.color.time_slot_unavailable_background_color)
+        } else {
+            timeSlotBox.setBackgroundResource(R.color.time_slot_background_color)
+        }
+
         if (reservationManagementModeWrapper.mode != null) {
-            val timeSlotBox = view.findViewById<View>(R.id.time_slot_box)
             timeSlotBox.setBackgroundResource(reservationManagementModeWrapper.mode!!.variantColorId)
         }
     }
@@ -101,7 +109,7 @@ class TimeSlotVH(
         playground: DetailedPlaygroundSport,
         selectionState: PlaygroundAvailabilitiesAdapter.SelectionState
     ) {
-        if(!playground.available) return
+        if (!playground.available) return
 
         if (reservationManagementModeWrapper.mode == null) {
             navigateToPlayground(playground.playgroundId, slot)
@@ -128,15 +136,15 @@ class TimeSlotVH(
             //      check if to either extend the same selection or restart a new one
             else if (bundle.getString("end_slot") == null) {
                 // if user re-click to the same slot (of the same playground), nothing happens
-                if(bundle.getString("start_slot") == slot.toString() &&
-                    bundle.getInt("playground_id") == playground.playgroundId)
+                if (bundle.getString("start_slot") == slot.toString() &&
+                    bundle.getInt("playground_id") == playground.playgroundId
+                )
                     return@let
 
-                if(selectionState == PlaygroundAvailabilitiesAdapter.SelectionState.SELECTABLE) {
+                if (selectionState == PlaygroundAvailabilitiesAdapter.SelectionState.SELECTABLE) {
                     // extend selection
                     bundle.putString("end_slot", slot.toString())
-                }
-                else {
+                } else {
                     // restart selection
                     bundle.putString("start_slot", slot.toString())
                     bundle.remove("end_slot")

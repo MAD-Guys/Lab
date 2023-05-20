@@ -11,6 +11,13 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/log_out_button"
+        android:icon="@drawable/baseline_logout_24"
+        android:title="@string/log_out_button"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/show_reservations_button"
         android:icon="@drawable/baseline_calendar_month_24"
         android:title="@string/show_reservations_button"

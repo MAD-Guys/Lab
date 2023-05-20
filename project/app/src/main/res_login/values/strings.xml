@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="welcome">Welcome\nto\nEzSport\nApp!</string>
+    <string name="google_sign_in_button_text">Sign in with Google</string>
+    <string name="google_sign_in_button_content_description">Sign in with Google</string>
+    <string name="icon_launcher_content_description">Icon launcher content description</string>
+</resources>

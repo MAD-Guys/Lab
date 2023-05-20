@@ -18,12 +18,13 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowMetrics
 import android.widget.ImageView
-import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import com.firebase.ui.auth.AuthUI
 import es.dmoral.toasty.Toasty
+import it.polito.mad.sportapp.login.LoginFragment
 import java.io.File
 import java.io.FileDescriptor
 import java.io.FileOutputStream
@@ -177,7 +178,7 @@ internal fun clearStorageFiles(directory: File, regexp: String) {
 
 /* showing toast according to its type */
 
-fun showToasty(type: String, context: Context, message: String, length:Int = Toasty.LENGTH_SHORT) {
+fun showToasty(type: String, context: Context, message: String, length: Int = Toasty.LENGTH_SHORT) {
     when (type) {
         "success" -> Toasty.custom(
             context, message,
@@ -495,12 +496,27 @@ internal fun toastyInit() {
 }
 
 /* PROGRESS BAR */
-internal fun showProgressBar(progressBar : View, mainContent: View) {
+internal fun showProgressBar(progressBar: View, mainContent: View) {
     progressBar.visibility = View.VISIBLE
     mainContent.visibility = View.INVISIBLE
 }
-internal fun hideProgressBar(progressBar : View, mainContent: View) {
+
+internal fun hideProgressBar(progressBar: View, mainContent: View) {
     progressBar.visibility = View.GONE
     mainContent.visibility = View.VISIBLE
+}
+
+/* LOGIN UTILITIES */
+
+internal fun logOut(context: Context) {
+    AuthUI.getInstance()
+        .signOut(context)
+        .addOnCompleteListener {
+            showToasty(
+                "success",
+                context,
+                "Logout successfully done"
+            )
+        }
 }
 

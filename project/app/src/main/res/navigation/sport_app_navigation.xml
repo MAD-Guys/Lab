@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sport_app_navigation"
-    app:startDestination="@id/showReservationsFragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/showReservationsFragment"
@@ -27,6 +27,12 @@
             app:popEnterAnim="@anim/custom_animation_slide_in_from_left"
             app:popExitAnim="@anim/custom_animation_slide_out_to_right"
             app:popUpTo="@id/showReservationsFragment" />
+        <action
+            android:id="@+id/action_showReservationsFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/custom_animation_slide_in_from_bottom"
+            app:exitAnim="@android:anim/fade_out"
+            app:popUpTo="@id/loginFragment" />
     </fragment>
 
     <fragment
@@ -165,5 +171,10 @@
         android:name="it.polito.mad.sportapp.reservation_management.summary.ReservationSummaryFragment"
         android:label="reservation_summary_view"
         tools:layout="@layout/reservation_summary_view" />
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="it.polito.mad.sportapp.login.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" />
 
 </navigation>

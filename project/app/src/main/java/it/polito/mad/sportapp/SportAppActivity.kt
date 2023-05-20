@@ -52,7 +52,7 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
 
         //TODO: setup firestore db properly and delete these functions
         //tryWriteFirestoreDb()
-        tryReadFirestoreDb()
+        //tryReadFirestoreDb()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -72,6 +72,10 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
                 if (currentFragment != R.id.playgroundAvailabilitiesFragment) {
                     navController.navigate(R.id.playgroundAvailabilitiesFragment)
                 }
+                return true
+            }
+
+            R.id.notifications -> {
                 return true
             }
 
@@ -142,6 +146,4 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
                 Log.w(TAG, "Error getting documents.", exception)
             }
     }
-
-
 }
