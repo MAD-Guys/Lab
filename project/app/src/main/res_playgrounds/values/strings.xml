@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="playground_card_default_playground_name">Playground name</string>
+    <string name="playground_card_default_sport_center_name">Sport Center name</string>
+    <string name="playground_card_default_sport_name">Basketball</string>
+    <string name="playground_card_default_sport_icon">🏀</string>
+    <string name="playground_card_default_address">Corso Castelfidardo 37, Turin</string>
+    <string name="playground_card_default_price_per_hour">20</string>
+    <string name="playground_card_default_opening_hour">9:00</string>
+    <string name="playground_card_default_closing_hour">19:00</string>
+
+    <string name="playground_card_playground_picture_description">Playground picture</string>
+
+    <!-- icons -->
+    <string name="playground_card_address_icon_description">Address icon</string>
+    <string name="playground_card_price_per_hour_icon_description">Price icon</string>
+    <string name="playground_card_opening_hours_icon_description">Opening hours icon</string>
+
+</resources>

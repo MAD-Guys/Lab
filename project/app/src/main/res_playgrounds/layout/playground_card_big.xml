@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginVertical="@dimen/playground_card_margin_vertical"
     android:orientation="vertical"
-    android:paddingTop="30dp"
-    android:paddingBottom="25dp"
-    android:paddingHorizontal="30dp"
-    android:background="@color/background_orange">
+    android:paddingVertical="@dimen/playground_card_padding_vertical"
+    android:paddingHorizontal="@dimen/playground_card_padding_horizontal"
+    android:background="@drawable/playground_card_bg">
 
     <!-- Playground image -->
     <ImageView
@@ -17,7 +17,8 @@
         android:layout_marginBottom="8dp"
         app:srcCompat="@drawable/_04_basket"
         android:adjustViewBounds="true"
-        android:contentDescription="playground image" />
+        android:contentDescription="@string/playground_card_playground_picture_description"
+        />
 
     <!-- Playground rating start -->
     <RatingBar
@@ -35,7 +36,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Playground Name"
+        android:text="@string/playground_card_default_playground_name"
         android:textSize="22sp"
         android:fontFamily="@font/poppins_semibold"
         android:includeFontPadding="false"
@@ -45,19 +46,24 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-3dp"
-        android:text="Sport Center Name"
-        android:textSize="16sp"
+        android:layout_marginTop="-1dp"
         android:fontFamily="@font/poppins_medium"
-        android:includeFontPadding="false"/>
+        android:includeFontPadding="false"
+        android:text="@string/playground_card_default_sport_center_name"
+        android:textSize="16sp"
+        tools:ignore="TextContrastCheck" />
 
+    <!-- playground info row -->
     <LinearLayout
+        android:id="@+id/playground_info_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginHorizontal="1dp"
-        android:layout_marginVertical="5dp">
+        android:layout_marginTop="4dp"
+        android:baselineAligned="false">
 
+        <!-- 1st column -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -68,7 +74,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4sp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                tools:ignore="VisualLintBounds">
 
                 <!-- icon -->
                 <TextView
@@ -77,10 +84,10 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="2dp"
                     android:layout_marginEnd="3dp"
-                    android:text="🏀"
+                    android:text="@string/playground_card_default_sport_icon"
                     android:textColor="@color/black"
                     android:textSize="@dimen/playground_card_text_size"
-                    />
+                    tools:ignore="TextContrastCheck" />
 
                 <TextView
                     android:id="@+id/playgroundSport"
@@ -90,7 +97,7 @@
                     android:layout_marginStart="4sp"
                     android:fontFamily="@font/poppins_medium"
                     android:includeFontPadding="false"
-                    android:text="Basketball"
+                    android:text="@string/playground_card_default_sport_name"
                     android:textColor="@color/black"
                     android:textSize="@dimen/playground_card_text_size"
                     tools:ignore="HardcodedText" />
@@ -100,8 +107,9 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4sp"
-                android:orientation="horizontal">
+                android:layout_marginTop="3sp"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables,VisualLintBounds">
 
                 <!-- icon -->
                 <ImageView
@@ -109,8 +117,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
-                    android:contentDescription="@string/image_location_content_description"
-                    app:srcCompat="@drawable/baseline_location_on_24" />
+                    android:contentDescription="@string/playground_card_address_icon_description"
+                    app:srcCompat="@drawable/baseline_location_on_24"
+                    tools:ignore="ImageContrastCheck" />
 
                 <TextView
                     android:id="@+id/playgroundAddress"
@@ -120,13 +129,14 @@
                     android:layout_marginStart="4sp"
                     android:fontFamily="@font/poppins_medium"
                     android:includeFontPadding="false"
-                    android:text="Via Roma 1, Turin"
+                    android:text="@string/playground_card_default_address"
                     android:textColor="@color/black"
                     android:textSize="@dimen/playground_card_text_size"
                     tools:ignore="HardcodedText" />
             </LinearLayout>
         </LinearLayout>
 
+        <!-- 2nd column -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -137,7 +147,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4sp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                tools:ignore="VisualLintBounds">
 
                 <!-- icon -->
                 <ImageView
@@ -145,22 +156,22 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
-                    android:contentDescription="@string/image_location_content_description"
+                    android:contentDescription="@string/playground_card_opening_hours_icon_description"
                     app:srcCompat="@drawable/baseline_access_time_24"
-                    app:tint="@color/black" />
+                    app:tint="@color/black"
+                    tools:ignore="ImageContrastCheck" />
 
                 <TextView
-                    android:id="@+id/playgroundOpeningTime"
+                    android:id="@+id/playground_opening_hour"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="4sp"
                     android:fontFamily="@font/poppins_medium"
                     android:includeFontPadding="false"
-                    android:text="9:00"
+                    android:text="@string/playground_card_default_opening_hour"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/playground_card_text_size"
-                    tools:ignore="HardcodedText" />
+                    android:textSize="@dimen/playground_card_text_size" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -175,25 +186,25 @@
                     tools:ignore="HardcodedText" />
 
                 <TextView
-                    android:id="@+id/playgroundClosingTime"
+                    android:id="@+id/playground_closing_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="4sp"
                     android:fontFamily="@font/poppins_medium"
                     android:includeFontPadding="false"
-                    android:text="19:00"
+                    android:text="@string/playground_card_default_closing_hour"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/playground_card_text_size"
-                    tools:ignore="HardcodedText" />
+                    android:textSize="@dimen/playground_card_text_size" />
             </LinearLayout>
 
             <!-- Price -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4sp"
-                android:orientation="horizontal">
+                android:layout_marginTop="3sp"
+                android:orientation="horizontal"
+                tools:ignore="VisualLintBounds">
 
                 <!-- icon -->
                 <ImageView
@@ -201,7 +212,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
-                    app:srcCompat="@drawable/baseline_attach_money_24" />
+                    android:contentDescription="@string/price_icon_content_description"
+                    app:srcCompat="@drawable/baseline_attach_money_24"
+                    tools:ignore="ImageContrastCheck" />
 
                 <TextView
                     android:id="@+id/playgroundPrice"
@@ -211,10 +224,9 @@
                     android:layout_marginStart="4sp"
                     android:fontFamily="@font/poppins_medium"
                     android:includeFontPadding="false"
-                    android:text="20"
+                    android:text="@string/playground_card_default_price_per_hour"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/playground_card_text_size"
-                    tools:ignore="HardcodedText" />
+                    android:textSize="@dimen/playground_card_text_size" />
 
                 <TextView
                     android:layout_width="wrap_content"

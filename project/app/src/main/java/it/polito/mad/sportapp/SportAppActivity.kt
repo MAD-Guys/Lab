@@ -75,6 +75,25 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
                 return true
             }
 
+            R.id.playgrounds -> {
+                if (currentFragment != R.id.playgroundsBySportFragment &&
+                    currentFragment != R.id.playgroundsByCenterFragment) {
+                    navController.navigate(R.id.playgroundsBySportFragment)
+                }
+
+                return true
+            }
+
+            /*
+            R.id.notifications -> {
+                if (currentFragment != R.id.notificationsFragment) {
+                    navController.navigate(R.id.notificationsFragment)
+                }
+
+                return true
+            }
+            */
+
             R.id.profile -> {
                 if (currentFragment != R.id.showProfileFragment) {
                     navController.navigate(R.id.showProfileFragment)

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- shadow -->
+    <item android:left="@dimen/playground_card_shadow_offset_x" android:top="@dimen/playground_card_shadow_offset_y">
+        <shape>
+            <corners android:radius="@dimen/playground_card_corner_radius" />
+            <solid android:color="@color/playground_card_shadow_color" />
+        </shape>
+    </item>
+    <!-- background with border -->
+    <item android:right="@dimen/playground_card_shadow_offset_x" android:bottom="@dimen/playground_card_shadow_offset_y">
+        <shape>
+            <corners android:radius="@dimen/playground_card_corner_radius" />
+            <stroke android:width="@dimen/playground_card_border_width" android:color="@color/playground_card_border_color" />
+            <!--
+            <gradient
+                android:startColor="@color/background_orange"
+                android:endColor="@color/background_blue"
+                android:gradientRadius="5dp"
+                />
+               -->
+            <solid android:color="@color/playground_card_background_color" />
+        </shape>
+    </item>
+</layer-list>

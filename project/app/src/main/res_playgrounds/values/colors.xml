@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="playgrounds_background_color">@color/background_orange</color>
+
+    <!-- card -->
+    <color name="playground_card_border_color">#636363</color>
+    <color name="playground_card_shadow_color">#3E393939</color>
+    <color name="playground_card_background_color">#FFF8EC</color>
+
+    <!-- separator -->
+    <color name="playground_card_separator_color">#959595</color>
+    <color name="playground_card_separator_text_color">#373737</color>
+</resources>

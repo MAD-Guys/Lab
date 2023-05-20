@@ -7,10 +7,9 @@
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:layout_centerHorizontal="true"
-    android:layout_marginBottom="80dp"
+    android:layout_marginBottom="75dp"
     android:paddingHorizontal="7dp"
-    android:background="@drawable/overlay_tab_bg"
-    android:visibility="gone">
+    android:background="@drawable/overlay_tab_bg">
 
     <!-- Sports button -->
     <LinearLayout
@@ -27,17 +26,19 @@
 
         <!-- sport icon -->
         <ImageView
+            android:id="@+id/overlay_bar_sport_icon"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="@integer/overlay_bar_button_image_weight"
             android:padding="@dimen/overlay_bar_button_image_padding"
             android:contentDescription="@string/overlay_button_bar_sport_button_description"
             android:src="@drawable/baseline_sports_basketball_48"
-            app:tint="@color/overlay_bar_button_selected_color" />
+            app:tint="@color/overlay_bar_button_unselected_color" />
             <!-- when selected, change app:tint to @color/overlay_bar_button_selected_color -->
 
         <!-- sport title -->
         <TextView
+            android:id="@+id/overlay_bar_sport_label"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="@integer/overlay_bar_button_label_weight"
@@ -46,7 +47,7 @@
             android:singleLine="true"
             android:gravity="center"
             android:textSize="@dimen/overlay_bar_button_label_text_size"
-            android:textColor="@color/overlay_bar_button_selected_color"
+            android:textColor="@color/overlay_bar_button_unselected_color"
             android:includeFontPadding="false"
             tools:ignore="ButtonStyle" />
             <!-- when selected, change android:textColor to @color/overlay_bar_button_selected_color -->
@@ -73,6 +74,7 @@
         android:focusable="true">
 
         <ImageView
+            android:id="@+id/overlay_bar_center_icon"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="@integer/overlay_bar_button_image_weight"
@@ -83,6 +85,7 @@
             <!-- when selected, change app:tint to @color/overlay_bar_button_selected_color -->
 
         <TextView
+            android:id="@+id/overlay_bar_center_label"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="@integer/overlay_bar_button_label_weight"

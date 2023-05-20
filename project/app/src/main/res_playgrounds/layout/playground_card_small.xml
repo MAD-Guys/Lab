@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/small_playground_card_padding_top"
+    android:paddingBottom="@dimen/small_playground_card_padding_bottom"
+    android:paddingHorizontal="@dimen/small_playground_card_padding_horizontal"
+    android:layout_marginVertical="@dimen/small_playground_card_margin_vertical"
+    android:background="@drawable/playground_card_bg"
+    android:gravity="center">
+
+    <!-- Playground image -->
+    <ImageView
+        android:id="@+id/playground_image"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:layout_marginEnd="@dimen/small_playground_card_column_margin_horizontal"
+        app:srcCompat="@drawable/_04_basket"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/playground_card_playground_picture_description" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:layout_marginStart="@dimen/small_playground_card_column_margin_horizontal"
+        android:orientation="vertical">
+
+        <!-- Playground rating start -->
+        <LinearLayout
+            android:layout_width="80dp"
+            android:layout_height="17dp"
+            android:layout_gravity="center_horizontal">
+            <RatingBar
+                android:id="@+id/playground_rating"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1.25dp"
+                android:isIndicator="true"
+                android:progressTint="@color/primary_orange"
+                android:rating="3.5" />
+        </LinearLayout>
+
+        <!-- Playground name -->
+        <TextView
+            android:id="@+id/playground_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/playground_card_default_playground_name"
+            android:textSize="@dimen/small_playground_card_playground_name_text_size"
+            android:fontFamily="@font/poppins_semibold"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            android:textColor="@color/black" />
+
+        <!-- Sport center name -->
+        <TextView
+            android:id="@+id/sport_center_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-2dp"
+            android:fontFamily="@font/poppins_medium"
+            android:includeFontPadding="false"
+            android:text="@string/playground_card_default_sport_center_name"
+            android:textSize="@dimen/small_playground_card_sport_center_name_text_size"
+            android:singleLine="true"
+            tools:ignore="TextContrastCheck" />
+
+        <!-- playground info row -->
+        <LinearLayout
+            android:id="@+id/playground_info_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="2.5dp"
+            android:baselineAligned="false">
+
+            <!-- 1st column -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="7"
+                android:layout_marginEnd="@dimen/small_playground_card_info_margin"
+                android:orientation="vertical">
+                <!-- Sport -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1sp"
+                    android:orientation="horizontal"
+                    tools:ignore="VisualLintBounds">
+
+                    <!-- icon -->
+                    <TextView
+                        android:id="@+id/playground_sport_emoji"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="1sp"
+                        android:layout_marginEnd="3dp"
+                        android:text="@string/playground_card_default_sport_icon"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/small_playground_card_text_size"
+                        tools:ignore="TextContrastCheck" />
+
+                    <TextView
+                        android:id="@+id/playground_sport_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="1sp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:includeFontPadding="false"
+                        android:text="@string/playground_card_default_sport_name"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/small_playground_card_text_size"
+                        tools:ignore="HardcodedText" />
+                </LinearLayout>
+
+                <!-- Address -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1sp"
+                    android:orientation="horizontal"
+                    android:gravity="top"
+                    tools:ignore="UseCompoundDrawables,VisualLintBounds">
+
+                    <!-- icon -->
+                    <ImageView
+                        android:id="@+id/location_icon"
+                        android:layout_width="@dimen/small_playground_card_icon_size"
+                        android:layout_height="@dimen/small_playground_card_icon_size"
+                        android:layout_gravity="start"
+                        android:contentDescription="@string/playground_card_address_icon_description"
+                        app:srcCompat="@drawable/baseline_location_on_24"
+                        tools:ignore="ImageContrastCheck" />
+
+                    <TextView
+                        android:id="@+id/playground_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="4sp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:includeFontPadding="false"
+                        android:lineHeight="11sp"
+                        android:text="@string/playground_card_default_address"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/small_playground_card_text_size"
+                        tools:ignore="HardcodedText,UnusedAttribute" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- 2nd column -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
+                android:layout_marginStart="@dimen/small_playground_card_info_margin"
+                android:orientation="vertical">
+                <!-- Opening time -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1sp"
+                    android:orientation="horizontal"
+                    tools:ignore="VisualLintBounds">
+
+                    <!-- icon -->
+                    <ImageView
+                        android:id="@+id/time_icon"
+                        android:layout_width="@dimen/small_playground_card_icon_size"
+                        android:layout_height="@dimen/small_playground_card_icon_size"
+                        android:layout_gravity="center_vertical"
+                        android:contentDescription="@string/playground_card_opening_hours_icon_description"
+                        app:srcCompat="@drawable/baseline_access_time_24"
+                        app:tint="@color/black"
+                        tools:ignore="ImageContrastCheck" />
+
+                    <TextView
+                        android:id="@+id/playground_opening_hour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="4sp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:includeFontPadding="false"
+                        android:text="@string/playground_card_default_opening_hour"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/small_playground_card_text_size" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/poppins_medium"
+                        android:includeFontPadding="false"
+                        android:text="-"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/small_playground_card_text_size"
+                        tools:ignore="HardcodedText" />
+
+                    <TextView
+                        android:id="@+id/playground_closing_hour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/poppins_medium"
+                        android:includeFontPadding="false"
+                        android:text="@string/playground_card_default_closing_hour"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/small_playground_card_text_size" />
+                </LinearLayout>
+
+                <!-- Price -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1sp"
+                    android:orientation="horizontal"
+                    tools:ignore="VisualLintBounds">
+
+                    <!-- icon -->
+                    <ImageView
+                        android:id="@+id/price_icon"
+                        android:layout_width="@dimen/small_playground_card_icon_size"
+                        android:layout_height="@dimen/small_playground_card_icon_size"
+                        android:layout_gravity="center_vertical"
+                        android:contentDescription="@string/price_icon_content_description"
+                        app:srcCompat="@drawable/baseline_attach_money_24"
+                        tools:ignore="ImageContrastCheck" />
+
+                    <TextView
+                        android:id="@+id/playground_cost_per_hour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="4sp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:includeFontPadding="false"
+                        android:text="@string/playground_card_default_price_per_hour"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/small_playground_card_text_size" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="1sp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:includeFontPadding="false"
+                        android:text="€/h"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/small_playground_card_text_size"
+                        tools:ignore="HardcodedText" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

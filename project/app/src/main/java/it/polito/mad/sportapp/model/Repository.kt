@@ -415,7 +415,9 @@ class Repository @Inject constructor(
 
     fun getPlaygroundInfoById(playgroundId: Int): PlaygroundInfo {
         val playgroundInfo = playgroundSportDao.getPlaygroundInfo(playgroundId)
+
         playgroundInfo.reviewList = getAllReviewsByPlaygroundId(playgroundId)
+
         val overallQualityRating: Float =
             playgroundInfo.reviewList.map { it.qualityRating }.filter { it != 0f }.average()
                 .toFloat()
@@ -423,14 +425,16 @@ class Repository @Inject constructor(
         val overallFacilitiesRating: Float =
             playgroundInfo.reviewList.map { it.facilitiesRating }.filter { it != 0f }.average()
                 .toFloat()
+
         playgroundInfo.overallQualityRating = overallQualityRating.takeIf { !it.isNaN() } ?: 0f
-        playgroundInfo.overallFacilitiesRating =
-            overallFacilitiesRating.takeIf { !it.isNaN() } ?: 0f
+        playgroundInfo.overallFacilitiesRating = overallFacilitiesRating.takeIf { !it.isNaN() } ?: 0f
+
         playgroundInfo.overallRating = when {
             playgroundInfo.overallQualityRating == 0f -> playgroundInfo.overallFacilitiesRating
             playgroundInfo.overallFacilitiesRating == 0f -> playgroundInfo.overallQualityRating
             else -> (playgroundInfo.overallQualityRating + playgroundInfo.overallFacilitiesRating) / 2
         }
+
         return playgroundInfo
     }
 
@@ -566,6 +570,33 @@ class Repository @Inject constructor(
         }
 
         return playgroundsPerSlotAndDate
+    }
+
+    fun getAllPlaygroundsInfo(): List<PlaygroundInfo> {
+        val allPlaygroundsInfo = playgroundSportDao.getAllPlaygroundInfo()
+
+        allPlaygroundsInfo.forEach { playgroundInfo ->
+            playgroundInfo.reviewList = getAllReviewsByPlaygroundId(playgroundInfo.playgroundId)
+
+            val overallQualityRating: Float =
+                playgroundInfo.reviewList.map { it.qualityRating }.filter { it != 0f }.average()
+                    .toFloat()
+
+            val overallFacilitiesRating: Float =
+                playgroundInfo.reviewList.map { it.facilitiesRating }.filter { it != 0f }.average()
+                    .toFloat()
+
+            playgroundInfo.overallQualityRating = overallQualityRating.takeIf { !it.isNaN() } ?: 0f
+            playgroundInfo.overallFacilitiesRating = overallFacilitiesRating.takeIf { !it.isNaN() } ?: 0f
+
+            playgroundInfo.overallRating = when {
+                playgroundInfo.overallQualityRating == 0f -> playgroundInfo.overallFacilitiesRating
+                playgroundInfo.overallFacilitiesRating == 0f -> playgroundInfo.overallQualityRating
+                else -> (playgroundInfo.overallQualityRating + playgroundInfo.overallFacilitiesRating) / 2
+            }
+        }
+
+        return allPlaygroundsInfo
     }
 }
 

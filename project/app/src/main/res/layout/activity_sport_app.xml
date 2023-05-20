@@ -42,6 +42,6 @@
     </LinearLayout>
 
     <!-- overlay bottom bar for playgrounds navigation -->
-    <include layout="@layout/overlay_bottom_bar" />
+    <include layout="@layout/overlay_bottom_bar" android:visibility="gone"/>
 
 </RelativeLayout>

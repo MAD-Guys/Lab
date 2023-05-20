@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/playground_center_separator"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_gravity="start"
+    android:layout_marginBottom="@dimen/playground_card_separator_margin_bottom"
+    android:layout_marginTop="@dimen/playground_card_separator_margin_top">
+
+    <!-- Sport Center -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/playground_card_separator_text_margin_start"
+        android:orientation="horizontal"
+        android:gravity="center"
+        tools:ignore="UseCompoundDrawables">
+
+        <!-- sport center icon -->
+        <ImageView
+            android:id="@+id/playground_separator_sport_center_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="14sp"
+            android:layout_marginEnd="1sp"
+            android:src="@drawable/baseline_location_on_24"
+            tools:ignore="ContentDescription" />
+
+        <!-- sport center name -->
+        <TextView
+            android:id="@+id/playground_separator_sport_center_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/default_sport_center_name"
+            android:textSize="@dimen/playground_card_separator_text_size"
+            android:textColor="@color/playground_card_separator_text_color"
+            />
+
+    </LinearLayout>
+
+    <!-- horizontal line -->
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="@dimen/playground_card_separator_width"
+        android:layout_height="@dimen/playground_card_separator_height"
+        app:dividerColor="@color/playground_card_separator_color"
+        android:layout_marginTop="1.5dp"/>
+
+</LinearLayout>
