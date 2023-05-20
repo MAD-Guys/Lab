@@ -6,12 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.NewReservation
-import it.polito.mad.sportapp.model.Repository
+import it.polito.mad.sportapp.model.LocalRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class ReservationSummaryViewModel @Inject constructor(
-    val repository: Repository
+    val repository: LocalRepository
 ) : ViewModel()
 {
     // contains the reservation data to save in the db
@@ -21,8 +21,8 @@ class ReservationSummaryViewModel @Inject constructor(
     /**
      * return null if everything went well, an error enum otherwise
      */
-    fun permanentlySaveReservation(): Pair<Int?, Repository.NewReservationError?> {
-        var error: Repository.NewReservationError? = null
+    fun permanentlySaveReservation(): Pair<Int?, LocalRepository.NewReservationError?> {
+        var error: LocalRepository.NewReservationError? = null
         var id: Int? = null
 
         val t = Thread {
@@ -50,7 +50,7 @@ class ReservationSummaryViewModel @Inject constructor(
         }
         catch(e: InterruptedException) {
             // waited for too long
-            error = Repository.NewReservationError.UNEXPECTED_ERROR
+            error = LocalRepository.NewReservationError.UNEXPECTED_ERROR
         }
 
         return Pair(id, error)

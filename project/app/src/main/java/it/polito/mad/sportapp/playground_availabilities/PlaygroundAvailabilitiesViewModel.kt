@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
-import it.polito.mad.sportapp.model.Repository
+import it.polito.mad.sportapp.model.LocalRepository
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlaygroundAvailabilitiesViewModel @Inject constructor(
-    private val repository: Repository
+    private val repository: LocalRepository
 ) : ViewModel()
 {
     // default values

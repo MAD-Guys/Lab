@@ -5,12 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.DetailedReservation
-import it.polito.mad.sportapp.model.Repository
+import it.polito.mad.sportapp.model.LocalRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class ReservationDetailsViewModel @Inject constructor(
-    private val repository: Repository
+    private val repository: LocalRepository
 ) : ViewModel() {
 
     private var _reservation = MutableLiveData<DetailedReservation>()

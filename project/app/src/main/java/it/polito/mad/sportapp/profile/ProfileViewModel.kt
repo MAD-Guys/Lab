@@ -8,14 +8,14 @@ import it.polito.mad.sportapp.entities.Achievement
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.SportLevel
 import it.polito.mad.sportapp.entities.User
-import it.polito.mad.sportapp.model.Repository
+import it.polito.mad.sportapp.model.LocalRepository
 import javax.inject.Inject
 
 /* View Model related to the Profile Fragments */
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val repository: Repository
+    private val repository: LocalRepository
 ) : ViewModel() {
 
     /* sports flags */

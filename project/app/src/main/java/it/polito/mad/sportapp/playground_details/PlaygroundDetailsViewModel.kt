@@ -6,15 +6,13 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.PlaygroundInfo
 import it.polito.mad.sportapp.entities.Review
-import it.polito.mad.sportapp.model.Repository
+import it.polito.mad.sportapp.model.LocalRepository
 import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
 class PlaygroundDetailsViewModel @Inject constructor(
-    private val repository: Repository
+    private val repository: LocalRepository
 ) : ViewModel() {
 
     private val _playground = MutableLiveData<PlaygroundInfo?>()

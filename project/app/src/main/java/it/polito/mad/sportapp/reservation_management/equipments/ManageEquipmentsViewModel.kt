@@ -7,13 +7,13 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.DetailedEquipmentReservation
 import it.polito.mad.sportapp.entities.Equipment
-import it.polito.mad.sportapp.model.Repository
+import it.polito.mad.sportapp.model.LocalRepository
 import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class ManageEquipmentsViewModel @Inject constructor(
-    val repository: Repository
+    val repository: LocalRepository
 ) : ViewModel()
 {
     internal lateinit var reservationBundle: Bundle

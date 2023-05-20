@@ -26,10 +26,4 @@ class ReservationSlotSelectionViewModel @Inject constructor(): ViewModel()
     }
 
     fun isStartSlotSet(): Boolean = reservationBundle.value?.getString("start_slot") != null
-
-    fun appendToReservationBundle(vararg pairs: Pair<String, Bundle?>) {
-        for ((id, bundle) in pairs) {
-            _reservationBundle.value?.putBundle(id, bundle)
-        }
-    }
 }

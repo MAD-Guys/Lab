@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.sportapp.model.Repository
+import it.polito.mad.sportapp.model.LocalRepository
 import it.polito.mad.sportapp.notifications.Notification
 import java.time.LocalDate
 import java.time.LocalTime
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SportAppViewModel @Inject constructor(
-    private val repository: Repository
+    private val repository: LocalRepository
 ) : ViewModel() {
 
     /* notifications */

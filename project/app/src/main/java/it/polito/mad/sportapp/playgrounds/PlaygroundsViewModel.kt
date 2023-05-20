@@ -5,12 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.PlaygroundInfo
-import it.polito.mad.sportapp.model.Repository
+import it.polito.mad.sportapp.model.LocalRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class PlaygroundsViewModel @Inject constructor(
-    val repository: Repository
+    val repository: LocalRepository
 ) : ViewModel()
 {
     private val _playgrounds = MutableLiveData<List<PlaygroundInfo>>(listOf()).also {

@@ -2,7 +2,6 @@ package it.polito.mad.sportapp.model
 
 import android.util.Log
 import it.polito.mad.sportapp.entities.Achievement
-import it.polito.mad.sportapp.entities.DetailedEquipmentReservation
 import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
 import it.polito.mad.sportapp.entities.Equipment
 import it.polito.mad.sportapp.entities.PlaygroundReservation
@@ -19,9 +18,9 @@ import it.polito.mad.sportapp.localDB.dao.EquipmentDao
 import it.polito.mad.sportapp.localDB.dao.PlaygroundSportDao
 import it.polito.mad.sportapp.localDB.dao.ReservationDao
 import it.polito.mad.sportapp.localDB.dao.ReviewDao
-import it.polito.mad.sportapp.localDB.dao.SportCenterDao
 import it.polito.mad.sportapp.localDB.dao.SportDao
 import it.polito.mad.sportapp.localDB.dao.UserDao
+import it.polito.mad.sportapp.model.IRepository.NewReservationError
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -33,10 +32,9 @@ import javax.inject.Singleton
 
 
 @Singleton
-class Repository @Inject constructor(
+class LocalRepository @Inject constructor(
     private val userDao: UserDao,
     private val sportDao: SportDao,
-    private val sportCenterDao: SportCenterDao,
     private val equipmentDao: EquipmentDao,
     private val reservationDao: ReservationDao,
     private val playgroundSportDao: PlaygroundSportDao,
@@ -82,7 +80,7 @@ class Repository @Inject constructor(
 
 
     // Review methods
-    fun getAllReviewsByPlaygroundId(id: Int): List<Review> {
+    private fun getAllReviewsByPlaygroundId(id: Int): List<Review> {
         val reviews = reviewDao.findByPlaygroundId(id)
         reviews.forEach {
             it.username = userDao.findUsernameById(it.userId)
@@ -123,10 +121,6 @@ class Repository @Inject constructor(
             reservation.equipments = mutableListOf()
         }
         return reservation
-    }
-
-    fun getDetailedReservationBySportId(sportId: Int): List<DetailedReservation> {
-        return reservationDao.findBySportId(sportId)
     }
 
     /**
@@ -253,17 +247,7 @@ class Repository @Inject constructor(
 
     }
 
-    enum class NewReservationError(val message: String) {
-        SLOT_CONFLICT(
-            "Ouch! the selected slots have just been booked by someone else \uD83D\uDE41. Please select new ones for your reservation!"
-        ),
-        EQUIPMENT_CONFLICT(
-            "Ouch! the selected equipments have just been booked by someone else \uD83D\uDE41. Please select new ones for your reservation!"
-        ),
-        UNEXPECTED_ERROR(
-            "An unexpected error occurred while saving your reservation. Please try again or check your connection status."
-        )
-    }
+
 
     fun getReservationsPerDateByUserId(userId: Int): Map<LocalDate, List<DetailedReservation>> {
         val userReservations = reservationDao.findByUserId(userId)
@@ -380,27 +364,6 @@ class Repository @Inject constructor(
             .associateBy { equipment -> equipment.id }
             .toMutableMap()
     }
-
-    fun getReservationEquipmentsQuantities(reservationId: Int): MutableMap<Int, DetailedEquipmentReservation> {
-        return equipmentDao
-            .findReservationEquipmentsByReservationId(reservationId)
-            .associateBy { it.equipmentId }
-            .toMutableMap()
-    }
-
-    fun addEquipmentReservation(equipment: Equipment, quantity: Int, playgroundReservationId: Int) {
-        val equipmentReservation = EquipmentReservation(
-            id = 0,
-            equipmentId = equipment.id,
-            playgroundReservationId = playgroundReservationId,
-            quantity = quantity,
-            totalPrice = equipment.unitPrice,
-            timestamp = LocalDateTime.now().toString(),
-        )
-        reservationDao.increasePrice(playgroundReservationId, equipment.unitPrice * quantity)
-        equipmentDao.insertEquipmentReservation(equipmentReservation)
-    }
-
 
     fun deleteReservation(reservation: DetailedReservation) {
         // * first, delete associated equipments *

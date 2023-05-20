@@ -372,6 +372,7 @@ internal fun PlaygroundAvailabilitiesFragment.initMonthAndDateObservers() {
 
     /* dates view model observers */
     val selectedDateLabel = requireView().findViewById<TextView>(R.id.selected_date_label)
+    val selectedDateLabelBox = requireView().findViewById<View>(R.id.selected_date_label_box)
 
     playgroundsVM.selectedDate.observe(viewLifecycleOwner) {
         // update calendar selected date
@@ -384,6 +385,15 @@ internal fun PlaygroundAvailabilitiesFragment.initMonthAndDateObservers() {
             LocalDate.now().minusDays(1) -> "Yesterday"
             else -> it.format(
                 DateTimeFormatter.ofPattern("EEEE, d MMMM y", Locale.ENGLISH))
+        }
+
+        if (it < LocalDate.now()) {
+            // set date label as grey
+            selectedDateLabelBox.setBackgroundResource(R.color.time_slot_unavailable_background_color)
+        }
+        else {
+            // set date label as orange
+            selectedDateLabelBox.setBackgroundResource(R.drawable.time_slot_bg)
         }
 
         // update recycler view data

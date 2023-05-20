@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.DetailedReservation
-import it.polito.mad.sportapp.model.Repository
+import it.polito.mad.sportapp.model.LocalRepository
 import java.time.LocalDate
 import java.time.YearMonth
 import javax.inject.Inject
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ShowReservationsViewModel @Inject constructor(
-    private val repository: Repository
+    private val repository: LocalRepository
 ) : ViewModel() {
 
     // mutable live data for the user events
