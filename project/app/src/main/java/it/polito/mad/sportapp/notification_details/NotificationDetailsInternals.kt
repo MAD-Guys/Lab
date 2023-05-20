@@ -21,7 +21,7 @@ internal fun NotificationDetailsFragment.menuInit() {
             actionBar?.let {
                 it.setDisplayHomeAsUpEnabled(true)
                 it.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
-                it.title = "Notifications Details"
+                it.title = "Notification Details"
             }
         }
 
