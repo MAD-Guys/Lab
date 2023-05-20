@@ -69,7 +69,7 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
         exitDialogInit()
 
         // setup back button
-        setupOnBackPressedCallback(navController.currentBackStackEntry!!.destination.id)
+        setupOnBackPressedCallback()
 
         // initialize month buttons
         monthButtonsInit()
@@ -101,7 +101,7 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
 
         requireView().viewTreeObserver?.addOnGlobalLayoutListener {
 
-            if(vm.userEvents.value?.isNotEmpty() == true)
+            if (vm.userEvents.value?.isNotEmpty() == true)
             // task completed: hide progress bar
                 hideProgressBar(progressBar, recyclerView)
         }

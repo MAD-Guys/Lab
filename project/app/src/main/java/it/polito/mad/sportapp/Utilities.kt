@@ -23,8 +23,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.firebase.ui.auth.AuthUI
+import com.google.firebase.auth.FirebaseAuth
 import es.dmoral.toasty.Toasty
-import it.polito.mad.sportapp.login.LoginFragment
 import java.io.File
 import java.io.FileDescriptor
 import java.io.FileOutputStream
@@ -507,6 +507,11 @@ internal fun hideProgressBar(progressBar: View, mainContent: View) {
 }
 
 /* LOGIN UTILITIES */
+
+internal fun checkIfUserIsLoggedIn(): Boolean {
+    val user = FirebaseAuth.getInstance().currentUser
+    return user != null
+}
 
 internal fun logOut(context: Context) {
     AuthUI.getInstance()

@@ -32,7 +32,8 @@
             app:destination="@id/loginFragment"
             app:enterAnim="@anim/custom_animation_slide_in_from_bottom"
             app:exitAnim="@android:anim/fade_out"
-            app:popUpTo="@id/loginFragment" />
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -176,5 +177,10 @@
         android:name="it.polito.mad.sportapp.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" />
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="it.polito.mad.sportapp.notifications.NotificationsFragment"
+        android:label="fragment_notifications"
+        tools:layout="@layout/fragment_notifications" />
 
 </navigation>

@@ -12,8 +12,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 
+@AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
     // login variables
@@ -47,6 +49,9 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         // setup google sign in button
         googleButtonInit()
+
+        // setup back button
+        setupOnBackPressedCallback()
 
         // get activity action bar
         actionBar = (requireActivity() as AppCompatActivity).supportActionBar

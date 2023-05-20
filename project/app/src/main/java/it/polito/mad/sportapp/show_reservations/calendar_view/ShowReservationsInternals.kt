@@ -16,7 +16,6 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.children
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
@@ -24,7 +23,6 @@ import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.view.MonthDayBinder
 import it.polito.mad.sportapp.logOut
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.showToasty
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -285,15 +283,10 @@ internal fun ShowReservationsFragment.setupBottomBar() {
 }
 
 // setup on back pressed callback
-internal fun ShowReservationsFragment.setupOnBackPressedCallback(popFragment: Int) {
+internal fun ShowReservationsFragment.setupOnBackPressedCallback() {
     val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            showToasty("info", requireContext(), "$popFragment\n${R.id.loginFragment}")
-            if (popFragment == R.id.loginFragment) {
-                exitDialog.show()
-            } else {
-                navController.popBackStack()
-            }
+            exitDialog.show()
         }
     }
     requireActivity().onBackPressedDispatcher.addCallback(
@@ -309,15 +302,8 @@ internal fun ShowReservationsFragment.exitDialogInit() {
         .setPositiveButton("YES") { _, _ ->
             // logout
             logOut(requireContext())
-            // navigate back to the home
-            findNavController().navigate(
-                R.id.action_showReservationsFragment_to_loginFragment,
-                null,
-                navOptions {
-                    popUpTo(R.id.loginFragment) {
-                        inclusive = true
-                    }
-                })
+            // navigate back to the login fragment
+            findNavController().navigate(R.id.action_showReservationsFragment_to_loginFragment)
         }
         .setNegativeButton("NO") { d, _ -> d.cancel() }
         .create()

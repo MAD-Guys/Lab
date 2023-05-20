@@ -7,20 +7,16 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
-import androidx.navigation.navOptions
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.profile.edit_profile.EditProfileFragment
-import it.polito.mad.sportapp.profile.edit_profile.isErrorFree
 import it.polito.mad.sportapp.showToasty
 
 // manage menu item selection
@@ -42,6 +38,20 @@ internal fun LoginFragment.menuInit() {
             return true
         }
     }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+}
+
+/* manage back button */
+internal fun LoginFragment.setupOnBackPressedCallback() {
+    val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            // finish activity
+            requireActivity().finish()
+        }
+    }
+    requireActivity().onBackPressedDispatcher.addCallback(
+        viewLifecycleOwner, // LifecycleOwner
+        callback
+    )
 }
 
 /* google sign in button */
@@ -110,9 +120,7 @@ internal fun LoginFragment.updateUI(currentUser: FirebaseUser?) {
         showToasty("success", requireContext(), "Login successfully done!")
 
         // navigate to show reservations fragment
-        navController.navigate(R.id.showReservationsFragment, null, navOptions {
-            popUpTo(R.id.loginFragment) { inclusive = true }
-        })
+        navController.navigate(R.id.showReservationsFragment)
     } else {
         // user is not logged in
         // show error message

@@ -4,12 +4,14 @@ import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.navigation.NavigationBarView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,6 +19,9 @@ import dagger.hilt.android.AndroidEntryPoint
 class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener {
 
     val db = FirebaseFirestore.getInstance()
+
+    // activity view model
+    private val vm by viewModels<SportAppViewModel>()
 
     private lateinit var bottomNavigationView: NavigationBarView
     private lateinit var navController: NavController
@@ -76,6 +81,9 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
             }
 
             R.id.notifications -> {
+                if (currentFragment != R.id.notificationsFragment) {
+                    navController.navigate(R.id.notificationsFragment)
+                }
                 return true
             }
 
@@ -87,6 +95,27 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
             }
 
             else -> return false
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        // check if user is already logged in
+        if (checkIfUserIsLoggedIn()) {
+
+            //TODO: setup firestore db properly and uncomment the following lines of code
+            // check if user already exists in firestore db
+            /*
+            if (vm.checkIfUserAlreadyExists(FirebaseAuth.getInstance().currentUser!!.uid)) {
+                vm.addUserOnDb()
+            }*/
+
+            // navigate to showReservations fragment
+            navController.navigate(R.id.showReservationsFragment)
+        } else {
+            // navigate to login fragment
+            navController.navigate(R.id.loginFragment)
         }
     }
 

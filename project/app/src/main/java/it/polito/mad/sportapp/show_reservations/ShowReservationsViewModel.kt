@@ -10,7 +10,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import javax.inject.Inject
 
-/* View Model related to the Show Reservations Activity */
+/* View Model related to the Show Reservations Fragment */
 
 @HiltViewModel
 class ShowReservationsViewModel @Inject constructor(
