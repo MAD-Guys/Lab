@@ -4,9 +4,9 @@ import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -21,7 +21,7 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
     val db = FirebaseFirestore.getInstance()
 
     // activity view model
-    private val vm by viewModels<SportAppViewModel>()
+    private lateinit var vm: SportAppViewModel
 
     private lateinit var bottomNavigationView: NavigationBarView
     private lateinit var navController: NavController
@@ -37,6 +37,13 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
 
         // set light theme as default
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+        // initialize activity view model
+        vm = ViewModelProvider(this)[SportAppViewModel::class.java]
+
+        // get new notifications from db
+        //TODO: setup firestore db properly and change the following line of code
+        vm.initializeNotificationsList()
 
         /* bottom bar */
 
@@ -100,6 +107,9 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
 
     override fun onStart() {
         super.onStart()
+
+        //TODO: setup firestore db properly and uncomment the following line of code
+        vm.sendNotification(this)
 
         // check if user is already logged in
         if (checkIfUserIsLoggedIn()) {

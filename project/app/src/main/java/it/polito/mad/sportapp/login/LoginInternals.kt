@@ -35,7 +35,7 @@ internal fun LoginFragment.menuInit() {
 
         override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
             // handle the menu selection
-            return true
+            return false
         }
     }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 }

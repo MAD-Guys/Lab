@@ -181,6 +181,20 @@
         android:id="@+id/notificationsFragment"
         android:name="it.polito.mad.sportapp.notifications.NotificationsFragment"
         android:label="fragment_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_notifications" >
+        <action
+            android:id="@+id/action_notificationsFragment_to_notificationDetailsFragment"
+            app:destination="@id/notificationDetailsFragment"
+            app:enterAnim="@anim/custom_animation_slide_in_from_right"
+            app:exitAnim="@anim/custom_animation_slide_out_to_left"
+            app:popEnterAnim="@anim/custom_animation_slide_in_from_left"
+            app:popExitAnim="@anim/custom_animation_slide_out_to_right"
+            app:popUpTo="@id/notificationsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/notificationDetailsFragment"
+        android:name="it.polito.mad.sportapp.notification_details.NotificationDetailsFragment"
+        android:label="fragment_notification_details"
+        tools:layout="@layout/fragment_notification_details" />
 
 </navigation>

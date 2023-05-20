@@ -30,6 +30,7 @@ android {
         main {
             res.srcDirs =
                     [
+                            'src/main/res_notification_details',
                             'src/main/res_reservation_details', 'src/main/res_notifications',
                             'src/main/res_show_reservations', 'src/main/res_login',
                             'src/main/res_profile', 'src/main/res_events_list_view',
