@@ -21,9 +21,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     // login variables
     internal val logInLauncher = registerForActivityResult(
         FirebaseAuthUIActivityResultContract(),
-    ) { res ->
-        this.onSignInResult(res)
-    }
+        this::onSignInResult
+    )
 
     // login views
     private lateinit var iconLauncherImageView: ImageView
