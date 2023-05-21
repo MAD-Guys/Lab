@@ -32,6 +32,7 @@ class SportAppViewModel @Inject constructor(
             while (true) {
 
                 val notification = Notification(
+                    adder.toInt(),
                     "usernameThread$adder",
                     "sportNameThread$adder",
                     "sportCenterNameThread$adder",
@@ -57,6 +58,7 @@ class SportAppViewModel @Inject constructor(
 
         _notifications.value?.add(
             Notification(
+                1,
                 "username1",
                 "sportName1",
                 "sportCenterName1",
@@ -67,6 +69,7 @@ class SportAppViewModel @Inject constructor(
         )
         notifications.value?.add(
             Notification(
+                2,
                 "username2",
                 "sportName2",
                 "sportCenterName2",
@@ -77,6 +80,7 @@ class SportAppViewModel @Inject constructor(
         )
         notifications.value?.add(
             Notification(
+                3,
                 "username3",
                 "sportName3",
                 "sportCenterName3",
@@ -87,6 +91,7 @@ class SportAppViewModel @Inject constructor(
         )
         notifications.value?.add(
             Notification(
+                4,
                 "username4",
                 "sportName4",
                 "sportCenterName4",
@@ -97,6 +102,7 @@ class SportAppViewModel @Inject constructor(
         )
         notifications.value?.add(
             Notification(
+                5,
                 "username5",
                 "sportName5",
                 "sportCenterName5",
@@ -107,6 +113,7 @@ class SportAppViewModel @Inject constructor(
         )
         notifications.value?.add(
             Notification(
+                6,
                 "username6",
                 "sportName6",
                 "sportCenterName6",
@@ -117,6 +124,7 @@ class SportAppViewModel @Inject constructor(
         )
         notifications.value?.add(
             Notification(
+                7,
                 "username7",
                 "sportName7",
                 "sportCenterName7",
@@ -127,6 +135,7 @@ class SportAppViewModel @Inject constructor(
         )
         notifications.value?.add(
             Notification(
+                8,
                 "username8",
                 "sportName8",
                 "sportCenterName8",
@@ -137,6 +146,7 @@ class SportAppViewModel @Inject constructor(
         )
         notifications.value?.add(
             Notification(
+                9,
                 "username9",
                 "sportName9",
                 "sportCenterName9",
@@ -147,6 +157,7 @@ class SportAppViewModel @Inject constructor(
         )
         notifications.value?.add(
             Notification(
+                10,
                 "username10",
                 "sportName10",
                 "sportCenterName10",
@@ -162,8 +173,12 @@ class SportAppViewModel @Inject constructor(
     fun checkIfUserAlreadyExists(uid: String) {
         //TODO: setup firestore db properly and uncomment the following lines of code
         // check if user already exists in the db
-        //repository.checkIfUserAlreadyExists(uid)
+        //repository.userAlreadyExists(uid)
     }
 
-    fun addUserOnDb() {}
+    fun addUserOnDb() {
+        //TODO: setup firestore db properly and uncomment the following lines of code
+        // create user
+        //repository.insertNewUser(user)
+    }
 }

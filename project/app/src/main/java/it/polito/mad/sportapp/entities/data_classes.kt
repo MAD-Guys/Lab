@@ -20,6 +20,24 @@ data class SportLevel(
 
 )
 
+// notification data class
+data class Notification(
+    @ColumnInfo(name = "notification_id")
+    val notificationId: Int,
+    @ColumnInfo(name = "username")
+    val username: String,
+    @ColumnInfo(name = "sport_name")
+    val sportName: String,
+    @ColumnInfo(name = "sport_center_name")
+    val sportCenterName: String,
+    @ColumnInfo(name = "date")
+    val date: LocalDate,
+    @ColumnInfo(name = "start_time")
+    val startTime: LocalTime,
+    @ColumnInfo(name = "end_time")
+    val endTime: LocalTime
+) {}
+
 data class DetailedReservation(
     @ColumnInfo(name = "id")
     val id: Int,

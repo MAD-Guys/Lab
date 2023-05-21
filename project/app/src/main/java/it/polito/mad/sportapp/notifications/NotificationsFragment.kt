@@ -17,6 +17,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 data class Notification(
+    val notificationId: Int,
     val username: String,
     val sportName: String,
     val sportCenterName: String,

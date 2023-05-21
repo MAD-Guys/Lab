@@ -1,5 +1,6 @@
 package it.polito.mad.sportapp.model
 
+import androidx.lifecycle.LiveData
 import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
 import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.entities.Equipment
@@ -8,15 +9,18 @@ import it.polito.mad.sportapp.entities.PlaygroundInfo
 import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.User
+import it.polito.mad.sportapp.entities.Notification
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
 
-interface IRepository
-{
+interface IRepository {
+
     // * User methods *
-    fun getUser(id: Int): User
+    fun getUser(id: Int): LiveData<User>
+    fun userAlreadyExists(uid: String): Boolean
     fun usernameAlreadyExists(username: String): Boolean
+    fun insertNewUser(user: User)
     fun updateUser(user: User)
 
     // * Sport methods *
@@ -41,15 +45,20 @@ interface IRepository
 
     // * Reservation methods *
     fun getDetailedReservationById(id: Int): DetailedReservation
+
     /**
-     * Create a new reservation in the DB, or override the existing one if any (with the same reservationId)
-     * Returns a Pair of (newReservationId, error), where:
-     * - 'newReservationId' is the new id assigned to the reservation
-     *  (or the same as the previous one, if any), if the save succeeds; 'null' otherwise
-     * - 'error' is an instance of NewReservationError reflecting the type of error occurred, or 'null' otherwise
+     * Create a new reservation in the DB, or override the existing one if
+     * any (with the same reservationId) Returns a Pair of (newReservationId,
+     * error), where:
+     * - 'newReservationId' is the new id assigned to the reservation (or the
+     *   same as the previous one, if any), if the save succeeds; 'null'
+     *   otherwise
+     * - 'error' is an instance of NewReservationError reflecting the type of
+     *   error occurred, or 'null' otherwise
      */
     fun overrideNewReservation(reservation: NewReservation): Pair<Int?, NewReservationError?>
-    fun getReservationsPerDateByUserId(userId: Int): Map<LocalDate, List<DetailedReservation>>
+    fun getReservationsPerDateByUserId(uid: String): LiveData<Map<LocalDate, List<DetailedReservation>>>
+    fun addUserToReservation(reservationId: Int, uid: String)
 
     // * Equipment methods *
     fun getAvailableEquipmentsBySportCenterIdAndSportId(
@@ -59,11 +68,18 @@ interface IRepository
         startDateTime: LocalDateTime,
         endDateTime: LocalDateTime
     ): MutableMap<Int, Equipment>
+
     fun deleteReservation(reservation: DetailedReservation)
 
     // * Playground methods *
     fun getPlaygroundInfoById(playgroundId: Int): PlaygroundInfo
     fun getAvailablePlaygroundsPerSlot(month: YearMonth, sport: Sport?)
             : MutableMap<LocalDate, MutableMap<LocalDateTime, MutableList<DetailedPlaygroundSport>>>
+
     fun getAllPlaygroundsInfo(): List<PlaygroundInfo>
+
+    // * Notification methods *
+    fun getNotificationsByUserId(uid: String): LiveData<MutableList<Notification>>
+    fun deleteNotification(notificationId: Int)
+
 }
