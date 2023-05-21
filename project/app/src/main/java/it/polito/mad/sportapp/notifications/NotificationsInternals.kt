@@ -11,8 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import it.polito.mad.sportapp.R
-import java.time.LocalDate
-import java.time.LocalTime
+import it.polito.mad.sportapp.entities.Notification
 
 // manage menu item selection
 internal fun NotificationsFragment.menuInit() {
@@ -39,9 +38,6 @@ internal fun NotificationsFragment.menuInit() {
 @SuppressLint("NotifyDataSetChanged")
 internal fun NotificationsFragment.recyclerViewInit() {
 
-    val currentDate = LocalDate.now()
-    val currentTime = LocalTime.now()
-
     // initialize notifications RecyclerView from layout
     notificationsRecyclerView = requireView().findViewById(R.id.notifications_recycler_view)
 
@@ -55,12 +51,9 @@ internal fun NotificationsFragment.recyclerViewInit() {
     vm.notifications.observe(viewLifecycleOwner) { notificationList ->
         // add notifications to the notifications adapter
         notificationsAdapter.notifications.clear()
-        notificationsAdapter.notifications.addAll(notificationList.filter {
-            if (it.date.isAfter(currentDate))
-                true
-            else it.date.isEqual(currentDate) && it.startTime.isAfter(currentTime)
-        }
-            .sortedWith(compareBy<Notification> { it.date }.thenBy { it.startTime }))
+        notificationsAdapter.notifications.addAll(notificationList
+            .sortedWith(compareBy<Notification> { it.publicationDate }.thenBy { it.publicationTime })
+        )
 
         notificationsAdapter.notifyDataSetChanged()
     }

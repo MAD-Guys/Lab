@@ -3,10 +3,11 @@ package it.polito.mad.sportapp.notifications.recyclerView
 import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.notifications.Notification
+import it.polito.mad.sportapp.entities.Notification
 
 /* Notifications View Holder */
 
@@ -21,10 +22,18 @@ internal class NotificationsViewHolder(view: View) : RecyclerView.ViewHolder(vie
 
         // add notification listener
         notificationContainer.setOnClickListener {
-            Navigation.findNavController(itemView).navigate(R.id.action_notificationsFragment_to_notificationDetailsFragment)
+
+            val bundle = bundleOf(
+                "id_reservation" to notification.reservationId,
+                "timestamp" to notification.timestamp
+            )
+
+            Navigation.findNavController(itemView)
+                .navigate(R.id.action_notificationsFragment_to_notificationDetailsFragment, bundle)
         }
 
-        notificationUsername.text = notification.date.toString() + " " + notification.username
+        notificationUsername.text =
+            notification.publicationDate.toString() + " " + notification.publicationTime + " " + notification.description
     }
 
 }

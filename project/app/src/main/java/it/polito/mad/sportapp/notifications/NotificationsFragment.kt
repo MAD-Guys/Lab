@@ -12,19 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.SportAppViewModel
+import it.polito.mad.sportapp.entities.Notification
 import it.polito.mad.sportapp.notifications.recyclerView.NotificationsAdapter
-import java.time.LocalDate
-import java.time.LocalTime
-
-data class Notification(
-    val notificationId: Int,
-    val username: String,
-    val sportName: String,
-    val sportCenterName: String,
-    val date: LocalDate,
-    val startTime: LocalTime,
-    val endTime: LocalTime
-)
 
 @AndroidEntryPoint
 class NotificationsFragment : Fragment(R.layout.fragment_notifications) {

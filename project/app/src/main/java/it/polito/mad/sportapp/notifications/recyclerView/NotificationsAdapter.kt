@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.notifications.Notification
+import it.polito.mad.sportapp.entities.Notification
 
 /* Notifications Adapter */
 

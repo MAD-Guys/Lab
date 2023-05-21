@@ -5,9 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.model.LocalRepository
-import it.polito.mad.sportapp.notifications.Notification
-import java.time.LocalDate
-import java.time.LocalTime
+import it.polito.mad.sportapp.entities.Notification
+import it.polito.mad.sportapp.entities.NotificationStatus
 import javax.inject.Inject
 
 /* View Model related to the SportApp Activity */
@@ -32,12 +31,13 @@ class SportAppViewModel @Inject constructor(
 
                 val notification = Notification(
                     adder.toInt(),
-                    "usernameThread$adder",
-                    "sportNameThread$adder",
-                    "sportCenterNameThread$adder",
-                    LocalDate.now().plusDays(adder),
-                    LocalTime.of(10, 0),
-                    LocalTime.of(11, 30)
+                    "invitation",
+                    11,
+                    "asd423dsic9879xsdu98cs9d878dx98s7d987f98d7fg",
+                    "asd423dsic9879xsdu98cs9d878dx98s7d987f98d7fg",
+                    NotificationStatus.PENDING,
+                    "@johndoe has invited you to play tennis at the tennis court playground",
+                    "2023-05-25T17:15:47.496"
                 )
 
                 // add a new notification every two minutes
@@ -53,116 +53,124 @@ class SportAppViewModel @Inject constructor(
 
     fun initializeNotificationsList() {
 
-        val currentDate = LocalDate.now()
-
         _notifications.value?.add(
             Notification(
                 1,
-                "username1",
-                "sportName1",
-                "sportCenterName1",
-                currentDate.plusDays(2),
-                LocalTime.of(15, 0),
-                LocalTime.of(16, 30)
+                "invitation",
+                1,
+                "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
+                "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
+                NotificationStatus.PENDING,
+                "@francescorosati has invited you to play basketball at the basketball playground",
+                "2023-05-22T23:21:47.496"
             )
         )
         notifications.value?.add(
             Notification(
                 2,
-                "username2",
-                "sportName2",
-                "sportCenterName2",
-                currentDate.plusDays(1),
-                LocalTime.of(10, 30),
-                LocalTime.of(12, 0)
+                "invitation",
+                13,
+                "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
+                "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
+                NotificationStatus.PENDING,
+                "@peppelazzara has invited you to play mini-golf at the mini-golf playground",
+                "2023-05-18T17:21:47.496"
             )
         )
         notifications.value?.add(
             Notification(
                 3,
-                "username3",
-                "sportName3",
-                "sportCenterName3",
-                currentDate,
-                LocalTime.of(16, 30),
-                LocalTime.of(19, 0)
+                "invitation",
+                15,
+                "asd423dsic9sd9xsdu98cs9d87sdf98s7d987f98d7fg",
+                "asd423dsqs9879xsdu98cs9dwsvdx98s7d987f98d7fg",
+                NotificationStatus.PENDING,
+                "@peppelazzara has invited you to play basketball at the basketball playground",
+                "2023-05-20T17:34:47.496"
             )
         )
         notifications.value?.add(
             Notification(
                 4,
-                "username4",
-                "sportName4",
-                "sportCenterName4",
-                currentDate.plusDays(1),
-                LocalTime.of(9, 30),
-                LocalTime.of(10, 0)
+                "invitation",
+                16,
+                "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
+                "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
+                NotificationStatus.PENDING,
+                "@mariomastrandrea has invited you to play basketball at the basketball playground",
+                "2023-05-24T23:45:47.496"
             )
         )
         notifications.value?.add(
             Notification(
                 5,
-                "username5",
-                "sportName5",
-                "sportCenterName5",
-                currentDate.minusDays(3),
-                LocalTime.of(11, 30),
-                LocalTime.of(12, 30)
+                "invitation",
+                20,
+                "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
+                "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
+                NotificationStatus.PENDING,
+                "@mariomastrandrea has invited you to play volleyball at the volleyball playground",
+                "2023-05-22T22:23:47.496"
             )
         )
         notifications.value?.add(
             Notification(
                 6,
-                "username6",
-                "sportName6",
-                "sportCenterName6",
-                currentDate.plusDays(3),
-                LocalTime.of(15, 0),
-                LocalTime.of(16, 30)
+                "invitation",
+                23,
+                "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
+                "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
+                NotificationStatus.PENDING,
+                "@michelepistan has invited you to play tennis at the tennis playground",
+                "2023-05-23T20:34:47.496"
             )
         )
         notifications.value?.add(
             Notification(
                 7,
-                "username7",
-                "sportName7",
-                "sportCenterName7",
-                currentDate.plusDays(4),
-                LocalTime.of(14, 30),
-                LocalTime.of(15, 30)
+                "invitation",
+                25,
+                "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
+                "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
+                NotificationStatus.PENDING,
+                "@michelepistan has invited you to play 11-a-side soccer at the 11-a-side soccer playground",
+                "2023-05-30T19:20:47.496"
             )
         )
         notifications.value?.add(
             Notification(
                 8,
-                "username8",
-                "sportName8",
-                "sportCenterName8",
-                currentDate.plusDays(5),
-                LocalTime.of(8, 30),
-                LocalTime.of(10, 0)
+                "invitation",
+                44,
+                "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
+                "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
+                NotificationStatus.PENDING,
+                "@michelepistan has invited you to play 8-a-side soccer at the 8-a-side soccer playground",
+                "2023-06-02T09:27:47.496"
             )
         )
         notifications.value?.add(
             Notification(
                 9,
-                "username9",
-                "sportName9",
-                "sportCenterName9",
-                currentDate.plusDays(3),
-                LocalTime.of(17, 0),
-                LocalTime.of(18, 30)
+                "invitation",
+                45,
+                "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
+                "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
+                NotificationStatus.PENDING,
+                "@johndoe has invited you to play table tennis at the table tennis playground",
+                "2023-06-01T11:29:47.496"
             )
         )
         notifications.value?.add(
             Notification(
                 10,
-                "username10",
-                "sportName10",
-                "sportCenterName10",
-                currentDate.plusDays(2),
-                LocalTime.of(15, 30),
-                LocalTime.of(17, 0)
+                "invitation",
+                46,
+                "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
+                "asd423dsic9879xsdu98cs9d878dx98s7d987f98d7fg",
+                NotificationStatus.PENDING,
+                "@francescorosati has invited you to play tennis at the tennis court playground",
+                "2023-05-15T14:25:47.496"
             )
         )
     }

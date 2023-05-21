@@ -38,7 +38,13 @@ data class Notification(
     val description: String,
     @ColumnInfo(name = "timestamp")
     val timestamp: String
-)
+) {
+    @Ignore
+    var publicationDate: LocalDate = LocalDateTime.parse(timestamp).toLocalDate()
+
+    @Ignore
+    var publicationTime: LocalTime = LocalDateTime.parse(timestamp).toLocalTime()
+}
 
 // notification status enum
 enum class NotificationStatus {
