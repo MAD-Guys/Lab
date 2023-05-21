@@ -119,7 +119,7 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         super.onStart()
 
         //TODO: setup firestore db properly and uncomment the following line of code
-        vm.sendNotification(this)
+        vm.sendNotification()
     }
 
     override fun onSupportNavigateUp(): Boolean {

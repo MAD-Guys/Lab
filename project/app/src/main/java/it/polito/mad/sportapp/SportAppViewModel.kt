@@ -1,6 +1,5 @@
 package it.polito.mad.sportapp
 
-import android.content.Context;
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,7 +23,7 @@ class SportAppViewModel @Inject constructor(
     val notifications: LiveData<MutableList<Notification>> = _notifications
 
     //TODO: remove the two functions below when firestore db is implemented
-    fun sendNotification(context: Context) {
+    fun sendNotification() {
 
         val thread = Thread {
             var adder = 0L

@@ -22,21 +22,28 @@ data class SportLevel(
 
 // notification data class
 data class Notification(
-    @ColumnInfo(name = "notification_id")
-    val notificationId: Int,
-    @ColumnInfo(name = "username")
-    val username: String,
-    @ColumnInfo(name = "sport_name")
-    val sportName: String,
-    @ColumnInfo(name = "sport_center_name")
-    val sportCenterName: String,
-    @ColumnInfo(name = "date")
-    val date: LocalDate,
-    @ColumnInfo(name = "start_time")
-    val startTime: LocalTime,
-    @ColumnInfo(name = "end_time")
-    val endTime: LocalTime
-) {}
+    @ColumnInfo(name = "id")
+    val id: Int,
+    @ColumnInfo(name = "type")
+    val type: String,
+    @ColumnInfo(name = "reservationId")
+    val reservationId: Int,
+    @ColumnInfo(name = "senderUid")
+    val senderUid: String,
+    @ColumnInfo(name = "receiverUid")
+    val receiverUid: String,
+    @ColumnInfo(name = "status")
+    val status: NotificationStatus,
+    @ColumnInfo(name = "description")
+    val description: String,
+    @ColumnInfo(name = "timestamp")
+    val timestamp: String
+)
+
+// notification status enum
+enum class NotificationStatus {
+    ACCEPTED, REJECTED, PENDING, CANCELED
+}
 
 data class DetailedReservation(
     @ColumnInfo(name = "id")
