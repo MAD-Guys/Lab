@@ -38,6 +38,8 @@
     <string name="message_button">Message</string>
     <string name="add_friend_button_description">add friend</string>
     <string name="message_button_description">message</string>
+    <string name="logout_button">Logout</string>
+    <string name="logout_button_description">logout</string>
 
     <!-- sports -->
     <string name="sports_title">Sports</string>
@@ -58,7 +60,7 @@
     <string name="intermediate_sport_level">Intermediate</string>
     <string name="expert_sport_level">Expert</string>
     <string name="pro_sport_level">Pro</string>
-    <string name="no_sport_selected">No sports selected</string>
+    <string name="no_sport_selected">Edit your profile and add your favorite sports!</string>
 
     <!-- achievements -->
     <string name="achievements_title">Achievements</string>

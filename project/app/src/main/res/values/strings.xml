@@ -13,7 +13,6 @@
 	<string name="show_reservations_button">Show reservations button</string>
 	<string name="playground_availabilities_button">Playground availabilities button</string>
 	<string name="list_view_button">List view button</string>
-	<string name="log_out_button">Log out button</string>
 
 	<!-- Progress Bar -->
 	<string name="loading_text">Loading…</string>

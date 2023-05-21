@@ -304,8 +304,8 @@
                         android:id="@+id/sports_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="visible"
-                        android:layoutDirection="ltr">
+                        android:layoutDirection="ltr"
+                        android:visibility="visible">
 
                         <!-- add sports programmatically here -->
 
@@ -380,6 +380,39 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/default_text_size" />
                 </LinearLayout>
+
+                <!-- line divider -->
+                <View
+                    android:id="@+id/logout_button_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="8dp"
+                    android:background="?android:attr/listDivider" />
+
+                <!-- Section 5: Logout button -->
+                <Button
+                    android:id="@+id/logout_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="2dp"
+                    android:backgroundTint="@color/primary_orange"
+                    android:contentDescription="@string/logout_button_description"
+                    android:fontFamily="@font/poppins_bold"
+                    android:includeFontPadding="false"
+                    android:paddingTop="10.5dp"
+                    android:paddingBottom="10.5dp"
+                    android:text="@string/logout_button"
+                    android:textAlignment="center"
+                    android:textAllCaps="false"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textColor="@color/button_text_color"
+                    android:textSize="18sp"
+                    app:icon="@drawable/baseline_logout_24_button"
+                    app:iconGravity="textEnd"
+                    app:iconTint="@color/button_text_color" />
+
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

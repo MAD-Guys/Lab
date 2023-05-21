@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="AlwaysShowAction">
 
     <item
         android:id="@+id/edit_button"
         android:icon="@drawable/baseline_edit_24"
         android:title="@string/edit_button"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/logout_button_menu"
+        android:icon="@drawable/baseline_logout_24_menu"
+        android:title="@string/logout_button"
+        app:showAsAction="always" />
+
 </menu>

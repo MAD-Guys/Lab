@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
@@ -37,6 +38,10 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
     // Button views
     internal lateinit var addFriendButton: Button
     internal lateinit var messageButton: Button
+    internal lateinit var logoutButton: Button
+
+    // fragment dialog
+    internal lateinit var exitDialog: AlertDialog
 
     // Sport views
     internal lateinit var noSportsTextView: TextView
@@ -66,6 +71,9 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
 
         // initialize menu
         menuInit()
+
+        // initialize exit dialog
+        exitDialogInit()
 
         // setup layout views
         viewsSetup()

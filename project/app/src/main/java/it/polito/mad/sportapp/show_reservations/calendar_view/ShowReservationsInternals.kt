@@ -15,7 +15,6 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.children
 import androidx.lifecycle.Lifecycle
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
@@ -249,7 +248,6 @@ internal fun ShowReservationsFragment.menuInit() {
 
             // change visibility of the show reservations menu items
             menu.findItem(R.id.events_list_button).isVisible = true
-            menu.findItem(R.id.log_out_button).isVisible = true
         }
 
         override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -257,11 +255,6 @@ internal fun ShowReservationsFragment.menuInit() {
             return when (menuItem.itemId) {
                 R.id.events_list_button -> {
                     navController.navigate(R.id.action_showReservationsFragment_to_eventsListFragment)
-                    true
-                }
-
-                R.id.log_out_button -> {
-                    exitDialog.show()
                     true
                 }
 
@@ -300,10 +293,12 @@ internal fun ShowReservationsFragment.exitDialogInit() {
     exitDialog = AlertDialog.Builder(requireContext())
         .setMessage("Do you want exit from the application?")
         .setPositiveButton("YES") { _, _ ->
-            // logout
-            logOut(requireContext())
-            // navigate back to the login fragment
-            findNavController().navigate(R.id.action_showReservationsFragment_to_loginFragment)
+            // logout and navigate back to the login fragment
+            logOut(
+                requireContext(),
+                navController,
+                R.id.action_showReservationsFragment_to_loginFragment
+            )
         }
         .setNegativeButton("NO") { d, _ -> d.cancel() }
         .create()

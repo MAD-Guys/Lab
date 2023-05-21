@@ -89,7 +89,8 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
 
             R.id.playgrounds -> {
                 if (currentFragment != R.id.playgroundsBySportFragment &&
-                    currentFragment != R.id.playgroundsByCenterFragment) {
+                    currentFragment != R.id.playgroundsByCenterFragment
+                ) {
                     navController.navigate(R.id.playgroundsBySportFragment)
                 }
 
@@ -119,23 +120,6 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
 
         //TODO: setup firestore db properly and uncomment the following line of code
         vm.sendNotification(this)
-
-        // check if user is already logged in
-        if (checkIfUserIsLoggedIn()) {
-
-            //TODO: setup firestore db properly and uncomment the following lines of code
-            // check if user already exists in firestore db
-            /*
-            if (vm.checkIfUserAlreadyExists(FirebaseAuth.getInstance().currentUser!!.uid)) {
-                vm.addUserOnDb()
-            }*/
-
-            // navigate to showReservations fragment
-            navController.navigate(R.id.showReservationsFragment)
-        } else {
-            // navigate to login fragment
-            navController.navigate(R.id.loginFragment)
-        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

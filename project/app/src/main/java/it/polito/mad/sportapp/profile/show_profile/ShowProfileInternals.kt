@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
@@ -18,6 +19,7 @@ import com.google.android.material.chip.Chip
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.Achievement
 import it.polito.mad.sportapp.entities.SportLevel
+import it.polito.mad.sportapp.logOut
 import it.polito.mad.sportapp.profile.Level
 import it.polito.mad.sportapp.profile.Sport
 import it.polito.mad.sportapp.setProfilePictureSize
@@ -60,10 +62,31 @@ internal fun ShowProfileFragment.menuInit() {
                     true
                 }
 
+                R.id.logout_button_menu -> {
+                    exitDialog.show()
+                    true
+                }
+
                 else -> false
             }
         }
     }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+}
+
+/* Exit and logout dialog */
+internal fun ShowProfileFragment.exitDialogInit() {
+    exitDialog = AlertDialog.Builder(requireContext())
+        .setMessage("Do you want exit from the application?")
+        .setPositiveButton("YES") { _, _ ->
+            // logout and navigate back to the login fragment
+            logOut(
+                requireContext(),
+                navController,
+                R.id.action_showProfileFragment_to_loginFragment
+            )
+        }
+        .setNegativeButton("NO") { d, _ -> d.cancel() }
+        .create()
 }
 
 internal fun ShowProfileFragment.viewsSetup() {
@@ -226,6 +249,7 @@ internal fun ShowProfileFragment.buttonsInit() {
     // retrieve buttons and set their callbacks
     addFriendButton = requireView().findViewById(R.id.button_add_friend)
     messageButton = requireView().findViewById(R.id.button_message)
+    logoutButton = requireView().findViewById(R.id.logout_button)
 
     addFriendButton.setOnClickListener {
         showToasty("info", requireContext(), "Add friend button clicked!!!")
@@ -233,6 +257,10 @@ internal fun ShowProfileFragment.buttonsInit() {
 
     messageButton.setOnClickListener {
         showToasty("info", requireContext(), "Message button clicked!!!")
+    }
+
+    logoutButton.setOnClickListener {
+        exitDialog.show()
     }
 }
 

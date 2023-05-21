@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.navigation.NavController
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import es.dmoral.toasty.Toasty
@@ -513,7 +514,7 @@ internal fun checkIfUserIsLoggedIn(): Boolean {
     return user != null
 }
 
-internal fun logOut(context: Context) {
+internal fun logOut(context: Context, navController: NavController, fragmentId: Int) {
     AuthUI.getInstance()
         .signOut(context)
         .addOnCompleteListener {
@@ -522,6 +523,7 @@ internal fun logOut(context: Context) {
                 context,
                 "Logout successfully done"
             )
+            navController.navigate(fragmentId)
         }
 }
 
