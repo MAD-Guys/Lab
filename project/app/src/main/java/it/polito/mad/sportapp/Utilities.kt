@@ -1,5 +1,9 @@
 package it.polito.mad.sportapp
 
+import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -8,6 +12,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
+import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -20,7 +25,9 @@ import android.view.WindowMetrics
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavController
 import com.firebase.ui.auth.AuthUI
@@ -505,6 +512,82 @@ internal fun showProgressBar(progressBar: View, mainContent: View) {
 internal fun hideProgressBar(progressBar: View, mainContent: View) {
     progressBar.visibility = View.GONE
     mainContent.visibility = View.VISIBLE
+}
+
+/* NOTIFICATION UTILITIES */
+
+internal fun createAndSendInvitationNotification(context: Context, reservationId: Int) {
+
+    // create notification intent and put extras
+    val notificationIntent = Intent(context, SportAppActivity::class.java).apply {
+        action = "NEW_INVITATION"
+        putExtra("id_reservation", reservationId)
+    }
+
+    // set notification sound
+    val notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
+    // create pending intent
+    val pendingIntent = PendingIntent.getActivity(
+        context,
+        0,
+        notificationIntent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+
+    // initialize notification manager
+    val notificationManager: NotificationManager =
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+    val channelId = 1.toString()
+    val channelName = "ezsport_channel"
+    val channelDescription = "ezsport_channel_description"
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val channel = NotificationChannel(
+            channelId,
+            channelName,
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        channel.description = channelDescription
+        notificationManager.createNotificationChannel(channel)
+    }
+
+    // build notification
+    val builder: NotificationCompat.Builder =
+        NotificationCompat.Builder(context, channelId)
+            .setContentTitle("New Invitation Received!")
+            .setContentText("Someone sent you a new invitation! Check it out!")
+            .setSmallIcon(R.mipmap.ic_launcher_foreground)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+            .setSound(notificationSoundUri)
+            .setAutoCancel(true)
+
+    // send notification only if the user is logged in
+    if (checkIfUserIsLoggedIn()) {
+        notificationManager.notify(0, builder.build())
+    }
+}
+
+internal fun manageInvitationNotification(intent: Intent, navController: NavController) {
+
+    // get reservation id from intent
+    val reservationId = intent.getIntExtra("id_reservation", -1)
+
+    showToasty(
+        "info",
+        navController.context,
+        "$reservationId"
+    )
+
+    val bundle = bundleOf("id_reservation" to reservationId)
+
+    // navigate to reservation details fragment only if the user is logged in
+    navController.navigate(
+        R.id.action_loginFragment_to_notificationDetailsFragment,
+        bundle
+    )
 }
 
 /* LOGIN UTILITIES */

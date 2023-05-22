@@ -41,10 +41,6 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         // initialize activity view model
         vm = ViewModelProvider(this)[SportAppViewModel::class.java]
 
-        // get new notifications from db
-        //TODO: setup firestore db properly and change the following line of code
-        vm.initializeNotificationsList()
-
         /* bottom bar */
 
         // initialize bottom navigation view
@@ -58,6 +54,10 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
 
         // set bottom navigation bar listener
         bottomNavigationView.setOnItemSelectedListener(this)
+
+        // get new notifications from db
+        //TODO: setup firestore db properly and change the following line of code
+        vm.initializeNotificationsList()
 
         // configure toasts appearance
         toastyInit()
@@ -119,7 +119,7 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         super.onStart()
 
         //TODO: setup firestore db properly and uncomment the following line of code
-        vm.sendNotification()
+        vm.startNotificationThread(this)
     }
 
     override fun onSupportNavigateUp(): Boolean {

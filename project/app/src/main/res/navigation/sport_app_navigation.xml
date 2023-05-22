@@ -181,7 +181,17 @@
         android:id="@+id/loginFragment"
         android:name="it.polito.mad.sportapp.login.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_notificationDetailsFragment"
+            app:destination="@id/notificationDetailsFragment"
+            app:enterAnim="@anim/custom_animation_slide_in_from_bottom"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@anim/custom_animation_slide_out_to_bottom"
+            app:popUpTo="@id/showReservationsFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/notificationsFragment"
         android:name="it.polito.mad.sportapp.notifications.NotificationsFragment"
@@ -194,13 +204,22 @@
             app:exitAnim="@anim/custom_animation_slide_out_to_left"
             app:popEnterAnim="@anim/custom_animation_slide_in_from_left"
             app:popExitAnim="@anim/custom_animation_slide_out_to_right"
-            app:popUpTo="@id/notificationsFragment" />
+            app:popUpTo="@id/notificationsFragment"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/notificationDetailsFragment"
         android:name="it.polito.mad.sportapp.notification_details.NotificationDetailsFragment"
         android:label="fragment_notification_details"
-        tools:layout="@layout/fragment_notification_details" />
+        tools:layout="@layout/fragment_notification_details" >
+        <action
+            android:id="@+id/action_notificationDetailsFragment_to_showReservationsFragment"
+            app:destination="@id/showReservationsFragment"
+            app:enterAnim="@anim/custom_animation_slide_in_from_bottom"
+            app:exitAnim="@android:anim/fade_out"
+            app:popUpTo="@id/showReservationsFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
     <fragment
         android:id="@+id/playgroundsBySportFragment"
         android:name="it.polito.mad.sportapp.playgrounds.PlaygroundsBySportFragment"

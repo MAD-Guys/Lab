@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="accept_button_color">#7CB518</color>
+    <color name="reject_button_color">#A31621</color>
+
+</resources>

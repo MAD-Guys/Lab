@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- General -->
+    <string name="notification_details_title">Invitation</string>
+    <string name="notification_details_sport_center_name">Awesome Sport Center</string>
+    <string name="notification_details_playground_name">Pantheon Arena</string>
+    <string name="notification_details_sport_name">Basketball</string>
+    <string name="notification_details_sport_center_address">Via Roma 1, Turin</string>
+    <string name="notification_details_date">Thursday, 25 May 2023</string>
+    <string name="notification_details_start_time">10:00</string>
+    <string name="notification_details_end_time">11:30</string>
+    <string name="notification_details_price_per_hour">20</string>
+
+    <string name="notification_details_price_icon_content_description">Price per hour</string>
+    <string name="notification_details_calendar_icon_content_description">Date</string>
+
+    <!-- Buttons -->
+    <string name="reject_button_content_description">Reject button</string>
+    <string name="reject_button_message">Reject Invitation</string>
+    <string name="reject_button_message_confirmation">Are you sure you want to reject this invitation?</string>
+    <string name="reject_button_message_confirmation_yes">Yes</string>
+    <string name="reject_button_message_confirmation_no">No</string>
+
+    <string name="accept_button_content_description">Accept button</string>
+    <string name="accept_button_message">Accept</string>
+    <string name="accept_button_message_confirmation">Are you sure you want to accept this invitation?</string>
+    <string name="accept_button_message_confirmation_yes">Yes</string>
+    <string name="accept_button_message_confirmation_no">No</string>
+
+    <string name="decline_button_content_description">Decline button</string>
+    <string name="decline_button_message">Decline</string>
+    <string name="decline_button_message_confirmation">Are you sure you want to decline this invitation?</string>
+    <string name="decline_button_message_confirmation_yes">Yes</string>
+    <string name="decline_button_message_confirmation_no">No</string>
+
+    <string name="reservation_canceled_button_content_description">Reservation canceled button</string>
+    <string name="reservation_canceled_button_message">Go back to the home page</string>
+
+    <string name="notification_details_canceled_message">Ouch!\nThis reservation was unfortunately canceled by the owner!</string>
+    <string name="notification_details_rejected_message">You have rejected this invitation!</string>
+
+</resources>

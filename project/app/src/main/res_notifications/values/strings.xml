@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="notification_image_view_content_description">Notification icon</string>
+    <string name="notification_description">\@johndoe has invited you to play basketball</string>
+    <string name="notification_timestamp">2 hours ago</string>
+</resources>

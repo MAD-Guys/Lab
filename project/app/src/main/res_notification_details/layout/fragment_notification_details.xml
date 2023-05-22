@@ -1,24 +1,470 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_orange"
+    android:orientation="vertical"
     tools:context=".notification_details.NotificationDetailsFragment">
 
-    <TextView
-        android:id="@+id/tv_notification_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/poppins_semibold"
-        android:text="NOTIFICATION DETAILS FRAGMENT"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <!-- NOTIFICATION CANCELED LAYOUT -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/notification_canceled_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="3dp"
+        android:visibility="gone">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Notification canceled button -->
+
+        <TextView
+            android:id="@+id/reservation_canceled_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_semibold"
+            android:includeFontPadding="false"
+            android:text="@string/notification_details_canceled_message"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="28sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.268" />
+
+        <Button
+            android:id="@+id/reservation_canceled_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:backgroundTint="@color/primary_orange"
+            android:clickable="true"
+            android:contentDescription="@string/reservation_canceled_button_content_description"
+            android:focusable="true"
+            android:fontFamily="@font/poppins_bold"
+            android:includeFontPadding="false"
+            android:text="@string/reservation_canceled_button_message"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:textColor="@color/button_text_color"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/reservation_canceled_text_view" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Default notification details layout -->
+    <ScrollView
+        android:id="@+id/notification_details_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:scrollbars="none"
+        android:visibility="visible"
+        tools:ignore="UselessParent">
+
+        <LinearLayout
+            android:id="@+id/notification_details_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background_orange"
+            android:orientation="vertical"
+            android:padding="18dp"
+            tools:ignore="UselessParent">
+
+            <TextView
+                android:id="@+id/notification_details_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="18dp"
+                android:fontFamily="@font/poppins_semibold"
+                android:includeFontPadding="false"
+                android:text="@string/notification_details_title"
+                android:textColor="@color/black"
+                android:textSize="32sp"
+                android:textStyle="bold" />
+
+            <!-- Reservation owner -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/notification_details_reservation_owner_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:includeFontPadding="false"
+                    android:text="\@johndoe invited you to this event:"
+                    android:textColor="@color/black"
+                    android:textSize="19sp"
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/notification_details_playground_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_semibold"
+                android:includeFontPadding="false"
+                android:text="@string/notification_details_playground_name"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/notification_details_sport_center_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-3dp"
+                android:fontFamily="@font/poppins_medium"
+                android:includeFontPadding="false"
+                android:text="@string/notification_details_sport_center_name"
+                android:textColor="@color/light_grey"
+                android:textSize="19sp" />
+
+            <!-- Sport -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14sp"
+                android:orientation="horizontal">
+
+                <!-- icon -->
+                <ImageView
+                    android:id="@+id/notification_details_sport_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/image_location_content_description"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/baseline_sports_basketball_48" />
+
+                <TextView
+                    android:id="@+id/notification_details_sport_emoji"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="🏀"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText, TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/notification_details_sport_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="@string/notification_details_sport_name"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size" />
+
+            </LinearLayout>
+
+            <!-- Address -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4sp"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <!-- icon -->
+                <ImageView
+                    android:id="@+id/notification_details_location_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/image_location_content_description"
+                    app:srcCompat="@drawable/baseline_location_on_24" />
+
+                <TextView
+                    android:id="@+id/notification_details_playground_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="@string/notification_details_sport_center_address"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size" />
+
+            </LinearLayout>
+
+            <!-- Date -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4sp"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <!-- icon -->
+                <ImageView
+                    android:id="@+id/notification_details_date_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/notification_details_calendar_icon_content_description"
+                    app:srcCompat="@drawable/baseline_calendar_month_24_notification_details" />
+
+                <TextView
+                    android:id="@+id/notification_details_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="@string/notification_details_date"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size" />
+
+            </LinearLayout>
+
+            <!-- Time -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4sp"
+                android:orientation="horizontal">
+
+                <!-- icon -->
+                <ImageView
+                    android:id="@+id/notification_details_time_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/image_location_content_description"
+                    app:srcCompat="@drawable/baseline_access_time_24"
+                    app:tint="@color/black" />
+
+                <TextView
+                    android:id="@+id/notification_details_start_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="@string/notification_details_start_time"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="-"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:id="@+id/notification_details_end_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="@string/notification_details_end_time"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size" />
+
+            </LinearLayout>
+
+            <!-- Price per hour -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4sp"
+                android:orientation="horizontal">
+
+                <!-- icon -->
+                <ImageView
+                    android:id="@+id/notification_details_price_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/notification_details_price_icon_content_description"
+                    app:srcCompat="@drawable/baseline_attach_money_24" />
+
+                <TextView
+                    android:id="@+id/notification_details_playground_price_per_hour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="@string/notification_details_price_per_hour"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5sp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="€/h"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/default_text_size"
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="16dp"
+                android:background="?android:attr/listDivider" />
+
+            <!-- Rejected invitation text view -->
+            <TextView
+                android:id="@+id/notification_details_rejected_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/poppins_semibold"
+                android:includeFontPadding="false"
+                android:text="@string/notification_details_rejected_message"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/notification_details_join_question"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginVertical="5dp"
+                android:fontFamily="@font/poppins_semibold"
+                android:includeFontPadding="false"
+                android:text="Would you like to join?"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:visibility="visible"
+                tools:ignore="HardcodedText" />
+
+            <LinearLayout
+                android:id="@+id/notification_details_buttons_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <!-- Decline button -->
+                <Button
+                    android:id="@+id/notification_details_decline_button"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10sp"
+                    android:layout_marginEnd="8sp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/reject_button_color"
+                    android:clickable="true"
+                    android:contentDescription="@string/decline_button_content_description"
+                    android:focusable="true"
+                    android:fontFamily="@font/poppins_bold"
+                    android:includeFontPadding="false"
+                    android:paddingTop="11dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="11dp"
+                    android:text="@string/decline_button_message"
+                    android:textAlignment="center"
+                    android:textAllCaps="false"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:visibility="visible"
+                    app:icon="@drawable/baseline_cancel_24"
+                    app:iconGravity="textStart"
+                    app:iconTint="@color/white"
+                    tools:ignore="RtlSymmetry" />
+
+                <!-- Accept Button -->
+                <Button
+                    android:id="@+id/notification_details_accept_button"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10sp"
+                    android:layout_marginStart="8sp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/accept_button_color"
+                    android:clickable="true"
+                    android:contentDescription="@string/accept_button_content_description"
+                    android:focusable="true"
+                    android:fontFamily="@font/poppins_bold"
+                    android:includeFontPadding="false"
+                    android:paddingTop="11dp"
+                    android:paddingEnd="13dp"
+                    android:paddingBottom="11dp"
+                    android:text="@string/accept_button_message"
+                    android:textAlignment="center"
+                    android:textAllCaps="false"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:visibility="visible"
+                    app:icon="@drawable/baseline_add_task_24_notification_details"
+                    app:iconGravity="textStart"
+                    app:iconTint="@color/white"
+                    tools:ignore="RtlSymmetry, TextContrastCheck" />
+
+                <!-- Reject button -->
+                <Button
+                    android:id="@+id/notification_details_reject_button"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10sp"
+                    android:layout_marginEnd="8sp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/reject_button_color"
+                    android:clickable="true"
+                    android:contentDescription="@string/reject_button_content_description"
+                    android:focusable="true"
+                    android:fontFamily="@font/poppins_bold"
+                    android:includeFontPadding="false"
+                    android:paddingTop="11dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="11dp"
+                    android:text="@string/reject_button_message"
+                    android:textAlignment="center"
+                    android:textAllCaps="false"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:visibility="gone"
+                    app:icon="@drawable/baseline_delete_24"
+                    app:iconGravity="textStart"
+                    app:iconTint="@color/white"
+                    tools:ignore="RtlSymmetry" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -39,8 +39,8 @@
     <color name="pale_lighter_grey">#D2D2D2</color>
 
     <!-- Toasts -->
-    <color name="toast_success">#8BC34A</color>
-    <color name="toast_error">#EA473B</color>
+    <color name="toast_success">#7CB518</color>
+    <color name="toast_error">#A31621</color>
     <color name="toast_info">#5FC1F9</color>
     <color name="toast_warning">#FFBF00</color>
 

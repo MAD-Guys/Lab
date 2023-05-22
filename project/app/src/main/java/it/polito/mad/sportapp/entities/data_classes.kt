@@ -2,6 +2,8 @@ package it.polito.mad.sportapp.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Ignore
+import it.polito.mad.sportapp.profile.Level
+import it.polito.mad.sportapp.profile.Sport
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -48,7 +50,17 @@ data class Notification(
 
 // notification status enum
 enum class NotificationStatus {
-    ACCEPTED, REJECTED, PENDING, CANCELED
+    ACCEPTED, REJECTED, PENDING, CANCELED;
+
+    companion object {
+        fun from(name: String) = when (name) {
+            "ACCEPTED" -> ACCEPTED
+            "REJECTED" -> REJECTED
+            "PENDING" -> PENDING
+            "CANCELED" -> CANCELED
+            else -> throw RuntimeException("It does not exist a NotificationStatus from $name")
+        }
+    }
 }
 
 data class DetailedReservation(

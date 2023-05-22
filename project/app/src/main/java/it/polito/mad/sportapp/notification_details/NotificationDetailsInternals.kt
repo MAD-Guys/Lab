@@ -1,14 +1,24 @@
 package it.polito.mad.sportapp.notification_details
 
+import android.annotation.SuppressLint
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.ScrollView
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.entities.NotificationStatus
+import it.polito.mad.sportapp.showToasty
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 // manage menu item selection
 internal fun NotificationDetailsFragment.menuInit() {
@@ -30,6 +40,165 @@ internal fun NotificationDetailsFragment.menuInit() {
             return false
         }
     }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+}
+
+internal fun NotificationDetailsFragment.setupObservers() {
+    vm.reservation.observe(viewLifecycleOwner) {
+        if (it != null) {
+
+            val usernameString = "@" + it.username + " invited you to this event:"
+            reservationOwner.text = usernameString
+
+            playgroundName.text = it.playgroundName
+            sportCenterName.text = it.sportCenterName
+            sportEmoji.text = it.sportEmoji
+            sportName.text = it.sportName
+            sportCenterAddress.text = it.address
+
+            reservationDate.text = when (it.startLocalDateTime.toLocalDate()) {
+                LocalDate.now() -> "Today"
+                LocalDate.now().plusDays(1) -> "Tomorrow"
+                LocalDate.now().minusDays(1) -> "Yesterday"
+                else -> it.startLocalDateTime.format(
+                    DateTimeFormatter.ofPattern("EEEE, d MMMM y", Locale.ENGLISH)
+                )
+            }
+
+            reservationStartTime.text = it.startTime.toString()
+            reservationEndTime.text = it.endTime.toString()
+            reservationPricePerHour.text = String.format("%.2f", it.playgroundPricePerHour)
+        }
+    }
+}
+
+/* Accept invitation dialog */
+internal fun NotificationDetailsFragment.initAcceptInvitationDialog() {
+    acceptInvitationDialog = AlertDialog.Builder(requireContext())
+        .setMessage("Do you want to accept this invitation?")
+        .setPositiveButton("YES") { _, _ ->
+            showToasty("success", requireContext(), "Invitation correctly accepted!")
+
+            //TODO: update firestore db
+
+            // navigate back
+            navController.popBackStack()
+        }
+        .setNegativeButton("NO") { d, _ -> d.cancel() }
+        .create()
+}
+
+/* Decline reservation dialog */
+internal fun NotificationDetailsFragment.initDeclineInvitationDialog() {
+    declineInvitationDialog = AlertDialog.Builder(requireContext())
+        .setMessage("Do you want to decline this invitation?")
+        .setPositiveButton("YES") { _, _ ->
+
+            showToasty("success", requireContext(), "Invitation correctly declined!")
+
+            //TODO: update firestore db
+
+            // navigate back
+            navController.popBackStack()
+        }
+        .setNegativeButton("NO") { d, _ -> d.cancel() }
+        .create()
+}
+
+/* Reject reservation dialog */
+internal fun NotificationDetailsFragment.initRejectInvitationDialog() {
+    rejectInvitationDialog = AlertDialog.Builder(requireContext())
+        .setMessage("Do you want to reject the previously accepted invitation?")
+        .setPositiveButton("YES") { _, _ ->
+
+            showToasty("success", requireContext(), "Invitation correctly rejected!")
+
+            //TODO: update firestore db
+
+            // navigate back
+            navController.popBackStack()
+        }
+        .setNegativeButton("NO") { d, _ -> d.cancel() }
+        .create()
+}
+
+/* notification state */
+@SuppressLint("SetTextI18n")
+internal fun NotificationDetailsFragment.manageNotificationState() {
+
+    val notificationDetailsScrollView =
+        requireView().findViewById<ScrollView>(R.id.notification_details_scroll_view)
+    val notificationDetailsCanceledMessage =
+        requireView().findViewById<ConstraintLayout>(R.id.notification_canceled_layout)
+    val notificationDetailsRejectedMessage =
+        requireView().findViewById<TextView>(R.id.notification_details_rejected_message)
+    val notificationDetailsJoinQuestion =
+        requireView().findViewById<TextView>(R.id.notification_details_join_question)
+
+    when (notificationStatus) {
+        NotificationStatus.ACCEPTED -> {
+            notificationDetailsScrollView.visibility = View.VISIBLE
+            notificationDetailsCanceledMessage.visibility = View.GONE
+            notificationDetailsRejectedMessage.visibility = View.GONE
+            notificationDetailsJoinQuestion.text = "Do you want to reject this invitation?"
+            acceptInvitationButton.visibility = View.GONE
+            declineInvitationButton.visibility = View.GONE
+            rejectInvitationButton.visibility = View.VISIBLE
+        }
+
+        NotificationStatus.REJECTED -> {
+            notificationDetailsScrollView.visibility = View.VISIBLE
+            notificationDetailsCanceledMessage.visibility = View.GONE
+            notificationDetailsRejectedMessage.visibility = View.VISIBLE
+            notificationDetailsJoinQuestion.visibility = View.GONE
+            acceptInvitationButton.visibility = View.GONE
+            declineInvitationButton.visibility = View.GONE
+            rejectInvitationButton.visibility = View.GONE
+        }
+
+        NotificationStatus.CANCELED -> {
+            notificationDetailsScrollView.visibility = View.GONE
+            notificationDetailsCanceledMessage.visibility = View.VISIBLE
+        }
+
+        else -> {
+            notificationDetailsScrollView.visibility = View.VISIBLE
+            notificationDetailsCanceledMessage.visibility = View.GONE
+            notificationDetailsRejectedMessage.visibility = View.GONE
+            notificationDetailsJoinQuestion.visibility = View.VISIBLE
+            acceptInvitationButton.visibility = View.VISIBLE
+            declineInvitationButton.visibility = View.VISIBLE
+            rejectInvitationButton.visibility = View.GONE
+        }
+    }
+}
+
+/* buttons */
+internal fun NotificationDetailsFragment.initButtons() {
+
+    // accept invitation button
+    acceptInvitationButton = requireView().findViewById(R.id.notification_details_accept_button)
+    acceptInvitationButton.setOnClickListener {
+        acceptInvitationDialog.show()
+    }
+
+    // decline invitation button
+    declineInvitationButton = requireView().findViewById(R.id.notification_details_decline_button)
+    declineInvitationButton.setOnClickListener {
+        declineInvitationDialog.show()
+    }
+
+    // reject invitation button
+    rejectInvitationButton = requireView().findViewById(R.id.notification_details_reject_button)
+    rejectInvitationButton.setOnClickListener {
+        rejectInvitationDialog.show()
+    }
+
+    // reservation canceled button
+    reservationCanceledButton = requireView().findViewById(R.id.reservation_canceled_button)
+    reservationCanceledButton.setOnClickListener {
+        navController.navigate(R.id.action_notificationDetailsFragment_to_showReservationsFragment)
+    }
+
 }
 
 /* bottom bar */
