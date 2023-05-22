@@ -38,6 +38,14 @@
           }
         },
         {
+          "client_id": "77436636444-p7gooklb94cc5v96jarvdl65v12kpdvp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.polito.mad.sportapp",
+            "certificate_hash": "2707575ad09fc6c3507dd63193739cc502944e3a"
+          }
+        },
+        {
           "client_id": "77436636444-fd6qg92kuu6to2kn62kb6o8glrprmhj5.apps.googleusercontent.com",
           "client_type": 3
         }
