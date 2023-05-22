@@ -21,9 +21,6 @@ data class User (
     val location: String,
     @ColumnInfo(name = "bio")
     val bio: String,
-
-
-
 ) {
     @Ignore
     var sportLevel: List<SportLevel> = listOf()
