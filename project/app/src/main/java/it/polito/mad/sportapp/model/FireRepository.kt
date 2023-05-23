@@ -39,7 +39,9 @@ class FireRepository : IRepository {
     ): FireListener {
         val fireListener = FireListener()
 
-        val listener = db.collection("users")
+        var userAchievementsListener: FireListener? = null
+
+        val userListener = db.collection("users")
             .document(userId)
             .addSnapshotListener { value, error ->
                 if (error == null) {
@@ -83,7 +85,9 @@ class FireRepository : IRepository {
                 // transform to user entity
                 val user = fireUser.toUser()
 
-                val achievementsListener = this.buildAchievements(userId) { result ->
+                // unregister previous listener
+                userAchievementsListener?.unregister()
+                userAchievementsListener = this.buildAchievements(userId) { result ->
                     when (result) {
                         is Success -> {
                             // attach user achievements and return successfully
@@ -95,12 +99,13 @@ class FireRepository : IRepository {
                         }
                     }
                 }
+
                 // track listener that will have to be unregistered
-                fireListener.add(achievementsListener)
+                fireListener.add(userAchievementsListener)
             }
 
         // track listener that will have to be unregistered
-        fireListener.add(listener)
+        fireListener.add(userListener)
 
         return fireListener
     }

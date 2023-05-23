@@ -25,7 +25,9 @@ class FireListener {
     /**
      * Add another listener which has to be unregistered
      */
-    fun add(fireListener: FireListener) {
+    fun add(fireListener: FireListener?) {
+        if (fireListener == null) return
+
         callbacksToUnregisterListeners.add(0, fireListener::unregister)
     }
 
