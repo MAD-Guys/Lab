@@ -40,12 +40,12 @@ class SportAppViewModel @Inject constructor(
                     "asd423dsic9879xsdu98cs9d878dx98s7d987f98d7fg",
                     "asd423dsic9879xsdu98cs9d878dx98s7d987f98d7fg",
                     NotificationStatus.PENDING,
-                    "@johndoe has invited you to play tennis",
+                    "@johndoe has invited you to play a tennis match!",
                     LocalDateTime.now().toString()
                 )
 
                 // add a new notification every two minutes
-                Thread.sleep(120000)
+                Thread.sleep(60000)
                 createAndSendInvitationNotification(
                     context,
                     reservationId,
@@ -70,8 +70,8 @@ class SportAppViewModel @Inject constructor(
                 1,
                 "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
-                NotificationStatus.ACCEPTED,
-                "@francescorosati has invited you to play basketball",
+                NotificationStatus.PENDING,
+                "@francescorosati has invited you to play a basketball match!",
                 "2023-05-22T23:21:47.496"
             )
         )
@@ -83,7 +83,7 @@ class SportAppViewModel @Inject constructor(
                 "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
                 NotificationStatus.PENDING,
-                "@peppelazzara has invited you to play mini-golf",
+                "@peppelazzara has invited you to play a mini-golf match!",
                 "2023-05-22T17:21:47.496"
             )
         )
@@ -95,7 +95,7 @@ class SportAppViewModel @Inject constructor(
                 "asd423dsic9sd9xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsqs9879xsdu98cs9dwsvdx98s7d987f98d7fg",
                 NotificationStatus.REJECTED,
-                "@peppelazzara has invited you to play basketball",
+                "@peppelazzara has invited you to play a basketball match!",
                 "2023-05-21T17:34:47.496"
             )
         )
@@ -107,7 +107,7 @@ class SportAppViewModel @Inject constructor(
                 "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
                 NotificationStatus.CANCELED,
-                "@mariomastrandrea has invited you to play basketball",
+                "@mariomastrandrea has invited you to play a basketball match!",
                 "2023-05-22T23:45:47.496"
             )
         )
@@ -119,7 +119,7 @@ class SportAppViewModel @Inject constructor(
                 "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
                 NotificationStatus.ACCEPTED,
-                "@mariomastrandrea has invited you to play volleyball",
+                "@mariomastrandrea has invited you to play a volleyball match!",
                 "2023-05-22T13:45:47.496"
             )
         )
@@ -130,8 +130,8 @@ class SportAppViewModel @Inject constructor(
                 23,
                 "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
-                NotificationStatus.PENDING,
-                "@michelepistan has invited you to play tennis",
+                NotificationStatus.ACCEPTED,
+                "@michelepistan has invited you to play a tennis match!",
                 "2023-05-20T20:34:47.496"
             )
         )
@@ -143,7 +143,7 @@ class SportAppViewModel @Inject constructor(
                 "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
                 NotificationStatus.CANCELED,
-                "@michelepistan has invited you to play 11-a-side soccer",
+                "@michelepistan has invited you to play a 11-a-side soccer match!",
                 "2023-05-03T19:20:47.496"
             )
         )
@@ -155,7 +155,7 @@ class SportAppViewModel @Inject constructor(
                 "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
                 NotificationStatus.REJECTED,
-                "@michelepistan has invited you to play 8-a-side soccer",
+                "@michelepistan has invited you to play a 8-a-side soccer match!",
                 "2023-05-21T09:27:47.496"
             )
         )
@@ -167,7 +167,7 @@ class SportAppViewModel @Inject constructor(
                 "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
                 NotificationStatus.ACCEPTED,
-                "@johndoe has invited you to play table tennis",
+                "@johndoe has invited you to play a table tennis match!",
                 "2023-05-19T11:29:47.496"
             )
         )
@@ -178,8 +178,8 @@ class SportAppViewModel @Inject constructor(
                 46,
                 "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsic9879xsdu98cs9d878dx98s7d987f98d7fg",
-                NotificationStatus.PENDING,
-                "@francescorosati has invited you to play tennis",
+                NotificationStatus.ACCEPTED,
+                "@francescorosati has invited you to play a tennis match!",
                 "2023-05-15T14:25:47.496"
             )
         )

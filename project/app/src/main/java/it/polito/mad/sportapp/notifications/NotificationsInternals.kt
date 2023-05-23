@@ -50,14 +50,26 @@ internal fun NotificationsFragment.recyclerViewInit() {
 
     // setup notifications observer
     vm.notifications.observe(viewLifecycleOwner) { notificationList ->
-        // add notifications to the notifications adapter
-        notificationsAdapter.notifications.clear()
-        notificationsAdapter.notifications.addAll(notificationList
-            .filter {
-                it.status == NotificationStatus.PENDING || it.status == NotificationStatus.ACCEPTED
-            }
-            .sortedWith(compareByDescending<Notification> { it.publicationDate }.thenBy { it.publicationTime })
-        )
+
+        if (notificationList.isEmpty()) {
+            // show progress bar and hide notifications
+            progressBar.visibility = View.VISIBLE
+            notificationsRecyclerView.visibility = View.GONE
+        } else if (notificationList.isNotEmpty()) {
+
+            // hide progress bar and show notifications
+            progressBar.visibility = View.GONE
+            notificationsRecyclerView.visibility = View.VISIBLE
+
+            // add notifications to the notifications adapter
+            notificationsAdapter.notifications.clear()
+            notificationsAdapter.notifications.addAll(notificationList
+                .filter {
+                    it.status == NotificationStatus.PENDING || it.status == NotificationStatus.ACCEPTED
+                }
+                .sortedWith(compareByDescending<Notification> { it.publicationDate }.thenByDescending { it.publicationTime })
+            )
+        }
 
         notificationsAdapter.notifyDataSetChanged()
     }

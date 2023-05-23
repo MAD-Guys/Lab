@@ -585,12 +585,6 @@ internal fun manageInvitationNotification(intent: Intent, navController: NavCont
     val notificationStatus = intent.getStringExtra("status") ?: "CANCELED"
     val notificationTimestamp = intent.getStringExtra("timestamp") ?: ""
 
-    showToasty(
-        "info",
-        navController.context,
-        "$reservationId"
-    )
-
     val bundle = bundleOf(
         "id_reservation" to reservationId,
         "status" to notificationStatus,

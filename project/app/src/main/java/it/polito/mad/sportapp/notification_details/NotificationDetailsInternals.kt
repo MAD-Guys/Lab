@@ -5,10 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.ScrollView
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
@@ -21,7 +18,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 // manage menu item selection
-internal fun NotificationDetailsFragment.menuInit() {
+internal fun NotificationDetailsFragment.menuInit(displayHomeEnabled: Boolean) {
     val menuHost: MenuHost = requireActivity()
 
     menuHost.addMenuProvider(object : MenuProvider {
@@ -29,7 +26,7 @@ internal fun NotificationDetailsFragment.menuInit() {
             menuInflater.inflate(R.menu.notification_details_menu, menu)
 
             actionBar?.let {
-                it.setDisplayHomeAsUpEnabled(true)
+                it.setDisplayHomeAsUpEnabled(displayHomeEnabled)
                 it.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
                 it.title = "Notification Details"
             }
@@ -45,6 +42,9 @@ internal fun NotificationDetailsFragment.menuInit() {
 internal fun NotificationDetailsFragment.setupObservers() {
     vm.reservation.observe(viewLifecycleOwner) {
         if (it != null) {
+
+            progressBar.visibility = View.GONE
+            notificationDetailsScrollView.visibility = View.VISIBLE
 
             val usernameString = "@" + it.username + " invited you to this event:"
             reservationOwner.text = usernameString
@@ -67,6 +67,9 @@ internal fun NotificationDetailsFragment.setupObservers() {
             reservationStartTime.text = it.startTime.toString()
             reservationEndTime.text = it.endTime.toString()
             reservationPricePerHour.text = String.format("%.2f", it.playgroundPricePerHour)
+        } else {
+            progressBar.visibility = View.VISIBLE
+            notificationDetailsScrollView.visibility = View.GONE
         }
     }
 }
@@ -125,15 +128,6 @@ internal fun NotificationDetailsFragment.initRejectInvitationDialog() {
 @SuppressLint("SetTextI18n")
 internal fun NotificationDetailsFragment.manageNotificationState() {
 
-    val notificationDetailsScrollView =
-        requireView().findViewById<ScrollView>(R.id.notification_details_scroll_view)
-    val notificationDetailsCanceledMessage =
-        requireView().findViewById<ConstraintLayout>(R.id.notification_canceled_layout)
-    val notificationDetailsRejectedMessage =
-        requireView().findViewById<TextView>(R.id.notification_details_rejected_message)
-    val notificationDetailsJoinQuestion =
-        requireView().findViewById<TextView>(R.id.notification_details_join_question)
-
     when (notificationStatus) {
         NotificationStatus.ACCEPTED -> {
             notificationDetailsScrollView.visibility = View.VISIBLE
@@ -156,6 +150,7 @@ internal fun NotificationDetailsFragment.manageNotificationState() {
         }
 
         NotificationStatus.CANCELED -> {
+            menuInit(false)
             notificationDetailsScrollView.visibility = View.GONE
             notificationDetailsCanceledMessage.visibility = View.VISIBLE
         }
