@@ -114,11 +114,10 @@ class LocalRepository @Inject constructor(
 
     fun getDetailedReservationById(id: Int): DetailedReservation {
         val reservation = reservationDao.findDetailedReservationById(id)
-        reservation.equipments =
+        val equipments =
             equipmentDao.findReservationEquipmentsByReservationId(id).toMutableList()
-
-        if (reservation.equipments.isEmpty()) {
-            reservation.equipments = mutableListOf()
+        if (!equipments.isNullOrEmpty()) {
+            reservation.equipments = equipments
         }
         return reservation
     }
