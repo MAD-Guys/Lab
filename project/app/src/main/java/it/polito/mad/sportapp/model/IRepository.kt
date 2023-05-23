@@ -10,7 +10,11 @@ import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.Notification
+import it.polito.mad.sportapp.entities.firestore.DefaultFireError
+import it.polito.mad.sportapp.entities.firestore.FireErrorType
 import it.polito.mad.sportapp.entities.firestore.FireResult
+import it.polito.mad.sportapp.entities.firestore.GetItemFireError
+import it.polito.mad.sportapp.entities.firestore.InsertItemFireError
 import java.lang.Exception
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -20,29 +24,29 @@ import javax.security.auth.callback.Callback
 interface IRepository {
 
     // * User methods *
-    fun getUser(uid: String, fireCallback: (FireResult<User>) -> Unit)
-    fun userAlreadyExists(uid: String, fireCallback: (FireResult<Boolean>) -> Unit)
-    fun usernameAlreadyExists(username: String, fireCallback: (FireResult<Boolean>) -> Unit)
-    fun insertNewUser(user: User, fireCallback: (FireResult<Unit>) -> Unit)
-    fun updateUser(user: User, fireCallback: (FireResult<Unit>) -> Unit)
+    fun getUser(uid: String, fireCallback: (FireResult<User, GetItemFireError>) -> Unit)
+    fun userAlreadyExists(uid: String, fireCallback: (FireResult<Boolean, DefaultFireError>) -> Unit)
+    fun usernameAlreadyExists(username: String, fireCallback: (FireResult<Boolean, DefaultFireError>) -> Unit)
+    fun insertNewUser(user: User, fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit)
+    fun updateUser(user: User, fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit)
 
     // * Sport methods *
-    fun getAllSports(fireCallback: (FireResult<List<Sport>>) -> Unit)
+    fun getAllSports(fireCallback: (FireResult<List<Sport>, DefaultFireError>) -> Unit)
 
     // * Review methods *
     fun getReviewByUserIdAndPlaygroundId(
         uid: String,
         playgroundId: String,
-        fireCallback: (FireResult<Review>) -> Unit
+        fireCallback: (FireResult<Review, GetItemFireError>) -> Unit
     )
 
-    fun updateReview(review: Review, fireCallback: (FireResult<Unit>) -> Unit)
-    fun deleteReview(review: Review, fireCallback: (FireResult<Unit>) -> Unit)
+    fun updateReview(review: Review, fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit)
+    fun deleteReview(review: Review, fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit)
 
     // * Reservation methods *
     fun getDetailedReservationById(
         reservationId: String,
-        fireCallback: (FireResult<DetailedReservation>) -> Unit
+        fireCallback: (FireResult<DetailedReservation, GetItemFireError>) -> Unit
     )
 
     /**
@@ -57,18 +61,19 @@ interface IRepository {
      */
     fun overrideNewReservation(
         reservation: NewReservation,
-        fireCallback: (FireResult<Pair<Int?, NewReservationError?>>) -> Unit
+        // * custom error type *
+        fireCallback: (FireResult<Int, NewReservationError>) -> Unit
     )
 
     fun getReservationsPerDateByUserId(
         uid: String,
-        fireCallback: (FireResult<Map<LocalDate, List<DetailedReservation>>>) -> Unit
+        fireCallback: (FireResult<Map<LocalDate, List<DetailedReservation>>, GetItemFireError>) -> Unit
     )
 
     fun addUserToReservation(
         reservationId: String,
         uid: String,
-        fireCallback: (FireResult<Unit>) -> Unit
+        fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit
     )
 
     // * Equipment methods *
@@ -78,36 +83,37 @@ interface IRepository {
         reservationId: String,
         startDateTime: LocalDateTime,
         endDateTime: LocalDateTime,
-        fireCallback: (FireResult<MutableMap<Int, Equipment>>) -> Unit
+        fireCallback: (FireResult<MutableMap<Int, Equipment>, DefaultFireError>) -> Unit
     )
 
     fun deleteReservation(
         reservation: DetailedReservation,
-        fireCallback: (FireResult<Unit>) -> Unit
+        fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
     )
 
     // * Playground methods *
     fun getPlaygroundInfoById(
         playgroundId: String,
-        fireCallback: (FireResult<PlaygroundInfo>) -> Unit
+        fireCallback: (FireResult<PlaygroundInfo, GetItemFireError>) -> Unit
     )
 
     fun getAvailablePlaygroundsPerSlot(
         month: YearMonth, sport: Sport?, fireCallback: (
             FireResult<
-                    MutableMap<LocalDate, MutableMap<LocalDateTime, MutableList<DetailedPlaygroundSport>>>>
+                    MutableMap<LocalDate, MutableMap<LocalDateTime, MutableList<DetailedPlaygroundSport>>>,
+                    DefaultFireError>
         ) -> Unit
     )
 
-    fun getAllPlaygroundsInfo(fireCallback: (FireResult<List<PlaygroundInfo>>) -> Unit)
+    fun getAllPlaygroundsInfo(fireCallback: (FireResult<List<PlaygroundInfo>, DefaultFireError>) -> Unit)
 
     // * Notification methods *
-    fun getNotificationsByUserId(uid: String, fireCallback: (FireResult<MutableList<Notification>>) -> Unit)
-    fun deleteNotification(notificationId: String, fireCallback: (FireResult<Unit>) -> Unit)
+    fun getNotificationsByUserId(uid: String, fireCallback: (FireResult<MutableList<Notification>, DefaultFireError>) -> Unit)
+    fun deleteNotification(notificationId: String, fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit)
 
     // * enums *
 
-    enum class NewReservationError(val message: String) {
+    enum class NewReservationError(val message: String) : FireErrorType{
         SLOT_CONFLICT(
             "Ouch! the selected slots have just been booked by someone else \uD83D\uDE41. Please select new ones for your reservation!"
         ),
@@ -116,7 +122,10 @@ interface IRepository {
         ),
         UNEXPECTED_ERROR(
             "An unexpected error occurred while saving your reservation. Please try again or check your connection status."
-        )
-    }
+        );
 
+        override fun message(): String {
+            return message
+        }
+    }
 }
