@@ -22,6 +22,9 @@ import java.time.YearMonth
 
 class FireRepository : IRepository {
     private val db = FirebaseFirestore.getInstance()
+    /**
+     * This method gets the user given its uid
+     */
     override fun getUser(uid: String, fireCallback: (FireResult<User, GetItemFireError>) -> Unit) {
         db.collection("users").document(uid).get()
             .addOnSuccessListener { document ->
@@ -39,8 +42,11 @@ class FireRepository : IRepository {
             .addOnFailureListener {
                 fireCallback(FireResult.Error(GetItemFireError.DEFAULT_FIRE_ERROR))
             }
+        return
     }
-
+    /**
+     * This method check if the user already exists
+     */
     override fun userAlreadyExists(
         uid: String,
         fireCallback: (FireResult<Boolean, DefaultFireError>) -> Unit
@@ -56,8 +62,12 @@ class FireRepository : IRepository {
             .addOnFailureListener {
                 fireCallback(FireResult.Error(DefaultFireError("Error while checking user")))
             }
+        return
     }
 
+    /**
+     * This method check if the username already exists
+     */
     override fun usernameAlreadyExists(
         username: String,
         fireCallback: (FireResult<Boolean, DefaultFireError>) -> Unit
@@ -73,8 +83,12 @@ class FireRepository : IRepository {
             .addOnFailureListener {
                 fireCallback(FireResult.Error(DefaultFireError("Error while checking username")))
             }
+        return
     }
 
+    /**
+     * This method insert a new user
+     */
     override fun insertNewUser(
         user: User,
         fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit
@@ -121,6 +135,9 @@ class FireRepository : IRepository {
 
     }
 
+    /**
+     * This method update an existing user
+     */
     override fun updateUser(
         user: User,
         fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit
