@@ -32,7 +32,7 @@
         app:layout_constraintVertical_chainStyle="packed"
         tools:ignore="TextContrastCheck" />
 
-    <!-- Sport center name -->
+    <!-- FireSport center name -->
     <TextView
         android:id="@+id/sport_center_name"
         android:layout_width="wrap_content"

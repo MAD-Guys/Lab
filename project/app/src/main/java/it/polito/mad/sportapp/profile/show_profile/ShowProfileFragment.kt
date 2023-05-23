@@ -43,7 +43,7 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
     // fragment dialog
     internal lateinit var exitDialog: AlertDialog
 
-    // Sport views
+    // FireSport views
     internal lateinit var noSportsTextView: TextView
     internal lateinit var sportsContainer: ChipGroup
     internal var sportChips: MutableMap<String, Chip> = HashMap()

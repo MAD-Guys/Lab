@@ -446,10 +446,10 @@ internal fun EditProfileFragment.sportsInit() {
             orientation = LinearLayout.HORIZONTAL
         }
 
-        // create the Sport Chip
+        // create the FireSport Chip
         val sportChip = createEditSportChip(sportsTemp[sportName]!!.displayName, sportChipWrapper)
 
-        // create the actual Sport level chip
+        // create the actual FireSport level chip
         val sportActualLevelChip =
             createEditSportLevelBadge(
                 R.drawable.beginner_level_badge,

@@ -363,6 +363,31 @@
                 android:layout_gravity="center_horizontal"
                 android:visibility="gone"
                 />
+
+            <Button
+                android:id="@+id/button_leave_review"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp"
+                android:layout_marginHorizontal="16dp"
+                android:backgroundTint="@color/primary_orange"
+                android:fontFamily="@font/poppins_bold"
+                android:paddingTop="10.5dp"
+                android:paddingBottom="10.5dp"
+                android:text="Leave a review"
+                android:textAllCaps="false"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/button_text_color"
+                android:textSize="20sp"
+                android:includeFontPadding="false"
+                android:textAlignment="center"
+                app:icon="@drawable/baseline_add_comment_24"
+                android:contentDescription="Leave a review"
+                app:iconGravity="textStart"
+                app:iconTint="@color/button_text_color"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone"
+                />
         </LinearLayout>
     </ScrollView>
 

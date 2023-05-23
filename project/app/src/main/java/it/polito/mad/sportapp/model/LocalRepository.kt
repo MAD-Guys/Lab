@@ -73,13 +73,13 @@ class LocalRepository @Inject constructor(
         userDao.update(user)
     }
 
-    // Sport methods
+    // FireSport methods
     fun getAllSports(): List<Sport> {
         return sportDao.getAll()
     }
 
 
-    // Review methods
+    // FireReview methods
     private fun getAllReviewsByPlaygroundId(id: Int): List<Review> {
         val reviews = reviewDao.findByPlaygroundId(id)
         reviews.forEach {

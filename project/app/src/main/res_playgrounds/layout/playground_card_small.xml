@@ -59,7 +59,7 @@
             android:singleLine="true"
             android:textColor="@color/black" />
 
-        <!-- Sport center name -->
+        <!-- FireSport center name -->
         <TextView
             android:id="@+id/sport_center_name"
             android:layout_width="wrap_content"
@@ -88,7 +88,7 @@
                 android:layout_weight="7"
                 android:layout_marginEnd="@dimen/small_playground_card_info_margin"
                 android:orientation="vertical">
-                <!-- Sport -->
+                <!-- FireSport -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

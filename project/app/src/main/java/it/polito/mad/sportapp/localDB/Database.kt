@@ -27,7 +27,7 @@ import kotlin.random.Random
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao // UserDB
     abstract fun sportDao(): SportDao // SportDB
-    abstract fun sportCenterDao(): SportCenterDao // SportCenter
+    abstract fun sportCenterDao(): SportCenterDao // FireSportCenter
 
     abstract fun equipmentDao(): EquipmentDao // EquipmentDB
 
@@ -155,16 +155,16 @@ private fun initDb(INSTANCE: AppDatabase?) {
 
                 )
             /*it?.sportDao()?.insertAll(
-                Sport(0, "Tennis", 4),
-                Sport(0, "Table Tennis", 2),
-                Sport(0, "Padel", 4),
-                Sport(0, "Basketball", 14),
-                Sport(0, "11-a-side-soccer", 22),
-                Sport(0, "Volleyball", 12),
-                Sport(0, "Beach Volley", 10),
-                Sport(0, "5-a-side-soccer", 10),
-                Sport(0, "8-a-side-soccer", 16),
-                Sport(0, "Mini Golf", 2),
+                FireSport(0, "Tennis", 4),
+                FireSport(0, "Table Tennis", 2),
+                FireSport(0, "Padel", 4),
+                FireSport(0, "Basketball", 14),
+                FireSport(0, "11-a-side-soccer", 22),
+                FireSport(0, "Volleyball", 12),
+                FireSport(0, "Beach Volley", 10),
+                FireSport(0, "5-a-side-soccer", 10),
+                FireSport(0, "8-a-side-soccer", 16),
+                FireSport(0, "Mini Golf", 2),
             )*/
             it?.playgroundSportDao()?.insert(
                 PlaygroundSport(0, 1, 1, "Tennis Court", 12.0F)
