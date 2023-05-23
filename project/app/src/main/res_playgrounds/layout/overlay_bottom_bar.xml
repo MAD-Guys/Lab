@@ -60,7 +60,7 @@
         app:dividerColor="#444444"
         android:layout_gravity="center"/>
 
-    <!-- Sport centers button -->
+    <!-- FireSport centers button -->
     <LinearLayout
         android:id="@+id/overlay_bar_center_button"
         android:layout_width="@dimen/overlay_bar_button_width"

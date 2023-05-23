@@ -1,6 +1,6 @@
 package it.polito.mad.sportapp.entities.firestore
 
-data class User(
+data class FireUser(
     val uid: String,
     val firstName: String,
     val lastName: String,
@@ -10,7 +10,7 @@ data class User(
     val location: String,
     val imageURL: String,
     val bio: String,
-    val sportLevels: List<SportLevel>
+    val sportLevels: List<FireSportLevel>
 )
 
 

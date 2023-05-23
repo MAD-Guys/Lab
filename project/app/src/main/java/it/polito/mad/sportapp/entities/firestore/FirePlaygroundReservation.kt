@@ -2,11 +2,11 @@ package it.polito.mad.sportapp.entities.firestore
 
 import java.time.LocalDateTime
 
-data class PlaygroundReservation(
+data class FirePlaygroundReservation(
     val id: String,
     val playgroundId: String,
-    val user: UserForPlaygroundReservation,
-    val participants: List<UserForPlaygroundReservation>,
+    val user: FireUserForPlaygroundReservation,
+    val participants: List<FireUserForPlaygroundReservation>,
     val startDateTime: LocalDateTime,
     val endDateTime: LocalDateTime,
     val totalPrice: Double,

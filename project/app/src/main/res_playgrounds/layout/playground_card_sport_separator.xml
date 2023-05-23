@@ -9,7 +9,7 @@
     android:layout_marginBottom="@dimen/playground_card_separator_margin_bottom"
     android:layout_marginTop="@dimen/playground_card_separator_margin_top">
 
-    <!-- Sport -->
+    <!-- FireSport -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

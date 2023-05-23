@@ -2,7 +2,7 @@ package it.polito.mad.sportapp.entities.firestore
 
 import java.time.LocalDateTime
 
-data class ReservationSlot(
+data class FireReservationSlot(
     val id: String,
     val startSlot: LocalDateTime,
     val endSlot: LocalDateTime,
