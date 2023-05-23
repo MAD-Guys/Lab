@@ -75,7 +75,7 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
     internal lateinit var location: EditText
     internal lateinit var bio: EditText
 
-    // Sports views: each element contains the Sport Chip and the actual level icon Chip
+    // Sports views: each element contains the FireSport Chip and the actual level icon Chip
     internal val sports = HashMap<String, SportChips>()
 
     // Profile picture

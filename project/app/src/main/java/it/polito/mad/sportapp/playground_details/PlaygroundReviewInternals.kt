@@ -192,7 +192,7 @@ internal fun PlaygroundDetailsFragment.handleDeleteReviewButton() {
             showToasty(
                 "success",
                 requireContext(),
-                "Review correctly deleted"
+                "FireReview correctly deleted"
             )
 
             // reload the playground with the new rating
@@ -231,5 +231,5 @@ internal fun PlaygroundDetailsFragment.handleSaveReviewButton() {
 
     viewModel.setEditMode(false)
 
-    showToasty("success", requireContext(), "Review correctly saved!")
+    showToasty("success", requireContext(), "FireReview correctly saved!")
 }

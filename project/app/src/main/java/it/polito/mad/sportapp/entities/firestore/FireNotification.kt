@@ -2,7 +2,7 @@ package it.polito.mad.sportapp.entities.firestore
 
 import java.time.LocalDateTime
 
-data class Notification(
+data class FireNotification(
     val type: String,
     val reservationId: String,
     val senderId: String,

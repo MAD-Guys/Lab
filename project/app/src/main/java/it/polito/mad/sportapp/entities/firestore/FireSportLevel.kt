@@ -1,6 +1,6 @@
 package it.polito.mad.sportapp.entities.firestore
 
-data class SportLevel(
+data class FireSportLevel(
     val sportId : String,
     val sportName: String,
     val sportLevel: Level

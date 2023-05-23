@@ -321,7 +321,7 @@
                     android:layout_height="wrap_content"
                     android:visibility="visible">
 
-                    <!-- Sport chips added programmatically here -->
+                    <!-- FireSport chips added programmatically here -->
 
                 </com.google.android.material.chip.ChipGroup>
 

@@ -1,7 +1,7 @@
 package it.polito.mad.sportapp.entities.firestore
 import java.time.LocalDateTime
 
-data class Review(
+data class FireReview(
     val id: String,
     val uid: String,
     val playgroundId: String,

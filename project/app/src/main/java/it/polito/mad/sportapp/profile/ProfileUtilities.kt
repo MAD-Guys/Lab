@@ -4,7 +4,7 @@ import com.google.android.material.chip.Chip
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.SportLevel
 
-/* Sport utilities */
+/* FireSport utilities */
 
 internal data class Sport(val id: Int, val name: String, val displayName: String, var selected: Boolean, var level: Level) {
     companion object {

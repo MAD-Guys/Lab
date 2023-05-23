@@ -1,9 +1,9 @@
 package it.polito.mad.sportapp.entities.firestore
 
-data class PlaygroundSport(
+data class FirePlaygroundSport(
     val id: String,
     val playgroundName: String,
     val pricePerHour: Double,
-    val sport: Sport,
-    val sportCenter: SportCenter
+    val sport: FireSport,
+    val sportCenter: FireSportCenter
 )

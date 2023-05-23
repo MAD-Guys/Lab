@@ -1,6 +1,6 @@
 package it.polito.mad.sportapp.entities.firestore
 
-data class Equipment(
+data class FireEquipment(
     val id: String,
     val name: String,
     val sportId: String,
