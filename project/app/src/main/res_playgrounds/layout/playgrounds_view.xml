@@ -59,11 +59,29 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- playgrounds cards list -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/playgrounds_rv"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/>
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- playgrounds cards list -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/playgrounds_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:nestedScrollingEnabled="false"/>
+
+            <!-- padding for last recycler view element -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="70dp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </RelativeLayout>

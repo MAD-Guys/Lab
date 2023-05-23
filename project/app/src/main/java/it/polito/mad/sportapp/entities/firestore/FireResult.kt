@@ -36,27 +36,30 @@ package it.polito.mad.sportapp.entities.firestore
  *
  *  Note: if the operation does not have any explicit return value, T will be Unit
  */
-sealed class FireResult<T> {
+sealed class FireResult<T, ErrorType: FireErrorType> {
 
     /**
-     * Class representing an *Failed* operation's result in Firestore operations. It contains
-     * an error message string explaining the reason of the failure.
-     * You can access that error message in the 'message', or with the errorMessage() methods
+     * Class representing a *Failed* operation's result in Firestore operations. It contains
+     * an error explaining the reason of the failure.
+     * You can access that error in the 'type' property, or with the error() methods. Each error type
+     * has a related message, accessible with message() methods
      */
-    class Error<T>(val message: String) : FireResult<T>() {
+    class Error<T, ErrorType: FireErrorType>(val type: ErrorType) : FireResult<T, ErrorType>() {
         override fun isError() = true
         override fun isSuccess() = false
 
         // *unsafe* un-wrappers
         override fun unwrap(): T {
             throw Exception("Error: cannot unwrap a FireResult.Error instance. This" +
-                    "is an error with message: $message")
+                    "is an error with message: ${type.message()}")
         }
 
-        override fun errorMessage() = message
+        override fun errorType() = type
+        override fun errorMessage() = type.message()
 
         // *safe* un-wrappers
         override fun safeUnwrap(): T? = null
+        override fun safeErrorType() = errorType()
         override fun safeErrorMessage() = errorMessage()
     }
 
@@ -66,28 +69,34 @@ sealed class FireResult<T> {
      * the result (of type T) of that operation.
      * You can access that result value in the 'value' property, or with the unwrap() methods
      */
-    class Success<T>(val value: T) : FireResult<T>() {
+    class Success<T, ErrorType: FireErrorType>(val value: T) : FireResult<T, ErrorType>() {
         override fun isError() = false
         override fun isSuccess() = true
 
         // *unsafe* un-wrappers
         override fun unwrap() = value
+        override fun errorType(): ErrorType {
+            throw Exception("Error: cannot retrieve an error type from a FireResult.Success instance. " +
+                    "This instance contains the value: ${value.toString()}}")
+        }
         override fun errorMessage(): String {
-            throw Exception("Error: cannot retrieve an error message from a FireResult.Success instance")
+            throw Exception("Error: cannot retrieve an error message from a FireResult.Success instance. " +
+                    "This instance contains the value: ${value.toString()}}")
         }
 
         // *safe* un-wrappers
         override fun safeUnwrap(): T? = unwrap()
+        override fun safeErrorType() = null
         override fun safeErrorMessage() = null
     }
 
     /**
-     * Returns true if this FirestoreResult instance is an error; 'false' otherwise
+     * Returns true if this FireResult instance is an Error<ErrorType>; 'false' otherwise
      */
     abstract fun isError(): Boolean
 
     /**
-     * Returns true if this FirestoreResult instance is a Success<T>, containing a valid result T;
+     * Returns true if this FireResult instance is a Success<T>, containing a valid result T;
      * 'false' otherwise
      */
     abstract fun isSuccess(): Boolean
@@ -96,13 +105,19 @@ sealed class FireResult<T> {
 
     /**
      * Retrieve the value stored by the underlying Success<T> instance, if any;
-     * it throws an exception if this instance is an error
+     * it throws an exception if this instance is an Error<ErrorType>
      */
     abstract fun unwrap(): T
 
+    /**
+     * Retrieve the error type stored by the underlying Error<ErrorType> instance, if any;
+     * it throws an exception if this instance is a Success
+     */
+    abstract fun errorType(): ErrorType
+
 
     /**
-     * Retrieve the error message string stored by the underlying Error instance, if any;
+     * Retrieve the error message string stored by the underlying Error<ErrorType> instance, if any;
      * it throws an exception if this instance is a valid Success<T>
      */
     abstract fun errorMessage(): String
@@ -111,14 +126,67 @@ sealed class FireResult<T> {
 
     /**
      * *Safely* retrieve the value stored by the underlying Success<T> instance, if any;
-     * it returns 'null' if this instance is an error
+     * it returns 'null' if this instance is an Error<ErrorType>
      */
     abstract fun safeUnwrap(): T?
 
+    /**
+     * *Safely* retrieve the error type stored by the underlying Error<ErrorType> instance, if any;
+     * it returns 'null' if this instance is a Success<T>
+     */
+    abstract fun safeErrorType(): ErrorType?
+
 
     /**
-     * *Safely* retrieve the error message string stored by the underlying Error instance, if any;
-     * it returns 'null' if this instance is a valid Success<T>
+     * *Safely* retrieve the error message string stored by the underlying Error<ErrorType> instance,
+     * if any; it returns 'null' if this instance is a valid Success<T>
      */
     abstract fun safeErrorMessage(): String?
 }
+
+/**
+ * Generic error Type for a failed generic Firestore operation. It just returns a message()
+ * string explaining the reason of the error
+ */
+interface FireErrorType {
+    fun message(): String
+}
+
+private const val defaultErrorMessage = "A generic error occurred during Firebase operation"
+private const val defaultGetItemErrorMessage = "Item has not been found"
+
+/**
+ * Default Firebase Error Type for generic operations
+ */
+class DefaultFireError(val message: String=defaultErrorMessage) : FireErrorType {
+    override fun message() = message
+}
+
+/**
+ * Default Firebase Error Type for Get operations: it might be a NOT_FOUND_ERROR, if the item
+ * has not been found in the db, or a DEFAULT_FIRE_ERROR, in case of generic error
+ */
+enum class GetItemFireError(private var message: String, customMessage: String) : FireErrorType {
+    DEFAULT_FIRE_ERROR(defaultErrorMessage, ""),
+    NOT_FOUND_ERROR(defaultGetItemErrorMessage, "");
+
+    override fun message() = message
+
+    companion object {
+        /**
+         * Returns a DEFAULT_FIRE_ERROR instance with a custom error message
+         */
+        fun default(message: String): GetItemFireError {
+            return DEFAULT_FIRE_ERROR.apply { this.message = message }
+        }
+
+        /**
+         * Returns a NOT_FOUND_ERROR instance with a custom error message
+         */
+        fun notFound(message: String): GetItemFireError {
+            return NOT_FOUND_ERROR.apply { this.message = message }
+        }
+    }
+}
+
+
