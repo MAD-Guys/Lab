@@ -11,7 +11,9 @@ import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.firestore.DefaultFireError
+import it.polito.mad.sportapp.entities.firestore.FireErrorType
 import it.polito.mad.sportapp.entities.firestore.FireResult
+import it.polito.mad.sportapp.entities.firestore.FireUser
 import it.polito.mad.sportapp.entities.firestore.GetItemFireError
 import it.polito.mad.sportapp.entities.firestore.InsertItemFireError
 import java.time.LocalDate
@@ -21,37 +23,81 @@ import java.time.YearMonth
 class FireRepository : IRepository {
     private val db = FirebaseFirestore.getInstance()
     override fun getUser(uid: String, fireCallback: (FireResult<User, GetItemFireError>) -> Unit) {
-        TODO("Not yet implemented")
+        db.collection("users").document(uid).get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val fireUser = FireUser.deserialize(document.data!!.toMutableMap())
+                    if (fireUser != null) {
+                        fireCallback(FireResult.Success(fireUser.to()))
+                    } else {
+                        fireCallback(FireResult.Error(GetItemFireError.DEFAULT_FIRE_ERROR))
+                    }
+                } else {
+                    fireCallback(FireResult.Error(GetItemFireError.NOT_FOUND_ERROR))
+                }
+            }
+            .addOnFailureListener {
+                fireCallback(FireResult.Error(GetItemFireError.DEFAULT_FIRE_ERROR))
+            }
     }
 
     override fun userAlreadyExists(
         uid: String,
         fireCallback: (FireResult<Boolean, DefaultFireError>) -> Unit
     ) {
-        TODO("Not yet implemented")
+        db.collection("users").document(uid).get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    fireCallback(FireResult.Success(true))
+                } else {
+                    fireCallback(FireResult.Success(false))
+                }
+            }
+            .addOnFailureListener {
+                fireCallback(FireResult.Error(DefaultFireError("Error while checking user")))
+            }
     }
 
     override fun usernameAlreadyExists(
         username: String,
         fireCallback: (FireResult<Boolean, DefaultFireError>) -> Unit
     ) {
-        TODO("Not yet implemented")
+        db.collection("users").whereEqualTo("username", username).get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    fireCallback(FireResult.Success(false))
+                } else {
+                    fireCallback(FireResult.Success(true))
+                }
+            }
+            .addOnFailureListener {
+                fireCallback(FireResult.Error(DefaultFireError("Error while checking username")))
+            }
     }
 
     override fun insertNewUser(
         user: User,
         fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit
     ) {
-        // example
-        // val fireUser = FireUser.from(user)
-        // val serializedUser: HashMap<String,Any>? = fireUser.serialize()
-        // if(serializedUser == null) {
-        //   fireCallback(FireResult(InsertItemFireError.duringSerialization("sdfgh")))
-        //   return
-        // }
+        val fireUser = FireUser.from(user)
+        val serializedUser: Map<String,Any>? = fireUser.serialize()
+        if(serializedUser == null) {
+        fireCallback(FireResult.Error(InsertItemFireError.SERIALIZATION_ERROR))
+          return
+         }
+        else {
+            db.collection("users").document().set(serializedUser)
+                .addOnSuccessListener {
+                    fireCallback(FireResult.Success(Unit))
+                }
+                .addOnFailureListener {
+                    fireCallback(FireResult.Error(InsertItemFireError.DEFAULT_FIRE_ERROR))
+                }
+            return
+        }
         //
 
-        this.getReviewByUserIdAndPlaygroundId("id", "play_id") {result ->
+        /*this.getReviewByUserIdAndPlaygroundId("id", "play_id") {result ->
             if(result.isError()) {
                 val errType = result.errorType()
                 errType.message()
@@ -70,7 +116,7 @@ class FireRepository : IRepository {
             }
 
 
-        }
+        }*/
 
 
     }
@@ -79,7 +125,22 @@ class FireRepository : IRepository {
         user: User,
         fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit
     ) {
-        TODO("Not yet implemented")
+        val fireUser = FireUser.from(user)
+        val serializedUser: Map<String,Any>? = fireUser.serialize()
+        if(serializedUser == null) {
+            fireCallback(FireResult.Error(InsertItemFireError.SERIALIZATION_ERROR))
+            return
+        }
+        else {
+            db.collection("users").document(fireUser.uid).set(serializedUser)
+                .addOnSuccessListener {
+                    fireCallback(FireResult.Success(Unit))
+                }
+                .addOnFailureListener {
+                    fireCallback(FireResult.Error(InsertItemFireError.DEFAULT_FIRE_ERROR))
+                }
+            return
+        }
     }
 
     override fun getAllSports(fireCallback: (FireResult<List<Sport>, DefaultFireError>) -> Unit) {
