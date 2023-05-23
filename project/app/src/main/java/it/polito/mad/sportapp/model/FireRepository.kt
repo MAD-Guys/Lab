@@ -40,6 +40,7 @@ class FireRepository : IRepository {
         val fireListener = FireListener()
 
         var userAchievementsListener: FireListener? = null
+        val userAchievementsListenerLock = Unit
 
         val userListener = db.collection("users")
             .document(userId)
@@ -85,23 +86,25 @@ class FireRepository : IRepository {
                 // transform to user entity
                 val user = fireUser.toUser()
 
-                // unregister previous listener
-                userAchievementsListener?.unregister()
-                userAchievementsListener = this.buildAchievements(userId) { result ->
-                    when (result) {
-                        is Success -> {
-                            // attach user achievements and return successfully
-                            user.achievements = result.unwrap()
-                            fireCallback(Success(user))
-                        }
-                        is Error -> {
-                            fireCallback(Error(result.errorType()))
+                synchronized(userAchievementsListenerLock) {
+                    // unregister previous listener
+                    userAchievementsListener?.unregister()
+                    userAchievementsListener = this.buildAchievements(userId) { result ->
+                        when (result) {
+                            is Success -> {
+                                // attach user achievements and return successfully
+                                user.achievements = result.unwrap()
+                                fireCallback(Success(user))
+                            }
+                            is Error -> {
+                                fireCallback(Error(result.errorType()))
+                            }
                         }
                     }
-                }
 
-                // track listener that will have to be unregistered
-                fireListener.add(userAchievementsListener)
+                    // track listener that will have to be unregistered
+                    fireListener.add(userAchievementsListener)
+                }
             }
 
         // track listener that will have to be unregistered
