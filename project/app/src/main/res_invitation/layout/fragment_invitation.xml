@@ -51,7 +51,7 @@
                 android:id="@+id/level_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                />
+                android:foregroundTint="@color/secondary_blue" />
 
 
             <TextView
@@ -76,7 +76,7 @@
                     android:fontFamily="@font/poppins_semibold"
                     android:includeFontPadding="false"
                     android:text="\@"
-                    android:textColor="@color/light_grey"
+                    android:textColor="@color/secondary_blue"
                     android:textSize="18sp"
                     />
 
@@ -87,7 +87,7 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/poppins_medium"
                     android:textSize="18sp"
-                    android:textColor="@color/light_grey"
+                    android:textColor="@color/secondary_blue"
                     android:includeFontPadding="false"
                     android:hint="username"
                     />

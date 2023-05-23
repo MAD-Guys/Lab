@@ -45,11 +45,14 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
     private lateinit var reservationSportCenter: TextView
     private lateinit var reservationSportCenterAddress: TextView
     private lateinit var playgroundButton: Button
+    private lateinit var participants: LinearLayout
+    private lateinit var inviteButton: Button
     private lateinit var noEquipmentMessage: TextView
     private lateinit var equipment: LinearLayout
     private lateinit var editButton: ImageButton
     private lateinit var reservationTotalPrice: TextView
     private lateinit var deleteButton: Button
+    private lateinit var leaveReviewButton: Button
 
     private lateinit var navController: NavController
     private lateinit var bottomNavigationBar: View
@@ -100,6 +103,12 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
             }
         }
 
+        inviteButton.setOnClickListener {
+            viewModel.reservation.value?.let {
+                handleInviteButton(it.id, it.sportId)
+            }
+        }
+
         editButton.setOnClickListener {
             toEditView()
         }
@@ -114,6 +123,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
             if (reservation != null) {
                 setQRCodeView(reservation, qrCode)
                 initializeValues()
+                initializeParticipants()
                 initializeEquipment()
 
                 // it calls again onCreateOptionsMenu() to check if the reservation date has already passed, and thus hide the edit option
@@ -124,6 +134,8 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
 
                 if (currentDateTime.isBefore(reservation.startLocalDateTime)) {
                     deleteButton.visibility = Button.VISIBLE
+                }else{
+                    leaveReviewButton.visibility = Button.VISIBLE
                 }
             }
         }
@@ -131,8 +143,10 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
 
     override fun onResume() {
         super.onResume()
-        if (eventId != -1)
+        if (eventId != -1) {
             viewModel.getReservationFromDb(eventId)
+            viewModel.getParticipants(eventId)
+        }
     }
 
     // manage menu item selection
@@ -183,11 +197,14 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         reservationSportCenter = requireView().findViewById(R.id.reservationSportCenter)
         reservationSportCenterAddress = requireView().findViewById(R.id.reservationAddress)
         playgroundButton = requireView().findViewById(R.id.button_playground_details)
+        participants = requireView().findViewById(R.id.participantsContainer)
+        inviteButton = requireView().findViewById(R.id.button_invite)
         noEquipmentMessage = requireView().findViewById(R.id.noEquipmentMessage)
         reservationTotalPrice = requireView().findViewById(R.id.reservationPrice)
         equipment = requireView().findViewById(R.id.equipmentContainer)
         editButton = requireView().findViewById(R.id.editButton)
         deleteButton = requireView().findViewById(R.id.button_delete_reservation)
+        leaveReviewButton = requireView().findViewById(R.id.button_leave_review)
     }
 
     @SuppressLint("SetTextI18n")
@@ -246,9 +263,29 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         }
     }
 
+    private fun initializeParticipants(){
+        participants.removeAllViewsInLayout()
+
+        if(viewModel.participants.value != null && viewModel.participants.value!!.isNotEmpty()){
+
+            for((index, p) in viewModel.participants.value!!.withIndex()) {
+                val row = layoutInflater.inflate(R.layout.participant_row, participants, false)
+                row.id = index
+                val username = row.findViewById<TextView>(R.id.username)
+                username.text = p
+                participants.addView(row, index)
+            }
+        }
+    }
+
     private fun handlePlaygroundButton(playgroundId : Int){
         val bundle = bundleOf("id_playground" to playgroundId)
         navController.navigate(R.id.action_reservationDetailsFragment_to_PlaygroundDetailsFragment, bundle)
+    }
+
+    private fun handleInviteButton(reservationId : Int, sportId : Int){
+        val bundle = bundleOf("id_reservation" to reservationId, "id_sport" to sportId)
+        navController.navigate(R.id.action_reservationDetailsFragment_to_invitationFragment, bundle)
     }
 
     private fun toEditView() {

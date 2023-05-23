@@ -16,6 +16,9 @@ class ReservationDetailsViewModel @Inject constructor(
     private var _reservation = MutableLiveData<DetailedReservation>()
     val reservation: LiveData<DetailedReservation> = _reservation
 
+    private var _participants = MutableLiveData<List<String>>() //TODO: get something different from db
+    val participants: LiveData<List<String>> = _participants
+
     fun getReservationFromDb(reservationId: Int) {
 
         // get reservation from database
@@ -38,6 +41,15 @@ class ReservationDetailsViewModel @Inject constructor(
         dbThread.start()
 
         return true
+    }
+
+    fun getParticipants(reservationId: Int){
+        //TODO call IRepository
+        this._participants.postValue(
+            listOf(
+                "michelepistan", "fraros", "peppelazzara", "mariomastrandrea"
+            )
+        )
     }
 
 }

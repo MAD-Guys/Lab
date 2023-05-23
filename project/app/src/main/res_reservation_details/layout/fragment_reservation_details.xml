@@ -231,6 +231,56 @@
                         />
 
                     <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider"
+                        android:layout_marginVertical="12dp"
+                        />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Participants"
+                        android:fontFamily="@font/poppins_medium"
+                        android:gravity="center_horizontal"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:includeFontPadding="false"
+                        />
+
+                    <LinearLayout
+                        android:id="@+id/participantsContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_gravity="center_horizontal"
+                        />
+
+                    <Button
+                        android:id="@+id/button_invite"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:backgroundTint="@color/background_blue"
+                        android:fontFamily="@font/poppins_bold"
+                        android:paddingTop="10.5dp"
+                        android:paddingBottom="10.5dp"
+                        android:text="Invite people"
+                        android:textAllCaps="false"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                        android:textColor="@color/button_text_color"
+                        android:textSize="20sp"
+                        android:includeFontPadding="false"
+                        android:textAlignment="center"
+                        app:icon="@drawable/baseline_person_add_24"
+                        android:contentDescription="Go to invitation page"
+                        app:iconGravity="textStart"
+                        app:iconTint="@color/button_text_color"
+                        android:layout_gravity="center_horizontal"
+                        />
+
+                    <View
                         android:id="@+id/divider3"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"

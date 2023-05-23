@@ -61,6 +61,10 @@
                 android:name="mode"
                 android:defaultValue="edit" />
         </action>
+        <action
+            android:id="@+id/action_reservationDetailsFragment_to_invitationFragment"
+            app:destination="@id/invitationFragment"
+            app:enterAnim="@anim/custom_animation_slide_in_from_bottom" />
     </fragment>
 
     <fragment
@@ -264,5 +268,10 @@
             app:popExitAnim="@anim/custom_animation_slide_out_to_bottom"
             app:popUpTo="@id/playgroundsByCenterFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/invitationFragment"
+        android:name="it.polito.mad.sportapp.invitation.InvitationFragment"
+        android:label="fragment_invitation"
+        tools:layout="@layout/fragment_invitation" />
 
 </navigation>

@@ -23,20 +23,23 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.invitation.users_recycler_view.UserAdapter
 import it.polito.mad.sportapp.playground_details.PlaygroundDetailsFragment
 import it.polito.mad.sportapp.playground_details.handleAddReservationButton
-
-class InvitationFragment : Fragment() {
+@AndroidEntryPoint
+class InvitationFragment : Fragment(R.layout.fragment_invitation) {
 
     internal val viewModel by viewModels<InvitationViewModel>()
     internal var reservationId: Int = -1
     internal var reservationSportId: Int = -1
 
-    private lateinit var levelSpinner: Spinner
+    internal lateinit var levelSpinner: Spinner
     internal lateinit var usernameSearch: EditText
 
-    private lateinit var usersRecyclerView: RecyclerView
+    internal lateinit var usersRecyclerView: RecyclerView
+    internal val userAdapter = UserAdapter()
 
     // action bar
     internal var actionBar: ActionBar? = null
@@ -66,62 +69,23 @@ class InvitationFragment : Fragment() {
         reservationSportId = arguments?.getInt("id_sport") ?: -1
 
         // Retrieve views
-        levelSpinner = requireView().findViewById(R.id.level_spinner)
         usernameSearch = requireView().findViewById(R.id.search_username)
         usersRecyclerView = requireView().findViewById(R.id.users_container)
 
         // Init views
-        //TODO init level spinner
-
+        initLevelSpinner()
         usernameSearch.addTextChangedListener(textListenerInit())
-    }
 
-    //set observers
-    /* TODO
-
-    viewModel.users.observe(viewLifecycleOwner) {
-        if (viewModel.users.value != null) {
-            initUserList()
-        }
-    }
-
-    */
-}
-
-private fun InvitationFragment.menuInit() {
-    val menuHost: MenuHost = requireActivity()
-
-    menuHost.addMenuProvider(object : MenuProvider {
-        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-            menuInflater.inflate(R.menu.reservations_details_menu, menu)
-
-            actionBar?.let {
-                it.setDisplayHomeAsUpEnabled(true)
-                it.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
-                it.title = "Send invitations"
+        //set observers
+        viewModel.users.observe(viewLifecycleOwner) {
+            if (viewModel.users.value != null) {
+                initUserList()
             }
         }
-
-        override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-            return false
-        }
-
-    }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-}
-
-private fun InvitationFragment.textListenerInit(): TextWatcher {
-
-    return object : TextWatcher {
-        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            viewModel.searchUsers(usernameSearch.text.toString())
-        }
-
-        override fun afterTextChanged(p0: Editable?) {
-            viewModel.searchUsers(usernameSearch.text.toString())
-        }
-
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getUsersFromDb(reservationSportId)
+    }
 }
