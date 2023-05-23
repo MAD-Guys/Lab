@@ -51,6 +51,28 @@ class FireRepository : IRepository {
         // }
         //
 
+        this.getReviewByUserIdAndPlaygroundId("id", "play_id") {result ->
+            if(result.isError()) {
+                val errType = result.errorType()
+                errType.message()
+            }else {
+
+                val review = result.unwrap()
+            }
+
+            when(result) {
+                is FireResult.Error -> {
+                    val errorType = result.type
+                }
+                is FireResult.Success -> {
+                    val value = result.value
+                }
+            }
+
+
+        }
+
+
     }
 
     override fun updateUser(
