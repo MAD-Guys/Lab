@@ -27,6 +27,7 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
 
     private var reservationId: Int = -1
     internal lateinit var notificationStatus: NotificationStatus
+    private lateinit var notificationTimestamp: String
 
     // dialogs
     internal lateinit var acceptInvitationDialog: AlertDialog
@@ -69,11 +70,16 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
         // retrieve notification status
         notificationStatus = NotificationStatus.from(arguments?.getString("status") ?: "CANCELED")
 
+        // retrieve notification timestamp
+        notificationTimestamp = arguments?.getString("timestamp") ?: ""
+
         showToasty("error", requireContext(), "$notificationStatus")
 
-        // retrieve reservation from db
+        // retrieve reservation from db or navigate back
         if (reservationId != -1) {
             vm.getReservationFromDb(reservationId)
+        } else {
+            navController.popBackStack()
         }
 
         // initialize views

@@ -33,6 +33,7 @@ import androidx.navigation.NavController
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import es.dmoral.toasty.Toasty
+import it.polito.mad.sportapp.entities.NotificationStatus
 import java.io.File
 import java.io.FileDescriptor
 import java.io.FileOutputStream
@@ -516,12 +517,19 @@ internal fun hideProgressBar(progressBar: View, mainContent: View) {
 
 /* NOTIFICATION UTILITIES */
 
-internal fun createAndSendInvitationNotification(context: Context, reservationId: Int) {
+internal fun createAndSendInvitationNotification(
+    context: Context,
+    reservationId: Int,
+    notificationStatus: NotificationStatus,
+    notificationTimestamp: String
+) {
 
     // create notification intent and put extras
     val notificationIntent = Intent(context, SportAppActivity::class.java).apply {
         action = "NEW_INVITATION"
         putExtra("id_reservation", reservationId)
+        putExtra("status", notificationStatus.name)
+        putExtra("timestamp", notificationTimestamp)
     }
 
     // set notification sound
@@ -572,8 +580,10 @@ internal fun createAndSendInvitationNotification(context: Context, reservationId
 
 internal fun manageInvitationNotification(intent: Intent, navController: NavController) {
 
-    // get reservation id from intent
+    // get information from intent
     val reservationId = intent.getIntExtra("id_reservation", -1)
+    val notificationStatus = intent.getStringExtra("status") ?: "CANCELED"
+    val notificationTimestamp = intent.getStringExtra("timestamp") ?: ""
 
     showToasty(
         "info",
@@ -581,7 +591,11 @@ internal fun manageInvitationNotification(intent: Intent, navController: NavCont
         "$reservationId"
     )
 
-    val bundle = bundleOf("id_reservation" to reservationId)
+    val bundle = bundleOf(
+        "id_reservation" to reservationId,
+        "status" to notificationStatus,
+        "timestamp" to notificationTimestamp
+    )
 
     // navigate to reservation details fragment only if the user is logged in
     navController.navigate(

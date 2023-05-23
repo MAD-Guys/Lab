@@ -40,7 +40,7 @@
 
     <!-- Toasts -->
     <color name="toast_success">#7CB518</color>
-    <color name="toast_error">#A31621</color>
+    <color name="toast_error">#C51B29</color>
     <color name="toast_info">#5FC1F9</color>
     <color name="toast_warning">#FFBF00</color>
 

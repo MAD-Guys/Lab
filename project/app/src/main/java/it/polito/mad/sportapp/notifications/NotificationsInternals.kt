@@ -56,7 +56,7 @@ internal fun NotificationsFragment.recyclerViewInit() {
             .filter {
                 it.status == NotificationStatus.PENDING || it.status == NotificationStatus.ACCEPTED
             }
-            .sortedWith(compareBy<Notification> { it.publicationDate }.thenBy { it.publicationTime })
+            .sortedWith(compareByDescending<Notification> { it.publicationDate }.thenBy { it.publicationTime })
         )
 
         notificationsAdapter.notifyDataSetChanged()

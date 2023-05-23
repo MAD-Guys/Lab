@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="rejected_item_highlighted">#D6D6D6</color>
+    <color name="pending_notification_highlighted">@color/pale_lighter_orange</color>
 </resources>

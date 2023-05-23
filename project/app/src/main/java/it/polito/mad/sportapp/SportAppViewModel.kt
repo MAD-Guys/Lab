@@ -8,10 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.Notification
 import it.polito.mad.sportapp.entities.NotificationStatus
 import it.polito.mad.sportapp.model.LocalRepository
-import java.text.SimpleDateFormat
 import java.time.LocalDateTime
-import java.time.LocalTime
-import java.util.Locale
 import javax.inject.Inject
 
 /* View Model related to the SportApp Activity */
@@ -44,12 +41,17 @@ class SportAppViewModel @Inject constructor(
                     "asd423dsic9879xsdu98cs9d878dx98s7d987f98d7fg",
                     NotificationStatus.PENDING,
                     "@johndoe has invited you to play tennis",
-                    "2023-05-22T23:21:47.496"
+                    LocalDateTime.now().toString()
                 )
 
                 // add a new notification every two minutes
                 Thread.sleep(120000)
-                createAndSendInvitationNotification(context, reservationId)
+                createAndSendInvitationNotification(
+                    context,
+                    reservationId,
+                    notification.status,
+                    notification.timestamp
+                )
                 _notifications.postValue(_notifications.value?.apply { add(notification) })
 
                 adder++

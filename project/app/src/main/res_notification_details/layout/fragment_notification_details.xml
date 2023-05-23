@@ -383,7 +383,7 @@
                     android:layout_marginVertical="10sp"
                     android:layout_marginEnd="8sp"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/reject_button_color"
+                    android:backgroundTint="@color/pale_grey"
                     android:clickable="true"
                     android:contentDescription="@string/decline_button_content_description"
                     android:focusable="true"
@@ -396,12 +396,12 @@
                     android:textAlignment="center"
                     android:textAllCaps="false"
                     android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                    android:textColor="@color/white"
+                    android:textColor="@color/button_text_color"
                     android:textSize="16sp"
                     android:visibility="visible"
                     app:icon="@drawable/baseline_cancel_24"
                     app:iconGravity="textStart"
-                    app:iconTint="@color/white"
+                    app:iconTint="@color/button_text_color"
                     tools:ignore="RtlSymmetry" />
 
                 <!-- Accept Button -->
@@ -413,7 +413,7 @@
                     android:layout_marginVertical="10sp"
                     android:layout_marginStart="8sp"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/accept_button_color"
+                    android:backgroundTint="@color/primary_orange"
                     android:clickable="true"
                     android:contentDescription="@string/accept_button_content_description"
                     android:focusable="true"
@@ -426,24 +426,24 @@
                     android:textAlignment="center"
                     android:textAllCaps="false"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:textColor="@color/white"
+                    android:textColor="@color/button_text_color"
                     android:textSize="16sp"
                     android:visibility="visible"
                     app:icon="@drawable/baseline_add_task_24_notification_details"
                     app:iconGravity="textStart"
-                    app:iconTint="@color/white"
+                    app:iconTint="@color/button_text_color"
                     tools:ignore="RtlSymmetry, TextContrastCheck" />
 
                 <!-- Reject button -->
                 <Button
                     android:id="@+id/notification_details_reject_button"
                     style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="0dp"
+                    android:layout_width="1dp"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="10sp"
                     android:layout_marginEnd="8sp"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/reject_button_color"
+                    android:backgroundTint="@color/primary_orange"
                     android:clickable="true"
                     android:contentDescription="@string/reject_button_content_description"
                     android:focusable="true"
@@ -456,12 +456,12 @@
                     android:textAlignment="center"
                     android:textAllCaps="false"
                     android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                    android:textColor="@color/white"
+                    android:textColor="@color/button_text_color"
                     android:textSize="16sp"
                     android:visibility="gone"
                     app:icon="@drawable/baseline_delete_24"
                     app:iconGravity="textStart"
-                    app:iconTint="@color/white"
+                    app:iconTint="@color/button_text_color"
                     tools:ignore="RtlSymmetry" />
 
             </LinearLayout>
