@@ -79,7 +79,7 @@ class LocalRepository @Inject constructor(
     }
 
 
-    // FireReview methods
+    // Review methods
     private fun getAllReviewsByPlaygroundId(id: Int): List<Review> {
         val reviews = reviewDao.findByPlaygroundId(id)
         reviews.forEach {

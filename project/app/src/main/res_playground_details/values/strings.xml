@@ -6,6 +6,6 @@
     <string name="playground_details_add_reservation_button">add reservation</string>
 
 
-    <!-- FireReview item -->
+    <!-- Review item -->
     <string name="review_lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla id suscipit justo, scelerisque lacinia libero. Vivamus tincidunt velit ornare sapien feugiat dictum. Quisque condimentum faucibus ornare. Etiam lacus urna, ullamcorper a feugiat quis, facilisis ac ligula. Pellentesque porttitor varius nisl sed facilisis. Suspendisse potenti.</string>
 </resources>
