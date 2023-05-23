@@ -14,8 +14,10 @@ class InvitationViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _allUsers = MutableLiveData<MutableList<User>>()
-    private val _users : MutableLiveData<MutableList<User>> = _allUsers
+    private val _users = MutableLiveData<MutableList<User>>()
     val users : LiveData<MutableList<User>> = _users
+
+    private var sportId = -1
 
     fun getUsersFromDb(sportId : Int){
         //repository.getUsersBySport(sportId)
@@ -23,24 +25,42 @@ class InvitationViewModel @Inject constructor(
 
         // get all users from database
         val dbThread = Thread {
+            val user1 = repository.getUser(1)
             val user2 = repository.getUser(2)
             val user3 = repository.getUser(3)
             val user4 = repository.getUser(4)
             val user5 = repository.getUser(5)
 
-            _allUsers.postValue(mutableListOf(user2, user3, user4, user5))
+            _allUsers.postValue(mutableListOf(user1, user2, user3, user4, user5))
+            _users.postValue(mutableListOf(user1, user2, user3, user4, user5))
         }
 
         // start db thread
         dbThread.start()
+        this.sportId = sportId
 
     }
 
-    fun searchUsers(partialUsername: String) {
+    fun searchUsersByUsername(partialUsername: String) {
         //if partialUsername is "" search all
+        if(partialUsername == ""){
+            _users.postValue(_allUsers.value)
+        } else {
+            val temp = _allUsers.value?.filter { it.username.contains(partialUsername, true) }
+            _users.postValue(temp?.toMutableList())
+        }
     }
 
-    fun searchByLevel(justSelectedLevel: String?) {
-        //if level is null, search everyone who selected the given sport
+    fun searchUsersByLevel(level: String) {
+        if(level == "All"){
+            _users.postValue(_allUsers.value)
+        } else {
+            val temp = _allUsers.value?.filter { user -> user.sportLevel.any { it.sportId == sportId && it.level == level.uppercase() } }
+            _users.postValue(temp?.toMutableList())
+        }
+    }
+
+    fun sendInvitation(userId: Int) {
+        //TODO
     }
 }

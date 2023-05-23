@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
@@ -31,14 +32,25 @@ internal class NotificationsViewHolder(view: View) : RecyclerView.ViewHolder(vie
         val displayMetrics = itemView.context.resources.displayMetrics
         val displayWidth = displayMetrics.widthPixels
 
+        val typefacePoppinsMedium = ResourcesCompat.getFont(itemView.context, R.font.poppins_medium)
+        val typefacePoppinsSemibold =
+            ResourcesCompat.getFont(itemView.context, R.font.poppins_semibold)
+
         // set item components width
         notificationIcon.layoutParams.width = displayWidth / 7
-        notificationDescription.layoutParams.width = displayWidth / 14 * 9
-        notificationTimestamp.layoutParams.width = displayWidth / 14 * 3
+        notificationDescription.layoutParams.width = displayWidth / 14 * 11
+        notificationTimestamp.layoutParams.width = displayWidth / 14 * 1
 
         when (notification.status.name) {
-            "PENDING" -> notificationContainer.setBackgroundResource(R.color.pending_notification_highlighted)
-            else -> notificationContainer.setBackgroundResource(R.color.white)
+            "PENDING" -> {
+                notificationContainer.setBackgroundResource(R.color.pending_notification_highlighted)
+                notificationDescription.typeface = typefacePoppinsSemibold
+            }
+
+            else -> {
+                notificationContainer.setBackgroundResource(R.color.white)
+                notificationDescription.typeface = typefacePoppinsMedium
+            }
         }
 
         // add notification listener
@@ -54,8 +66,12 @@ internal class NotificationsViewHolder(view: View) : RecyclerView.ViewHolder(vie
                 .navigate(R.id.action_notificationsFragment_to_notificationDetailsFragment, bundle)
         }
 
-        // set notification text
+        // set text in notification text views
+
         notificationDescription.text = notification.description
+
+
+
         notificationTimestamp.text = getDaysAgo(notification.timestamp)
     }
 
@@ -108,7 +124,6 @@ internal class NotificationsViewHolder(view: View) : RecyclerView.ViewHolder(vie
                 } else {
                     "${difference / 60}" + "h"
                 }
-
 
                 returnValue
             }

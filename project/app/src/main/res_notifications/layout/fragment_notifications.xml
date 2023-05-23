@@ -3,9 +3,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_orange"
+    android:background="@color/background_calendar"
     android:orientation="vertical"
     tools:context=".notifications.NotificationsFragment">
+
+    <!-- progress bar -->
+    <FrameLayout
+        android:id="@+id/progress_bar_notifications"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-10sp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loading_text"
+            android:layout_gravity="center"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="18sp"
+            android:includeFontPadding="false"
+            tools:ignore="VisualLintOverlap" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyle"
+            android:layout_width="360dp"
+            android:layout_height="210dp"
+            android:layout_marginStart="80dp"
+            android:indeterminateDrawable="@drawable/steph_curry_gif" />
+    </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notifications_recycler_view"

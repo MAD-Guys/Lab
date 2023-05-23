@@ -42,12 +42,12 @@ internal fun InvitationFragment.textListenerInit(): TextWatcher {
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            viewModel.searchUsers(usernameSearch.text.toString())
+            viewModel.searchUsersByUsername(usernameSearch.text.toString())
             showToasty("info", requireContext(), "Search ${usernameSearch.text}")
         }
 
         override fun afterTextChanged(p0: Editable?) {
-            viewModel.searchUsers(usernameSearch.text.toString())
+            viewModel.searchUsersByUsername(usernameSearch.text.toString())
             showToasty("info", requireContext(), "Search ${usernameSearch.text}")
         }
 
@@ -59,7 +59,7 @@ internal fun InvitationFragment.initLevelSpinner() {
     val spinnerAdapter = ArrayAdapter(
         requireContext(),
         R.layout.level_spinner_item,
-        listOf("Beginner", "Intermediate", "Expert", "Pro")
+        listOf("All", "Beginner", "Intermediate", "Expert", "Pro")
     ).also {
         it.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
     }
@@ -76,11 +76,11 @@ internal fun InvitationFragment.initLevelSpinner() {
             // retrieve selected option
             val justSelectedLevel = spinnerAdapter.getItem(position)
             // update selected level
-            viewModel.searchByLevel(justSelectedLevel)
+            viewModel.searchUsersByLevel(justSelectedLevel!!)
         }
 
         override fun onNothingSelected(parent: AdapterView<*>?) {
-            viewModel.searchByLevel(null)
+            viewModel.searchUsersByLevel("All")
         }
     }
 }
@@ -98,3 +98,9 @@ internal fun InvitationFragment.initUserList() {
     }
     userAdapter.notifyDataSetChanged()
 }
+
+internal val InvitationFragment.inviteButtonListener: (Int) -> Unit
+    get() = { userId: Int ->
+        showToasty("success", this.requireContext(), "Invitation sent to user $userId")
+        viewModel.sendInvitation(userId)
+    }

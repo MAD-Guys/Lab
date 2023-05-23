@@ -1,33 +1,20 @@
 package it.polito.mad.sportapp.invitation
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Spinner
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.invitation.users_recycler_view.UserAdapter
-import it.polito.mad.sportapp.playground_details.PlaygroundDetailsFragment
-import it.polito.mad.sportapp.playground_details.handleAddReservationButton
+
 @AndroidEntryPoint
 class InvitationFragment : Fragment(R.layout.fragment_invitation) {
 
@@ -39,7 +26,7 @@ class InvitationFragment : Fragment(R.layout.fragment_invitation) {
     internal lateinit var usernameSearch: EditText
 
     internal lateinit var usersRecyclerView: RecyclerView
-    internal val userAdapter = UserAdapter()
+    internal val userAdapter = UserAdapter(inviteButtonListener)
 
     // action bar
     internal var actionBar: ActionBar? = null

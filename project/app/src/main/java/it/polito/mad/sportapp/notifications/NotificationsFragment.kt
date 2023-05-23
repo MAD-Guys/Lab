@@ -30,6 +30,9 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
     // action bar
     internal var actionBar: ActionBar? = null
 
+    // progress bar
+    internal lateinit var progressBar: View
+
     // navigation controller
     internal lateinit var navController: NavController
 
@@ -41,6 +44,9 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
 
         // get activity action bar
         actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+
+        // get progress bar
+        progressBar = view.findViewById(R.id.progress_bar_notifications)
 
         // initialize navigation controller
         navController = findNavController()

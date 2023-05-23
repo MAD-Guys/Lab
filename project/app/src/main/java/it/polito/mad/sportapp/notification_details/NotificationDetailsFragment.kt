@@ -3,10 +3,12 @@ package it.polito.mad.sportapp.notification_details
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
@@ -14,13 +16,15 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.NotificationStatus
-import it.polito.mad.sportapp.showToasty
 
 @AndroidEntryPoint
 class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_details) {
 
     // action bar
     internal var actionBar: ActionBar? = null
+
+    // progress bar
+    internal lateinit var progressBar: View
 
     // navigation controller
     internal lateinit var navController: NavController
@@ -36,6 +40,12 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
 
     // notification details view model
     internal val vm by activityViewModels<NotificationDetailsViewModel>()
+
+    // notification details main views
+    internal lateinit var notificationDetailsScrollView: ScrollView
+    internal lateinit var notificationDetailsCanceledMessage: ConstraintLayout
+    internal lateinit var notificationDetailsRejectedMessage: TextView
+    internal lateinit var notificationDetailsJoinQuestion: TextView
 
     // notification details text views
     internal lateinit var reservationOwner: TextView
@@ -61,6 +71,9 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
         // get activity action bar
         actionBar = (requireActivity() as AppCompatActivity).supportActionBar
 
+        // get progress bar
+        progressBar = view.findViewById(R.id.progress_bar_notifications_details)
+
         // initialize navigation controller
         navController = findNavController()
 
@@ -73,8 +86,6 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
         // retrieve notification timestamp
         notificationTimestamp = arguments?.getString("timestamp") ?: ""
 
-        showToasty("error", requireContext(), "$notificationStatus")
-
         // retrieve reservation from db or navigate back
         if (reservationId != -1) {
             vm.getReservationFromDb(reservationId)
@@ -83,6 +94,16 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
         }
 
         // initialize views
+
+        notificationDetailsScrollView =
+            requireView().findViewById(R.id.notification_details_scroll_view)
+        notificationDetailsCanceledMessage =
+            requireView().findViewById(R.id.notification_canceled_layout)
+        notificationDetailsRejectedMessage =
+            requireView().findViewById(R.id.notification_details_rejected_message)
+        notificationDetailsJoinQuestion =
+            requireView().findViewById(R.id.notification_details_join_question)
+
         reservationOwner =
             requireView().findViewById(R.id.notification_details_reservation_owner_username)
         playgroundName = requireView().findViewById(R.id.notification_details_playground_name)
@@ -101,7 +122,7 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
         setupObservers()
 
         // initialize menu
-        menuInit()
+        menuInit(true)
 
         // initialize dialogs
         initAcceptInvitationDialog()
