@@ -20,7 +20,7 @@ import it.polito.mad.sportapp.localDB.dao.ReservationDao
 import it.polito.mad.sportapp.localDB.dao.ReviewDao
 import it.polito.mad.sportapp.localDB.dao.SportDao
 import it.polito.mad.sportapp.localDB.dao.UserDao
-import it.polito.mad.sportapp.model.IRepository.NewReservationError
+import it.polito.mad.sportapp.entities.firestore.utilities.NewReservationError
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime

@@ -1,4 +1,6 @@
-package it.polito.mad.sportapp.entities.firestore
+package it.polito.mad.sportapp.entities.firestore.utilities
+
+import it.polito.mad.sportapp.entities.firestore.utilities.FireResult.*
 
 /**
  * Generic error Type for a failed generic Firestore operation. It just returns a message()
@@ -18,8 +20,14 @@ private const val defaultSerializationErrorMessage = "FireError: an error occurr
 /**
  * Default Firebase Error Type for generic operations
  */
-class DefaultFireError(val message: String=defaultErrorMessage) : FireErrorType {
+class DefaultFireError(private val message: String = defaultErrorMessage) : FireErrorType {
     override fun message() = message
+
+    companion object {
+        fun <T> withMessage(customMessage: String): Error<T, DefaultFireError> {
+            return Error(DefaultFireError(customMessage))
+        }
+    }
 }
 
 /**
@@ -40,22 +48,22 @@ enum class GetItemFireError(private var message: String) : FireErrorType {
         /**
          * Returns a DEFAULT_FIRE_ERROR instance with a custom error message
          */
-        fun default(message: String): GetItemFireError {
-            return DEFAULT_FIRE_ERROR.apply { this.message = message }
+        fun <T> default(message: String): Error<T,GetItemFireError> {
+            return Error(DEFAULT_FIRE_ERROR.apply { this.message = message })
         }
 
         /**
          * Returns a NOT_FOUND_ERROR instance with a custom error message
          */
-        fun notFound(message: String): GetItemFireError {
-            return NOT_FOUND_ERROR.apply { this.message = message }
+        fun <T> notFound(message: String): Error<T,GetItemFireError> {
+            return Error(NOT_FOUND_ERROR.apply { this.message = message })
         }
 
         /**
          * Returns a DESERIALIZATION_ERROR instance with a custom error message
          */
-        fun duringDeserialization(message: String): GetItemFireError {
-            return DESERIALIZATION_ERROR.apply { this.message = message }
+        fun <T> duringDeserialization(message: String): Error<T,GetItemFireError> {
+            return Error(DESERIALIZATION_ERROR.apply { this.message = message })
         }
     }
 }
@@ -78,22 +86,53 @@ enum class InsertItemFireError(private var message: String) : FireErrorType {
         /**
          * Returns a DEFAULT_FIRE_ERROR instance with a custom error message
          */
-        fun default(message: String): InsertItemFireError {
-            return DEFAULT_FIRE_ERROR.apply { this.message = message }
+        fun <T> default(message: String): Error<T,InsertItemFireError> {
+            return Error(DEFAULT_FIRE_ERROR.apply { this.message = message })
         }
 
         /**
          * Returns a CONFLICT_ERROR instance with a custom error message
          */
-        fun conflict(message: String): InsertItemFireError {
-            return CONFLICT_ERROR.apply { this.message = message }
+        fun <T> conflict(message: String): Error<T, InsertItemFireError> {
+            return Error(CONFLICT_ERROR.apply { this.message = message })
         }
 
         /**
          * Returns a SERIALIZATION_ERROR instance with a custom error message
          */
-        fun duringSerialization(message: String): InsertItemFireError {
-            return SERIALIZATION_ERROR.apply { this.message = message }
+        fun <T> duringSerialization(message: String): Error<T, InsertItemFireError> {
+            return Error(SERIALIZATION_ERROR.apply { this.message = message })
         }
     }
 }
+
+enum class NewReservationError(val message: String) : FireErrorType {
+    SLOT_CONFLICT(
+        "Ouch! the selected slots have just been booked by someone else \uD83D\uDE41. Please select new ones for your reservation!"
+    ),
+    EQUIPMENT_CONFLICT(
+        "Ouch! the selected equipments have just been booked by someone else \uD83D\uDE41. Please select new ones for your reservation!"
+    ),
+    UNEXPECTED_ERROR(
+        "An unexpected error occurred while saving your reservation. Please try again or check your connection status."
+    );
+
+    override fun message(): String {
+        return message
+    }
+
+    companion object {
+        fun <T> slotConflict(): Error<T, NewReservationError> {
+            return Error(SLOT_CONFLICT)
+        }
+
+        fun <T> equipmentConflict(): Error<T, NewReservationError> {
+            return Error(EQUIPMENT_CONFLICT)
+        }
+
+        fun <T> unexpected(): Error<T, NewReservationError> {
+            return Error(UNEXPECTED_ERROR)
+        }
+    }
+}
+

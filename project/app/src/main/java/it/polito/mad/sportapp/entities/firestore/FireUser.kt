@@ -1,9 +1,29 @@
 package it.polito.mad.sportapp.entities.firestore
 
+import android.util.Log
 import it.polito.mad.sportapp.entities.User
+import it.polito.mad.sportapp.entities.firestore.FireSportLevel.*
+
+
+enum class Gender(val gender: String) {
+    MALE("male"),
+    FEMALE("female"),
+    OTHER("other");
+
+    val index = this.ordinal.toLong()
+
+    companion object {
+        fun of(rawGender: Long?): Gender? {
+            if(rawGender == null || rawGender > Gender.values().size)
+                return null
+
+            return Gender.values()[rawGender.toInt()]
+        }
+    }
+}
 
 data class FireUser(
-    val uid: String,
+    val id: String,
     val firstName: String,
     val lastName: String,
     val username: String,
@@ -15,34 +35,28 @@ data class FireUser(
     val sportLevels: List<FireSportLevel>
 ) {
     /**
-     * This method serializes the FireUser object into a HashMap<String, Any> object to send to Firestore database
+     * Serialize the FireUser object into a Map<String, Any> object
+     * to send to the Firestore cloud database
      */
-    fun serialize(): Map<String, Any>? {
-        val map: Map<String, Any>? = mapOf(
-            "uid" to uid,
+    fun serialize(): Map<String, Any> {
+        return mapOf(
+            // no id included in serialization
             "firstName" to firstName,
             "lastName" to lastName,
             "username" to username,
-            "gender" to gender.name,
+            "gender" to gender.index,
             "age" to age,
             "location" to location,
             "imageURL" to imageURL,
             "bio" to bio,
-            "sportLevels" to sportLevels.map {
-                mapOf(
-                    "sportId" to it.sportId,
-                    "sportName" to it.sportName,
-                    "level" to it.sportLevel
-                )
-            }
+            "sportLevels" to sportLevels.map { it.serialize() }
         )
-
-        return map
     }
+
     /**
-     * This method converts the FireUser object into a User object
+     * Convert the FireUser object into a User object
      */
-    fun to() : User{
+    fun toUser() : User{
         return User(
             1,//TODO: id
             firstName,
@@ -57,59 +71,90 @@ data class FireUser(
 
     companion object {
         /**
-         * This method converts a User object into a FireUser object
+         * Convert a User object into a FireUser object
          */
         fun from(user: User): FireUser {
 
             return FireUser(
-                user.id.toString(),//TODO: uid
+                user.id.toString(), // TODO: uid
                 user.firstName,
                 user.lastName,
                 user.username,
                 Gender.valueOf(user.gender),
                 user.age.toLong(),
                 user.location,
-                "", //TODO: imageURL
+                "",     // TODO: imageURL
                 user.bio,
                 user.sportLevel.map {
                     FireSportLevel(
-                        it.sportId.toString(),//TODO: sportId
+                        it.sportId.toString(),  // TODO: sportId
                         it.sport!!,
-                        FireLevel.valueOf(it.level!!)
+                        Level.valueOf(it.level!!)
                     )
                 },
             )
         }
 
         /**
-         * This method deserializes a HashMap<String, Any> object coming from Firestore DB into a FireUser object
+         * This method deserializes a Map<String, Any> object coming from Firestore DB into
+         * a FireUser object; it returns 'null' if the deserialization fails
          */
-        fun deserialize(map: Map<String, Any>): FireUser {
-            return FireUser(
-                map["uid"] as String,
-                map["firstName"] as String,
-                map["lastName"] as String,
-                map["username"] as String,
-                Gender.valueOf(map["gender"] as String),
-                map["age"] as Long,
-                map["location"] as String,
-                map["imageURL"] as String,
-                map["bio"] as String,
-                (map["sportLevels"] as List<HashMap<String, Any>>).map {
-                    FireSportLevel(
-                        it["sportId"] as String,
-                        it["sportName"] as String,
-                        FireLevel.valueOf(it["level"] as String)
-                    )
+        fun deserialize(id: String, fireMap: Map<String, Any>?): FireUser? {
+            if (fireMap == null) {
+                // deserialization error
+                Log.d("deserialization error", "trying to deserialize a user with null data in FireUser.deserialize()")
+                return null
+            }
+
+            val firstName = fireMap["firstName"] as? String
+            val lastName = fireMap["lastName"] as? String
+            val username = fireMap["userName"] as? String
+            val gender = Gender.of(fireMap["gender"] as? Long)
+            val age = fireMap["age"] as? Long
+            val location = fireMap["location"] as? String
+            val imageURL = fireMap["imageURL"] as? String
+            val bio = fireMap["bio"] as? String
+            val rawSportLevels = fireMap["sportLevels"] as? List<*>
+
+            if (firstName == null || lastName == null || username == null || gender == null ||
+                age == null || location == null || imageURL == null || bio == null ||
+                rawSportLevels == null) {
+                // deserialization error
+                Log.d("deserialization error", "Error deserializing user plain properties")
+                return null
+            }
+
+            val sportLevels = rawSportLevels.map {
+                val rawSportLevel = it as? Map<*, *>? ?: return null    // deserialization error
+
+                val sportId = rawSportLevel["sportId"] as? String
+                val sportName = rawSportLevel["sportName"] as? String
+                val level = Level.of(rawSportLevel["level"] as? Long)
+
+                if (sportId == null || sportName == null || level == null) {
+                    // deserialization error
+                    Log.d("deserialization error", "Error deserializing user sport level")
+                    return null
                 }
+
+                FireSportLevel(sportId, sportName, level)
+            }
+
+            return FireUser(
+                id,
+                firstName,
+                lastName,
+                username,
+                gender,
+                age,
+                location,
+                imageURL,
+                bio,
+                sportLevels
             )
         }
     }
 }
 
 
-enum class Gender(gender: String) {
-    MALE("male"),
-    FEMALE("female"),
-    OTHER("other")
-}
+

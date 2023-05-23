@@ -1,6 +1,5 @@
 package it.polito.mad.sportapp.model
 
-import androidx.lifecycle.LiveData
 import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
 import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.entities.Equipment
@@ -10,24 +9,47 @@ import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.Notification
-import it.polito.mad.sportapp.entities.firestore.DefaultFireError
-import it.polito.mad.sportapp.entities.firestore.FireErrorType
-import it.polito.mad.sportapp.entities.firestore.FireResult
-import it.polito.mad.sportapp.entities.firestore.GetItemFireError
-import it.polito.mad.sportapp.entities.firestore.InsertItemFireError
-import java.lang.Exception
+import it.polito.mad.sportapp.entities.firestore.utilities.DefaultFireError
+import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
+import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
+import it.polito.mad.sportapp.entities.firestore.utilities.GetItemFireError
+import it.polito.mad.sportapp.entities.firestore.utilities.InsertItemFireError
+import it.polito.mad.sportapp.entities.firestore.utilities.NewReservationError
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
-import javax.security.auth.callback.Callback
 
 interface IRepository {
 
     // * User methods *
-    fun getUser(uid: String, fireCallback: (FireResult<User, GetItemFireError>) -> Unit)
-    fun userAlreadyExists(uid: String, fireCallback: (FireResult<Boolean, DefaultFireError>) -> Unit)
+
+    /**
+     * This method gets the user given its uid
+     * **Note**: the result is **dynamic**: the fireCallback gets called each time the user changes.
+     * Remember to **unregister** the listener once you don't need it anymore
+     */
+    fun getUser(userId: String, fireCallback: (FireResult<User, GetItemFireError>) -> Unit) : FireListener
+
+    /**
+     * Check if the user already exists or not
+     * Note: the result is retrieved as **static** (fireCallback is executed just once)
+     */
+    fun userAlreadyExists(userId: String, fireCallback: (FireResult<Boolean, DefaultFireError>) -> Unit)
+
+    /**
+     * Check if a given username already exists or not
+     * Note: the result is retrieved as **static** (fireCallback is executed just once)
+     */
     fun usernameAlreadyExists(username: String, fireCallback: (FireResult<Boolean, DefaultFireError>) -> Unit)
+
+    /**
+     * Insert a new user in the cloud Firestore db inside users collection
+     */
     fun insertNewUser(user: User, fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit)
+
+    /**
+     * Update an existing user
+     */
     fun updateUser(user: User, fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit)
 
     // * Sport methods *
@@ -38,7 +60,7 @@ interface IRepository {
         uid: String,
         playgroundId: String,
         fireCallback: (FireResult<Review, GetItemFireError>) -> Unit
-    )
+    ) : FireListener
 
     fun updateReview(review: Review, fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit)
     fun deleteReview(review: Review, fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit)
@@ -47,7 +69,7 @@ interface IRepository {
     fun getDetailedReservationById(
         reservationId: String,
         fireCallback: (FireResult<DetailedReservation, GetItemFireError>) -> Unit
-    )
+    ) : FireListener
 
     /**
      * Create a new reservation in the DB, or override the existing one if
@@ -68,7 +90,7 @@ interface IRepository {
     fun getReservationsPerDateByUserId(
         uid: String,
         fireCallback: (FireResult<Map<LocalDate, List<DetailedReservation>>, GetItemFireError>) -> Unit
-    )
+    ) : FireListener
 
     fun addUserToReservation(
         reservationId: String,
@@ -84,7 +106,7 @@ interface IRepository {
         startDateTime: LocalDateTime,
         endDateTime: LocalDateTime,
         fireCallback: (FireResult<MutableMap<Int, Equipment>, DefaultFireError>) -> Unit
-    )
+    ) : FireListener
 
     fun deleteReservation(
         reservation: DetailedReservation,
@@ -95,7 +117,7 @@ interface IRepository {
     fun getPlaygroundInfoById(
         playgroundId: String,
         fireCallback: (FireResult<PlaygroundInfo, GetItemFireError>) -> Unit
-    )
+    ) : FireListener
 
     fun getAvailablePlaygroundsPerSlot(
         month: YearMonth, sport: Sport?, fireCallback: (
@@ -103,29 +125,18 @@ interface IRepository {
                     MutableMap<LocalDate, MutableMap<LocalDateTime, MutableList<DetailedPlaygroundSport>>>,
                     DefaultFireError>
         ) -> Unit
-    )
+    ) : FireListener
 
-    fun getAllPlaygroundsInfo(fireCallback: (FireResult<List<PlaygroundInfo>, DefaultFireError>) -> Unit)
+    fun getAllPlaygroundsInfo(fireCallback: (FireResult<List<PlaygroundInfo>, DefaultFireError>) -> Unit): FireListener
 
     // * Notification methods *
-    fun getNotificationsByUserId(uid: String, fireCallback: (FireResult<MutableList<Notification>, DefaultFireError>) -> Unit)
-    fun deleteNotification(notificationId: String, fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit)
+    fun getNotificationsByUserId(
+        userId: String,
+        fireCallback: (FireResult<MutableList<Notification>, DefaultFireError>) -> Unit
+    ): FireListener
 
-    // * enums *
-
-    enum class NewReservationError(val message: String) : FireErrorType{
-        SLOT_CONFLICT(
-            "Ouch! the selected slots have just been booked by someone else \uD83D\uDE41. Please select new ones for your reservation!"
-        ),
-        EQUIPMENT_CONFLICT(
-            "Ouch! the selected equipments have just been booked by someone else \uD83D\uDE41. Please select new ones for your reservation!"
-        ),
-        UNEXPECTED_ERROR(
-            "An unexpected error occurred while saving your reservation. Please try again or check your connection status."
-        );
-
-        override fun message(): String {
-            return message
-        }
-    }
+    fun deleteNotification(
+        notificationId: String,
+        fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
+    )
 }

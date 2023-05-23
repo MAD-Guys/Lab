@@ -1,4 +1,4 @@
-package it.polito.mad.sportapp.entities.firestore
+package it.polito.mad.sportapp.entities.firestore.utilities
 
 /**
  * Class to represent the result of a general operation in the Firestore cloud db (ex: get, insert,
@@ -37,14 +37,16 @@ package it.polito.mad.sportapp.entities.firestore
  *  Note: if the operation does not have any explicit return value, T will be Unit
  */
 sealed class FireResult<T, ErrorType: FireErrorType> {
-
     /**
      * Class representing a *Failed* operation's result in Firestore operations. It contains
      * an error explaining the reason of the failure.
      * You can access that error in the 'type' property, or with the error() methods. Each error type
      * has a related message, accessible with message() methods
      */
-    class Error<T, ErrorType: FireErrorType>(val type: ErrorType) : FireResult<T, ErrorType>() {
+    class Error<T, ErrorType: FireErrorType>(
+        val type: ErrorType
+    ) : FireResult<T, ErrorType>()
+    {
         override fun isError() = true
         override fun isSuccess() = false
 
@@ -69,7 +71,10 @@ sealed class FireResult<T, ErrorType: FireErrorType> {
      * the result (of type T) of that operation.
      * You can access that result value in the 'value' property, or with the unwrap() methods
      */
-    class Success<T, ErrorType: FireErrorType>(val value: T) : FireResult<T, ErrorType>() {
+    class Success<T, ErrorType: FireErrorType>(
+        val value: T
+    ) : FireResult<T, ErrorType>()
+    {
         override fun isError() = false
         override fun isSuccess() = true
 
