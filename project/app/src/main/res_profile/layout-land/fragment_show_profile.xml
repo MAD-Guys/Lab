@@ -35,7 +35,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/user_profile_picture_noaplha"
+            app:srcCompat="@drawable/user_profile_picture_noalpha"
             tools:ignore="ImageContrastCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

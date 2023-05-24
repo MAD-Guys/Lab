@@ -12,6 +12,7 @@ import it.polito.mad.sportapp.entities.PlaygroundInfo
 import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.User
+import it.polito.mad.sportapp.entities.firestore.FireSport
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult.*
@@ -84,7 +85,7 @@ class FireRepository : IRepository {
                 // transform to user entity
                 val user = fireUser.toUser()
 
-                // compute user achievements
+                // compute user achievements (statically)
                 this.buildAchievements(userId) { result ->
                     when (result) {
                         is Success -> {
@@ -109,7 +110,17 @@ class FireRepository : IRepository {
         userId: String,
         fireCallback: (FireResult<Map<Achievement, Boolean>, GetItemFireError>) -> Unit
     ) {
-        // TODO: compute achievements statically
+        // TODO: statically compute the real achievements of user $userId
+        fireCallback(Success(
+            mapOf(
+                Achievement.AtLeastOneSport to false,
+                Achievement.AtLeastFiveSports to false,
+                Achievement.AllSports to false,
+                Achievement.AtLeastThreeMatches to false,
+                Achievement.AtLeastTenMatches to false,
+                Achievement.AtLeastTwentyFiveMatches to false,
+            )
+        ))
     }
 
     /**
@@ -215,7 +226,7 @@ class FireRepository : IRepository {
         // * user id is not null *
 
         // serialize it
-        val serializedUser: Map<String,Any> = fireUser.serialize()
+        val serializedUser = fireUser.serialize()
 
         db.collection("users")
             .document(fireUser.id)
@@ -238,8 +249,48 @@ class FireRepository : IRepository {
      * Retrieve all the sports
      * Note: the result is retrieved as **static** (fireCallback is executed just once)
      */
-    override fun getAllSports(fireCallback: (FireResult<List<Sport>, DefaultFireError>) -> Unit) {
-        TODO()
+    override fun getAllSports(fireCallback: (FireResult<List<Sport>, GetItemFireError>) -> Unit) {
+        db.collection("sports")
+            .get()
+            .addOnSuccessListener { result ->
+                if(result == null) {
+                    Log.d("generic error", "Error: a generic error occurred retrieving all Sports in FireRepository.getAllSports()")
+                    fireCallback(GetItemFireError.default(
+                        "Error: a generic error occurred retrieving all Sports"
+                    ))
+                    return@addOnSuccessListener
+                }
+
+                val allSports = mutableListOf<Sport>()
+
+                for (document in result) {
+                    val deserializedSport = FireSport.deserialize(document.id, document.data)
+
+                    if (deserializedSport == null) {
+                        // deserialization error
+                        Log.d("deserialization error", "Error: an error occurred deserializing sport document with id ${document.id} in FireRepository.getAllSports()")
+                        fireCallback(
+                            GetItemFireError.duringDeserialization(
+                                "Error: an error occurred deserializing sport document with id ${document.id}"
+                            )
+                        )
+                        return@addOnSuccessListener
+                    }
+
+                    // convert to entity
+                    val sport = deserializedSport.toSport()
+                    allSports.add(sport)
+                }
+
+                // return successfully
+                fireCallback(Success(allSports))
+            }
+            .addOnFailureListener {
+                Log.d("generic error", "Error: a generic error occurred retrieving all Sports in FireRepository.getAllSports(). Message: ${it.message}")
+                fireCallback(GetItemFireError.default(
+                    "Error: a generic error occurred retrieving all Sports"
+                ))
+            }
     }
 
     /* reviews */

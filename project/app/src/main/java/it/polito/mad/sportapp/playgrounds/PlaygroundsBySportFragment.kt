@@ -23,6 +23,7 @@ class PlaygroundsBySportFragment : Fragment(R.layout.playgrounds_view)
     private val viewModel by activityViewModels<PlaygroundsViewModel>()
 
     private lateinit var progressBar: View
+    private lateinit var scrollView: View
 
     // playgrounds overlay bar
     private lateinit var playgroundsOverlayBar: View
@@ -34,6 +35,7 @@ class PlaygroundsBySportFragment : Fragment(R.layout.playgrounds_view)
         super.onViewCreated(view, savedInstanceState)
 
         progressBar = view.findViewById(R.id.progressBar)
+        scrollView = view.findViewById(R.id.playgrounds_scroll_view_container)
 
         // retrieve bottom overlay bar to navigate between the two list views
         playgroundsOverlayBar = requireActivity().findViewById(R.id.overlay_bottom_bar)
@@ -44,8 +46,6 @@ class PlaygroundsBySportFragment : Fragment(R.layout.playgrounds_view)
         view.findViewById<View>(R.id.default_playgrounds_container).visibility = View.GONE
 
         // setup playgrounds recycler view
-        val playgroundsRecyclerView = view.findViewById<RecyclerView>(R.id.playgrounds_rv)
-        playgroundsRecyclerView.visibility = View.VISIBLE
 
         val playgroundsAdapter = PlaygroundsAdapter(
             PlaygroundOrderKey.SPORT,
@@ -58,6 +58,7 @@ class PlaygroundsBySportFragment : Fragment(R.layout.playgrounds_view)
             findNavController().navigate(R.id.action_playgroundsBySportFragment_to_PlaygroundDetailsFragment, params)
         }
 
+        val playgroundsRecyclerView = view.findViewById<RecyclerView>(R.id.playgrounds_rv)
         playgroundsRecyclerView.apply {
             layoutManager = LinearLayoutManager(
                 requireContext(), RecyclerView.VERTICAL, false
@@ -70,7 +71,7 @@ class PlaygroundsBySportFragment : Fragment(R.layout.playgrounds_view)
             if (it.isEmpty()) {
                 // show progress bar and hide playgrounds
                 progressBar.visibility = View.VISIBLE
-                playgroundsRecyclerView.visibility = View.GONE
+                scrollView.visibility = View.GONE
             }
 
             // when playgrounds change, set recycler view new data
@@ -83,7 +84,7 @@ class PlaygroundsBySportFragment : Fragment(R.layout.playgrounds_view)
             if (it.isNotEmpty()) {
                 // hide progress bar and show playgrounds
                 progressBar.visibility = View.GONE
-                playgroundsRecyclerView.visibility = View.VISIBLE
+                scrollView.visibility = View.VISIBLE
             }
         }
     }

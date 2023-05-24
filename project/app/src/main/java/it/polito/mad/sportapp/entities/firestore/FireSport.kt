@@ -1,6 +1,7 @@
 package it.polito.mad.sportapp.entities.firestore
 
 import android.util.Log
+import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.room.RoomSport
 
 data class FireSport(
@@ -9,6 +10,32 @@ data class FireSport(
     val emoji: String,
     val maxParticipants: Long
 ) {
+    /**
+     * convert Firestore sport document to Sport entity
+     */
+    fun toSport(): Sport {
+        return Sport(
+            id,
+            name,
+            emoji,
+            maxParticipants.toInt()
+        )
+    }
+
+    /**
+     * Serialize sport document data to send it to cloud firestore db
+     */
+    fun serialize(): Map<String, Any> {
+        return mapOf(
+            // no id included in serialization
+            "name" to name,
+            "emoji" to emoji,
+            "maxParticipants" to maxParticipants
+        )
+    }
+
+
+
     companion object {
         /**
          * Deserialize a Map<String,Any> coming from Firestore in a proper FireSport object

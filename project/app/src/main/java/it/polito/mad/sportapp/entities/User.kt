@@ -11,10 +11,10 @@ data class User (
     val gender: String,
     val age: Int,
     val location: String,
-    val imageURL: String,  // TODO
+    val imageURL: String?,  // TODO
     val bio: String,
 ) {
-    var sportLevel: List<SportLevel> = listOf()
+    var sportLevels: List<SportLevel> = listOf()
 
     var achievements : Map<Achievement,Boolean> = mapOf(
         AtLeastOneSport to false,

@@ -57,7 +57,7 @@ interface IRepository {
      * Retrieve all the sports
      * Note: the result is retrieved as **static** (fireCallback is executed just once)
      */
-    fun getAllSports(fireCallback: (FireResult<List<Sport>, DefaultFireError>) -> Unit)
+    fun getAllSports(fireCallback: (FireResult<List<Sport>, GetItemFireError>) -> Unit)
 
     // * Review methods *
     fun getReviewByUserIdAndPlaygroundId(

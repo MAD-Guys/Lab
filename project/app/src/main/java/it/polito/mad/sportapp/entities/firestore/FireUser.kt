@@ -6,9 +6,9 @@ import it.polito.mad.sportapp.entities.firestore.FireSportLevel.*
 
 
 enum class Gender(val gender: String) {
-    MALE("male"),
-    FEMALE("female"),
-    OTHER("other");
+    Male("male"),
+    Female("female"),
+    Other("other");
 
     val index = this.ordinal.toLong()
 
@@ -30,7 +30,7 @@ data class FireUser(
     val gender: Gender,
     val age: Long,
     val location: String,
-    val imageURL: String,
+    val imageURL: String?,
     val bio: String,
     val sportLevels: List<FireSportLevel>
 ) {
@@ -38,7 +38,7 @@ data class FireUser(
      * Serialize the FireUser object into a Map<String, Any> object
      * to send to the Firestore cloud database
      */
-    fun serialize(): Map<String, Any> {
+    fun serialize(): Map<String, Any?> {
         return mapOf(
             // no id included in serialization
             "firstName" to firstName,
@@ -54,20 +54,25 @@ data class FireUser(
     }
 
     /**
-     * Convert the FireUser object into a User object
+     * Convert the FireUser object into a User entity
      */
     fun toUser() : User {
-        return User(
+        val entity = User(
             id,
             firstName,
             lastName,
             username,
-            gender.name,
+            gender.gender.substring(0,1).uppercase() + gender.gender.substring(1),
             age.toInt(),
             location,
             imageURL,
             bio
         )
+
+        // add user sport levels
+        entity.sportLevels = sportLevels.map { it.toSportLevel() }
+
+        return entity
     }
 
     companion object {
@@ -86,7 +91,7 @@ data class FireUser(
                 user.location,
                 user.imageURL,
                 user.bio,
-                user.sportLevel.map {
+                user.sportLevels.map {
                     FireSportLevel(
                         it.sportId,
                         it.sport!!,
@@ -109,16 +114,16 @@ data class FireUser(
 
             val firstName = fireMap["firstName"] as? String
             val lastName = fireMap["lastName"] as? String
-            val username = fireMap["userName"] as? String
+            val username = fireMap["username"] as? String
             val gender = Gender.of(fireMap["gender"] as? Long)
             val age = fireMap["age"] as? Long
             val location = fireMap["location"] as? String
-            val imageURL = fireMap["imageURL"] as? String
+            val imageURL = fireMap["imageURL"] as? String?
             val bio = fireMap["bio"] as? String
             val rawSportLevels = fireMap["sportLevels"] as? List<*>
 
             if (firstName == null || lastName == null || username == null || gender == null ||
-                age == null || location == null || imageURL == null || bio == null ||
+                age == null || location == null || bio == null ||
                 rawSportLevels == null) {
                 // deserialization error
                 Log.d("deserialization error", "Error deserializing user plain properties")
@@ -126,19 +131,11 @@ data class FireUser(
             }
 
             val sportLevels = rawSportLevels.map {
-                val rawSportLevel = it as? Map<*, *>? ?: return null    // deserialization error
+                @Suppress("UNCHECKED_CAST")
+                val rawSportLevel = it as? Map<String, Any>
+                val deserializedSportLevel = FireSportLevel.deserialize(rawSportLevel) ?: return null
 
-                val sportId = rawSportLevel["sportId"] as? String
-                val sportName = rawSportLevel["sportName"] as? String
-                val level = Level.of(rawSportLevel["level"] as? Long)
-
-                if (sportId == null || sportName == null || level == null) {
-                    // deserialization error
-                    Log.d("deserialization error", "Error deserializing user sport level")
-                    return null
-                }
-
-                FireSportLevel(sportId, sportName, level)
+                deserializedSportLevel
             }
 
             return FireUser(

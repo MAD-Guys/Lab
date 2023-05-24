@@ -72,13 +72,6 @@ internal fun FragmentActivity.getDisplayMeasures(): Pair<Int, Int> {
     }
 }
 
-/* Navigation between Activities utilities */
-internal fun AppCompatActivity.navigateTo(activity: Class<*>): Boolean {
-    // Create Intent and launch Activity
-    val intent = Intent(this, activity)
-    startActivity(intent)
-    return true
-}
 
 /**
  * Change profile picture size:
@@ -445,36 +438,6 @@ internal fun fastblur(bitmapParam: Bitmap, scale: Float, radius: Int): Bitmap? {
     Log.e("pix", w.toString() + " " + h + " " + pix.size)
     bitmap.setPixels(pix, 0, w, 0, 0, w, h)
     return bitmap
-}
-
-/* measures utilities */
-
-fun Float.dpToPx(context: Context): Int {
-    return TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP,
-        this,
-        context.resources.displayMetrics
-    ).toInt()
-}
-
-fun Float.spToPx(context: Context): Int {
-    return TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_SP,
-        this,
-        context.resources.displayMetrics
-    ).toInt()
-}
-
-fun Int.pxToDp(context: Context): Float {
-    return this.toFloat() / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
-}
-
-fun dpToPx(context: Context, dp: Float): Int {
-    return TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP,
-        dp,
-        context.resources.displayMetrics
-    ).roundToInt()
 }
 
 /* time utilities */

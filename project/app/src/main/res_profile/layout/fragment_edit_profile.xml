@@ -46,7 +46,7 @@
                     app:layout_constraintDimensionRatio="1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:srcCompat="@drawable/user_profile_picture_noaplha"
+                    app:srcCompat="@drawable/user_profile_picture_noalpha"
                     tools:ignore="ImageContrastCheck" />
                 <!-- Button to change profile picture -->
                 <ImageButton
