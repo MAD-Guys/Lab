@@ -1,4 +1,4 @@
-package it.polito.mad.sportapp.entities
+package it.polito.mad.sportapp.entities.room
 
 import androidx.room.ColumnInfo
 import androidx.room.Ignore
@@ -10,18 +10,17 @@ import java.time.LocalTime
 //Useful classes for the queries in join operations
 
 //data class for the join between user and sport to get the level of the sport played by the user
-data class SportLevel(
+data class RoomSportLevel(
     @ColumnInfo(name = "sport_id")
     val sportId: Int,
     @ColumnInfo(name = "name")
     val sport: String?,
     @ColumnInfo(name = "level")
     val level: String?
-
 )
 
 // notification data class
-data class Notification(
+data class RoomNotification(
     @ColumnInfo(name = "id")
     val id: Int,
     @ColumnInfo(name = "type")
@@ -35,7 +34,7 @@ data class Notification(
     @ColumnInfo(name = "profile_url")
     val profileUrl: String,
     @ColumnInfo(name = "status")
-    val status: NotificationStatus,
+    val status: RoomNotificationStatus,
     @ColumnInfo(name = "description")
     val description: String,
     @ColumnInfo(name = "timestamp")
@@ -49,7 +48,7 @@ data class Notification(
 }
 
 // notification status enum
-enum class NotificationStatus {
+enum class RoomNotificationStatus {
     ACCEPTED, REJECTED, PENDING, CANCELED;
 
     companion object {
@@ -63,7 +62,7 @@ enum class NotificationStatus {
     }
 }
 
-data class DetailedReservation(
+data class RoomDetailedReservation(
     @ColumnInfo(name = "id")
     val id: Int,
     @ColumnInfo(name = "user_id")
@@ -111,7 +110,7 @@ data class DetailedReservation(
     var endTime: LocalTime = LocalTime.parse(endDateTime.substring(11, 19))
 
     @Ignore
-    var equipments: MutableList<DetailedEquipmentReservation> = mutableListOf()
+    var equipments: MutableList<RoomDetailedEquipmentReservation> = mutableListOf()
 
     @Ignore
     val duration = Duration.between(
@@ -132,7 +131,7 @@ data class DetailedReservation(
     }
 }
 
-data class DetailedReservationForAvailablePlaygrounds(
+data class RoomDetailedReservationForAvailablePlaygrounds(
     @ColumnInfo(name = "start_date_time")
     val startDateTime: String,
     @ColumnInfo(name = "end_date_time")
@@ -166,7 +165,7 @@ data class DetailedReservationForAvailablePlaygrounds(
     var endLocalDateTime: LocalDateTime = LocalDateTime.parse(endDateTime)
 }
 
-data class DetailedPlayground(
+data class RoomDetailedPlayground(
     @ColumnInfo(name = "sport_id", index = true)
     val sportId: Int,
     @ColumnInfo(name = "sport_emoji")
@@ -197,7 +196,7 @@ data class DetailedPlayground(
     val closingTime: LocalTime = LocalTime.parse(closingHours)
 }
 
-data class PlaygroundInfo(
+data class RoomPlaygroundInfo(
     @ColumnInfo(name = "playground_id")
     val playgroundId: Int,
     @ColumnInfo(name = "playground_name")
@@ -220,8 +219,6 @@ data class PlaygroundInfo(
     val closingTime: String,
     @ColumnInfo(name = "price_per_hour")
     val pricePerHour: Float
-
-
 ) {
     @Ignore
     var overallQualityRating: Float = 0f
@@ -239,10 +236,10 @@ data class PlaygroundInfo(
     var overallRating: Float = (overallQualityRating + overallFacilitiesRating) / 2
 
     @Ignore
-    var reviewList: List<Review> = listOf()
+    var reviewList: List<RoomReview> = listOf()
 }
 
-enum class Achievement {
+enum class RoomAchievement {
     AtLeastOneSport,
     AtLeastFiveSports,
     AllSports,
@@ -251,7 +248,7 @@ enum class Achievement {
     AtLeastTwentyFiveMatches
 }
 
-data class DetailedEquipmentReservation(
+data class RoomDetailedEquipmentReservation(
     @ColumnInfo(name = "playground_reservation_id")
     val playgroundReservationId: Int,
     @ColumnInfo(name = "equipment_id")
@@ -266,7 +263,7 @@ data class DetailedEquipmentReservation(
     val totalPrice: Float
 )
 
-data class EquipmentReservationForAvailabilities(
+data class RoomEquipmentReservationForAvailabilities(
     @ColumnInfo(name = "start_date_time")
     val startDateTime: String,
     @ColumnInfo(name = "end_date_time")
@@ -293,8 +290,8 @@ data class EquipmentReservationForAvailabilities(
     @Ignore
     var endLocalDateTime: LocalDateTime = LocalDateTime.parse(endDateTime)
 
-    fun clone(): EquipmentReservationForAvailabilities {
-        return EquipmentReservationForAvailabilities(
+    fun clone(): RoomEquipmentReservationForAvailabilities {
+        return RoomEquipmentReservationForAvailabilities(
             startDateTime,
             endDateTime,
             equipmentId,
@@ -310,7 +307,7 @@ data class EquipmentReservationForAvailabilities(
 
 /* add/edit reservation */
 
-data class NewReservation(
+data class RoomNewReservation(
     val id: Int,
     val startTime: LocalDateTime,
     val endTime: LocalDateTime,
@@ -323,10 +320,10 @@ data class NewReservation(
     val sportCenterId: Int,
     val sportCenterName: String,
     val sportCenterAddress: String,
-    val selectedEquipments: List<NewReservationEquipment>
+    val selectedEquipments: List<RoomNewReservationEquipment>
 )
 
-data class NewReservationEquipment(
+data class RoomNewReservationEquipment(
     val equipmentId: Int,
     val equipmentName: String,
     val selectedQuantity: Int,

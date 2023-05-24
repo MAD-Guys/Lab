@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.sportapp.entities.DetailedReservation
+import it.polito.mad.sportapp.entities.room.RoomDetailedReservation
 import it.polito.mad.sportapp.model.LocalRepository
 import java.time.LocalDate
 import java.time.YearMonth
@@ -18,8 +18,8 @@ class ShowReservationsViewModel @Inject constructor(
 ) : ViewModel() {
 
     // mutable live data for the user events
-    private var _userEvents = MutableLiveData<Map<LocalDate, List<DetailedReservation>>>()
-    val userEvents: LiveData<Map<LocalDate, List<DetailedReservation>>> = _userEvents
+    private var _userEvents = MutableLiveData<Map<LocalDate, List<RoomDetailedReservation>>>()
+    val userEvents: LiveData<Map<LocalDate, List<RoomDetailedReservation>>> = _userEvents
 
     // mutable live data for the current month, the selected date and the previous selected date
     private val _currentMonth = MutableLiveData<YearMonth>().also { it.value = YearMonth.now() }

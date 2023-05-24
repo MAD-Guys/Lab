@@ -1,21 +1,21 @@
-package it.polito.mad.sportapp.entities
+package it.polito.mad.sportapp.entities.room
 
 import androidx.room.*
 
 @Entity(
     tableName = "playground_sport",
     foreignKeys = [ForeignKey(
-        entity = Sport::class,
+        entity = RoomSport::class,
         parentColumns = ["id"],
         childColumns = ["sport_id"]
     ),
         ForeignKey(
-            entity = SportCenter::class,
+            entity = RoomSportCenter::class,
             parentColumns = ["id"],
             childColumns = ["sport_center_id"]
         )]
 )
-data class PlaygroundSport(
+data class RoomPlaygroundSport(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     @ColumnInfo(name = "sport_id", index = true)

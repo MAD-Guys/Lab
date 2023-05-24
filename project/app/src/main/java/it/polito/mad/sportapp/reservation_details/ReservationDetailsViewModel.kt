@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.sportapp.entities.DetailedReservation
+import it.polito.mad.sportapp.entities.room.RoomDetailedReservation
 import it.polito.mad.sportapp.model.LocalRepository
 import javax.inject.Inject
 
@@ -13,8 +13,8 @@ class ReservationDetailsViewModel @Inject constructor(
     private val repository: LocalRepository
 ) : ViewModel() {
 
-    private var _reservation = MutableLiveData<DetailedReservation>()
-    val reservation: LiveData<DetailedReservation> = _reservation
+    private var _reservation = MutableLiveData<RoomDetailedReservation>()
+    val reservation: LiveData<RoomDetailedReservation> = _reservation
 
     private var _participants = MutableLiveData<List<String>>() //TODO: get something different from db
     val participants: LiveData<List<String>> = _participants

@@ -3,10 +3,10 @@ package it.polito.mad.sportapp.localDB.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import it.polito.mad.sportapp.entities.DetailedEquipmentReservation
-import it.polito.mad.sportapp.entities.Equipment
-import it.polito.mad.sportapp.entities.EquipmentReservation
-import it.polito.mad.sportapp.entities.EquipmentReservationForAvailabilities
+import it.polito.mad.sportapp.entities.room.RoomDetailedEquipmentReservation
+import it.polito.mad.sportapp.entities.room.RoomEquipment
+import it.polito.mad.sportapp.entities.room.RoomEquipmentReservation
+import it.polito.mad.sportapp.entities.room.RoomEquipmentReservationForAvailabilities
 
 @Dao
 interface EquipmentDao {
@@ -15,10 +15,10 @@ interface EquipmentDao {
     fun getEquipmentIfAvailable(playgroundId: Int, equipmentId: Int): Int
 
     @Query("SELECT * FROM equipment WHERE sport_center_id LIKE :sportCenterId AND availability > 0")
-    fun findBySportCenterId(sportCenterId: Int): List<Equipment>
+    fun findBySportCenterId(sportCenterId: Int): List<RoomEquipment>
 
     @Query("SELECT * FROM equipment WHERE sport_center_id LIKE :sportCenterId AND sport_id LIKE :sportId AND availability > 0")
-    fun findBySportCenterIdAndSportId(sportCenterId: Int, sportId: Int): List<Equipment>
+    fun findBySportCenterIdAndSportId(sportCenterId: Int, sportId: Int): List<RoomEquipment>
 
     @Query(
         "SELECT PR.start_date_time, PR.end_date_time, E.id AS equipment_id, E.name AS equipment_name, E.unit_price, E.availability, E.sport_id, E.sport_center_id, ER.quantity AS selected_quantity " +
@@ -33,7 +33,7 @@ interface EquipmentDao {
         sportId: Int,
         startDateTime: String,
         endDateTime: String
-    ):List<EquipmentReservationForAvailabilities>
+    ):List<RoomEquipmentReservationForAvailabilities>
 
     @Query("SELECT * FROM equipment " +
             "WHERE id NOT IN (SELECT E.id " +
@@ -43,7 +43,7 @@ interface EquipmentDao {
             "AND datetime(PR.start_date_time) < datetime(:endDateTime) AND datetime(PR.end_date_time) > datetime(:startDateTime) ) " +
             "AND sport_center_id == :sportCenterId AND sport_id == :sportId "
     )
-    fun findEquipmentNotReserved(reservationId: Int, sportCenterId: Int, sportId: Int, startDateTime: String, endDateTime: String): List<Equipment>
+    fun findEquipmentNotReserved(reservationId: Int, sportCenterId: Int, sportId: Int, startDateTime: String, endDateTime: String): List<RoomEquipment>
 
 
 
@@ -53,18 +53,18 @@ interface EquipmentDao {
                 "FROM equipment_reservation ER, equipment E " +
                 "WHERE E.id == ER.equipment_id AND ER.playground_reservation_id == :reservationId "
     )
-    fun findReservationEquipmentsByReservationId(reservationId: Int): List<DetailedEquipmentReservation>
+    fun findReservationEquipmentsByReservationId(reservationId: Int): List<RoomDetailedEquipmentReservation>
 
 
 
     @Query("SELECT * FROM equipment_reservation  WHERE playground_reservation_id == :playgroundId")
-    fun findEquipmentReservationByPlaygroundId(playgroundId: Int): List<EquipmentReservation>
+    fun findEquipmentReservationByPlaygroundId(playgroundId: Int): List<RoomEquipmentReservation>
 
     @Insert
-    fun insertEquipmentReservation(equipmentReservation: EquipmentReservation)
+    fun insertEquipmentReservation(equipmentReservation: RoomEquipmentReservation)
 
     @Insert
-    fun insertEquipment(equipment: Equipment)
+    fun insertEquipment(equipment: RoomEquipment)
 
     @Query("DELETE FROM equipment_reservation WHERE playground_reservation_id == :playgroundReservationId")
     fun deleteEquipmentReservationByPlaygroundReservationId(playgroundReservationId: Int)

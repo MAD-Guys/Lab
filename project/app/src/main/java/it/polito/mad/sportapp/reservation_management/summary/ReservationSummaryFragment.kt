@@ -19,8 +19,8 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.NewReservation
-import it.polito.mad.sportapp.entities.NewReservationEquipment
+import it.polito.mad.sportapp.entities.room.RoomNewReservation
+import it.polito.mad.sportapp.entities.room.RoomNewReservationEquipment
 import it.polito.mad.sportapp.application_utilities.showToasty
 import java.time.Duration
 import java.time.LocalDate
@@ -201,7 +201,7 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
 
     /* equipment list */
     private fun inflateEquipmentList(
-        equipmentList: List<NewReservationEquipment>,
+        equipmentList: List<RoomNewReservationEquipment>,
         container: LinearLayout
     ) {
 
@@ -378,12 +378,12 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
         val startTime = LocalDateTime.parse(startSlotStr)
         val endTime =
             LocalDateTime.parse(endSlotStr).plus(Duration.ofMinutes(slotDurationMins.toLong()))
-        val selectedEquipments = mutableListOf<NewReservationEquipment>()
+        val selectedEquipments = mutableListOf<RoomNewReservationEquipment>()
 
         equipmentsBundle!!.keySet().forEach { equipmentId ->
             val equipment = equipmentsBundle.getBundle(equipmentId)!!
 
-            val newEquipment = NewReservationEquipment(
+            val newEquipment = RoomNewReservationEquipment(
                 equipment.getInt("equipment_id"),
                 equipment.getString("equipment_name")!!,
                 equipment.getInt("selected_quantity"),
@@ -399,7 +399,7 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
         }
 
         // create reservation object
-        val newReservation = NewReservation(
+        val newReservation = RoomNewReservation(
             reservationId,
             startTime,
             endTime,

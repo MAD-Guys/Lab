@@ -34,7 +34,7 @@ import com.google.firebase.auth.FirebaseAuth
 import es.dmoral.toasty.Toasty
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.SportAppActivity
-import it.polito.mad.sportapp.entities.NotificationStatus
+import it.polito.mad.sportapp.entities.room.RoomNotificationStatus
 import java.io.File
 import java.io.FileDescriptor
 import java.io.FileOutputStream
@@ -521,7 +521,7 @@ internal fun hideProgressBar(progressBar: View, mainContent: View) {
 internal fun createAndSendInvitationNotification(
     context: Context,
     reservationId: Int,
-    notificationStatus: NotificationStatus,
+    notificationStatus: RoomNotificationStatus,
     notificationTimestamp: String
 ) {
 

@@ -27,7 +27,7 @@ import it.polito.mad.sportapp.profile.Gender
 import it.polito.mad.sportapp.profile.Level
 import it.polito.mad.sportapp.profile.Sport
 import it.polito.mad.sportapp.profile.SportChips
-import it.polito.mad.sportapp.entities.Sport as SportEntity
+import it.polito.mad.sportapp.entities.room.RoomSport as SportEntity
 import it.polito.mad.sportapp.application_utilities.savePictureOnInternalStorage
 import it.polito.mad.sportapp.application_utilities.setProfilePictureSize
 import it.polito.mad.sportapp.application_utilities.showToasty

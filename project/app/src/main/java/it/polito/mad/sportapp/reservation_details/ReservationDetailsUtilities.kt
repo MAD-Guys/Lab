@@ -4,10 +4,10 @@ import android.graphics.Bitmap
 import android.widget.ImageView
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
-import it.polito.mad.sportapp.entities.DetailedReservation
+import it.polito.mad.sportapp.entities.room.RoomDetailedReservation
 
 /*  QR CODE */
-fun reservationQRCode(r: DetailedReservation): Bitmap {
+fun reservationQRCode(r: RoomDetailedReservation): Bitmap {
 
     lateinit var bitmap: Bitmap
     lateinit var qrEncoder: QRGEncoder
@@ -32,7 +32,7 @@ fun reservationQRCode(r: DetailedReservation): Bitmap {
     return bitmap
 }
 
-internal fun setQRCodeView(reservation: DetailedReservation, imageView: ImageView) {
+internal fun setQRCodeView(reservation: RoomDetailedReservation, imageView: ImageView) {
     val qrCode: Bitmap = reservationQRCode(reservation)
     imageView.setImageBitmap(qrCode)
 }

@@ -17,8 +17,8 @@ import androidx.lifecycle.Lifecycle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.Chip
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.Achievement
-import it.polito.mad.sportapp.entities.SportLevel
+import it.polito.mad.sportapp.entities.room.RoomAchievement
+import it.polito.mad.sportapp.entities.room.RoomSportLevel
 import it.polito.mad.sportapp.application_utilities.logOut
 import it.polito.mad.sportapp.profile.Level
 import it.polito.mad.sportapp.profile.Sport
@@ -189,7 +189,7 @@ internal fun ShowProfileFragment.observersSetup() {
     }
 }
 
-internal fun ShowProfileFragment.setupSports(userSports: List<SportLevel>) {
+internal fun ShowProfileFragment.setupSports(userSports: List<RoomSportLevel>) {
     /* manage sports */
 
     // clean sports container amd sportChips
@@ -288,7 +288,7 @@ internal fun ShowProfileFragment.inflateAchievementsLayout() {
     achievementsContainer.addView(sportsAchievements)
 }
 
-internal fun ShowProfileFragment.updateAchievements(achievementsMap: Map<Achievement, Boolean>) {
+internal fun ShowProfileFragment.updateAchievements(achievementsMap: Map<RoomAchievement, Boolean>) {
 
     achievementsMap.forEach { (achievement, boolean) ->
 
@@ -296,7 +296,7 @@ internal fun ShowProfileFragment.updateAchievements(achievementsMap: Map<Achieve
 
         when (achievement) {
             // one sport achievement
-            Achievement.AtLeastOneSport -> {
+            RoomAchievement.AtLeastOneSport -> {
                 achievementLayout = requireView().findViewById(R.id.at_least_one_sport_layout)
 
                 if (boolean) {
@@ -311,7 +311,7 @@ internal fun ShowProfileFragment.updateAchievements(achievementsMap: Map<Achieve
             }
 
             // five sports achievement
-            Achievement.AtLeastFiveSports -> {
+            RoomAchievement.AtLeastFiveSports -> {
                 achievementLayout = requireView().findViewById(R.id.at_least_five_sports_layout)
 
                 if (boolean) {
@@ -326,7 +326,7 @@ internal fun ShowProfileFragment.updateAchievements(achievementsMap: Map<Achieve
             }
 
             // all sports achievement
-            Achievement.AllSports -> {
+            RoomAchievement.AllSports -> {
                 achievementLayout = requireView().findViewById(R.id.all_sports_layout)
 
                 if (boolean) {
@@ -341,7 +341,7 @@ internal fun ShowProfileFragment.updateAchievements(achievementsMap: Map<Achieve
             }
 
             // three matches achievement
-            Achievement.AtLeastThreeMatches -> {
+            RoomAchievement.AtLeastThreeMatches -> {
                 achievementLayout = requireView().findViewById(R.id.at_least_three_matches_layout)
 
                 if (boolean) {
@@ -356,7 +356,7 @@ internal fun ShowProfileFragment.updateAchievements(achievementsMap: Map<Achieve
             }
 
             // ten matches achievement
-            Achievement.AtLeastTenMatches -> {
+            RoomAchievement.AtLeastTenMatches -> {
                 achievementLayout = requireView().findViewById(R.id.at_least_ten_matches_layout)
 
                 if (boolean) {
@@ -371,7 +371,7 @@ internal fun ShowProfileFragment.updateAchievements(achievementsMap: Map<Achieve
             }
 
             // twenty five matches achievement
-            Achievement.AtLeastTwentyFiveMatches -> {
+            RoomAchievement.AtLeastTwentyFiveMatches -> {
                 achievementLayout =
                     requireView().findViewById(R.id.at_least_twenty_five_matches_layout)
 

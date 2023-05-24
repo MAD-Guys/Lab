@@ -14,8 +14,8 @@ import androidx.fragment.app.viewModels
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.DetailedEquipmentReservation
-import it.polito.mad.sportapp.entities.Equipment
+import it.polito.mad.sportapp.entities.room.RoomDetailedEquipmentReservation
+import it.polito.mad.sportapp.entities.room.RoomEquipment
 
 @AndroidEntryPoint
 class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
@@ -67,7 +67,7 @@ class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
                 val selectedEquipments = viewModel.selectedEquipments.value!!
 
                 // compute available equipments' quantities to show
-                val availableEquipmentsOptions = mutableMapOf<Int, Equipment>()
+                val availableEquipmentsOptions = mutableMapOf<Int, RoomEquipment>()
 
                 for ((equipmentId, equipment) in viewModel.availableEquipments.value!!) {
                     val actualSelectedQuantity = selectedEquipments[equipmentId]?.selectedQuantity ?: 0
@@ -107,7 +107,7 @@ class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
                     val newQty = (selectedEquipment?.selectedQuantity ?: 0) + 1
 
                     // add new equipment with qty 1
-                    val newEquipmentReservation = DetailedEquipmentReservation(
+                    val newEquipmentReservation = RoomDetailedEquipmentReservation(
                         viewModel.reservationBundle.getInt("reservation_id"),
                         selectedEquipmentId,
                         equipment.name,

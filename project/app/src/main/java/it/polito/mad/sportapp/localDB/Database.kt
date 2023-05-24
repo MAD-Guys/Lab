@@ -4,15 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import it.polito.mad.sportapp.entities.Equipment
-import it.polito.mad.sportapp.entities.EquipmentReservation
-import it.polito.mad.sportapp.entities.PlaygroundReservation
-import it.polito.mad.sportapp.entities.PlaygroundSport
-import it.polito.mad.sportapp.entities.Review
-import it.polito.mad.sportapp.entities.SportCenter
-import it.polito.mad.sportapp.entities.Sport
-import it.polito.mad.sportapp.entities.User
-import it.polito.mad.sportapp.entities.UserSport
+import it.polito.mad.sportapp.entities.room.RoomEquipment
+import it.polito.mad.sportapp.entities.room.RoomEquipmentReservation
+import it.polito.mad.sportapp.entities.room.RoomPlaygroundReservation
+import it.polito.mad.sportapp.entities.room.RoomPlaygroundSport
+import it.polito.mad.sportapp.entities.room.RoomReview
+import it.polito.mad.sportapp.entities.room.RoomSportCenter
+import it.polito.mad.sportapp.entities.room.RoomSport
+import it.polito.mad.sportapp.entities.room.RoomUser
+import it.polito.mad.sportapp.entities.room.RoomUserSport
 import it.polito.mad.sportapp.localDB.dao.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -20,7 +20,7 @@ import kotlin.random.Random
 
 
 @Database(
-    entities = [User::class, Sport::class, SportCenter::class, UserSport::class, PlaygroundSport::class, PlaygroundReservation::class, Equipment::class, EquipmentReservation::class, Review::class],
+    entities = [RoomUser::class, RoomSport::class, RoomSportCenter::class, RoomUserSport::class, RoomPlaygroundSport::class, RoomPlaygroundReservation::class, RoomEquipment::class, RoomEquipmentReservation::class, RoomReview::class],
     version = 1,
     exportSchema = false
 )
@@ -70,8 +70,8 @@ fun generatePlaygroundReservation(
     playgroundId: Int,
     sportId: Int,
     sportCenterId: Int
-): List<PlaygroundReservation> {
-    val playgroundReservationList = mutableListOf<PlaygroundReservation>()
+): List<RoomPlaygroundReservation> {
+    val playgroundReservationList = mutableListOf<RoomPlaygroundReservation>()
     val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
     for (i in 1..31) {
         val slotDurationMinutes = when (Random.nextInt(4)) {
@@ -90,7 +90,7 @@ fun generatePlaygroundReservation(
         )
         val endDateTime = startDateTime.plusMinutes(slotDurationMinutes.toLong())
         playgroundReservationList.add(
-            PlaygroundReservation(
+            RoomPlaygroundReservation(
                 0,
                 playgroundId,
                 1,
@@ -114,9 +114,9 @@ private fun initDb(INSTANCE: AppDatabase?) {
     val initDbThread = Thread {
         INSTANCE.let {
             it?.userDao()
-                ?.insert(User(0, "John", "Doe", "johndoe", "Male", 25, "Turin", "Bio"))
+                ?.insert(RoomUser(0, "John", "Doe", "johndoe", "Male", 25, "Turin", "Bio"))
             it?.sportCenterDao()?.insertAllSportCenter(
-                SportCenter(
+                RoomSportCenter(
                     0,
                     "PlayHard Sports Arena",
                     "Via Roma 1, Turin",
@@ -125,7 +125,7 @@ private fun initDb(INSTANCE: AppDatabase?) {
                     "08:00:00",
                     "20:00:00"
                 ),
-                SportCenter(
+                RoomSportCenter(
                     0,
                     "FitZone Sports Facility",
                     "Via Sacchi 2, Turin",
@@ -134,7 +134,7 @@ private fun initDb(INSTANCE: AppDatabase?) {
                     "08:00:00",
                     "20:00:00"
                 ),
-                SportCenter(
+                RoomSportCenter(
                     0,
                     "Sportsville Recreation Center",
                     "Via Cavour 27, Turin",
@@ -143,7 +143,7 @@ private fun initDb(INSTANCE: AppDatabase?) {
                     "08:00:00",
                     "20:00:00"
                 ),
-                SportCenter(
+                RoomSportCenter(
                     0,
                     "PlayZone Sports Center",
                     "Via Zante 94, Turin",
@@ -167,28 +167,28 @@ private fun initDb(INSTANCE: AppDatabase?) {
                 FireSport(0, "Mini Golf", 2),
             )*/
             it?.playgroundSportDao()?.insert(
-                PlaygroundSport(0, 1, 1, "Tennis Court", 12.0F)
+                RoomPlaygroundSport(0, 1, 1, "Tennis Court", 12.0F)
             )
             it?.playgroundSportDao()?.insert(
-                PlaygroundSport(0, 1, 1, "Tennis Court 2", 12.0F)
+                RoomPlaygroundSport(0, 1, 1, "Tennis Court 2", 12.0F)
             )
             it?.playgroundSportDao()?.insert(
-                PlaygroundSport(0, 2, 2, "Table Tennis Arena", 12.0F)
+                RoomPlaygroundSport(0, 2, 2, "Table Tennis Arena", 12.0F)
             )
             it?.playgroundSportDao()?.insert(
-                PlaygroundSport(0, 5, 2, "TFootball", 12.0F)
+                RoomPlaygroundSport(0, 5, 2, "TFootball", 12.0F)
             )
             it?.playgroundSportDao()?.insert(
-                PlaygroundSport(0, 2, 3, "Table Magic", 12.0F)
+                RoomPlaygroundSport(0, 2, 3, "Table Magic", 12.0F)
             )
             it?.playgroundSportDao()?.insert(
-                PlaygroundSport(0, 3, 4, "Table Magic", 12.0F)
+                RoomPlaygroundSport(0, 3, 4, "Table Magic", 12.0F)
             )
             it?.playgroundSportDao()?.insert(
-                PlaygroundSport(0, 4, 4, "BasketBall Dream", 12.0F)
+                RoomPlaygroundSport(0, 4, 4, "BasketBall Dream", 12.0F)
             )
             it?.equipmentDao()?.insertEquipment(
-                Equipment(0, "Ball", 4, 4,2f,5)
+                RoomEquipment(0, "Ball", 4, 4,2f,5)
             )
 
             it?.reservationDao()

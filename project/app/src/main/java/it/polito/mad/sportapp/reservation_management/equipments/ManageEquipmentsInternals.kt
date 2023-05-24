@@ -16,8 +16,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import es.dmoral.toasty.Toasty
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.DetailedEquipmentReservation
-import it.polito.mad.sportapp.entities.Equipment
+import it.polito.mad.sportapp.entities.room.RoomDetailedEquipmentReservation
+import it.polito.mad.sportapp.entities.room.RoomEquipment
 import it.polito.mad.sportapp.application_utilities.showToasty
 
 internal fun ManageEquipmentsFragment.initAppBar() {
@@ -71,7 +71,7 @@ private fun ManageEquipmentsFragment.navigateToReservationSummary() {
     findNavController().navigate(R.id.action_manageEquipmentsFragment_to_reservationSummaryFragment, params)
 }
 
-private fun createEquipmentsBundleFrom(selectedEquipments: Map<Int, DetailedEquipmentReservation>): Bundle {
+private fun createEquipmentsBundleFrom(selectedEquipments: Map<Int, RoomDetailedEquipmentReservation>): Bundle {
     val equipmentsBundle = Bundle()
 
     selectedEquipments.map { (equipmentId, selectedEquipment) ->
@@ -308,8 +308,8 @@ internal fun ManageEquipmentsFragment.initEquipmentsObservers() {
 }
 
 internal fun ManageEquipmentsFragment.checkAtLeastOneAvailableEquipment(
-    availableEquipments: Map<Int,Equipment>,
-    newSelectedEquipments: Map<Int, DetailedEquipmentReservation>
+    availableEquipments: Map<Int, RoomEquipment>,
+    newSelectedEquipments: Map<Int, RoomDetailedEquipmentReservation>
 ) {
     var atLeastOneAvailableEquipmentFlag = false
 

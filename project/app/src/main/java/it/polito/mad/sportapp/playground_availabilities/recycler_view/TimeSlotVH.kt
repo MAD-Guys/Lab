@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
+import it.polito.mad.sportapp.entities.room.RoomDetailedPlaygroundSport
 import it.polito.mad.sportapp.reservation_management.ReservationManagementModeWrapper
 import java.time.Duration
 import java.time.LocalDateTime
@@ -58,7 +58,7 @@ class TimeSlotVH(
         }
     }
 
-    fun setAvailablePlaygrounds(availablePlaygrounds: List<Pair<DetailedPlaygroundSport, PlaygroundAvailabilitiesAdapter.SelectionState>>) {
+    fun setAvailablePlaygrounds(availablePlaygrounds: List<Pair<RoomDetailedPlaygroundSport, PlaygroundAvailabilitiesAdapter.SelectionState>>) {
         availablePlaygroundsContainer.removeAllViews()  // clear playgrounds
 
         // transform each available playground object in a box view
@@ -106,7 +106,7 @@ class TimeSlotVH(
     }
 
     private fun handlePlaygroundSlotSelection(
-        playground: DetailedPlaygroundSport,
+        playground: RoomDetailedPlaygroundSport,
         selectionState: PlaygroundAvailabilitiesAdapter.SelectionState
     ) {
         if (!playground.available) return
@@ -183,7 +183,7 @@ class TimeSlotVH(
     }
 
     private fun handleSwitchToAddMode(
-        playground: DetailedPlaygroundSport,
+        playground: RoomDetailedPlaygroundSport,
     ): Boolean {
         // perform just in show mode (no add/edit mode)
         if (reservationManagementModeWrapper.mode != null) return false

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
+import it.polito.mad.sportapp.entities.room.RoomDetailedPlaygroundSport
 import it.polito.mad.sportapp.reservation_management.ReservationManagementModeWrapper
 import java.time.Duration
 import java.time.LocalDate
@@ -15,7 +15,7 @@ import kotlin.Exception
 
 class PlaygroundAvailabilitiesAdapter(
     // map containing all the slots and their corresponding available playgrounds
-    playgroundAvailabilities: Map<LocalDateTime, List<DetailedPlaygroundSport>>,
+    playgroundAvailabilities: Map<LocalDateTime, List<RoomDetailedPlaygroundSport>>,
     internal var selectedDate: LocalDate,
     private val slotDuration: Duration,
     internal var reservationManagementModeWrapper: ReservationManagementModeWrapper,
@@ -83,7 +83,7 @@ class PlaygroundAvailabilitiesAdapter(
     }
 
     fun smartUpdatePlaygroundAvailabilities(
-        newPlaygroundAvailabilities: Map<LocalDateTime, List<DetailedPlaygroundSport>>,
+        newPlaygroundAvailabilities: Map<LocalDateTime, List<RoomDetailedPlaygroundSport>>,
         recreateAll:Boolean = false
     ) {
         val newPlaygroundAvailabilitiesSelections = this.computeSelectionsOf(newPlaygroundAvailabilities)
@@ -165,8 +165,8 @@ class PlaygroundAvailabilitiesAdapter(
     }
 
     private fun computeSelectionsOf(
-        playgroundAvailabilities: Map<LocalDateTime, List<DetailedPlaygroundSport>>
-    ): Map<LocalDateTime, List<Pair<DetailedPlaygroundSport, SelectionState>>>
+        playgroundAvailabilities: Map<LocalDateTime, List<RoomDetailedPlaygroundSport>>
+    ): Map<LocalDateTime, List<Pair<RoomDetailedPlaygroundSport, SelectionState>>>
     {
         val selectedPlaygroundId = reservationBundle?.getInt("playground_id")
         val selectedStartSlotStr = reservationBundle?.getString("start_slot")

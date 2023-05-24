@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.User
+import it.polito.mad.sportapp.entities.room.RoomUser
 
 class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val profilePicture = view.findViewById<ImageView>(R.id.profile_picture)
@@ -16,7 +16,7 @@ class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val button = view.findViewById<Button>(R.id.button_invite)
 
     @SuppressLint("SetTextI18n")
-    fun bind(user: User, buttonListener: (Int) -> Unit){
+    fun bind(user: RoomUser, buttonListener: (Int) -> Unit){
 
         //TODO profilePicture.setImageResource( ? )
         profilePicture.clipToOutline = true

@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.sportapp.entities.PlaygroundInfo
-import it.polito.mad.sportapp.entities.Review
+import it.polito.mad.sportapp.entities.room.RoomPlaygroundInfo
+import it.polito.mad.sportapp.entities.room.RoomReview
 import it.polito.mad.sportapp.model.LocalRepository
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -15,11 +15,11 @@ class PlaygroundDetailsViewModel @Inject constructor(
     private val repository: LocalRepository
 ) : ViewModel() {
 
-    private val _playground = MutableLiveData<PlaygroundInfo?>()
-    val playground : LiveData<PlaygroundInfo?> = _playground
+    private val _playground = MutableLiveData<RoomPlaygroundInfo?>()
+    val playground : LiveData<RoomPlaygroundInfo?> = _playground
 
-    private val _yourReview = MutableLiveData<Review>()
-    val yourReview : LiveData<Review> = _yourReview
+    private val _yourReview = MutableLiveData<RoomReview>()
+    val yourReview : LiveData<RoomReview> = _yourReview
 
     private var _edit = false
     private var _tempTitle = ""
@@ -42,13 +42,13 @@ class PlaygroundDetailsViewModel @Inject constructor(
     fun setYourReview(){
         if(playground.value != null){
             val review = playground.value!!.reviewList.find { it.userId == 1} //TODO: change 1 with the logged user id
-            _yourReview.value = review ?: Review(0,1, playground.value!!.playgroundId,"",
+            _yourReview.value = review ?: RoomReview(0,1, playground.value!!.playgroundId,"",
                 0f,0f,"",LocalDateTime.now().toString(),LocalDateTime.now().toString())
         }
     }
 
     fun updateReview(qualityRating : Float, facilitiesRating : Float, title : String, text : String){
-        val updatedReview = Review(
+        val updatedReview = RoomReview(
             _yourReview.value?.id ?: 0,
             1, //TODO: change 1 with the logged user id
             _yourReview.value?.playgroundId ?: playground.value!!.playgroundId,
@@ -70,7 +70,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
     }
 
     fun updateQualityRating(r : Float){
-        val updatedReview = Review(
+        val updatedReview = RoomReview(
             _yourReview.value?.id ?: 0,
             1, //TODO: change 1 with the logged user id
             _yourReview.value?.playgroundId ?: playground.value!!.playgroundId,
@@ -91,7 +91,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
     }
 
     fun updateFacilitiesRating(r : Float){
-        val updatedReview = Review(
+        val updatedReview = RoomReview(
             _yourReview.value?.id ?: 0,
             1, //TODO: change 1 with the logged user id
             _yourReview.value?.playgroundId ?: playground.value!!.playgroundId,

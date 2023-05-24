@@ -32,7 +32,6 @@ interface IRepository {
 
     /**
      * Check if the user already exists or not
-     * Note: the result is retrieved as **static** (fireCallback is executed just once)
      */
     fun userAlreadyExists(userId: String, fireCallback: (FireResult<Boolean, DefaultFireError>) -> Unit)
 
@@ -53,6 +52,11 @@ interface IRepository {
     fun updateUser(user: User, fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit)
 
     // * Sport methods *
+
+    /**
+     * Retrieve all the sports
+     * Note: the result is retrieved as **static** (fireCallback is executed just once)
+     */
     fun getAllSports(fireCallback: (FireResult<List<Sport>, DefaultFireError>) -> Unit)
 
     // * Review methods *

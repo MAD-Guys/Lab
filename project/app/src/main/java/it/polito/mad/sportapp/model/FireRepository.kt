@@ -201,6 +201,19 @@ class FireRepository : IRepository {
         // convert User entity into FireUser
         val fireUser = FireUser.from(user)
 
+        if(fireUser.id == null) {
+            // serialization error: cannot update a user with id null
+            Log.d("serialization error", "Error: tyring to update user with id null ($user) in FireRepository.updateUser()")
+            fireCallback(
+                InsertItemFireError.duringSerialization(
+                    "Error: trying to update user with id null"
+                )
+            )
+            return
+        }
+
+        // * user id is not null *
+
         // serialize it
         val serializedUser: Map<String,Any> = fireUser.serialize()
 
@@ -221,8 +234,12 @@ class FireRepository : IRepository {
 
     /* sports */
 
+    /**
+     * Retrieve all the sports
+     * Note: the result is retrieved as **static** (fireCallback is executed just once)
+     */
     override fun getAllSports(fireCallback: (FireResult<List<Sport>, DefaultFireError>) -> Unit) {
-        TODO("Not yet implemented")
+        TODO()
     }
 
     /* reviews */

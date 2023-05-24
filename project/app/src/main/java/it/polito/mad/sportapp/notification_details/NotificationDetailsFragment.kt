@@ -15,7 +15,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.NotificationStatus
+import it.polito.mad.sportapp.entities.room.RoomNotificationStatus
 
 @AndroidEntryPoint
 class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_details) {
@@ -30,7 +30,7 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
     internal lateinit var navController: NavController
 
     private var reservationId: Int = -1
-    internal lateinit var notificationStatus: NotificationStatus
+    internal lateinit var notificationStatus: RoomNotificationStatus
     private lateinit var notificationTimestamp: String
 
     // dialogs
@@ -81,7 +81,7 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
         reservationId = arguments?.getInt("id_reservation") ?: -1
 
         // retrieve notification status
-        notificationStatus = NotificationStatus.from(arguments?.getString("status") ?: "CANCELED")
+        notificationStatus = RoomNotificationStatus.from(arguments?.getString("status") ?: "CANCELED")
 
         // retrieve notification timestamp
         notificationTimestamp = arguments?.getString("timestamp") ?: ""

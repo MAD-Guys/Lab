@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.User
+import it.polito.mad.sportapp.entities.room.RoomUser
 
 class UserAdapter(private val buttonListener: (Int) -> Unit) : RecyclerView.Adapter<UserViewHolder>() {
 
-    val users = mutableListOf<User>()
+    val users = mutableListOf<RoomUser>()
     var reservationId : Int = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {

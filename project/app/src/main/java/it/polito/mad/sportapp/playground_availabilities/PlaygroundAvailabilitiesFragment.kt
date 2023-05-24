@@ -13,7 +13,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.kizitonwose.calendar.view.CalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.Sport
+import it.polito.mad.sportapp.entities.room.RoomSport
 import it.polito.mad.sportapp.application_utilities.hideProgressBar
 import it.polito.mad.sportapp.playground_availabilities.recycler_view.PlaygroundAvailabilitiesAdapter
 import it.polito.mad.sportapp.application_utilities.showProgressBar
@@ -39,7 +39,7 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
 
     // spinner adapter
     internal lateinit var selectedSportSpinner : Spinner
-    internal lateinit var selectedSportSpinnerAdapter: ArrayAdapter<Sport>
+    internal lateinit var selectedSportSpinnerAdapter: ArrayAdapter<RoomSport>
 
     // recycler view
     internal var playgroundAvailabilitiesRecyclerView: RecyclerView? = null

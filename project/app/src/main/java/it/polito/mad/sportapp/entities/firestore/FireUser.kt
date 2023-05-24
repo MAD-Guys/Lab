@@ -23,7 +23,7 @@ enum class Gender(val gender: String) {
 }
 
 data class FireUser(
-    val id: String,
+    val id: String?,
     val firstName: String,
     val lastName: String,
     val username: String,
@@ -56,15 +56,16 @@ data class FireUser(
     /**
      * Convert the FireUser object into a User object
      */
-    fun toUser() : User{
+    fun toUser() : User {
         return User(
-            1,//TODO: id
+            id,
             firstName,
             lastName,
             username,
             gender.name,
             age.toInt(),
             location,
+            imageURL,
             bio
         )
     }
@@ -76,18 +77,18 @@ data class FireUser(
         fun from(user: User): FireUser {
 
             return FireUser(
-                user.id.toString(), // TODO: uid
+                user.id,
                 user.firstName,
                 user.lastName,
                 user.username,
                 Gender.valueOf(user.gender),
                 user.age.toLong(),
                 user.location,
-                "",     // TODO: imageURL
+                user.imageURL,
                 user.bio,
                 user.sportLevel.map {
                     FireSportLevel(
-                        it.sportId.toString(),  // TODO: sportId
+                        it.sportId,
                         it.sport!!,
                         Level.valueOf(it.level!!)
                     )

@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.sportapp.entities.Sport
-import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
+import it.polito.mad.sportapp.entities.room.RoomSport
+import it.polito.mad.sportapp.entities.room.RoomDetailedPlaygroundSport
 import it.polito.mad.sportapp.model.LocalRepository
 import java.time.Duration
 import java.time.LocalDate
@@ -23,12 +23,12 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
     internal val defaultMonth = YearMonth.now()
 
     // all sports
-    private val _sports = MutableLiveData<List<Sport>>()
-    val sports: LiveData<List<Sport>> = _sports
+    private val _sports = MutableLiveData<List<RoomSport>>()
+    val sports: LiveData<List<RoomSport>> = _sports
 
     // selected sport
-    private val _selectedSport = MutableLiveData<Sport?>()
-    val selectedSport: LiveData<Sport?> = _selectedSport
+    private val _selectedSport = MutableLiveData<RoomSport?>()
+    val selectedSport: LiveData<RoomSport?> = _selectedSport
 
     // previous selected date
     private val _previousSelectedDate = MutableLiveData<LocalDate>()
@@ -50,10 +50,10 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
 
     // available playgrounds ***for current sport and month***
     private val _availablePlaygroundsPerSlot:
-            MutableLiveData<MutableMap<LocalDate, Map<LocalDateTime, List<DetailedPlaygroundSport>>>> = MutableLiveData()
+            MutableLiveData<MutableMap<LocalDate, Map<LocalDateTime, List<RoomDetailedPlaygroundSport>>>> = MutableLiveData()
 
     internal val availablePlaygroundsPerSlot:
-            LiveData<MutableMap<LocalDate, Map<LocalDateTime, List<DetailedPlaygroundSport>>>> = _availablePlaygroundsPerSlot
+            LiveData<MutableMap<LocalDate, Map<LocalDateTime, List<RoomDetailedPlaygroundSport>>>> = _availablePlaygroundsPerSlot
 
 
     internal fun loadAllSportsAsync(sportToShow: Int?) {
@@ -83,13 +83,13 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
         _currentMonth.value = month
     }
 
-    fun getAvailablePlaygroundsOnSelectedDate(): Map<LocalDateTime, List<DetailedPlaygroundSport>> {
+    fun getAvailablePlaygroundsOnSelectedDate(): Map<LocalDateTime, List<RoomDetailedPlaygroundSport>> {
         val selectedDate = this.selectedDate.value ?: defaultDate
 
         return getAvailablePlaygroundsOn(selectedDate)
     }
 
-    fun getAvailablePlaygroundsOn(date: LocalDate): Map<LocalDateTime, List<DetailedPlaygroundSport>> {
+    fun getAvailablePlaygroundsOn(date: LocalDate): Map<LocalDateTime, List<RoomDetailedPlaygroundSport>> {
         return availablePlaygroundsPerSlot.value.orEmpty()[date] ?: mapOf()
     }
 
@@ -106,7 +106,7 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
     }
 
     private fun getPlaygroundAvailabilitiesForCurrentMonthAndSport()
-        : MutableMap<LocalDate, Map<LocalDateTime, List<DetailedPlaygroundSport>>> {
+        : MutableMap<LocalDate, Map<LocalDateTime, List<RoomDetailedPlaygroundSport>>> {
         val currentMonthAvailabilities = repository.getAvailablePlaygroundsPerSlot(
             currentMonth.value ?: defaultMonth,
             selectedSport.value
@@ -122,7 +122,7 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
             selectedSport.value
         )
 
-        val allAvailabilities = mutableMapOf<LocalDate, Map<LocalDateTime, List<DetailedPlaygroundSport>>>().also {
+        val allAvailabilities = mutableMapOf<LocalDate, Map<LocalDateTime, List<RoomDetailedPlaygroundSport>>>().also {
             it.putAll(currentMonthAvailabilities)
             it.putAll(previousMonthAvailabilities)
             it.putAll(nextMonthAvailabilities)
@@ -137,7 +137,7 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
     }
 
     /* selected sport */
-    fun setSelectedSport(selectedSport: Sport?) {
+    fun setSelectedSport(selectedSport: RoomSport?) {
         this._selectedSport.value = selectedSport
     }
 

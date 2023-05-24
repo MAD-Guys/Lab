@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.sportapp.entities.User
+import it.polito.mad.sportapp.entities.room.RoomUser
 import it.polito.mad.sportapp.model.LocalRepository
 import javax.inject.Inject
 
@@ -13,9 +13,9 @@ class InvitationViewModel @Inject constructor(
     private val repository: LocalRepository
 ) : ViewModel() {
 
-    private val _allUsers = MutableLiveData<MutableList<User>>()
-    private val _users = MutableLiveData<MutableList<User>>()
-    val users : LiveData<MutableList<User>> = _users
+    private val _allUsers = MutableLiveData<MutableList<RoomUser>>()
+    private val _users = MutableLiveData<MutableList<RoomUser>>()
+    val users : LiveData<MutableList<RoomUser>> = _users
 
     private var sportId = -1
 

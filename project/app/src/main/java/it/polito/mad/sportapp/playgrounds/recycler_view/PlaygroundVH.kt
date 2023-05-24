@@ -7,8 +7,7 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.DetailedPlayground
-import it.polito.mad.sportapp.entities.PlaygroundInfo
+import it.polito.mad.sportapp.entities.room.RoomPlaygroundInfo
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -17,7 +16,7 @@ class PlaygroundVH(
     val navigateToPlayground: (Int) -> Unit
 ) : AbstractPlaygroundVH(view)
 {
-    private lateinit var playground: PlaygroundInfo
+    private lateinit var playground: RoomPlaygroundInfo
 
     // sub views
     private val playgroundImage = view.findViewById<ImageView>(R.id.playground_image)
@@ -37,7 +36,7 @@ class PlaygroundVH(
         }
     }
 
-    fun bindPlayground(playground: PlaygroundInfo) {
+    fun bindPlayground(playground: RoomPlaygroundInfo) {
         // save playground reference
         this.playground = playground
 

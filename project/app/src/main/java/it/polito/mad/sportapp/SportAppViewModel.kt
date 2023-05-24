@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.application_utilities.createAndSendInvitationNotification
-import it.polito.mad.sportapp.entities.Notification
-import it.polito.mad.sportapp.entities.NotificationStatus
+import it.polito.mad.sportapp.entities.room.RoomNotification
+import it.polito.mad.sportapp.entities.room.RoomNotificationStatus
 import it.polito.mad.sportapp.model.LocalRepository
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -21,8 +21,8 @@ class SportAppViewModel @Inject constructor(
 
     /* notifications */
     private val _notifications =
-        MutableLiveData<MutableList<Notification>>().also { it.value = mutableListOf() }
-    val notifications: LiveData<MutableList<Notification>> = _notifications
+        MutableLiveData<MutableList<RoomNotification>>().also { it.value = mutableListOf() }
+    val notifications: LiveData<MutableList<RoomNotification>> = _notifications
 
     //TODO: remove the two functions below when firestore db is implemented
     fun startNotificationThread(context: Context) {
@@ -34,14 +34,14 @@ class SportAppViewModel @Inject constructor(
 
                 val reservationId = 11
 
-                val notification = Notification(
+                val notification = RoomNotification(
                     adder.toInt(),
                     "invitation",
                     reservationId,
                     "asd423dsic9879xsdu98cs9d878dx98s7d987f98d7fg",
                     "asd423dsic9879xsdu98cs9d878dx98s7d987f98d7fg",
                     "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
-                    NotificationStatus.PENDING,
+                    RoomNotificationStatus.PENDING,
                     "@johndoe has invited you to play a tennis match!",
                     LocalDateTime.now().toString()
                 )
@@ -66,131 +66,131 @@ class SportAppViewModel @Inject constructor(
     fun initializeNotificationsList() {
 
         _notifications.value?.add(
-            Notification(
+            RoomNotification(
                 1,
                 "invitation",
                 1,
                 "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
-                NotificationStatus.PENDING,
+                RoomNotificationStatus.PENDING,
                 "@francescorosati has invited you to play a basketball match!",
                 "2023-05-22T23:21:47.496"
             )
         )
         notifications.value?.add(
-            Notification(
+            RoomNotification(
                 2,
                 "invitation",
                 13,
                 "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
-                NotificationStatus.PENDING,
+                RoomNotificationStatus.PENDING,
                 "@peppelazzara has invited you to play a mini-golf match!",
                 "2023-05-22T17:21:47.496"
             )
         )
         notifications.value?.add(
-            Notification(
+            RoomNotification(
                 3,
                 "invitation",
                 15,
                 "asd423dsic9sd9xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsqs9879xsdu98cs9dwsvdx98s7d987f98d7fg",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
-                NotificationStatus.REJECTED,
+                RoomNotificationStatus.REJECTED,
                 "@peppelazzara has invited you to play a basketball match!",
                 "2023-05-21T17:34:47.496"
             )
         )
         notifications.value?.add(
-            Notification(
+            RoomNotification(
                 4,
                 "invitation",
                 16,
                 "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
-                NotificationStatus.CANCELED,
+                RoomNotificationStatus.CANCELED,
                 "@mariomastrandrea has invited you to play a basketball match!",
                 "2023-05-22T23:45:47.496"
             )
         )
         notifications.value?.add(
-            Notification(
+            RoomNotification(
                 5,
                 "invitation",
                 20,
                 "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
-                NotificationStatus.ACCEPTED,
+                RoomNotificationStatus.ACCEPTED,
                 "@mariomastrandrea has invited you to play a volleyball match!",
                 "2023-05-22T13:45:47.496"
             )
         )
         notifications.value?.add(
-            Notification(
+            RoomNotification(
                 6,
                 "invitation",
                 23,
                 "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
-                NotificationStatus.ACCEPTED,
+                RoomNotificationStatus.ACCEPTED,
                 "@michelepistan has invited you to play a tennis match!",
                 "2023-05-20T20:34:47.496"
             )
         )
         notifications.value?.add(
-            Notification(
+            RoomNotification(
                 7,
                 "invitation",
                 25,
                 "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
-                NotificationStatus.CANCELED,
+                RoomNotificationStatus.CANCELED,
                 "@michelepistan has invited you to play a 11-a-side soccer match!",
                 "2023-05-03T19:20:47.496"
             )
         )
         notifications.value?.add(
-            Notification(
+            RoomNotification(
                 8,
                 "invitation",
                 44,
                 "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
-                NotificationStatus.REJECTED,
+                RoomNotificationStatus.REJECTED,
                 "@michelepistan has invited you to play a 8-a-side soccer match!",
                 "2023-05-21T09:27:47.496"
             )
         )
         notifications.value?.add(
-            Notification(
+            RoomNotification(
                 9,
                 "invitation",
                 45,
                 "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
-                NotificationStatus.ACCEPTED,
+                RoomNotificationStatus.ACCEPTED,
                 "@johndoe has invited you to play a table tennis match!",
                 "2023-05-19T11:29:47.496"
             )
         )
         notifications.value?.add(
-            Notification(
+            RoomNotification(
                 10,
                 "invitation",
                 46,
                 "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
                 "asd423dsic9879xsdu98cs9d878dx98s7d987f98d7fg",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
-                NotificationStatus.ACCEPTED,
+                RoomNotificationStatus.ACCEPTED,
                 "@francescorosati has invited you to play a tennis match!",
                 "2023-05-15T14:25:47.496"
             )

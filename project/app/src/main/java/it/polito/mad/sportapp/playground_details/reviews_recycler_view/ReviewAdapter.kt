@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.Review
+import it.polito.mad.sportapp.entities.room.RoomReview
 
 class ReviewAdapter : RecyclerView.Adapter<ReviewViewHolder>() {
 
-    val reviews = mutableListOf<Review>()
+    val reviews = mutableListOf<RoomReview>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
         val v = LayoutInflater.from(parent.context)

@@ -4,13 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.Notification
+import it.polito.mad.sportapp.entities.room.RoomNotification
 
 /* Notifications Adapter */
 
 internal class NotificationsAdapter : RecyclerView.Adapter<NotificationsViewHolder>() {
 
-    val notifications = mutableListOf<Notification>()
+    val notifications = mutableListOf<RoomNotification>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationsViewHolder {
         val v = LayoutInflater.from(parent.context)

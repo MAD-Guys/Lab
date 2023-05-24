@@ -1,31 +1,31 @@
-package it.polito.mad.sportapp.entities
+package it.polito.mad.sportapp.entities.room
 
 import androidx.room.*
 
 @Entity(
     tableName = "playground_reservation",
     foreignKeys = [ForeignKey(
-        entity = User::class,
+        entity = RoomUser::class,
         parentColumns = ["id"],
         childColumns = ["user_id"]
     ),
         ForeignKey(
-            entity = Sport::class,
+            entity = RoomSport::class,
             parentColumns = ["id"],
             childColumns = ["sport_id"]
         ),
         ForeignKey(
-            entity = PlaygroundSport::class,
+            entity = RoomPlaygroundSport::class,
             parentColumns = ["id"],
             childColumns = ["playground_id"]
         ),
         ForeignKey(
-            entity = SportCenter::class,
+            entity = RoomSportCenter::class,
             parentColumns = ["id"],
             childColumns = ["sport_center_id"]
         )],
 )
-data class PlaygroundReservation(
+data class RoomPlaygroundReservation(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     @ColumnInfo(name = "playground_id", index = true)

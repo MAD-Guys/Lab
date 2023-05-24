@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.sportapp.entities.NewReservation
+import it.polito.mad.sportapp.entities.room.RoomNewReservation
 import it.polito.mad.sportapp.entities.firestore.utilities.NewReservationError
 import it.polito.mad.sportapp.model.LocalRepository
 import javax.inject.Inject
@@ -16,8 +16,8 @@ class ReservationSummaryViewModel @Inject constructor(
 ) : ViewModel()
 {
     // contains the reservation data to save in the db
-    private val _reservation = MutableLiveData<NewReservation>()
-    internal val reservation: LiveData<NewReservation> = _reservation
+    private val _reservation = MutableLiveData<RoomNewReservation>()
+    internal val reservation: LiveData<RoomNewReservation> = _reservation
 
     /**
      * return null if everything went well, an error enum otherwise
@@ -57,7 +57,7 @@ class ReservationSummaryViewModel @Inject constructor(
         return Pair(id, error)
     }
 
-    fun setReservation(newReservation: NewReservation) {
+    fun setReservation(newReservation: RoomNewReservation) {
         _reservation.value = newReservation
     }
 }

@@ -1,9 +1,9 @@
-package it.polito.mad.sportapp.entities
+package it.polito.mad.sportapp.entities.room
 
 import androidx.room.*
 
 @Entity(tableName = "sport_center",)
-data class SportCenter(
+data class RoomSportCenter(
     @PrimaryKey(autoGenerate = true)
     val id: Int ,
     @ColumnInfo(name = "name")

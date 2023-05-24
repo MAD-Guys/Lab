@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.sportapp.entities.Achievement
-import it.polito.mad.sportapp.entities.Sport
-import it.polito.mad.sportapp.entities.SportLevel
-import it.polito.mad.sportapp.entities.User
+import it.polito.mad.sportapp.entities.room.RoomAchievement
+import it.polito.mad.sportapp.entities.room.RoomSport
+import it.polito.mad.sportapp.entities.room.RoomSportLevel
+import it.polito.mad.sportapp.entities.room.RoomUser
 import it.polito.mad.sportapp.model.LocalRepository
 import javax.inject.Inject
 
@@ -58,15 +58,15 @@ class ProfileViewModel @Inject constructor(
     val userBio: LiveData<String> = _userBio
 
     private val _userAchievements =
-        MutableLiveData<Map<Achievement, Boolean>>().also { it.value = mapOf() }
-    val userAchievements: LiveData<Map<Achievement, Boolean>> = _userAchievements
+        MutableLiveData<Map<RoomAchievement, Boolean>>().also { it.value = mapOf() }
+    val userAchievements: LiveData<Map<RoomAchievement, Boolean>> = _userAchievements
 
-    private val _userSports = MutableLiveData<List<SportLevel>>().also { it.value = listOf() }
-    val userSports: LiveData<List<SportLevel>> = _userSports
+    private val _userSports = MutableLiveData<List<RoomSportLevel>>().also { it.value = listOf() }
+    val userSports: LiveData<List<RoomSportLevel>> = _userSports
 
     /* sports information */
-    private val _sportsList = MutableLiveData<List<Sport>>()
-    val sportsList: LiveData<List<Sport>> = _sportsList
+    private val _sportsList = MutableLiveData<List<RoomSport>>()
+    val sportsList: LiveData<List<RoomSport>> = _sportsList
 
     fun loadSportsFromDb() {
         // get list of sports from database
@@ -121,7 +121,7 @@ class ProfileViewModel @Inject constructor(
     fun updateDbUserInformation(userId: Int) {
 
         // set user information
-        val user = User(
+        val user = RoomUser(
             userId,
             _userFirstName.value!!,
             _userLastName.value!!,
@@ -172,7 +172,7 @@ class ProfileViewModel @Inject constructor(
         _userBio.value = bio
     }
 
-    fun setUserSports(sports: List<SportLevel>) {
+    fun setUserSports(sports: List<RoomSportLevel>) {
         _userSports.value = sports
     }
 

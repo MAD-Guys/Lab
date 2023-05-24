@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.sportapp.entities.PlaygroundInfo
+import it.polito.mad.sportapp.entities.room.RoomPlaygroundInfo
 import it.polito.mad.sportapp.model.LocalRepository
 import javax.inject.Inject
 
@@ -13,7 +13,7 @@ class PlaygroundsViewModel @Inject constructor(
     val repository: LocalRepository
 ) : ViewModel()
 {
-    private val _playgrounds = MutableLiveData<List<PlaygroundInfo>>(listOf()).also {
+    private val _playgrounds = MutableLiveData<List<RoomPlaygroundInfo>>(listOf()).also {
         Thread {
             // get all playgrounds from the repository in a secondary thread
             val allPlaygrounds = repository.getAllPlaygroundsInfo()
@@ -21,14 +21,14 @@ class PlaygroundsViewModel @Inject constructor(
             it.postValue(allPlaygrounds)
         }.start()
     }
-    val playgrounds: LiveData<List<PlaygroundInfo>> = _playgrounds
+    val playgrounds: LiveData<List<RoomPlaygroundInfo>> = _playgrounds
 
     enum class PlaygroundOrderKey {
         SPORT, CENTER
     }
 
     /** return actual viewModel playgrounds value ordered by sport */
-    fun getPlaygroundsOrderedBySport() : List<PlaygroundInfo?> {
+    fun getPlaygroundsOrderedBySport() : List<RoomPlaygroundInfo?> {
         val allPlaygrounds = _playgrounds.value!!
 
         //  order them
@@ -36,7 +36,7 @@ class PlaygroundsViewModel @Inject constructor(
     }
 
     /** return actual viewModel playgrounds value ordered by center */
-    fun getPlaygroundsOrderedByCenter() : List<PlaygroundInfo?> {
+    fun getPlaygroundsOrderedByCenter() : List<RoomPlaygroundInfo?> {
         val allPlaygrounds = _playgrounds.value!!
 
         //  order them
@@ -49,7 +49,7 @@ class PlaygroundsViewModel @Inject constructor(
      * E.g.: [null, Basket Playground1, Basket Playground2, null, Tennis Playground1,
      * Tennis Playground2, Tennis Playground3, null, Volleyball Playground1, etc.])
      */
-    fun separateAndOrderPlaygroundsBy(key: PlaygroundOrderKey, playgrounds: List<PlaygroundInfo>): List<PlaygroundInfo?> {
+    fun separateAndOrderPlaygroundsBy(key: PlaygroundOrderKey, playgrounds: List<RoomPlaygroundInfo>): List<RoomPlaygroundInfo?> {
         if (playgrounds.isEmpty())
             return playgrounds
 
@@ -58,7 +58,7 @@ class PlaygroundsViewModel @Inject constructor(
                 // order playgrounds by sport
                 val orderedPlaygrounds = playgrounds.asSequence()
                     .sortedBy { playground -> playground.sportName }
-                    .toMutableList<PlaygroundInfo?>()
+                    .toMutableList<RoomPlaygroundInfo?>()
 
                 // now insert a 'null' entry before each sport type
                 val iterator = orderedPlaygrounds.listIterator()
@@ -86,7 +86,7 @@ class PlaygroundsViewModel @Inject constructor(
                 // order playgrounds by sport center
                 val orderedPlaygrounds = playgrounds.asSequence()
                     .sortedBy { playground -> playground.sportCenterName }
-                    .toMutableList<PlaygroundInfo?>()
+                    .toMutableList<RoomPlaygroundInfo?>()
 
                 // now insert a 'null' entry before each sport center
                 val iterator = orderedPlaygrounds.listIterator()

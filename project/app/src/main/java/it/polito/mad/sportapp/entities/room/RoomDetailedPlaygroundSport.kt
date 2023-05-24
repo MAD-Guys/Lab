@@ -1,12 +1,12 @@
-package it.polito.mad.sportapp.entities
+package it.polito.mad.sportapp.entities.room
 
-data class DetailedPlaygroundSport (
-    val playgroundId: String,
+data class RoomDetailedPlaygroundSport(
+    val playgroundId: Int,
     val playgroundName: String,
-    val sportId: String,
+    val sportId: Int,
     val sportEmoji: String,
     val sportName: String,
-    val sportCenterId: String,
+    val sportCenterId: Int,
     val sportCenterName: String,
     val sportCenterAddress: String,
     val pricePerHour: Float,
@@ -16,7 +16,7 @@ data class DetailedPlaygroundSport (
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as DetailedPlaygroundSport
+        other as RoomDetailedPlaygroundSport
 
         if (playgroundId != other.playgroundId) return false
 
@@ -24,23 +24,19 @@ data class DetailedPlaygroundSport (
     }
 
     override fun hashCode(): Int {
-        return playgroundId.hashCode()
+        return playgroundId
     }
 
-    fun exactlyEqualTo(playground: DetailedPlaygroundSport): Boolean {
+    fun exactlyEqualTo(playground: RoomDetailedPlaygroundSport): Boolean {
         return this.playgroundId == playground.playgroundId &&
                 this.playgroundName == playground.playgroundName &&
                 this.sportId == playground.sportId &&
-                this.sportEmoji == playground.sportEmoji &&
-                this.sportName == playground.sportName &&
-                this.sportCenterId == playground.sportCenterId &&
                 this.sportCenterName == playground.sportCenterName &&
-                this.sportCenterAddress == playground.sportCenterAddress &&
                 this.pricePerHour == playground.pricePerHour &&
                 this.available == playground.available
     }
 
-    fun clone() = DetailedPlaygroundSport(
+    fun clone() = RoomDetailedPlaygroundSport(
         playgroundId,
         playgroundName,
         sportId,

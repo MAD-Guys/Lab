@@ -3,7 +3,7 @@ package it.polito.mad.sportapp.reservation_management
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.DetailedReservation
+import it.polito.mad.sportapp.entities.room.RoomDetailedReservation
 import java.lang.IllegalArgumentException
 import java.time.Duration
 
@@ -37,7 +37,7 @@ class ReservationManagementModeWrapper(var mode: ReservationManagementMode?)
 
 class ReservationManagementUtilities {
     companion object {
-        fun createBundleFrom(reservation: DetailedReservation?, slotDuration: Duration): Bundle {
+        fun createBundleFrom(reservation: RoomDetailedReservation?, slotDuration: Duration): Bundle {
             return bundleOf(
                 "reservation_id" to reservation?.id,
 

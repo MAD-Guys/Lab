@@ -11,8 +11,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.Notification
-import it.polito.mad.sportapp.entities.NotificationStatus
+import it.polito.mad.sportapp.entities.room.RoomNotification
+import it.polito.mad.sportapp.entities.room.RoomNotificationStatus
 
 // manage menu item selection
 internal fun NotificationsFragment.menuInit() {
@@ -65,9 +65,9 @@ internal fun NotificationsFragment.recyclerViewInit() {
             notificationsAdapter.notifications.clear()
             notificationsAdapter.notifications.addAll(notificationList
                 .filter {
-                    it.status == NotificationStatus.PENDING || it.status == NotificationStatus.ACCEPTED
+                    it.status == RoomNotificationStatus.PENDING || it.status == RoomNotificationStatus.ACCEPTED
                 }
-                .sortedWith(compareByDescending<Notification> { it.publicationDate }.thenByDescending { it.publicationTime })
+                .sortedWith(compareByDescending<RoomNotification> { it.publicationDate }.thenByDescending { it.publicationTime })
             )
         }
 

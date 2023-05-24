@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.sportapp.entities.DetailedEquipmentReservation
-import it.polito.mad.sportapp.entities.Equipment
+import it.polito.mad.sportapp.entities.room.RoomDetailedEquipmentReservation
+import it.polito.mad.sportapp.entities.room.RoomEquipment
 import it.polito.mad.sportapp.model.LocalRepository
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -19,12 +19,12 @@ class ManageEquipmentsViewModel @Inject constructor(
     internal lateinit var reservationBundle: Bundle
 
     // all the (max) available equipments for that playground
-    private val _availableEquipments = MutableLiveData<Map<Int, Equipment>>()
-    internal val availableEquipments: LiveData<Map<Int, Equipment>> = _availableEquipments
+    private val _availableEquipments = MutableLiveData<Map<Int, RoomEquipment>>()
+    internal val availableEquipments: LiveData<Map<Int, RoomEquipment>> = _availableEquipments
 
     // current equipments selected by the user
-    private val _selectedEquipments = MutableLiveData<MutableMap<Int, DetailedEquipmentReservation>>()
-    internal val selectedEquipments: LiveData<MutableMap<Int, DetailedEquipmentReservation>> = _selectedEquipments
+    private val _selectedEquipments = MutableLiveData<MutableMap<Int, RoomDetailedEquipmentReservation>>()
+    internal val selectedEquipments: LiveData<MutableMap<Int, RoomDetailedEquipmentReservation>> = _selectedEquipments
 
 
     internal fun loadEquipmentsQuantitiesAsync() {
@@ -127,7 +127,7 @@ class ManageEquipmentsViewModel @Inject constructor(
     }
 
     fun setSelectedEquipments(
-        selectedEquipments: MutableMap<Int, DetailedEquipmentReservation>
+        selectedEquipments: MutableMap<Int, RoomDetailedEquipmentReservation>
     ) {
         this._selectedEquipments.value = selectedEquipments
     }

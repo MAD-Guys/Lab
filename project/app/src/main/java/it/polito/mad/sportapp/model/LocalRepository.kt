@@ -1,19 +1,19 @@
 package it.polito.mad.sportapp.model
 
 import android.util.Log
-import it.polito.mad.sportapp.entities.Achievement
-import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
-import it.polito.mad.sportapp.entities.Equipment
-import it.polito.mad.sportapp.entities.PlaygroundReservation
-import it.polito.mad.sportapp.entities.Sport
-import it.polito.mad.sportapp.entities.User
-import it.polito.mad.sportapp.entities.DetailedReservation
-import it.polito.mad.sportapp.entities.EquipmentReservation
-import it.polito.mad.sportapp.entities.EquipmentReservationForAvailabilities
-import it.polito.mad.sportapp.entities.NewReservation
-import it.polito.mad.sportapp.entities.NewReservationEquipment
-import it.polito.mad.sportapp.entities.PlaygroundInfo
-import it.polito.mad.sportapp.entities.Review
+import it.polito.mad.sportapp.entities.room.RoomAchievement
+import it.polito.mad.sportapp.entities.room.RoomDetailedPlaygroundSport
+import it.polito.mad.sportapp.entities.room.RoomEquipment
+import it.polito.mad.sportapp.entities.room.RoomPlaygroundReservation
+import it.polito.mad.sportapp.entities.room.RoomSport
+import it.polito.mad.sportapp.entities.room.RoomUser
+import it.polito.mad.sportapp.entities.room.RoomDetailedReservation
+import it.polito.mad.sportapp.entities.room.RoomEquipmentReservation
+import it.polito.mad.sportapp.entities.room.RoomEquipmentReservationForAvailabilities
+import it.polito.mad.sportapp.entities.room.RoomNewReservation
+import it.polito.mad.sportapp.entities.room.RoomNewReservationEquipment
+import it.polito.mad.sportapp.entities.room.RoomPlaygroundInfo
+import it.polito.mad.sportapp.entities.room.RoomReview
 import it.polito.mad.sportapp.localDB.dao.EquipmentDao
 import it.polito.mad.sportapp.localDB.dao.PlaygroundSportDao
 import it.polito.mad.sportapp.localDB.dao.ReservationDao
@@ -41,7 +41,7 @@ class LocalRepository @Inject constructor(
     private val reviewDao: ReviewDao
 ) {
     // User methods
-    fun getUser(id: Int): User {
+    fun getUser(id: Int): RoomUser {
         val user = userDao.findById(id)
         user.sportLevel = userDao.findSportByUserId(id)
         user.achievements = buildAchievements(id)
@@ -52,20 +52,20 @@ class LocalRepository @Inject constructor(
         return userDao.findUsername(username) > 0
     }
 
-    private fun buildAchievements(userId: Int): Map<Achievement, Boolean> {
+    private fun buildAchievements(userId: Int): Map<RoomAchievement, Boolean> {
         val playedMatches = userDao.findPlayedMatches(userId)
         val playedSport = userDao.findPlayedSports(userId).maxOrNull() ?: 0
         return mapOf(
-            Achievement.AtLeastOneSport to (playedSport > 0),
-            Achievement.AtLeastFiveSports to (playedSport > 4),
-            Achievement.AllSports to (playedSport == sportDao.count()),
-            Achievement.AtLeastThreeMatches to (playedMatches > 2),
-            Achievement.AtLeastTenMatches to (playedMatches > 9),
-            Achievement.AtLeastTwentyFiveMatches to (playedMatches > 24),
+            RoomAchievement.AtLeastOneSport to (playedSport > 0),
+            RoomAchievement.AtLeastFiveSports to (playedSport > 4),
+            RoomAchievement.AllSports to (playedSport == sportDao.count()),
+            RoomAchievement.AtLeastThreeMatches to (playedMatches > 2),
+            RoomAchievement.AtLeastTenMatches to (playedMatches > 9),
+            RoomAchievement.AtLeastTwentyFiveMatches to (playedMatches > 24),
         )
     }
 
-    fun updateUser(user: User) {
+    fun updateUser(user: RoomUser) {
         userDao.deleteSportByUserId(user.id)
         user.sportLevel.forEach {
             userDao.insertSportByUserId(user.id, it.sportId, it.level ?: "")
@@ -74,13 +74,13 @@ class LocalRepository @Inject constructor(
     }
 
     // FireSport methods
-    fun getAllSports(): List<Sport> {
+    fun getAllSports(): List<RoomSport> {
         return sportDao.getAll()
     }
 
 
     // Review methods
-    private fun getAllReviewsByPlaygroundId(id: Int): List<Review> {
+    private fun getAllReviewsByPlaygroundId(id: Int): List<RoomReview> {
         val reviews = reviewDao.findByPlaygroundId(id)
         reviews.forEach {
             it.username = userDao.findUsernameById(it.userId)
@@ -88,14 +88,14 @@ class LocalRepository @Inject constructor(
         return reviews
     }
 
-    fun getReviewByUserIdAndPlaygroundId(userId: Int, playgroundId: Int): Review {
+    fun getReviewByUserIdAndPlaygroundId(userId: Int, playgroundId: Int): RoomReview {
         val review = reviewDao.findByUserIdAndPlaygroundId(userId, playgroundId)
         review.username = userDao.findUsernameById(userId)
         return review
     }
 
 
-    fun updateReview(review: Review) {
+    fun updateReview(review: RoomReview) {
         val now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME).toString()
         review.lastUpdate = now
         if (review.id == 0) {
@@ -106,13 +106,13 @@ class LocalRepository @Inject constructor(
         }
     }
 
-    fun deleteReview(review: Review) {
+    fun deleteReview(review: RoomReview) {
         reviewDao.delete(review)
     }
 
     // Reservation methods
 
-    fun getDetailedReservationById(id: Int): DetailedReservation {
+    fun getDetailedReservationById(id: Int): RoomDetailedReservation {
         val reservation = reservationDao.findDetailedReservationById(id)
         val equipments =
             equipmentDao.findReservationEquipmentsByReservationId(id).toMutableList()
@@ -129,7 +129,7 @@ class LocalRepository @Inject constructor(
      *  (or the same as the previous one, if any), if the save succeeds; 'null' otherwise
      * - 'error' is an instance of NewReservationError reflecting the type of error occurred, or 'null' otherwise
      */
-    fun overrideNewReservation(reservation: NewReservation): Pair<Int?, NewReservationError?> {
+    fun overrideNewReservation(reservation: RoomNewReservation): Pair<Int?, NewReservationError?> {
         try {
             // Check slots availability
             if (equipmentsAreAvailable(
@@ -154,7 +154,7 @@ class LocalRepository @Inject constructor(
                     )
                 ) {
                     val id = reservationDao.insert(
-                        PlaygroundReservation(
+                        RoomPlaygroundReservation(
                             0,
                             reservation.playgroundId,
                             1,
@@ -169,7 +169,7 @@ class LocalRepository @Inject constructor(
 
                     reservation.selectedEquipments.forEach {
                         equipmentDao.insertEquipmentReservation(
-                            EquipmentReservation(
+                            RoomEquipmentReservation(
                                 0,
                                 id,
                                 it.equipmentId,
@@ -205,7 +205,7 @@ class LocalRepository @Inject constructor(
     }
 
     private fun equipmentsAreAvailable(
-        equipments: List<NewReservationEquipment>,
+        equipments: List<RoomNewReservationEquipment>,
         reservationId: Int,
         startDateTime: LocalDateTime,
         endDateTime: LocalDateTime,
@@ -231,7 +231,7 @@ class LocalRepository @Inject constructor(
         return true
     }
 
-    private fun calculatePrice(reservation: NewReservation): Float {
+    private fun calculatePrice(reservation: RoomNewReservation): Float {
         val duration = Duration.between(reservation.startTime, reservation.endTime)
         val hours = duration.toHours()
         val minutes = duration.toMinutes() - hours * 60
@@ -248,7 +248,7 @@ class LocalRepository @Inject constructor(
 
 
 
-    fun getReservationsPerDateByUserId(userId: Int): Map<LocalDate, List<DetailedReservation>> {
+    fun getReservationsPerDateByUserId(userId: Int): Map<LocalDate, List<RoomDetailedReservation>> {
         val userReservations = reservationDao.findByUserId(userId)
         return userReservations.sortedBy { LocalDateTime.parse(it.startDateTime) }
             .groupBy { it.date }
@@ -263,7 +263,7 @@ class LocalRepository @Inject constructor(
         reservationId: Int,
         startDateTime: LocalDateTime,
         endDateTime: LocalDateTime
-    ): MutableMap<Int, Equipment> {
+    ): MutableMap<Int, RoomEquipment> {
         // retrieve equipment reservations happening in the specified time interval,
         // for the specified sport center and sport (and excluding the specified reservation ones)
         val equipmentReservations = equipmentDao.findEquipmentReservationsForSpecifiedTimeInterval(
@@ -283,7 +283,7 @@ class LocalRepository @Inject constructor(
                 val reservationEndDateTime = equipmentReservation.endLocalDateTime
 
                 val equipmentReservationsPerSlot =
-                    mutableListOf<Pair<LocalDateTime, EquipmentReservationForAvailabilities>>()
+                    mutableListOf<Pair<LocalDateTime, RoomEquipmentReservationForAvailabilities>>()
                 var currentDateTime = reservationStartDateTime
                 while (currentDateTime <= reservationEndDateTime) {
                     equipmentReservationsPerSlot.add(
@@ -300,7 +300,7 @@ class LocalRepository @Inject constructor(
                 // create Equipment entity
                 // create equals() and hashCode() for id Equipment only
                 // pass it to the Pair constructor instead of equipment Id
-                val equipment = Equipment(
+                val equipment = RoomEquipment(
                     equipmentReservation.equipmentId,
                     equipmentReservation.equipmentName,
                     equipmentReservation.sportId,
@@ -364,7 +364,7 @@ class LocalRepository @Inject constructor(
             .toMutableMap()
     }
 
-    fun deleteReservation(reservation: DetailedReservation) {
+    fun deleteReservation(reservation: RoomDetailedReservation) {
         // * first, delete associated equipments *
         reservation.equipments.forEach {
             equipmentDao.deleteReservation(it.equipmentId, it.playgroundReservationId)
@@ -375,7 +375,7 @@ class LocalRepository @Inject constructor(
 
     // * Playground methods *
 
-    fun getPlaygroundInfoById(playgroundId: Int): PlaygroundInfo {
+    fun getPlaygroundInfoById(playgroundId: Int): RoomPlaygroundInfo {
         val playgroundInfo = playgroundSportDao.getPlaygroundInfo(playgroundId)
 
         playgroundInfo.reviewList = getAllReviewsByPlaygroundId(playgroundId)
@@ -401,8 +401,8 @@ class LocalRepository @Inject constructor(
     }
 
 
-    fun getAvailablePlaygroundsPerSlot(month: YearMonth, sport: Sport?)
-            : MutableMap<LocalDate, MutableMap<LocalDateTime, MutableList<DetailedPlaygroundSport>>> {
+    fun getAvailablePlaygroundsPerSlot(month: YearMonth, sport: RoomSport?)
+            : MutableMap<LocalDate, MutableMap<LocalDateTime, MutableList<RoomDetailedPlaygroundSport>>> {
         if (sport == null) {
             return mutableMapOf()
         }
@@ -417,7 +417,7 @@ class LocalRepository @Inject constructor(
             Triple(
                 it.startLocalDateTime,
                 it.endLocalDateTime,
-                DetailedPlaygroundSport(
+                RoomDetailedPlaygroundSport(
                     it.playgroundId,
                     it.playgroundName,
                     it.sportId,
@@ -430,7 +430,7 @@ class LocalRepository @Inject constructor(
                 )
             )
         }.flatMap { (slotStart, slotEnd, detailedPlaygroundSport) ->
-            val playgroundsPerSlot = mutableListOf<Pair<LocalDateTime, DetailedPlaygroundSport>>()
+            val playgroundsPerSlot = mutableListOf<Pair<LocalDateTime, RoomDetailedPlaygroundSport>>()
             var tempSlot = slotStart
 
             while (tempSlot.isBefore(slotEnd)) {
@@ -460,7 +460,7 @@ class LocalRepository @Inject constructor(
             Triple(
                 it.openingTime,
                 it.closingTime,
-                DetailedPlaygroundSport(
+                RoomDetailedPlaygroundSport(
                     it.playgroundId,
                     it.playgroundName,
                     it.sportId,
@@ -474,7 +474,7 @@ class LocalRepository @Inject constructor(
                 )
             )
         }.flatMap { (slotStart, slotEnd, detailedPlaygroundSport) ->
-            val playgroundsPerSport = mutableListOf<Pair<LocalTime, DetailedPlaygroundSport>>()
+            val playgroundsPerSport = mutableListOf<Pair<LocalTime, RoomDetailedPlaygroundSport>>()
             var tempSlot = slotStart
 
             while (tempSlot.isBefore(slotEnd)) {
@@ -504,7 +504,7 @@ class LocalRepository @Inject constructor(
                 if (!playgroundsPerSlot.containsKey(slotDateTime)) {
                     // they are all available
                     playgroundsPerSlot[slotDateTime] =
-                        mutableListOf<DetailedPlaygroundSport>().also { list ->
+                        mutableListOf<RoomDetailedPlaygroundSport>().also { list ->
                             list.addAll(playgrounds.map {
                                 // clone all the playgrounds instances
                                 it.clone().apply {
@@ -534,7 +534,7 @@ class LocalRepository @Inject constructor(
         return playgroundsPerSlotAndDate
     }
 
-    fun getAllPlaygroundsInfo(): List<PlaygroundInfo> {
+    fun getAllPlaygroundsInfo(): List<RoomPlaygroundInfo> {
         val allPlaygroundsInfo = playgroundSportDao.getAllPlaygroundInfo()
 
         allPlaygroundsInfo.forEach { playgroundInfo ->
