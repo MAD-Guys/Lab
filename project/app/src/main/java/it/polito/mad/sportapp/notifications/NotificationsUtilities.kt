@@ -4,6 +4,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
+import com.google.firebase.messaging.FirebaseMessaging
 import it.polito.mad.sportapp.R
 import okhttp3.Call
 import okhttp3.Callback
@@ -16,26 +17,26 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 
+
 /* NOTIFICATION UTILITIES */
 
 internal fun createInvitationNotification(
     receiverUid: String,
     reservationId: Int,
-    status: String,
+    notificationStatus: String,
+    notificationDescription: String,
     notificationTimestamp: String
 ) {
 
     // notification variables
     val tag = "NOTIFICATION TAG"
 
-    val notificationTitle = "New Invitation Received!"
-    val notificationMessage = "Someone sent you a new invitation! Check it out!"
+    val notificationTitle = "New Invitation"
 
     // set the notification receiver
     //TODO: retrieve the receiver's token from db with the receiverUid
-    //val receiver = "/topics/${receiverUid}"
     val receiver =
-        "fEt9asdMTD2NBlGCqOdZc3:APA91bHTo6qhQ2vMkgcCqrE3kG3bLmhwgN_nrSWEaUkY7ggcVBazwXajw2AKF9PUqtHwcGJYRdurt9OsDSCNRkp434F25DVJYmTesDzU1Ygd4vAARQgwgDzJFWMrtf-f1W_fPBHwKHfY"
+        "fEt9asdMTD2NBlGCqOdZc3:APA91bFdDNcLVM23gRfwG_ETZNnucAtL0yNgm4r2_fgNmorNNwQhulOikk6O4yiI2MsMLAZzudAiw-xwkfQojjiiZLTbgTnT81lfz6EoDS1RTdXAhgLpARDClveTvEAEqm-Wlw0sC9jB"
 
     val notification = JSONObject()
     val notificationBody = JSONObject()
@@ -44,9 +45,9 @@ internal fun createInvitationNotification(
         // create notification body
         notificationBody.put("action", "NEW_INVITATION")
         notificationBody.put("title", notificationTitle)
-        notificationBody.put("message", notificationMessage)
+        notificationBody.put("message", notificationDescription)
         notificationBody.put("id_reservation", reservationId)
-        notificationBody.put("status", status)
+        notificationBody.put("status", notificationStatus)
         notificationBody.put("timestamp", notificationTimestamp)
 
         // create notification
@@ -94,13 +95,6 @@ internal fun sendInvitationNotification(notification: JSONObject) {
     })
 }
 
-internal fun sendTokenToDatabase(token: String, uid: String) {
-
-    //TODO: send token to database and delete the old one associate to the same user id
-
-    //FirebaseMessaging.getInstance().subscribeToTopic(uid)
-}
-
 internal fun manageInvitationNotification(intent: Intent, navController: NavController) {
 
     // get information from intent
@@ -119,4 +113,23 @@ internal fun manageInvitationNotification(intent: Intent, navController: NavCont
         R.id.action_loginFragment_to_notificationDetailsFragment,
         bundle
     )
+}
+
+/* tokens */
+
+internal fun sendTokenToDatabase(token: String, uid: String) {
+
+    //TODO: send token to database and delete the old one associate to the same user id
+
+}
+
+internal fun deleteCurrentToken() {
+    FirebaseMessaging.getInstance().deleteToken()
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Log.i("DELETE TOKEN", "Token $task successfully deleted!")
+            } else {
+                Log.e("DELETE TOKEN", "Token deletion failed!")
+            }
+        }
 }
