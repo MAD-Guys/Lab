@@ -2,8 +2,6 @@ package it.polito.mad.sportapp.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Ignore
-import it.polito.mad.sportapp.profile.Level
-import it.polito.mad.sportapp.profile.Sport
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -34,6 +32,8 @@ data class Notification(
     val senderUid: String,
     @ColumnInfo(name = "receiverUid")
     val receiverUid: String,
+    @ColumnInfo(name = "profile_url")
+    val profileUrl: String,
     @ColumnInfo(name = "status")
     val status: NotificationStatus,
     @ColumnInfo(name = "description")

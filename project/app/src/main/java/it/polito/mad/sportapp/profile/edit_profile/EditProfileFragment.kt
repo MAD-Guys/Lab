@@ -29,15 +29,15 @@ import com.canhub.cropper.CropImageView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.clearStorageFiles
-import it.polito.mad.sportapp.fastblur
+import it.polito.mad.sportapp.application_utilities.clearStorageFiles
+import it.polito.mad.sportapp.application_utilities.fastblur
 import it.polito.mad.sportapp.profile.Gender
 import it.polito.mad.sportapp.profile.Level
 import it.polito.mad.sportapp.profile.ProfileViewModel
 import it.polito.mad.sportapp.profile.Sport
 import it.polito.mad.sportapp.profile.SportChips
-import it.polito.mad.sportapp.rotateBitmap
-import it.polito.mad.sportapp.uriToBitmap
+import it.polito.mad.sportapp.application_utilities.rotateBitmap
+import it.polito.mad.sportapp.application_utilities.uriToBitmap
 
 @AndroidEntryPoint
 class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {

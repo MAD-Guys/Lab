@@ -1,6 +1,5 @@
-package it.polito.mad.sportapp
+package it.polito.mad.sportapp.application_utilities
 
-import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -33,6 +32,8 @@ import androidx.navigation.NavController
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import es.dmoral.toasty.Toasty
+import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.SportAppActivity
 import it.polito.mad.sportapp.entities.NotificationStatus
 import java.io.File
 import java.io.FileDescriptor

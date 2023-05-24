@@ -15,7 +15,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.showToasty
+import it.polito.mad.sportapp.application_utilities.showToasty
 
 internal fun InvitationFragment.menuInit() {
     val menuHost: MenuHost = requireActivity()

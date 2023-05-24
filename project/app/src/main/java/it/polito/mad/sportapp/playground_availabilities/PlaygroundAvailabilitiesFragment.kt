@@ -14,9 +14,9 @@ import com.kizitonwose.calendar.view.CalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.Sport
-import it.polito.mad.sportapp.hideProgressBar
+import it.polito.mad.sportapp.application_utilities.hideProgressBar
 import it.polito.mad.sportapp.playground_availabilities.recycler_view.PlaygroundAvailabilitiesAdapter
-import it.polito.mad.sportapp.showProgressBar
+import it.polito.mad.sportapp.application_utilities.showProgressBar
 import it.polito.mad.sportapp.reservation_management.ReservationSlotSelectionViewModel
 
 

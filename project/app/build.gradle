@@ -72,6 +72,7 @@ dependencies {
     implementation 'com.vanniktech:android-image-cropper:4.5.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.exifinterface:exifinterface:1.3.3'
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
     /* live data & view model*/
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'

@@ -97,7 +97,7 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
 
                 actionBar?.let {
                     it.setDisplayHomeAsUpEnabled(false)
-                    it.title = "My Reservations"
+                    it.title = "Reservations"
                 }
 
                 // change visibility of the show reservations menu item

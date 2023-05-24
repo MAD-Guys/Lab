@@ -25,7 +25,7 @@ import androidx.navigation.Navigation
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.reservation_management.ReservationManagementUtilities
-import it.polito.mad.sportapp.showToasty
+import it.polito.mad.sportapp.application_utilities.showToasty
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime

@@ -17,7 +17,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.showToasty
+import it.polito.mad.sportapp.application_utilities.showToasty
 
 // manage menu item selection
 internal fun LoginFragment.menuInit() {

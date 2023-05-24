@@ -18,7 +18,7 @@ import es.dmoral.toasty.Toasty
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.DetailedEquipmentReservation
 import it.polito.mad.sportapp.entities.Equipment
-import it.polito.mad.sportapp.showToasty
+import it.polito.mad.sportapp.application_utilities.showToasty
 
 internal fun ManageEquipmentsFragment.initAppBar() {
     val actionBar = (requireActivity() as AppCompatActivity).supportActionBar

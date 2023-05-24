@@ -8,6 +8,8 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
+import it.polito.mad.sportapp.application_utilities.CircleTransform
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.Notification
 import java.time.Duration
@@ -37,8 +39,8 @@ internal class NotificationsViewHolder(view: View) : RecyclerView.ViewHolder(vie
             ResourcesCompat.getFont(itemView.context, R.font.poppins_semibold)
 
         // set item components width
-        notificationIcon.layoutParams.width = displayWidth / 7
-        notificationDescription.layoutParams.width = displayWidth / 14 * 11
+        notificationIcon.layoutParams.width = displayWidth / 14 * 3
+        notificationDescription.layoutParams.width = displayWidth / 14 * 10
         notificationTimestamp.layoutParams.width = displayWidth / 14 * 1
 
         when (notification.status.name) {
@@ -66,12 +68,14 @@ internal class NotificationsViewHolder(view: View) : RecyclerView.ViewHolder(vie
                 .navigate(R.id.action_notificationsFragment_to_notificationDetailsFragment, bundle)
         }
 
+        // set notification icon with url
+        Picasso.get()
+            .load(notification.profileUrl)
+            .transform(CircleTransform())
+            .into(notificationIcon)
+
         // set text in notification text views
-
         notificationDescription.text = notification.description
-
-
-
         notificationTimestamp.text = getDaysAgo(notification.timestamp)
     }
 

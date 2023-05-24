@@ -8,7 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.showToasty
+import it.polito.mad.sportapp.application_utilities.showToasty
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

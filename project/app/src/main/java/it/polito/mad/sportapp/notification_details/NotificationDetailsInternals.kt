@@ -12,7 +12,7 @@ import androidx.lifecycle.Lifecycle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.NotificationStatus
-import it.polito.mad.sportapp.showToasty
+import it.polito.mad.sportapp.application_utilities.showToasty
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale

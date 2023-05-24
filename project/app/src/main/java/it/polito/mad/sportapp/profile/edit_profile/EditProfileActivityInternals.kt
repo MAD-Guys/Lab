@@ -22,15 +22,15 @@ import androidx.lifecycle.Lifecycle
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.getPictureFromInternalStorage
+import it.polito.mad.sportapp.application_utilities.getPictureFromInternalStorage
 import it.polito.mad.sportapp.profile.Gender
 import it.polito.mad.sportapp.profile.Level
 import it.polito.mad.sportapp.profile.Sport
 import it.polito.mad.sportapp.profile.SportChips
 import it.polito.mad.sportapp.entities.Sport as SportEntity
-import it.polito.mad.sportapp.savePictureOnInternalStorage
-import it.polito.mad.sportapp.setProfilePictureSize
-import it.polito.mad.sportapp.showToasty
+import it.polito.mad.sportapp.application_utilities.savePictureOnInternalStorage
+import it.polito.mad.sportapp.application_utilities.setProfilePictureSize
+import it.polito.mad.sportapp.application_utilities.showToasty
 import java.io.File
 
 // manage menu item selection

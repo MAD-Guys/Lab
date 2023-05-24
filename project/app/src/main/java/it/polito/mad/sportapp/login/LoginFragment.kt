@@ -16,8 +16,8 @@ import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.SportAppViewModel
-import it.polito.mad.sportapp.checkIfUserIsLoggedIn
-import it.polito.mad.sportapp.manageInvitationNotification
+import it.polito.mad.sportapp.application_utilities.checkIfUserIsLoggedIn
+import it.polito.mad.sportapp.application_utilities.manageInvitationNotification
 
 @AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.fragment_login) {

@@ -19,11 +19,11 @@ import com.google.android.material.chip.Chip
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.Achievement
 import it.polito.mad.sportapp.entities.SportLevel
-import it.polito.mad.sportapp.logOut
+import it.polito.mad.sportapp.application_utilities.logOut
 import it.polito.mad.sportapp.profile.Level
 import it.polito.mad.sportapp.profile.Sport
-import it.polito.mad.sportapp.setProfilePictureSize
-import it.polito.mad.sportapp.showToasty
+import it.polito.mad.sportapp.application_utilities.setProfilePictureSize
+import it.polito.mad.sportapp.application_utilities.showToasty
 
 // manage menu item selection
 internal fun ShowProfileFragment.menuInit() {

@@ -24,7 +24,7 @@ internal fun NotificationsFragment.menuInit() {
 
             actionBar?.let {
                 it.setDisplayHomeAsUpEnabled(false)
-                it.title = "My Notifications"
+                it.title = "Notifications"
             }
         }
 

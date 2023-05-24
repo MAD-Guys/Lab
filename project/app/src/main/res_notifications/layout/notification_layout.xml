@@ -15,12 +15,10 @@
     android:foreground="?android:attr/selectableItemBackground">
 
     <!-- Notification icon -->
-    <!-- TODO: put the user photo here -->
     <ImageView
         android:id="@+id/notification_icon"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginHorizontal="2dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:contentDescription="@string/notification_icon_content_description"
         android:gravity="center"
         android:paddingHorizontal="3dp"

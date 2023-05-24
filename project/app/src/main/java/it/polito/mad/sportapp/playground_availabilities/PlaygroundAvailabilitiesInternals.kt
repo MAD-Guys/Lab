@@ -29,7 +29,7 @@ import it.polito.mad.sportapp.playground_availabilities.calendar_utils.CalendarD
 import it.polito.mad.sportapp.playground_availabilities.calendar_utils.MonthViewContainer
 import it.polito.mad.sportapp.playground_availabilities.recycler_view.PlaygroundAvailabilitiesAdapter
 import it.polito.mad.sportapp.reservation_management.ReservationManagementMode
-import it.polito.mad.sportapp.showToasty
+import it.polito.mad.sportapp.application_utilities.showToasty
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
