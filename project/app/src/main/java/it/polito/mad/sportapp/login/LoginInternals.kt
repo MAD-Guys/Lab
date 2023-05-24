@@ -13,11 +13,14 @@ import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.messaging.FirebaseMessaging
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.application_utilities.showToasty
+import it.polito.mad.sportapp.notifications.sendTokenToDatabase
 
 // manage menu item selection
 internal fun LoginFragment.menuInit() {
@@ -100,8 +103,22 @@ internal fun LoginFragment.onSignInResult(result: FirebaseAuthUIAuthenticationRe
         // user successfully logged in
         val user = FirebaseAuth.getInstance().currentUser
 
-        // update UI
-        updateUI(user)
+        user?.let {
+            // update UI
+            updateUI(it)
+
+            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                    return@OnCompleteListener
+                }
+
+                // Get new FCM registration token
+                val token = task.result
+                // send token to firebase server if already exists
+                sendTokenToDatabase(token, it.uid)
+            })
+        }
 
         // print log
         Log.d(TAG, "Log in successful")

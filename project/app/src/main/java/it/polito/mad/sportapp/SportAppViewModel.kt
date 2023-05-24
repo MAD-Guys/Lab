@@ -5,10 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.sportapp.application_utilities.createAndSendInvitationNotification
 import it.polito.mad.sportapp.entities.room.RoomNotification
 import it.polito.mad.sportapp.entities.room.RoomNotificationStatus
+import it.polito.mad.sportapp.application_utilities.checkIfUserIsLoggedIn
+import it.polito.mad.sportapp.application_utilities.getCurrentUserUid
 import it.polito.mad.sportapp.model.LocalRepository
+import it.polito.mad.sportapp.notifications.createInvitationNotification
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -28,35 +30,39 @@ class SportAppViewModel @Inject constructor(
     fun startNotificationThread(context: Context) {
 
         val thread = Thread {
+
             var adder = 0L
+            val sender = getCurrentUserUid()
 
             while (true) {
 
-                val reservationId = 11
+                if (checkIfUserIsLoggedIn()) {
+                    val reservationId = 11
 
-                val notification = RoomNotification(
-                    adder.toInt(),
-                    "invitation",
-                    reservationId,
-                    "asd423dsic9879xsdu98cs9d878dx98s7d987f98d7fg",
-                    "asd423dsic9879xsdu98cs9d878dx98s7d987f98d7fg",
-                    "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
-                    RoomNotificationStatus.PENDING,
-                    "@johndoe has invited you to play a tennis match!",
-                    LocalDateTime.now().toString()
-                )
+                    val notification = RoomNotification(
+                        adder.toInt(),
+                        "invitation",
+                        reservationId,
+                        sender ?: "",
+                        "fpnyG2AyUehysyf72bjov8kSc5i1",
+                        "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
+                        RoomNotificationStatus.PENDING,
+                        "@johndoe has invited you to play a tennis match!",
+                        LocalDateTime.now().toString()
+                    )
 
-                // add a new notification every two minutes
-                Thread.sleep(60000)
-                createAndSendInvitationNotification(
-                    context,
-                    reservationId,
-                    notification.status,
-                    notification.timestamp
-                )
-                _notifications.postValue(_notifications.value?.apply { add(notification) })
+                    // add a new notification every two minutes
+                    Thread.sleep(60000)
+                    createInvitationNotification(
+                        notification.receiverUid,
+                        notification.reservationId,
+                        notification.status.name,
+                        notification.timestamp
+                    )
+                    _notifications.postValue(_notifications.value?.apply { add(notification) })
 
-                adder++
+                    adder++
+                }
             }
         }
 
@@ -70,8 +76,8 @@ class SportAppViewModel @Inject constructor(
                 1,
                 "invitation",
                 1,
-                "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
-                "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
+                "eAXrFhgWgxccl4nmgVkgfcm5oaR2",
+                "fpnyG2AyUehysyf72bjov8kSc5i1",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
                 RoomNotificationStatus.PENDING,
                 "@francescorosati has invited you to play a basketball match!",
@@ -83,8 +89,8 @@ class SportAppViewModel @Inject constructor(
                 2,
                 "invitation",
                 13,
-                "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
-                "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
+                "eAXrFhgWgxccl4nmgVkgfcm5oaR2",
+                "fpnyG2AyUehysyf72bjov8kSc5i1",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
                 RoomNotificationStatus.PENDING,
                 "@peppelazzara has invited you to play a mini-golf match!",
@@ -96,8 +102,8 @@ class SportAppViewModel @Inject constructor(
                 3,
                 "invitation",
                 15,
-                "asd423dsic9sd9xsdu98cs9d87sdf98s7d987f98d7fg",
-                "asd423dsqs9879xsdu98cs9dwsvdx98s7d987f98d7fg",
+                "eAXrFhgWgxccl4nmgVkgfcm5oaR2",
+                "fpnyG2AyUehysyf72bjov8kSc5i1",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
                 RoomNotificationStatus.REJECTED,
                 "@peppelazzara has invited you to play a basketball match!",
@@ -109,8 +115,8 @@ class SportAppViewModel @Inject constructor(
                 4,
                 "invitation",
                 16,
-                "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
-                "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
+                "eAXrFhgWgxccl4nmgVkgfcm5oaR2",
+                "fpnyG2AyUehysyf72bjov8kSc5i1",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
                 RoomNotificationStatus.CANCELED,
                 "@mariomastrandrea has invited you to play a basketball match!",
@@ -122,8 +128,8 @@ class SportAppViewModel @Inject constructor(
                 5,
                 "invitation",
                 20,
-                "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
-                "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
+                "eAXrFhgWgxccl4nmgVkgfcm5oaR2",
+                "fpnyG2AyUehysyf72bjov8kSc5i1",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
                 RoomNotificationStatus.ACCEPTED,
                 "@mariomastrandrea has invited you to play a volleyball match!",
@@ -135,8 +141,8 @@ class SportAppViewModel @Inject constructor(
                 6,
                 "invitation",
                 23,
-                "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
-                "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
+                "eAXrFhgWgxccl4nmgVkgfcm5oaR2",
+                "fpnyG2AyUehysyf72bjov8kSc5i1",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
                 RoomNotificationStatus.ACCEPTED,
                 "@michelepistan has invited you to play a tennis match!",
@@ -148,8 +154,8 @@ class SportAppViewModel @Inject constructor(
                 7,
                 "invitation",
                 25,
-                "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
-                "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
+                "eAXrFhgWgxccl4nmgVkgfcm5oaR2",
+                "fpnyG2AyUehysyf72bjov8kSc5i1",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
                 RoomNotificationStatus.CANCELED,
                 "@michelepistan has invited you to play a 11-a-side soccer match!",
@@ -161,8 +167,8 @@ class SportAppViewModel @Inject constructor(
                 8,
                 "invitation",
                 44,
-                "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
-                "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
+                "eAXrFhgWgxccl4nmgVkgfcm5oaR2",
+                "fpnyG2AyUehysyf72bjov8kSc5i1",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
                 RoomNotificationStatus.REJECTED,
                 "@michelepistan has invited you to play a 8-a-side soccer match!",
@@ -174,8 +180,8 @@ class SportAppViewModel @Inject constructor(
                 9,
                 "invitation",
                 45,
-                "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
-                "asd423dsic9879xsdu98cs9dwsvdx98s7d987f98d7fg",
+                "eAXrFhgWgxccl4nmgVkgfcm5oaR2",
+                "fpnyG2AyUehysyf72bjov8kSc5i1",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
                 RoomNotificationStatus.ACCEPTED,
                 "@johndoe has invited you to play a table tennis match!",
@@ -187,8 +193,8 @@ class SportAppViewModel @Inject constructor(
                 10,
                 "invitation",
                 46,
-                "asd423dsic9879xsdu98cs9d87sdf98s7d987f98d7fg",
-                "asd423dsic9879xsdu98cs9d878dx98s7d987f98d7fg",
+                "eAXrFhgWgxccl4nmgVkgfcm5oaR2",
+                "fpnyG2AyUehysyf72bjov8kSc5i1",
                 "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
                 RoomNotificationStatus.ACCEPTED,
                 "@francescorosati has invited you to play a tennis match!",

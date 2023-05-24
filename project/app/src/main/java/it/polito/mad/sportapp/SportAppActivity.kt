@@ -1,11 +1,16 @@
 package it.polito.mad.sportapp
 
+import android.Manifest
 import android.content.ContentValues.TAG
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -14,12 +19,24 @@ import com.google.android.material.navigation.NavigationBarView
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.application_utilities.setApplicationLocale
+import it.polito.mad.sportapp.application_utilities.showToasty
 import it.polito.mad.sportapp.application_utilities.toastyInit
 
 @AndroidEntryPoint
 class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener {
 
     val db = FirebaseFirestore.getInstance()
+
+    // request notification permission launcher
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // FCM SDK (and your app) can post notifications.
+        } else {
+            showToasty("info", this, "Permission not granted, notifications will not be received!")
+        }
+    }
 
     // activity view model
     private lateinit var vm: SportAppViewModel
@@ -119,6 +136,9 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
     override fun onStart() {
         super.onStart()
 
+        // request notification permission
+        askNotificationPermission()
+
         //TODO: setup firestore db properly and uncomment the following line of code
         vm.startNotificationThread(this)
     }
@@ -128,6 +148,21 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
+    private fun askNotificationPermission() {
+        // This is only necessary for API level >= 33 (TIRAMISU)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                // FCM SDK (and your app) can post notifications.
+            } else {
+                // Directly ask for the permission
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+
+    //TODO: delete the two function below
     private fun tryWriteFirestoreDb() {
 
         // Create a new user with a first and last name

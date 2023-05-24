@@ -1,8 +1,5 @@
 package it.polito.mad.sportapp.application_utilities
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -11,20 +8,16 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
-import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.Log
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.WindowMetrics
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
@@ -33,8 +26,15 @@ import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import es.dmoral.toasty.Toasty
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.SportAppActivity
-import it.polito.mad.sportapp.entities.room.RoomNotificationStatus
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.Response
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.File
 import java.io.FileDescriptor
 import java.io.FileOutputStream
@@ -479,94 +479,16 @@ internal fun hideProgressBar(progressBar: View, mainContent: View) {
     mainContent.visibility = View.VISIBLE
 }
 
-/* NOTIFICATION UTILITIES */
-
-internal fun createAndSendInvitationNotification(
-    context: Context,
-    reservationId: Int,
-    notificationStatus: RoomNotificationStatus,
-    notificationTimestamp: String
-) {
-
-    // create notification intent and put extras
-    val notificationIntent = Intent(context, SportAppActivity::class.java).apply {
-        action = "NEW_INVITATION"
-        putExtra("id_reservation", reservationId)
-        putExtra("status", notificationStatus.name)
-        putExtra("timestamp", notificationTimestamp)
-    }
-
-    // set notification sound
-    val notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-
-    // create pending intent
-    val pendingIntent = PendingIntent.getActivity(
-        context,
-        0,
-        notificationIntent,
-        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-    )
-
-    // initialize notification manager
-    val notificationManager: NotificationManager =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-    val channelId = 1.toString()
-    val channelName = "ezsport_channel"
-    val channelDescription = "ezsport_channel_description"
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val channel = NotificationChannel(
-            channelId,
-            channelName,
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
-        channel.description = channelDescription
-        notificationManager.createNotificationChannel(channel)
-    }
-
-    // build notification
-    val builder: NotificationCompat.Builder =
-        NotificationCompat.Builder(context, channelId)
-            .setContentTitle("New Invitation Received!")
-            .setContentText("Someone sent you a new invitation! Check it out!")
-            .setSmallIcon(R.mipmap.ic_launcher_foreground)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
-            .setSound(notificationSoundUri)
-            .setAutoCancel(true)
-
-    // send notification only if the user is logged in
-    if (checkIfUserIsLoggedIn()) {
-        notificationManager.notify(0, builder.build())
-    }
-}
-
-internal fun manageInvitationNotification(intent: Intent, navController: NavController) {
-
-    // get information from intent
-    val reservationId = intent.getIntExtra("id_reservation", -1)
-    val notificationStatus = intent.getStringExtra("status") ?: "CANCELED"
-    val notificationTimestamp = intent.getStringExtra("timestamp") ?: ""
-
-    val bundle = bundleOf(
-        "id_reservation" to reservationId,
-        "status" to notificationStatus,
-        "timestamp" to notificationTimestamp
-    )
-
-    // navigate to reservation details fragment only if the user is logged in
-    navController.navigate(
-        R.id.action_loginFragment_to_notificationDetailsFragment,
-        bundle
-    )
-}
-
 /* LOGIN UTILITIES */
 
 internal fun checkIfUserIsLoggedIn(): Boolean {
     val user = FirebaseAuth.getInstance().currentUser
     return user != null
+}
+
+internal fun getCurrentUserUid(): String? {
+    val user = FirebaseAuth.getInstance().currentUser
+    return user?.uid
 }
 
 internal fun logOut(context: Context, navController: NavController, fragmentId: Int) {
