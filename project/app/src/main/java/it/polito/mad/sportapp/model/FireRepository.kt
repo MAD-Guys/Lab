@@ -31,7 +31,8 @@ class FireRepository : IRepository {
 
     /**
      * This method gets the user given its uid
-     * Note: the result is *dynamic*: the fireCallback gets called each time the user changes
+     * Note: the result is *dynamic*, i.e. the fireCallback gets called each time the user changes
+     * (but the achievements are static)
      */
     override fun getUser(
         userId: String,
@@ -39,14 +40,11 @@ class FireRepository : IRepository {
     ): FireListener {
         val fireListener = FireListener()
 
-        var userAchievementsListener: FireListener? = null
-        val userAchievementsListenerLock = Unit
-
         val userListener = db.collection("users")
             .document(userId)
             .addSnapshotListener { value, error ->
-                if (error == null) {
-                    Log.d("default error", "Error: a generic error occurred retrieving user with id $userId in FireRepository.getUser()")
+                if (error != null) {
+                    Log.d("default error", "Error: a generic error occurred retrieving user with id $userId in FireRepository.getUser(). Message: ${error.message}")
 
                     fireCallback(
                         GetItemFireError.default(
@@ -86,24 +84,18 @@ class FireRepository : IRepository {
                 // transform to user entity
                 val user = fireUser.toUser()
 
-                synchronized(userAchievementsListenerLock) {
-                    // unregister previous listener
-                    userAchievementsListener?.unregister()
-                    userAchievementsListener = this.buildAchievements(userId) { result ->
-                        when (result) {
-                            is Success -> {
-                                // attach user achievements and return successfully
-                                user.achievements = result.unwrap()
-                                fireCallback(Success(user))
-                            }
-                            is Error -> {
-                                fireCallback(Error(result.errorType()))
-                            }
+                // compute user achievements
+                this.buildAchievements(userId) { result ->
+                    when (result) {
+                        is Success -> {
+                            // attach user achievements and return successfully
+                            user.achievements = result.unwrap()
+                            fireCallback(Success(user))
+                        }
+                        is Error -> {
+                            fireCallback(Error(result.errorType()))
                         }
                     }
-
-                    // track listener that will have to be unregistered
-                    fireListener.add(userAchievementsListener)
                 }
             }
 
@@ -116,9 +108,8 @@ class FireRepository : IRepository {
     private fun buildAchievements(
         userId: String,
         fireCallback: (FireResult<Map<Achievement, Boolean>, GetItemFireError>) -> Unit
-    ): FireListener {
-        // TODO: compute achievements
-        TODO()
+    ) {
+        // TODO: compute achievements statically
     }
 
     /**
@@ -139,7 +130,7 @@ class FireRepository : IRepository {
                 return@addOnSuccessListener
             }
             .addOnFailureListener {
-                Log.d("default error","Error: a generic error occurred while checking user with id $userId in FireRepository.userAlreadyExists()")
+                Log.d("default error","Error: a generic error occurred while checking user with id $userId in FireRepository.userAlreadyExists(). Message: ${it.message}")
 
                 fireCallback(DefaultFireError.withMessage(
                     "Error: a generic error occurred while checking user with id $userId")
@@ -165,7 +156,7 @@ class FireRepository : IRepository {
             }
             .addOnFailureListener {
                 Log.d("default error", "Error: a generic error occurred while checking username $username " +
-                        "existence in FireRepository.usernameAlreadyExists()")
+                        "existence in FireRepository.usernameAlreadyExists(). Message: ${it.message}")
 
                 fireCallback(DefaultFireError.withMessage(
                     "Error: a generic error occurred while checking username $username"
@@ -193,7 +184,7 @@ class FireRepository : IRepository {
                 fireCallback(Success(Unit))
             }
             .addOnFailureListener {
-                Log.d("default error", "Error: a generic error occurred inserting new user $user in FireRepository.insertNewUser()")
+                Log.d("default error", "Error: a generic error occurred inserting new user $user in FireRepository.insertNewUser(). Message: ${it.message}")
                 fireCallback(InsertItemFireError.default(
                     "Error: a generic error occurred inserting new user $user"
                 ))
@@ -210,22 +201,22 @@ class FireRepository : IRepository {
         // convert User entity into FireUser
         val fireUser = FireUser.from(user)
 
+        // serialize it
+        val serializedUser: Map<String,Any> = fireUser.serialize()
 
-        val serializedUser: Map<String,Any>? = fireUser.serialize()
-        if(serializedUser == null) {
-            fireCallback(FireResult.Error(InsertItemFireError.SERIALIZATION_ERROR))
-            return
-        }
-        else {
-            db.collection("users").document(fireUser.id).set(serializedUser)
-                .addOnSuccessListener {
-                    fireCallback(FireResult.Success(Unit))
-                }
-                .addOnFailureListener {
-                    fireCallback(FireResult.Error(InsertItemFireError.DEFAULT_FIRE_ERROR))
-                }
-            return
-        }
+        db.collection("users")
+            .document(fireUser.id)
+            .set(serializedUser)
+            .addOnSuccessListener {
+                fireCallback(Success(Unit))
+            }
+            .addOnFailureListener {
+                // default error occurred
+                Log.d("default error", "Error: a generic error occurred updating user $user in FireRepository.updateUser(). Message: ${it.message}")
+                fireCallback(InsertItemFireError.default(
+                    "Error: a generic error occurred updating user $user"
+                ))
+            }
     }
 
     /* sports */
