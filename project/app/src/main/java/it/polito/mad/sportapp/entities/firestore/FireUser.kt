@@ -32,7 +32,8 @@ data class FireUser(
     val location: String,
     val imageURL: String?,
     val bio: String,
-    val sportLevels: List<FireSportLevel>
+    val sportLevels: List<FireSportLevel>,
+    val notificationsToken: String?
 ) {
     /**
      * Serialize the FireUser object into a Map<String, Any> object
@@ -49,7 +50,8 @@ data class FireUser(
             "location" to location,
             "imageURL" to imageURL,
             "bio" to bio,
-            "sportLevels" to sportLevels.map { it.serialize() }
+            "sportLevels" to sportLevels.map { it.serialize() },
+            "notificationsToken" to notificationsToken
         )
     }
 
@@ -66,7 +68,8 @@ data class FireUser(
             age.toInt(),
             location,
             imageURL,
-            bio
+            bio,
+            notificationsToken
         )
 
         // add user sport levels
@@ -98,6 +101,7 @@ data class FireUser(
                         Level.valueOf(it.level!!)
                     )
                 },
+                user.notificationsToken
             )
         }
 
@@ -121,10 +125,10 @@ data class FireUser(
             val imageURL = fireMap["imageURL"] as? String?
             val bio = fireMap["bio"] as? String
             val rawSportLevels = fireMap["sportLevels"] as? List<*>
+            val notificationsToken = fireMap["notificationsToken"] as? String?
 
             if (firstName == null || lastName == null || username == null || gender == null ||
-                age == null || location == null || bio == null ||
-                rawSportLevels == null) {
+                age == null || location == null || bio == null || rawSportLevels == null) {
                 // deserialization error
                 Log.d("deserialization error", "Error deserializing user plain properties")
                 return null
@@ -148,7 +152,8 @@ data class FireUser(
                 location,
                 imageURL,
                 bio,
-                sportLevels
+                sportLevels,
+                notificationsToken
             )
         }
     }

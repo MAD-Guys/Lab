@@ -13,6 +13,7 @@ data class User (
     val location: String,
     val imageURL: String?,  // TODO
     val bio: String,
+    val notificationsToken: String? = null  // TODO
 ) {
     var sportLevels: List<SportLevel> = listOf()
 
