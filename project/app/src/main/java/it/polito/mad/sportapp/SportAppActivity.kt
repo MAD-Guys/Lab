@@ -139,8 +139,8 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         // request notification permission
         askNotificationPermission()
 
-        //TODO: setup firestore db properly and uncomment the following line of code
-        vm.startNotificationThread(this)
+        //TODO: setup firestore db properly and delete the following line of code
+        //vm.startNotificationThread(this)
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -23,7 +23,6 @@ import java.io.IOException
 internal fun createInvitationNotification(
     receiverUid: String,
     reservationId: Int,
-    notificationStatus: String,
     notificationDescription: String,
     notificationTimestamp: String
 ) {
@@ -47,7 +46,7 @@ internal fun createInvitationNotification(
         notificationBody.put("title", notificationTitle)
         notificationBody.put("message", notificationDescription)
         notificationBody.put("id_reservation", reservationId)
-        notificationBody.put("status", notificationStatus)
+        notificationBody.put("status", "PENDING")
         notificationBody.put("timestamp", notificationTimestamp)
 
         // create notification

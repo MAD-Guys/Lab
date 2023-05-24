@@ -57,10 +57,10 @@ class SportAppViewModel @Inject constructor(
                     )
 
                     // add a new notification every minute
-                    Thread.sleep(10000)
+                    Thread.sleep(60000)
 
                     // send notification only if the android version is >= 13 and the permission is granted
-                    /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         if (ContextCompat.checkSelfPermission(
                                 context,
                                 Manifest.permission.POST_NOTIFICATIONS
@@ -70,7 +70,6 @@ class SportAppViewModel @Inject constructor(
                             createInvitationNotification(
                                 notification.receiverUid,
                                 notification.reservationId,
-                                notification.status.name,
                                 notification.description,
                                 notification.timestamp
                             )
@@ -79,11 +78,10 @@ class SportAppViewModel @Inject constructor(
                         createInvitationNotification(
                             notification.receiverUid,
                             notification.reservationId,
-                            notification.status.name,
                             notification.description,
                             notification.timestamp
                         )
-                    }*/
+                    }
 
                     _notifications.postValue(_notifications.value?.apply { add(notification) })
 
