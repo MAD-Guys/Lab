@@ -16,14 +16,14 @@ class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val button = view.findViewById<Button>(R.id.button_invite)
 
     @SuppressLint("SetTextI18n")
-    fun bind(user: RoomUser, buttonListener: (Int) -> Unit){
+    fun bind(user: RoomUser, buttonListener: (Int, String) -> Unit){
 
         //TODO profilePicture.setImageResource( ? )
         profilePicture.clipToOutline = true
         fullName.text = "${user.firstName} ${user.lastName}"
         username.text = "@${user.username}"
         button.setOnClickListener {
-            buttonListener(user.id)
+            buttonListener(user.id, user.username)
         }
     }
 }

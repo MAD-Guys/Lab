@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
@@ -99,8 +100,16 @@ internal fun InvitationFragment.initUserList() {
     userAdapter.notifyDataSetChanged()
 }
 
-internal val InvitationFragment.inviteButtonListener: (Int) -> Unit
-    get() = { userId: Int ->
-        showToasty("success", this.requireContext(), "Invitation sent to user $userId")
-        viewModel.sendInvitation(userId)
+internal val InvitationFragment.inviteButtonListener: (Int, String) -> Unit
+    get() = { userId: Int, username: String ->
+
+        AlertDialog.Builder(requireContext())
+            .setMessage("Do you want to send an invitation to @$username?")
+            .setPositiveButton("YES") { _, _ ->
+                viewModel.sendInvitation(userId, reservationId)
+                showToasty("success", this.requireContext(), "Invitation sent to @$username")
+            }
+            .setNegativeButton("NO") { d, _ -> d.cancel() }
+            .create()
+            .show()
     }
