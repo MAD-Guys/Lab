@@ -253,7 +253,7 @@ class FireRepository : IRepository {
             }
     }
 
-    override fun getAllUsers(fireCallback: (FireResult<List<User>, GetItemFireError>) -> Unit) {
+    override fun getAllUsers(fireCallback: (FireResult<List<User>, DefaultGetFireError>) -> Unit) {
         TODO("Not yet implemented")
     }
 

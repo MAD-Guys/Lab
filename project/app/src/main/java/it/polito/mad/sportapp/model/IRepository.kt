@@ -52,7 +52,7 @@ interface IRepository {
     fun updateUser(user: User, fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit)
 
 
-    fun getAllUsers(fireCallback: (FireResult<List<User>, GetItemFireError>) -> Unit)
+    fun getAllUsers(fireCallback: (FireResult<List<User>, DefaultGetFireError>) -> Unit)
 
     // * Sport methods *
 
