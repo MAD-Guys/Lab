@@ -81,16 +81,17 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
         reservationId = arguments?.getInt("id_reservation") ?: -1
 
         // retrieve notification status
-        notificationStatus = RoomNotificationStatus.from(arguments?.getString("status") ?: "CANCELED")
+        notificationStatus =
+            RoomNotificationStatus.from(arguments?.getString("status") ?: "CANCELED")
 
         // retrieve notification timestamp
         notificationTimestamp = arguments?.getString("timestamp") ?: ""
 
-        // retrieve reservation from db or navigate back
+        // retrieve reservation from db or set notification status to canceled
         if (reservationId != -1) {
             vm.getReservationFromDb(reservationId)
         } else {
-            navController.popBackStack()
+            notificationStatus = RoomNotificationStatus.CANCELED
         }
 
         // initialize views

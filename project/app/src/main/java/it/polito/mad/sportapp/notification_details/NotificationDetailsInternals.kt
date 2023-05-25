@@ -67,7 +67,9 @@ internal fun NotificationDetailsFragment.setupObservers() {
             reservationStartTime.text = it.startTime.toString()
             reservationEndTime.text = it.endTime.toString()
             reservationPricePerHour.text = String.format("%.2f", it.playgroundPricePerHour)
-        } else {
+        }
+        //TODO: manage the case where the db returns an error
+        else {
             progressBar.visibility = View.VISIBLE
             notificationDetailsScrollView.visibility = View.GONE
         }

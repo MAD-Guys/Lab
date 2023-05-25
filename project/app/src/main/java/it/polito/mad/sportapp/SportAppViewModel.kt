@@ -15,7 +15,6 @@ import it.polito.mad.sportapp.application_utilities.checkIfUserIsLoggedIn
 import it.polito.mad.sportapp.application_utilities.getCurrentUserUid
 import it.polito.mad.sportapp.model.LocalRepository
 import it.polito.mad.sportapp.notifications.createInvitationNotification
-import it.polito.mad.sportapp.notifications.deleteCurrentToken
 import java.time.LocalDateTime
 import javax.inject.Inject
 
