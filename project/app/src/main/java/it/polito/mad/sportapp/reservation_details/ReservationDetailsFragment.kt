@@ -109,6 +109,12 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
             }
         }
 
+        leaveReviewButton.setOnClickListener {
+            viewModel.reservation.value?.let {
+                handleLeaveReviewButton(it.playgroundId)
+            }
+        }
+
         editButton.setOnClickListener {
             toEditView()
         }
@@ -280,6 +286,11 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
 
     private fun handlePlaygroundButton(playgroundId : Int){
         val bundle = bundleOf("id_playground" to playgroundId)
+        navController.navigate(R.id.action_reservationDetailsFragment_to_PlaygroundDetailsFragment, bundle)
+    }
+
+    private fun handleLeaveReviewButton(playgroundId : Int){
+        val bundle = bundleOf("id_playground" to playgroundId, "scroll_to_review" to true)
         navController.navigate(R.id.action_reservationDetailsFragment_to_PlaygroundDetailsFragment, bundle)
     }
 

@@ -128,6 +128,12 @@ interface IRepository {
         fireCallback: (FireResult<MutableMap<Int, Equipment>, DefaultFireError>) -> Unit
     ) : FireListener
 
+    fun getAllEquipmentsBySportCenterIdAndSportId(
+        sportCenterId: String,
+        sportId: String,
+        fireCallback: (FireResult<MutableMap<Int, Equipment>, DefaultFireError>) -> Unit
+    ) : FireListener
+
     fun deleteReservation(
         reservation: DetailedReservation,
         fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit

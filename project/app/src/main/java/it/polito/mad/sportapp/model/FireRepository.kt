@@ -420,6 +420,14 @@ class FireRepository : IRepository {
         TODO("Not yet implemented")
     }
 
+    override fun getAllEquipmentsBySportCenterIdAndSportId(
+        sportCenterId: String,
+        sportId: String,
+        fireCallback: (FireResult<MutableMap<Int, Equipment>, DefaultFireError>) -> Unit
+    ): FireListener {
+        TODO("Not yet implemented")
+    }
+
     override fun deleteReservation(
         reservation: DetailedReservation,
         fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit

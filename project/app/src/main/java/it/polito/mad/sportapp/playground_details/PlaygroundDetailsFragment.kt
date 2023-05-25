@@ -1,5 +1,6 @@
 package it.polito.mad.sportapp.playground_details
 
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RatingBar
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +28,9 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
 
     internal var playgroundId = -1
     internal var selectedSlotInPlaygroundAvailabilities: String? = null
+    private var scrollToReview = false
+
+    internal lateinit var scrollView: ScrollView
 
     internal lateinit var playgroundImage: ImageView
     internal lateinit var overallRatingBar: RatingBar
@@ -39,6 +44,9 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
     internal lateinit var playgroundPrice: TextView
     internal lateinit var addReservationButton: Button
     internal lateinit var directionsButton: Button
+
+    internal lateinit var equipmentsSection: LinearLayout
+    internal lateinit var equipments: LinearLayout
 
     internal lateinit var playgroundQualityRatingBar: RatingBar
     internal lateinit var playgroundFacilitiesRatingBar: RatingBar
@@ -95,6 +103,7 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
         // Retrieve event id
         playgroundId = arguments?.getInt("id_playground") ?: -1
         selectedSlotInPlaygroundAvailabilities = arguments?.getString("selected_slot")
+        scrollToReview = arguments?.getBoolean("scroll_to_review") ?: false
 
         // Retrieve views
         retrieveViews()
@@ -105,6 +114,16 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
                 initViews()
                 initYourReview()
                 initReviewList()
+                if(scrollToReview){
+                    //if this page was called from the "Leave a review" button, it will
+                    //immediately scroll to the review form
+                    scrollToReview = false
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        scrollView.scrollToDescendant(yourReview)
+                    } else {
+                        scrollView.scrollTo(0, 10)
+                    }
+                }
             }
         }
 
@@ -113,12 +132,18 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
                 initYourReview()
             }
         }
+
+        viewModel.equipments.observe(viewLifecycleOwner) {
+            initEquipments()
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        if (playgroundId != -1)
+        if (playgroundId != -1) {
             viewModel.getPlaygroundFromDb(playgroundId)
+            viewModel.loadEquipmentsFromDb()
+        }
     }
 
 }
