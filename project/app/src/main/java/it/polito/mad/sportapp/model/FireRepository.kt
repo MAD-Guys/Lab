@@ -243,6 +243,10 @@ class FireRepository : IRepository {
             }
     }
 
+    override fun getAllUsers(fireCallback: (FireResult<List<User>, GetItemFireError>) -> Unit) {
+        TODO("Not yet implemented")
+    }
+
     /* sports */
 
     /**
@@ -385,6 +389,22 @@ class FireRepository : IRepository {
 
     override fun getAllPlaygroundsInfo(fireCallback: (FireResult<List<PlaygroundInfo>, DefaultFireError>) -> Unit): FireListener {
         TODO("Not yet implemented")
+    }
+
+    override fun loggedUserCanReviewPlayground(
+        uid: String,
+        playgroundId: String,
+        fireCallback: (FireResult<Boolean, DefaultFireError>) -> Unit
+    ) {
+        TODO("Not yet implemented")
+        /**
+         * This method returns a fireResult "true" if the logged user can review the given playground.
+         * The condition is that the user should have played there almost once in the past, in
+         * other words: exists a reservation created by the user, or with the user among the participants,
+         * which start date is before the current date.
+         * If it is not verified, the method returns a fireResult "false", or a DefaultFireError only
+         * in case of firebase server error.
+         * */
     }
 
     /* notifications */

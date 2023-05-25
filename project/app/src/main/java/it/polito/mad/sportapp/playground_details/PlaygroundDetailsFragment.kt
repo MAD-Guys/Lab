@@ -50,6 +50,8 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
     internal val reviewAdapter = ReviewAdapter()
 
     internal lateinit var yourReview: View
+    internal lateinit var youCanNotReviewMessage: TextView
+    internal lateinit var yourReviewBody: LinearLayout
     internal lateinit var yourUsername: TextView
     internal lateinit var yourReviewDate: TextView
     internal lateinit var yourQualityRating: RatingBar

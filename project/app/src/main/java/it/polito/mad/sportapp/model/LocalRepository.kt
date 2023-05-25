@@ -110,6 +110,12 @@ class LocalRepository @Inject constructor(
         reviewDao.delete(review)
     }
 
+    fun loggedUserCanReviewPlayground(playgroundId: Int): Boolean{
+        //dummy implementation only to test the different behaviors
+        if(playgroundId %2 == 0) return true
+        else return false
+    }
+
     // Reservation methods
 
     fun getDetailedReservationById(id: Int): RoomDetailedReservation {

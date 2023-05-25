@@ -135,4 +135,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
 
     fun getTempTitle() = _tempTitle
     fun getTempText() = _tempText
+    fun loggedUserCanReviewThisPlayground(): Boolean {
+        return playground.value?.let { repository.loggedUserCanReviewPlayground(it.playgroundId) } ?: false
+    }
 }
