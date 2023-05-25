@@ -25,4 +25,19 @@ data class User (
         AtLeastTenMatches to false,
         AtLeastTwentyFiveMatches to false,
     )
+
+    fun clone(): User {
+        return User(
+            id,
+            firstName,
+            lastName,
+            username,
+            gender,
+            age,
+            location,
+            imageURL,
+            bio,
+            notificationsToken
+        )
+    }
 }

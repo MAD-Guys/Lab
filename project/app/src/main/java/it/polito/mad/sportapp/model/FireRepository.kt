@@ -13,6 +13,7 @@ import it.polito.mad.sportapp.entities.PlaygroundInfo
 import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.User
+import it.polito.mad.sportapp.entities.firestore.FireNotification
 import it.polito.mad.sportapp.entities.firestore.FireReview
 import it.polito.mad.sportapp.entities.firestore.FireSport
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultFireError
@@ -253,8 +254,116 @@ class FireRepository : IRepository {
             }
     }
 
-    override fun getAllUsers(fireCallback: (FireResult<List<User>, DefaultGetFireError>) -> Unit) {
-        TODO("Not yet implemented")
+    /**
+     * Retrieve all users from Firestore cloud db which the specified user
+     * can still send the notification to, for the specified reservation
+     * **Note**: the result is **dynamic** (fireCallback is executed each time the list changes)
+     */
+    override fun getAllUsersToSendInvitationTo(
+        senderId: String,
+        reservationId: String,
+        fireCallback: (FireResult<List<User>, DefaultGetFireError>) -> Unit
+    ): FireListener {
+        val fireListener = FireListener()
+
+        // first retrieve all users statically
+        db.collection("users")
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents == null) {
+                    // generic error
+                    Log.d("generic error", "Error: retrieved null users in FireRepository.getAllUsersToSendNotificationsTo($senderId, $reservationId)")
+                    fireCallback(DefaultGetFireError.notFound(
+                        "Error: users not found"
+                    ))
+                    return@addOnSuccessListener
+                }
+
+                val allUsers = mutableListOf<User>()
+
+                for (document in documents) {
+                    val deserializedUser = FireUser.deserialize(document.id, document.data)
+
+                    if(deserializedUser == null) {
+                        // deserialization error
+                        Log.d("deserialization error", "Error: deserialization error in FireRepository.getAllUsersToSendNotificationsTo($senderId, $reservationId)")
+                        fireCallback(DefaultGetFireError.duringDeserialization(
+                            "Error: an error occurred retrieving users"
+                        ))
+                        return@addOnSuccessListener
+                    }
+
+                    // filter the sender
+                    if(deserializedUser.id!! == senderId)
+                        continue
+
+                    // convert to entity
+                    val user = deserializedUser.toUser()
+                    allUsers.add(user)
+                }
+
+                // * retrieved all users *
+                // now retrieve and exclude the ones to which a notification has already been sent
+
+                // *dynamic result*
+                val listener = db.collection("notifications")
+                    .whereEqualTo("type", 0)    // INVITATION
+                    .whereEqualTo("reservationId", reservationId)
+                    .addSnapshotListener { value, error ->
+                        if (error != null || value == null) {
+                            // generic error
+                            Log.d("generic error", "Error: a generic error occurred retrieving users to which an invitation has already been sent, in FireRepository.getAllUsersToSendNotificationsTo(). Message: ${error?.message}")
+                            fireCallback(DefaultGetFireError.default(
+                                "Error: a generic error occurred retrieving users"
+                            ))
+                            return@addSnapshotListener
+                        }
+
+                        // * users to exclude correctly retrieved *
+
+                        val usersIdToExclude = mutableListOf<String>()
+
+                        for (notificationDoc in value.documents) {
+                            val fireNotification = FireNotification.deserialize(notificationDoc.id, notificationDoc.data)
+
+                            if (fireNotification == null) {
+                                // deserialization error
+                                Log.d("deserialization error", "Error: an error occurred deserializing a notification with id ${notificationDoc.id} in FireRepository.getAllUsersToSendInvitationTo()")
+                                fireCallback(DefaultGetFireError.duringDeserialization(
+                                    "Error: a generic error occurred retrieving users"
+                                ))
+                                return@addSnapshotListener
+                            }
+
+                            // add receiver id to the users to exclude
+                            usersIdToExclude.add(fireNotification.receiverId)
+                        }
+
+                        // copy users list
+                        val usersToInvite = mutableListOf<User>()
+
+                        allUsers.forEach{user ->
+                            usersToInvite.add(user.clone())
+                        }
+
+                        // remove the users which have already received the invitation
+                        usersToInvite.removeIf { user -> usersIdToExclude.contains(user.id!!) }
+
+                        // return users successfully
+                        fireCallback(Success(usersToInvite))
+                    }
+
+                fireListener.add(listener)
+            }
+            .addOnFailureListener {
+                // generic error
+                Log.d("generic error", "Error: a generic error occurred retrieving users in FireRepository.getAllUsersToSendNotificationsTo(). Message: ${it.message}")
+                fireCallback(DefaultGetFireError.default(
+                    "Error: a generic error occurred retrieving users"
+                ))
+            }
+
+        return fireListener
     }
 
     /* sports */

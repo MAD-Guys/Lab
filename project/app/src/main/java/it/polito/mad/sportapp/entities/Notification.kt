@@ -5,16 +5,15 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 
 data class Notification (
-    val id: String,
+    val id: String?,
     val type: String,
-    val reservationId: Int,
+    val reservationId: String,
     val senderUid: String,
     val receiverUid: String,
-    val profileUrl: String,
+    val profileUrl: String?,     // TODO
     val status: NotificationStatus,
     val description: String,
     val timestamp: String,
-    val senderImageURL: String  // TODO
 ) {
     var publicationDate: LocalDate = LocalDateTime.parse(timestamp).toLocalDate()
     var publicationTime: LocalTime = LocalDateTime.parse(timestamp).toLocalTime()

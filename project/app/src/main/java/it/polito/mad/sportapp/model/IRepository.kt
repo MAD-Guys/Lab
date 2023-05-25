@@ -51,8 +51,16 @@ interface IRepository {
      */
     fun updateUser(user: User, fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit)
 
-
-    fun getAllUsers(fireCallback: (FireResult<List<User>, DefaultGetFireError>) -> Unit)
+    /**
+     * Retrieve all users from db which the specified user can still send the notification to,
+     * for the specified reservation
+     * **Note**: the result is **dynamic** (fireCallback is executed each time the list changes)
+     */
+    fun getAllUsersToSendInvitationTo(
+        senderId: String,
+        reservationId: String,
+        fireCallback: (FireResult<List<User>, DefaultGetFireError>) -> Unit
+    ): FireListener
 
     // * Sport methods *
 
