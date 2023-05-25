@@ -25,13 +25,22 @@ data class FireSport(
     /**
      * Serialize sport document data to send it to cloud firestore db
      */
-    fun serialize(): Map<String, Any> {
-        return mapOf(
-            // no id included in serialization
+    fun serialize(withId: Boolean = false): Map<String, Any> {
+        return if (withId)  {
+            mapOf(
+            "id" to id,
             "name" to name,
             "emoji" to emoji,
             "maxParticipants" to maxParticipants
-        )
+        )}
+        else {
+            mapOf(
+                // no id included in serialization
+                "name" to name,
+                "emoji" to emoji,
+                "maxParticipants" to maxParticipants
+            )
+        }
     }
 
 
