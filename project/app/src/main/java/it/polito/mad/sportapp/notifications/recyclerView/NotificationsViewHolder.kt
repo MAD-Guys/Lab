@@ -9,8 +9,8 @@ import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import it.polito.mad.sportapp.application_utilities.CircleTransform
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.application_utilities.CircleTransform
 import it.polito.mad.sportapp.entities.room.RoomNotification
 import java.time.Duration
 import java.time.LocalDate
@@ -68,11 +68,19 @@ internal class NotificationsViewHolder(view: View) : RecyclerView.ViewHolder(vie
                 .navigate(R.id.action_notificationsFragment_to_notificationDetailsFragment, bundle)
         }
 
-        // set notification icon with url
-        Picasso.get()
-            .load(notification.profileUrl)
-            .transform(CircleTransform())
-            .into(notificationIcon)
+        if (notification.profileUrl != null) {
+            // set notification icon with url
+            Picasso.get()
+                .load(notification.profileUrl)
+                .transform(CircleTransform())
+                .into(notificationIcon)
+        } else {
+            // set notification icon with default url
+            Picasso.get()
+                .load(R.drawable.user_profile_picture_noalpha)
+                .transform(CircleTransform())
+                .into(notificationIcon)
+        }
 
         // set text in notification text views
         notificationDescription.text = notification.description

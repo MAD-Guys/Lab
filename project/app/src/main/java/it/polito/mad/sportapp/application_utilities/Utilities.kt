@@ -2,7 +2,6 @@ package it.polito.mad.sportapp.application_utilities
 
 import android.content.ContentResolver
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -19,22 +18,12 @@ import android.view.WindowMetrics
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavController
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import es.dmoral.toasty.Toasty
 import it.polito.mad.sportapp.R
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.MediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
-import okhttp3.Response
-import org.json.JSONException
-import org.json.JSONObject
 import java.io.File
 import java.io.FileDescriptor
 import java.io.FileOutputStream

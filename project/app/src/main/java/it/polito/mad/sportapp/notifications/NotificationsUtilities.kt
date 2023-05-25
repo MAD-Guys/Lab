@@ -36,12 +36,14 @@ internal fun createInvitationNotification(
     val receiver =
         "ctFun_SCT5-oph334SVeZW:APA91bFjQV_eqaXo0MP6RZWf8dr7qaNDjC62uOTXBTT4alLQYsfhIQaGA_lhndivZGqvodh-7ZNLognzLUVjksPJM0VYeK-iT-uMTkHv8Fr8ooBSF3OxVyRWxVBroN_Jgi35zufQ1Ea4"
 
+    //TODO: send notification object to firestore database
+
     val notification = JSONObject()
     val notificationBody = JSONObject()
 
     try {
         // create notification body
-        notificationBody.put("action", "NEW_INVITATION")
+        notificationBody.put("action", "invitation")
         notificationBody.put("title", notificationTitle)
         notificationBody.put("message", notificationDescription)
         notificationBody.put("id_reservation", reservationId)
@@ -97,7 +99,7 @@ internal fun manageNotification(activityIntent: Intent?, navController: NavContr
 
     // check if the activity has an intent
     if (activityIntent != null) {
-        if (activityIntent.action == "NEW_INVITATION") {
+        if (activityIntent.action?.lowercase() == "invitation") {
             // get information from intent
             val reservationId = activityIntent.getIntExtra("id_reservation", -1)
             val notificationStatus = activityIntent.getStringExtra("status") ?: "CANCELED"
