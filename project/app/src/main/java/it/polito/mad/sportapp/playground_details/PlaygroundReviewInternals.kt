@@ -17,6 +17,8 @@ internal fun PlaygroundDetailsFragment.initYourReview() {
     yourReview = layoutInflater.inflate(R.layout.your_review, yourReviewContainer, false)
 
     //retrieve views
+    youCanNotReviewMessage = yourReview.findViewById(R.id.can_not_review_message)
+    yourReviewBody = yourReview.findViewById(R.id.your_review_body)
     yourUsername = yourReview.findViewById(R.id.username)
     yourReviewDate = yourReview.findViewById(R.id.date)
     yourQualityRating = yourReview.findViewById(R.id.qualityRatingBar)
@@ -34,97 +36,112 @@ internal fun PlaygroundDetailsFragment.initYourReview() {
     existingReview = yourReview.findViewById(R.id.existingReview)
     writeReview = yourReview.findViewById(R.id.writeReview)
 
-    //Common initializations
-    if(viewModel.yourReview.value?.username.isNullOrBlank())
-        yourUsername.text = "johndoe"
-    else
-        yourUsername.text = viewModel.yourReview.value?.username
+    //first of all: check if the logged user can review this playground
+    if(viewModel.loggedUserCanReviewThisPlayground()) {
 
-    if( //Case 0: Edit mode
-        viewModel.isEditMode()
-    ){
-        yourReviewDate.text = viewModel.yourReview.value?.publicationDate?.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-        yourReviewDate.visibility = TextView.VISIBLE
-        yourQualityRating.rating = viewModel.yourReview.value?.qualityRating!!
-        yourFacilitiesRating.rating = viewModel.yourReview.value?.facilitiesRating!!
-        yourReviewTitle.text = viewModel.yourReview.value?.title
-        yourReviewText.text = viewModel.yourReview.value?.review!!
-        yourReviewEditTitle.setText(
-            viewModel.getTempTitle(),
-            TextView.BufferType.EDITABLE
-        )
-        yourReviewEditText.setText(
-            viewModel.getTempText(),
-            TextView.BufferType.EDITABLE
-        )
-        yourReviewLastUpdate.text = viewModel.yourReview.value?.lastUpdateDate?.format(
-            DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-        if(viewModel.yourReview.value?.lastUpdateDate?.isEqual(viewModel.yourReview.value?.publicationDate) == true){
-            yourReviewLastUpdateContainer.visibility = LinearLayout.GONE
-        }
-        addReviewButton.visibility = Button.GONE
-        existingReview .visibility = LinearLayout.GONE
-        writeReview.visibility = LinearLayout.VISIBLE
+        //Common initializations
+        if (viewModel.yourReview.value?.username.isNullOrBlank())
+            yourUsername.text = "johndoe"
+        else
+            yourUsername.text = viewModel.yourReview.value?.username
 
-    } else if ( //Case 1: no rate and no review
-        (viewModel.yourReview.value?.id  == 0)
-        && (viewModel.yourReview.value?.qualityRating == 0f)
-        && (viewModel.yourReview.value?.facilitiesRating == 0f)
-        && (viewModel.yourReview.value?.title == "")
-        && (viewModel.yourReview.value?.review == "")
-    ) {
-        yourReviewDate.visibility = TextView.GONE
-        yourQualityRating.rating = 0f
-        yourFacilitiesRating.rating = 0f
-        yourReviewTitle.text = ""
-        yourReviewText.text = ""
-        yourReviewEditTitle.setText("", TextView.BufferType.EDITABLE)
-        yourReviewEditText.setText("", TextView.BufferType.EDITABLE)
-    } else if ( //Case 2: rate but not review
-        (viewModel.yourReview.value?.title == "")
-        && (viewModel.yourReview.value?.review == "")
-    ) {
-        yourReviewDate.text = viewModel.yourReview.value?.publicationDate?.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-        yourReviewDate.visibility = TextView.VISIBLE
-        yourQualityRating.rating = viewModel.yourReview.value?.qualityRating!!
-        yourFacilitiesRating.rating = viewModel.yourReview.value?.facilitiesRating!!
-        yourReviewTitle.text = ""
-        yourReviewText.text = ""
-        yourReviewEditTitle.setText("", TextView.BufferType.EDITABLE)
-        yourReviewEditText.setText("", TextView.BufferType.EDITABLE)
-    } else { //Case 3: rate and review
-        yourReviewDate.text = viewModel.yourReview.value?.publicationDate?.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-        yourReviewDate.visibility = TextView.VISIBLE
-        yourQualityRating.rating = viewModel.yourReview.value?.qualityRating!!
-        yourFacilitiesRating.rating = viewModel.yourReview.value?.facilitiesRating!!
-        yourReviewTitle.text = viewModel.yourReview.value?.title
-        yourReviewText.text = viewModel.yourReview.value?.review!!
-        yourReviewEditTitle.setText(
-            viewModel.yourReview.value?.title,
-            TextView.BufferType.EDITABLE
-        )
-        yourReviewEditText.setText(
-            viewModel.yourReview.value?.review,
-            TextView.BufferType.EDITABLE
-        )
-        yourReviewLastUpdate.text = viewModel.yourReview.value?.lastUpdateDate?.format(
-            DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-        if(viewModel.yourReview.value?.lastUpdateDate?.isEqual(viewModel.yourReview.value?.publicationDate) == true){
-            yourReviewLastUpdateContainer.visibility = LinearLayout.GONE
+        if ( //Case 0: Edit mode
+            viewModel.isEditMode()
+        ) {
+            yourReviewDate.text =
+                viewModel.yourReview.value?.publicationDate?.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            yourReviewDate.visibility = TextView.VISIBLE
+            yourQualityRating.rating = viewModel.yourReview.value?.qualityRating!!
+            yourFacilitiesRating.rating = viewModel.yourReview.value?.facilitiesRating!!
+            yourReviewTitle.text = viewModel.yourReview.value?.title
+            yourReviewText.text = viewModel.yourReview.value?.review!!
+            yourReviewEditTitle.setText(
+                viewModel.getTempTitle(),
+                TextView.BufferType.EDITABLE
+            )
+            yourReviewEditText.setText(
+                viewModel.getTempText(),
+                TextView.BufferType.EDITABLE
+            )
+            yourReviewLastUpdate.text = viewModel.yourReview.value?.lastUpdateDate?.format(
+                DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            )
+            if (viewModel.yourReview.value?.lastUpdateDate?.isEqual(viewModel.yourReview.value?.publicationDate) == true) {
+                yourReviewLastUpdateContainer.visibility = LinearLayout.GONE
+            }
+            addReviewButton.visibility = Button.GONE
+            existingReview.visibility = LinearLayout.GONE
+            writeReview.visibility = LinearLayout.VISIBLE
+
+        } else if ( //Case 1: no rate and no review
+            (viewModel.yourReview.value?.id == 0)
+            && (viewModel.yourReview.value?.qualityRating == 0f)
+            && (viewModel.yourReview.value?.facilitiesRating == 0f)
+            && (viewModel.yourReview.value?.title == "")
+            && (viewModel.yourReview.value?.review == "")
+        ) {
+            yourReviewDate.visibility = TextView.GONE
+            yourQualityRating.rating = 0f
+            yourFacilitiesRating.rating = 0f
+            yourReviewTitle.text = ""
+            yourReviewText.text = ""
+            yourReviewEditTitle.setText("", TextView.BufferType.EDITABLE)
+            yourReviewEditText.setText("", TextView.BufferType.EDITABLE)
+        } else if ( //Case 2: rate but not review
+            (viewModel.yourReview.value?.title == "")
+            && (viewModel.yourReview.value?.review == "")
+        ) {
+            yourReviewDate.text =
+                viewModel.yourReview.value?.publicationDate?.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            yourReviewDate.visibility = TextView.VISIBLE
+            yourQualityRating.rating = viewModel.yourReview.value?.qualityRating!!
+            yourFacilitiesRating.rating = viewModel.yourReview.value?.facilitiesRating!!
+            yourReviewTitle.text = ""
+            yourReviewText.text = ""
+            yourReviewEditTitle.setText("", TextView.BufferType.EDITABLE)
+            yourReviewEditText.setText("", TextView.BufferType.EDITABLE)
+        } else { //Case 3: rate and review
+            yourReviewDate.text =
+                viewModel.yourReview.value?.publicationDate?.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            yourReviewDate.visibility = TextView.VISIBLE
+            yourQualityRating.rating = viewModel.yourReview.value?.qualityRating!!
+            yourFacilitiesRating.rating = viewModel.yourReview.value?.facilitiesRating!!
+            yourReviewTitle.text = viewModel.yourReview.value?.title
+            yourReviewText.text = viewModel.yourReview.value?.review!!
+            yourReviewEditTitle.setText(
+                viewModel.yourReview.value?.title,
+                TextView.BufferType.EDITABLE
+            )
+            yourReviewEditText.setText(
+                viewModel.yourReview.value?.review,
+                TextView.BufferType.EDITABLE
+            )
+            yourReviewLastUpdate.text = viewModel.yourReview.value?.lastUpdateDate?.format(
+                DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            )
+            if (viewModel.yourReview.value?.lastUpdateDate?.isEqual(viewModel.yourReview.value?.publicationDate) == true) {
+                yourReviewLastUpdateContainer.visibility = LinearLayout.GONE
+            }
+            addReviewButton.visibility = Button.GONE
+            existingReview.visibility = LinearLayout.VISIBLE
         }
-        addReviewButton.visibility = Button.GONE
-        existingReview.visibility = LinearLayout.VISIBLE
+
+        //setListeners
+        yourQualityRating.setOnRatingBarChangeListener { _, fl, _ -> handleQualityRatingBar(fl) }
+        yourFacilitiesRating.setOnRatingBarChangeListener { _, fl, _ -> handleFacilitiesRatingBar(fl) }
+        addReviewButton.setOnClickListener { handleAddReviewButton() }
+        editReviewButton.setOnClickListener { handleEditReviewButton() }
+        deleteReviewButton.setOnClickListener { handleDeleteReviewButton() }
+        saveReviewButton.setOnClickListener { handleSaveReviewButton() }
+
+        yourReviewContainer.addView(yourReview)
+    } else {
+        yourReviewBody.visibility = LinearLayout.GONE
+        youCanNotReviewMessage.text = "Play at ${viewModel.playground.value!!.playgroundName} to leave your review"
+        youCanNotReviewMessage.visibility = TextView.VISIBLE
+
+        yourReviewContainer.addView(yourReview)
     }
-
-    //setListeners
-    yourQualityRating.setOnRatingBarChangeListener { _, fl, _ -> handleQualityRatingBar(fl) }
-    yourFacilitiesRating.setOnRatingBarChangeListener { _, fl, _ -> handleFacilitiesRatingBar(fl) }
-    addReviewButton.setOnClickListener { handleAddReviewButton() }
-    editReviewButton.setOnClickListener { handleEditReviewButton() }
-    deleteReviewButton.setOnClickListener { handleDeleteReviewButton() }
-    saveReviewButton.setOnClickListener { handleSaveReviewButton() }
-
-    yourReviewContainer.addView(yourReview)
 }
 
 @SuppressLint("NotifyDataSetChanged")

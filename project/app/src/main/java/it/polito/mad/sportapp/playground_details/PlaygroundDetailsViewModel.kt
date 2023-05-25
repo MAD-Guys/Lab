@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import it.polito.mad.sportapp.entities.room.RoomEquipment
 import it.polito.mad.sportapp.entities.room.RoomPlaygroundInfo
 import it.polito.mad.sportapp.entities.room.RoomReview
 import it.polito.mad.sportapp.model.LocalRepository
@@ -20,6 +21,9 @@ class PlaygroundDetailsViewModel @Inject constructor(
 
     private val _yourReview = MutableLiveData<RoomReview>()
     val yourReview : LiveData<RoomReview> = _yourReview
+
+    private val _equipments = MutableLiveData<List<RoomEquipment>>()
+    val equipments : LiveData<List<RoomEquipment>> = _equipments
 
     private var _edit = false
     private var _tempTitle = ""
@@ -135,4 +139,31 @@ class PlaygroundDetailsViewModel @Inject constructor(
 
     fun getTempTitle() = _tempTitle
     fun getTempText() = _tempText
+    fun loggedUserCanReviewThisPlayground(): Boolean {
+        return playground.value?.let { repository.loggedUserCanReviewPlayground(it.playgroundId) } ?: false
+    }
+
+    fun loadEquipmentsFromDb(){
+        //TODO: add method to IRepository
+        _equipments.postValue(
+            listOf(
+                RoomEquipment(
+                    1,
+                    "Ball",
+                    playground.value?.sportId ?: -1,
+                    playground.value?.sportCenterId ?: -1,
+                    5f,
+                    10
+                ),
+                RoomEquipment(
+                    2,
+                    "Racket",
+                    playground.value?.sportId ?: -1,
+                    playground.value?.sportCenterId ?: -1,
+                    6f,
+                    8
+                )
+            )
+        )
+    }
 }

@@ -49,7 +49,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             putExtra("timestamp", remoteMessage.data["timestamp"])
         }
 
-        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
         // create pending intent
         val pendingIntent = PendingIntent.getActivity(

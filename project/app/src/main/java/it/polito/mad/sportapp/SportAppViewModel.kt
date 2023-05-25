@@ -57,7 +57,7 @@ class SportAppViewModel @Inject constructor(
                     )
 
                     // add a new notification every minute
-                    Thread.sleep(60000)
+                    Thread.sleep(20000)
 
                     // send notification only if the android version is >= 13 and the permission is granted
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

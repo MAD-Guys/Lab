@@ -2,6 +2,7 @@ package it.polito.mad.sportapp
 
 import android.Manifest
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -11,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -18,9 +20,11 @@ import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.navigation.NavigationBarView
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
+import it.polito.mad.sportapp.application_utilities.checkIfUserIsLoggedIn
 import it.polito.mad.sportapp.application_utilities.setApplicationLocale
 import it.polito.mad.sportapp.application_utilities.showToasty
 import it.polito.mad.sportapp.application_utilities.toastyInit
+import it.polito.mad.sportapp.notifications.manageNotification
 
 @AndroidEntryPoint
 class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener {
@@ -140,7 +144,25 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         askNotificationPermission()
 
         //TODO: setup firestore db properly and delete the following line of code
-        //vm.startNotificationThread(this)
+        vm.startNotificationThread(this)
+    }
+
+    // manage notification click when the activity instance is already created
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        if (checkIfUserIsLoggedIn()) {
+            if (intent != null) {
+                manageNotification(intent, navController)
+            } else {
+                navController.navigate(R.id.showReservationsFragment)
+            }
+        } else {
+
+            val bundle = bundleOf("new_intent" to intent)
+
+            navController.navigate(R.id.loginFragment, bundle)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

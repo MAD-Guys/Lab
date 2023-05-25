@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
@@ -19,6 +20,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 internal fun PlaygroundDetailsFragment.retrieveViews() {
+    scrollView = requireView().findViewById(R.id.playgroundScrollView)
     playgroundImage = requireView().findViewById(R.id.playgroundImage)
     overallRatingBar = requireView().findViewById(R.id.overallRating)
     playgroundName = requireView().findViewById(R.id.playgroundName)
@@ -37,6 +39,8 @@ internal fun PlaygroundDetailsFragment.retrieveViews() {
     reviewList = requireView().findViewById(R.id.reviews_recyclerView)
     addReservationButton = requireView().findViewById(R.id.buttonAddReservation)
     directionsButton = requireView().findViewById(R.id.buttonDirections)
+    equipmentsSection = requireView().findViewById(R.id.equipmentsSection)
+    equipments = requireView().findViewById(R.id.equipmentsListContainer)
 }
 
 internal fun PlaygroundDetailsFragment.initViews() {
@@ -76,6 +80,27 @@ internal fun PlaygroundDetailsFragment.initViews() {
     } else {
         playgroundFacilitiesRatingBar.visibility = RatingBar.VISIBLE
         noFacilitiesRatingMessage.visibility = TextView.GONE
+    }
+}
+
+internal fun PlaygroundDetailsFragment.initEquipments() {
+    if(viewModel.equipments.value == null || viewModel.equipments.value!!.isEmpty()){
+        equipmentsSection.visibility = LinearLayout.GONE
+    } else {
+        equipments.removeAllViewsInLayout()
+        for ((index, e) in viewModel.equipments.value!!.withIndex()) {
+            val row = layoutInflater.inflate(R.layout.equipment_list_item, equipments, false)
+            row.id = index
+            val equipmentName = row.findViewById<TextView>(R.id.equipment_name)
+            val equipmentQuantity = row.findViewById<TextView>(R.id.equipment_quantity)
+            val equipmentPrice = row.findViewById<TextView>(R.id.equipment_unit_price)
+
+            equipmentName.text = e.name
+            equipmentQuantity.text = String.format("%d", e.availability)
+            equipmentPrice.text = String.format("%.2f", e.unitPrice)
+
+            equipments.addView(row, index)
+        }
     }
 }
 

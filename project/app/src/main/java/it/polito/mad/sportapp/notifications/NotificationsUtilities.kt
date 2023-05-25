@@ -17,7 +17,6 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 
-
 /* NOTIFICATION UTILITIES */
 
 internal fun createInvitationNotification(
@@ -35,7 +34,7 @@ internal fun createInvitationNotification(
     // set the notification receiver
     //TODO: retrieve the receiver's token from db with the receiverUid
     val receiver =
-        "fEt9asdMTD2NBlGCqOdZc3:APA91bFdDNcLVM23gRfwG_ETZNnucAtL0yNgm4r2_fgNmorNNwQhulOikk6O4yiI2MsMLAZzudAiw-xwkfQojjiiZLTbgTnT81lfz6EoDS1RTdXAhgLpARDClveTvEAEqm-Wlw0sC9jB"
+        "ctFun_SCT5-oph334SVeZW:APA91bFjQV_eqaXo0MP6RZWf8dr7qaNDjC62uOTXBTT4alLQYsfhIQaGA_lhndivZGqvodh-7ZNLognzLUVjksPJM0VYeK-iT-uMTkHv8Fr8ooBSF3OxVyRWxVBroN_Jgi35zufQ1Ea4"
 
     val notification = JSONObject()
     val notificationBody = JSONObject()
@@ -94,28 +93,42 @@ internal fun sendInvitationNotification(notification: JSONObject) {
     })
 }
 
-internal fun manageInvitationNotification(intent: Intent, navController: NavController) {
+internal fun manageNotification(activityIntent: Intent?, navController: NavController) {
 
-    // get information from intent
-    val reservationId = intent.getIntExtra("id_reservation", -1)
-    val notificationStatus = intent.getStringExtra("status") ?: "CANCELED"
-    val notificationTimestamp = intent.getStringExtra("timestamp") ?: ""
+    // check if the activity has an intent
+    if (activityIntent != null) {
+        if (activityIntent.action == "NEW_INVITATION") {
+            // get information from intent
+            val reservationId = activityIntent.getIntExtra("id_reservation", -1)
+            val notificationStatus = activityIntent.getStringExtra("status") ?: "CANCELED"
+            val notificationTimestamp = activityIntent.getStringExtra("timestamp") ?: ""
 
-    val bundle = bundleOf(
-        "id_reservation" to reservationId,
-        "status" to notificationStatus,
-        "timestamp" to notificationTimestamp
-    )
+            val bundle = bundleOf(
+                "id_reservation" to reservationId,
+                "status" to notificationStatus,
+                "timestamp" to notificationTimestamp
+            )
 
-    // navigate to reservation details fragment only if the user is logged in
-    navController.navigate(
-        R.id.action_loginFragment_to_notificationDetailsFragment,
-        bundle
-    )
+            // insert fragments in navigation the back stack
+            navController.navigate(R.id.showReservationsFragment)
+            navController.navigate(R.id.notificationsFragment)
+
+            // navigate to notificationDetails fragment
+            navController.navigate(
+                R.id.action_notificationsFragment_to_notificationDetailsFragment,
+                bundle
+            )
+        } else {
+            // navigate to showReservations fragment
+            navController.navigate(R.id.showReservationsFragment)
+        }
+    } else {
+        // navigate to showReservations fragment
+        navController.navigate(R.id.showReservationsFragment)
+    }
 }
 
 /* tokens */
-
 internal fun sendTokenToDatabase(token: String, uid: String) {
 
     //TODO: send token to database and delete the old one associate to the same user id

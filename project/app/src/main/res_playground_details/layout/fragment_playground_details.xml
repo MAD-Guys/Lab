@@ -9,6 +9,7 @@
    >
 
     <ScrollView
+        android:id="@+id/playgroundScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
@@ -300,6 +301,37 @@
                             android:focusable="true"
                             style="?android:attr/buttonBarButtonStyle" />
                     </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider"
+                        android:layout_marginVertical="8dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/equipmentsSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Equipments title -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8sp"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:includeFontPadding="false"
+                        android:text="Available Equipments"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/section_title_text_size" />
+
+                    <LinearLayout
+                        android:id="@+id/equipmentsListContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
 
                     <View
                         android:layout_width="match_parent"
