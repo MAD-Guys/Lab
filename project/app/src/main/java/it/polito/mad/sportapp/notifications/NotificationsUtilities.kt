@@ -34,7 +34,7 @@ internal fun createInvitationNotification(
     // set the notification receiver
     //TODO: retrieve the receiver's token from db with the receiverUid
     val receiver =
-        "f45FgGV3RSiOGonDaoF-Ww:APA91bH9Ka2pP4lSyyF4jADAfOJRL-eWOYrYrIUhwqx7Rdrvl_8IEuta4-eohge5wLbr5d84h2VdOMQ8aVunTunYpPKA6rFzZzNJZe2gB25IVUwXKUULQV-RfZ5cEpPMJL837IsHry55"
+        "ctFun_SCT5-oph334SVeZW:APA91bFjQV_eqaXo0MP6RZWf8dr7qaNDjC62uOTXBTT4alLQYsfhIQaGA_lhndivZGqvodh-7ZNLognzLUVjksPJM0VYeK-iT-uMTkHv8Fr8ooBSF3OxVyRWxVBroN_Jgi35zufQ1Ea4"
 
     val notification = JSONObject()
     val notificationBody = JSONObject()
@@ -109,8 +109,13 @@ internal fun manageNotification(activityIntent: Intent?, navController: NavContr
                 "timestamp" to notificationTimestamp
             )
 
+            // insert fragments in navigation the back stack
+            navController.navigate(R.id.showReservationsFragment)
+            navController.navigate(R.id.notificationsFragment)
+
+            // navigate to notificationDetails fragment
             navController.navigate(
-                R.id.notificationDetailsFragment,
+                R.id.action_notificationsFragment_to_notificationDetailsFragment,
                 bundle
             )
         } else {

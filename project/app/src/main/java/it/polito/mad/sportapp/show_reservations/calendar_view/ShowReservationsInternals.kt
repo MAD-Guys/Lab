@@ -293,12 +293,8 @@ internal fun ShowReservationsFragment.exitDialogInit() {
     exitDialog = AlertDialog.Builder(requireContext())
         .setMessage("Do you want exit from the application?")
         .setPositiveButton("YES") { _, _ ->
-            // logout and navigate back to the login fragment
-            logOut(
-                requireContext(),
-                navController,
-                R.id.action_showReservationsFragment_to_loginFragment
-            )
+            // finish the activity
+            requireActivity().finish()
         }
         .setNegativeButton("NO") { d, _ -> d.cancel() }
         .create()
