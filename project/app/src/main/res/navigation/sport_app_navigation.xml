@@ -64,7 +64,11 @@
         <action
             android:id="@+id/action_reservationDetailsFragment_to_invitationFragment"
             app:destination="@id/invitationFragment"
-            app:enterAnim="@anim/custom_animation_slide_in_from_bottom" />
+            app:enterAnim="@anim/custom_animation_slide_in_from_bottom"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@anim/custom_animation_slide_out_to_bottom"
+            app:popUpTo="@id/reservationDetailsFragment" />
     </fragment>
 
     <fragment
@@ -193,8 +197,7 @@
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@anim/custom_animation_slide_out_to_bottom"
-            app:popUpTo="@id/showReservationsFragment"
-            app:popUpToInclusive="true" />
+            app:popUpTo="@id/notificationsFragment" />
     </fragment>
     <fragment
         android:id="@+id/notificationsFragment"

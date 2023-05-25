@@ -1,7 +1,10 @@
 package it.polito.mad.sportapp.login
 
+import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.ContentValues.TAG
+import android.content.Intent
+import android.os.Build
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
@@ -20,6 +23,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.messaging.FirebaseMessaging
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.application_utilities.showToasty
+import it.polito.mad.sportapp.notifications.manageNotification
 import it.polito.mad.sportapp.notifications.sendTokenToDatabase
 
 // manage menu item selection
@@ -130,14 +134,27 @@ internal fun LoginFragment.onSignInResult(result: FirebaseAuthUIAuthenticationRe
 }
 
 /* update UI */
+@Suppress("DEPRECATION")
+@SuppressLint("Deprecation")
 internal fun LoginFragment.updateUI(currentUser: FirebaseUser?) {
     if (currentUser != null) {
         // user is logged in
         // show success message
         showToasty("success", requireContext(), "Login successfully done!")
 
-        // navigate to show reservations fragment
-        navController.navigate(R.id.showReservationsFragment)
+        // get new intent if any
+        val newIntent: Intent? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable("new_intent", Intent::class.java)
+        } else {
+            arguments?.getParcelable("new_intent")
+        }
+
+        // check if app was started from a notification
+        if (newIntent != null) {
+            manageNotification(newIntent, navController)
+        } else {
+            manageNotification(requireActivity().intent, navController)
+        }
     } else {
         // user is not logged in
         // show error message
