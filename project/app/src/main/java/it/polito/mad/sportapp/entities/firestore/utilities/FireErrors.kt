@@ -37,7 +37,7 @@ class DefaultFireError(private val message: String = defaultErrorMessage) : Fire
  * error occurred during deserialization
  * - or (3) a DEFAULT_FIRE_ERROR, in case of generic error
  */
-enum class GetItemFireError(private var message: String) : FireErrorType {
+enum class DefaultGetFireError(private var message: String) : FireErrorType {
     DEFAULT_FIRE_ERROR(defaultErrorMessage),
     NOT_FOUND_ERROR(defaultGetItemErrorMessage),
     DESERIALIZATION_ERROR(defaultDeserializationErrorMessage);
@@ -48,21 +48,21 @@ enum class GetItemFireError(private var message: String) : FireErrorType {
         /**
          * Returns a DEFAULT_FIRE_ERROR instance with a custom error message
          */
-        fun <T> default(message: String): Error<T,GetItemFireError> {
+        fun <T> default(message: String): Error<T,DefaultGetFireError> {
             return Error(DEFAULT_FIRE_ERROR.apply { this.message = message })
         }
 
         /**
          * Returns a NOT_FOUND_ERROR instance with a custom error message
          */
-        fun <T> notFound(message: String): Error<T,GetItemFireError> {
+        fun <T> notFound(message: String): Error<T,DefaultGetFireError> {
             return Error(NOT_FOUND_ERROR.apply { this.message = message })
         }
 
         /**
          * Returns a DESERIALIZATION_ERROR instance with a custom error message
          */
-        fun <T> duringDeserialization(message: String): Error<T,GetItemFireError> {
+        fun <T> duringDeserialization(message: String): Error<T,DefaultGetFireError> {
             return Error(DESERIALIZATION_ERROR.apply { this.message = message })
         }
     }
@@ -75,7 +75,7 @@ enum class GetItemFireError(private var message: String) : FireErrorType {
  * (before sending it to the cloud)
  * - or (3) a DEFAULT_FIRE_ERROR, in case of a generic error
  */
-enum class InsertItemFireError(private var message: String) : FireErrorType {
+enum class DefaultInsertFireError(private var message: String) : FireErrorType {
     DEFAULT_FIRE_ERROR(defaultErrorMessage),
     CONFLICT_ERROR(defaultInsertItemErrorMessage),
     SERIALIZATION_ERROR(defaultSerializationErrorMessage);
@@ -86,21 +86,21 @@ enum class InsertItemFireError(private var message: String) : FireErrorType {
         /**
          * Returns a DEFAULT_FIRE_ERROR instance with a custom error message
          */
-        fun <T> default(message: String): Error<T,InsertItemFireError> {
+        fun <T> default(message: String): Error<T, DefaultInsertFireError> {
             return Error(DEFAULT_FIRE_ERROR.apply { this.message = message })
         }
 
         /**
          * Returns a CONFLICT_ERROR instance with a custom error message
          */
-        fun <T> conflict(message: String): Error<T, InsertItemFireError> {
+        fun <T> conflict(message: String): Error<T, DefaultInsertFireError> {
             return Error(CONFLICT_ERROR.apply { this.message = message })
         }
 
         /**
          * Returns a SERIALIZATION_ERROR instance with a custom error message
          */
-        fun <T> duringSerialization(message: String): Error<T, InsertItemFireError> {
+        fun <T> duringSerialization(message: String): Error<T, DefaultInsertFireError> {
             return Error(SERIALIZATION_ERROR.apply { this.message = message })
         }
     }

@@ -7,6 +7,7 @@ import java.time.format.DateTimeParseException
 data class FireReview(
     val id: String?,
     val userId: String,
+    var username: String,
     val playgroundId: String,
     val title: String,
     val qualityRating: Long,
@@ -22,6 +23,7 @@ data class FireReview(
         return mapOf(
             // no id in serialization
             "userId" to userId,
+            "username" to username,
             "playgroundId" to playgroundId,
             "title" to title,
             "qualityRating" to qualityRating,
@@ -47,7 +49,9 @@ data class FireReview(
                 textualReview,
                 timestamp,
                 lastUpdate
-            )
+            ).apply {
+                this.username = this@FireReview.username
+            }
         }
         catch (e: DateTimeParseException) {
             Log.d("deserialization error", "Error: an error occurred parsing fireReview dates in FireReview.toReview()")
@@ -66,6 +70,7 @@ data class FireReview(
             }
 
             val userId = data["userId"] as? String
+            val username = data["username"] as? String
             val playgroundId = data["playgroundId"] as? String
             val title = data["title"] as? String
             val qualityRating = data["qualityRating"] as? Long
@@ -74,9 +79,9 @@ data class FireReview(
             val timestamp = data["timestamp"] as? String
             val lastUpdate = data["timestamp"] as? String
 
-            if(userId == null || playgroundId == null || title == null || qualityRating == null ||
-                    facilitiesRating == null || textualReview == null || timestamp == null ||
-                lastUpdate == null) {
+            if(userId == null || username == null || playgroundId == null || title == null ||
+                qualityRating == null || facilitiesRating == null || textualReview == null ||
+                timestamp == null || lastUpdate == null) {
                 Log.d("deserialization error", "Error: an error occurred deserialize review plain properties in FireReview.deserialize()")
                 return null
             }
@@ -85,6 +90,7 @@ data class FireReview(
             return FireReview(
                 id,
                 userId,
+                username,
                 playgroundId,
                 title,
                 qualityRating,
@@ -102,6 +108,7 @@ data class FireReview(
             return FireReview(
                 review.id,
                 review.userId,
+                review.username,    // take care: this might be empty
                 review.playgroundId,
                 review.title,
                 review.qualityRating.toLong(),

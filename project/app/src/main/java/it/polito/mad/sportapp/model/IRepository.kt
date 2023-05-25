@@ -12,8 +12,8 @@ import it.polito.mad.sportapp.entities.Notification
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
-import it.polito.mad.sportapp.entities.firestore.utilities.GetItemFireError
-import it.polito.mad.sportapp.entities.firestore.utilities.InsertItemFireError
+import it.polito.mad.sportapp.entities.firestore.utilities.DefaultGetFireError
+import it.polito.mad.sportapp.entities.firestore.utilities.DefaultInsertFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.NewReservationError
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -28,7 +28,7 @@ interface IRepository {
      * **Note**: the result is **dynamic**: the fireCallback gets called each time the user changes.
      * Remember to **unregister** the listener once you don't need it anymore
      */
-    fun getUser(userId: String, fireCallback: (FireResult<User, GetItemFireError>) -> Unit) : FireListener
+    fun getUser(userId: String, fireCallback: (FireResult<User, DefaultGetFireError>) -> Unit) : FireListener
 
     /**
      * Check if the user already exists or not
@@ -44,12 +44,13 @@ interface IRepository {
     /**
      * Insert a new user in the db
      */
-    fun insertNewUser(user: User, fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit)
+    fun insertNewUser(user: User, fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit)
 
     /**
      * Update an existing user
      */
-    fun updateUser(user: User, fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit)
+    fun updateUser(user: User, fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit)
+
 
     // * Sport methods *
 
@@ -57,7 +58,8 @@ interface IRepository {
      * Retrieve all the sports
      * Note: the result is retrieved as **static** (fireCallback is executed just once)
      */
-    fun getAllSports(fireCallback: (FireResult<List<Sport>, GetItemFireError>) -> Unit)
+    fun getAllSports(fireCallback: (FireResult<List<Sport>, DefaultGetFireError>) -> Unit)
+
 
     // * Review methods *
 
@@ -70,23 +72,25 @@ interface IRepository {
     fun getReviewByUserIdAndPlaygroundId(
         userId: String,
         playgroundId: String,
-        fireCallback: (FireResult<Review, GetItemFireError>) -> Unit
+        fireCallback: (FireResult<Review, DefaultGetFireError>) -> Unit
     ) : FireListener
 
     /**
      * Create or update an existing Review in the db
      */
-    fun insertOrUpdateReview(review: Review, fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit)
+    fun insertOrUpdateReview(review: Review, fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit)
 
     /**
      * Delete an existing Review in the db
      */
     fun deleteReview(review: Review, fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit)
 
+
     // * Reservation methods *
+
     fun getDetailedReservationById(
         reservationId: String,
-        fireCallback: (FireResult<DetailedReservation, GetItemFireError>) -> Unit
+        fireCallback: (FireResult<DetailedReservation, DefaultGetFireError>) -> Unit
     ) : FireListener
 
     /**
@@ -107,13 +111,13 @@ interface IRepository {
 
     fun getReservationsPerDateByUserId(
         uid: String,
-        fireCallback: (FireResult<Map<LocalDate, List<DetailedReservation>>, GetItemFireError>) -> Unit
+        fireCallback: (FireResult<Map<LocalDate, List<DetailedReservation>>, DefaultGetFireError>) -> Unit
     ) : FireListener
 
     fun addUserToReservation(
         reservationId: String,
         uid: String,
-        fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit
+        fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit
     )
 
     // * Equipment methods *
@@ -134,7 +138,7 @@ interface IRepository {
     // * Playground methods *
     fun getPlaygroundInfoById(
         playgroundId: String,
-        fireCallback: (FireResult<PlaygroundInfo, GetItemFireError>) -> Unit
+        fireCallback: (FireResult<PlaygroundInfo, DefaultGetFireError>) -> Unit
     ) : FireListener
 
     fun getAvailablePlaygroundsPerSlot(
