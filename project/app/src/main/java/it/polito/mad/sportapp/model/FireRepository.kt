@@ -12,6 +12,7 @@ import it.polito.mad.sportapp.entities.PlaygroundInfo
 import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.User
+import it.polito.mad.sportapp.entities.firestore.FireReview
 import it.polito.mad.sportapp.entities.firestore.FireSport
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
@@ -49,7 +50,7 @@ class FireRepository : IRepository {
 
                     fireCallback(
                         GetItemFireError.default(
-                            "Error: a generic error occurred retrieving user with id $userId",
+                            "Error: a generic error occurred retrieving user",
                         )
                     )
 
@@ -60,7 +61,7 @@ class FireRepository : IRepository {
                     // no data exists
                     fireCallback(
                         GetItemFireError.notFound(
-                        "Error: User with id $userId has not been found in FireRepository.getUser()"
+                        "Error: User has not been found"
                     ))
                     return@addSnapshotListener
                 }
@@ -75,7 +76,7 @@ class FireRepository : IRepository {
                     Log.d("deserialization error", "Error: a generic error occurred deserializing user with id $userId in FireRepository.getUser()")
 
                     fireCallback(GetItemFireError.duringDeserialization(
-                        "Error: a generic error occurred deserializing user with id $userId"
+                        "Error: a generic error occurred retrieving user"
                     ))
                     return@addSnapshotListener
                 }
@@ -144,7 +145,7 @@ class FireRepository : IRepository {
                 Log.d("default error","Error: a generic error occurred while checking user with id $userId in FireRepository.userAlreadyExists(). Message: ${it.message}")
 
                 fireCallback(DefaultFireError.withMessage(
-                    "Error: a generic error occurred while checking user with id $userId")
+                    "Error: a generic error occurred while checking user")
                 )
             }
     }
@@ -197,7 +198,7 @@ class FireRepository : IRepository {
             .addOnFailureListener {
                 Log.d("default error", "Error: a generic error occurred inserting new user $user in FireRepository.insertNewUser(). Message: ${it.message}")
                 fireCallback(InsertItemFireError.default(
-                    "Error: a generic error occurred inserting new user $user"
+                    "Error: a generic error occurred inserting new user"
                 ))
             }
     }
@@ -217,7 +218,7 @@ class FireRepository : IRepository {
             Log.d("serialization error", "Error: tyring to update user with id null ($user) in FireRepository.updateUser()")
             fireCallback(
                 InsertItemFireError.duringSerialization(
-                    "Error: trying to update user with id null"
+                    "Error: an error occurred updating user"
                 )
             )
             return
@@ -275,7 +276,7 @@ class FireRepository : IRepository {
                         Log.d("deserialization error", "Error: an error occurred deserializing sport document with id ${document.id} in FireRepository.getAllSports()")
                         fireCallback(
                             GetItemFireError.duringDeserialization(
-                                "Error: an error occurred deserializing sport document with id ${document.id}"
+                                "Error: an error occurred retrieving the sport"
                             )
                         )
                         return@addOnSuccessListener
@@ -299,15 +300,71 @@ class FireRepository : IRepository {
 
     /* reviews */
 
+    /**
+     * Retrieve a specific review from the Firestore cloud db, given the user is and playground id
+     * **Note**: the result is **dynamic** (the fireCallback is called each time the review is updated)
+     * Remember to unregister the listener once you don't need data anymore
+     */
     override fun getReviewByUserIdAndPlaygroundId(
-        uid: String,
+        userId: String,
         playgroundId: String,
         fireCallback: (FireResult<Review, GetItemFireError>) -> Unit
     ): FireListener {
-        TODO("Not yet implemented")
+
+        val listener = db.collection("reviews")
+            .whereEqualTo("userId", userId)
+            .whereEqualTo("playgroundId", playgroundId)
+            .addSnapshotListener { value, error ->
+                if(error != null) {
+                    // a Firebase error occurred
+                    Log.d("default error", "Error: a generic error occurred retrieving review with userId $userId and playgroundId $playgroundId in FireRepository.getReviewByUserIdAndPlaygroundId(). Message: ${error.message}")
+                    fireCallback(GetItemFireError.default(
+                        "Error: a generic error occurred retrieving the review"
+                    ))
+                    return@addSnapshotListener
+                }
+
+                if(value == null || value.isEmpty) {
+                    // review not found
+                    Log.d("not found error", "Error: review with userId $userId and playgroundId $playgroundId has not been found in FireRepository.getReviewByUserIdAndPlaygroundId()")
+                    fireCallback(GetItemFireError.notFound(
+                        "Error: review has not been found"
+                    ))
+                    return@addSnapshotListener
+                }
+
+                // * review exists *
+
+                // retrieve the first review document (it should be just one)
+                val reviewDocument = value.documents[0]
+
+                // deserialize it
+                val fireReview = FireReview.deserialize(reviewDocument.id, reviewDocument.data)
+
+                val review = fireReview?.toReview()
+
+                if (review == null) {
+                    // deserialization error
+                    Log.d("deserialization error", "Error: an error occurred deserializing a review in FireRepository.getReviewByUserIdAndPlaygroundId()")
+                    fireCallback(GetItemFireError.duringDeserialization(
+                        "Error: an error occurred retrieving review data"
+                    ))
+                    return@addSnapshotListener
+                }
+
+                // * now add username to the review *
+                // TODO
+
+
+
+
+
+            }
+
+        return FireListener(listener)
     }
 
-    override fun updateReview(
+    override fun insertOrUpdateReview(
         review: Review,
         fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit
     ) {

@@ -17,7 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.SportAppViewModel
 import it.polito.mad.sportapp.application_utilities.checkIfUserIsLoggedIn
-import it.polito.mad.sportapp.notifications.manageInvitationNotification
+import it.polito.mad.sportapp.notifications.manageNotification
 
 @AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.fragment_login) {
@@ -58,20 +58,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 vm.addUserOnDb()
             }*/
 
-            val activityIntent = requireActivity().intent
-
-            // check if the activity has an intent
-            if (activityIntent != null) {
-                if (activityIntent.action == "NEW_INVITATION") {
-                    manageInvitationNotification(activityIntent, navController)
-                } else {
-                    // navigate to showReservations fragment
-                    navController.navigate(R.id.showReservationsFragment)
-                }
-            } else {
-                // navigate to showReservations fragment
-                navController.navigate(R.id.showReservationsFragment)
-            }
+            manageNotification(requireActivity().intent, navController)
         }
 
         // initialize view model

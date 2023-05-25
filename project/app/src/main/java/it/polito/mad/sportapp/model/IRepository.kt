@@ -42,7 +42,7 @@ interface IRepository {
     fun usernameAlreadyExists(username: String, fireCallback: (FireResult<Boolean, DefaultFireError>) -> Unit)
 
     /**
-     * Insert a new user in the cloud Firestore db inside users collection
+     * Insert a new user in the db
      */
     fun insertNewUser(user: User, fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit)
 
@@ -62,13 +62,27 @@ interface IRepository {
     fun getAllSports(fireCallback: (FireResult<List<Sport>, GetItemFireError>) -> Unit)
 
     // * Review methods *
+
+    /**
+     * Retrieve a specific Review entity from the db,
+     * providing the related playground id and user id
+     * **Note**: the result is **dynamic** (fireCallback is executed each time the Review is updated);
+     * remember to **unregister** the returned listener once you don't need it anymore
+     */
     fun getReviewByUserIdAndPlaygroundId(
-        uid: String,
+        userId: String,
         playgroundId: String,
         fireCallback: (FireResult<Review, GetItemFireError>) -> Unit
     ) : FireListener
 
-    fun updateReview(review: Review, fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit)
+    /**
+     * Create or update an existing Review in the db
+     */
+    fun insertOrUpdateReview(review: Review, fireCallback: (FireResult<Unit, InsertItemFireError>) -> Unit)
+
+    /**
+     * Delete an existing Review in the db
+     */
     fun deleteReview(review: Review, fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit)
 
     // * Reservation methods *
