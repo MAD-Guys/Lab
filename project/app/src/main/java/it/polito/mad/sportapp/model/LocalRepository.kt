@@ -95,7 +95,7 @@ class LocalRepository @Inject constructor(
     }
 
 
-    fun updateReview(review: RoomReview) {
+    fun insertOrUpdateReview(review: RoomReview) {
         val now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME).toString()
         review.lastUpdate = now
         if (review.id == 0) {
