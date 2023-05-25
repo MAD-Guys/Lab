@@ -80,6 +80,12 @@ class LocalRepository @Inject constructor(
 
 
     // Review methods
+    fun getReviewByUserIdAndPlaygroundId(userId: Int, playgroundId: Int): RoomReview {
+        val review = reviewDao.findByUserIdAndPlaygroundId(userId, playgroundId)
+        review.username = userDao.findUsernameById(userId)
+        return review
+    }
+
     private fun getAllReviewsByPlaygroundId(id: Int): List<RoomReview> {
         val reviews = reviewDao.findByPlaygroundId(id)
         reviews.forEach {
@@ -87,13 +93,6 @@ class LocalRepository @Inject constructor(
         }
         return reviews
     }
-
-    fun getReviewByUserIdAndPlaygroundId(userId: Int, playgroundId: Int): RoomReview {
-        val review = reviewDao.findByUserIdAndPlaygroundId(userId, playgroundId)
-        review.username = userDao.findUsernameById(userId)
-        return review
-    }
-
 
     fun insertOrUpdateReview(review: RoomReview) {
         val now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME).toString()
