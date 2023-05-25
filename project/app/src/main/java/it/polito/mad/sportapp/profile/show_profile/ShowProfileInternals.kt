@@ -76,7 +76,7 @@ internal fun ShowProfileFragment.menuInit() {
 /* Exit and logout dialog */
 internal fun ShowProfileFragment.exitDialogInit() {
     exitDialog = AlertDialog.Builder(requireContext())
-        .setMessage("Do you want exit from the application?")
+        .setMessage("Do you want logout?")
         .setPositiveButton("YES") { _, _ ->
             // logout and navigate back to the login fragment
             logOut(
