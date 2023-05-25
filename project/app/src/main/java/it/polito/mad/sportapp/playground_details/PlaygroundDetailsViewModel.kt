@@ -61,7 +61,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
         )
 
         val dbThread = Thread {
-            repository.updateReview(updatedReview)
+            repository.insertOrUpdateReview(updatedReview)
             _yourReview.postValue(repository.getReviewByUserIdAndPlaygroundId(1, _playground.value!!.playgroundId))
         }
 
@@ -83,7 +83,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
         )
 
         val dbThread = Thread {
-            repository.updateReview(updatedReview)
+            repository.insertOrUpdateReview(updatedReview)
         }
 
         // start db thread
@@ -104,7 +104,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
         )
 
         val dbThread = Thread {
-            repository.updateReview(updatedReview)
+            repository.insertOrUpdateReview(updatedReview)
         }
 
         // start db thread
