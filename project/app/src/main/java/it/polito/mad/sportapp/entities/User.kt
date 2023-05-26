@@ -27,7 +27,8 @@ data class User (
     )
 
     fun clone(): User {
-        return User(
+
+        val user = User(
             id,
             firstName,
             lastName,
@@ -39,5 +40,10 @@ data class User (
             bio,
             notificationsToken
         )
+
+        user.achievements = achievements
+        user.sportLevels = sportLevels
+
+        return user
     }
 }
