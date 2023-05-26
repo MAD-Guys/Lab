@@ -15,7 +15,7 @@ data class User (
     val bio: String,
     val notificationsToken: String? = null  // TODO
 ) {
-    var sportLevels: List<SportLevel> = mutableListOf()
+    var sportLevels: List<SportLevel> = listOf()
 
     var achievements : Map<Achievement,Boolean> = mapOf(
         AtLeastOneSport to false,
