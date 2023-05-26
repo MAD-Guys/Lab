@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.room.RoomUser
 
 class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -16,14 +17,15 @@ class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val button = view.findViewById<Button>(R.id.button_invite)
 
     @SuppressLint("SetTextI18n")
-    fun bind(user: RoomUser, buttonListener: (Int, String) -> Unit){
+    //fun bind(user: RoomUser, buttonListener: (Int, String) -> Unit){
+    fun bind(user: User, buttonListener: (/*Int*/String, String) -> Unit){
 
         //TODO profilePicture.setImageResource( ? )
         profilePicture.clipToOutline = true
         fullName.text = "${user.firstName} ${user.lastName}"
         username.text = "@${user.username}"
         button.setOnClickListener {
-            buttonListener(user.id, user.username)
+            buttonListener(user.id!!, user.username)
         }
     }
 }

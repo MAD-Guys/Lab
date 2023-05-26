@@ -100,8 +100,8 @@ internal fun InvitationFragment.initUserList() {
     userAdapter.notifyDataSetChanged()
 }
 
-internal val InvitationFragment.inviteButtonListener: (Int, String) -> Unit
-    get() = { userId: Int, username: String ->
+internal val InvitationFragment.inviteButtonListener: (/*Int*/String, String) -> Unit
+    get() = { userId: /*Int*/String, username: String ->
 
         AlertDialog.Builder(requireContext())
             .setMessage("Do you want to send an invitation to @$username?")

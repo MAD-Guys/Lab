@@ -13,6 +13,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.invitation.users_recycler_view.UserAdapter
 
 @AndroidEntryPoint
@@ -33,6 +34,8 @@ class InvitationFragment : Fragment(R.layout.fragment_invitation) {
 
     private lateinit var bottomNavigationBar: View
     internal lateinit var navController: NavController
+
+    private lateinit var fireListener: FireListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -73,6 +76,11 @@ class InvitationFragment : Fragment(R.layout.fragment_invitation) {
 
     override fun onResume() {
         super.onResume()
-        viewModel.getUsersFromDb(reservationSportId)
+        fireListener = viewModel.getUsersFromDb(reservationSportId)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        fireListener.unregister()
     }
 }
