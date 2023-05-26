@@ -1,19 +1,23 @@
 package it.polito.mad.sportapp.entities.firestore
 
 import android.util.Log
+import it.polito.mad.sportapp.entities.DetailedEquipmentReservation
+import it.polito.mad.sportapp.entities.DetailedReservation
+import it.polito.mad.sportapp.entities.NewReservation
+import java.time.Duration
 import java.time.LocalDateTime
 
 data class FirePlaygroundReservation(
-    val id: String,
+    val id: String?,
     val playgroundId: String,
     val user: FireUserForPlaygroundReservation,
-    val participants: List<FireUserForPlaygroundReservation>,
+    val participants: List<FireUserForPlaygroundReservation>?,
     val startDateTime: String,
     val endDateTime: String,
     val totalPrice: Double,
-    val additionalRequests: String,
+    val additionalRequests: String?,
     val timestamp: String
-){
+) {
     /**
      * Serialize the FirePlaygroundReservation object into a Map<String, Any> object
      * to send to the Firestore cloud database
@@ -23,7 +27,7 @@ data class FirePlaygroundReservation(
             // no id included in serialization
             "playgroundId" to playgroundId,
             "user" to user.serialize(),
-            "participants" to participants.map { it.serialize() },
+            "participants" to participants?.map{ it.serialize() } ,
             "startDateTime" to startDateTime,
             "endDateTime" to endDateTime,
             "totalPrice" to totalPrice,
@@ -32,7 +36,70 @@ data class FirePlaygroundReservation(
         )
     }
 
-    companion object{
+    /**
+     * Convert the FirePlaygroundReservation object into a DetailedReservation entity
+     * passing the FirePlaygroundSport and the list of FireEquipmentReservationSlot objects
+     */
+    fun toDetailedReservation(
+        firePlaygroundSport: FirePlaygroundSport,
+        fireEquipmentReservationSlotList: List<FireEquipmentReservationSlot>
+    ): DetailedReservation {
+        val detailedReservation = DetailedReservation(
+            id!!,
+            user.uid,
+            user.username,
+            firePlaygroundSport.sportCenter.id,
+            firePlaygroundSport.sport.id,
+            firePlaygroundSport.sport.emoji,
+            firePlaygroundSport.sportCenter.name,
+            firePlaygroundSport.sportCenter.address,
+            firePlaygroundSport.sport.name,
+            startDateTime,
+            endDateTime,
+            firePlaygroundSport.id,
+            firePlaygroundSport.playgroundName,
+            firePlaygroundSport.pricePerHour.toFloat(),
+            totalPrice.toFloat()
+        )
+        detailedReservation.equipments =
+            fireEquipmentReservationSlotList.map { it.toDetailedEquipmentReservation() }
+                .toMutableList()
+        return detailedReservation
+    }
+
+    companion object {
+        /**
+         * Create a FirePlaygroundReservation object from a NewReservation object
+         */
+        fun fromNewReservation(
+            reservation: NewReservation,
+            id: String? = null,
+            user: FireUserForPlaygroundReservation,
+            participants: List<FireUserForPlaygroundReservation>? = null,
+            playgroundPricePerHour: Double
+        ): FirePlaygroundReservation {
+            //Calculate the total price
+            val durationInMinutes =
+                Duration.between(reservation.startTime, reservation.endTime).toMinutes()
+            var totalPrice = playgroundPricePerHour / 60 * durationInMinutes
+            // Adding the price of the equipments
+            for (equipment in reservation.selectedEquipments) {
+                totalPrice += equipment.unitPrice * equipment.selectedQuantity
+            }
+            return  FirePlaygroundReservation(
+                id,
+                reservation.playgroundId,
+                user,
+                participants,
+                reservation.startTime.toString(),
+                reservation.endTime.toString(),
+                totalPrice,
+                reservation.additionalRequests,
+                LocalDateTime.now().toString()
+            )
+
+        }
+
         /**
          * Create a FirePlaygroundReservation object from raw Map<String,Any> data coming from Firestore
          */
@@ -63,7 +130,8 @@ data class FirePlaygroundReservation(
             }
 
             val user = FireUserForPlaygroundReservation.deserialize(rawUser)
-            val participants = rawParticipants.mapNotNull { FireUserForPlaygroundReservation.deserialize(it) }
+            val participants =
+                rawParticipants.mapNotNull { FireUserForPlaygroundReservation.deserialize(it) }
 
             return FirePlaygroundReservation(
                 id,

@@ -1,16 +1,18 @@
 package it.polito.mad.sportapp.entities.firestore
 
 import android.util.Log
+import it.polito.mad.sportapp.entities.NewReservation
+import java.time.Duration
 import java.time.LocalDateTime
 
 data class FireReservationSlot(
-    val id: String,
+    val id: String?,
     val startSlot: String,
     val endSlot: String,
     val playgroundId: String,
     val openPlaygroundsIds: List<String>,
     val reservationId: String
-){
+) {
     /**
      * Serialize the FireReservationSlot object into a Map<String, Any> object
      * to send to the Firestore cloud database
@@ -26,7 +28,37 @@ data class FireReservationSlot(
         )
     }
 
-    companion object{
+    companion object {
+
+        /**
+         * Starting from a NewReservation object, create a list of FireReservationSlot objects
+         * subdividing the reservation into slots
+         */
+        fun fromNewReservation(
+            newReservation: NewReservation,
+            reservationId: String,
+            openPlaygroundsIds: List<String>
+        ): List<FireReservationSlot> {
+            val fireReservationSlots = mutableListOf<FireReservationSlot>()
+            // Calculating the duration useful to retrieve the number of slots needed for the reservation
+            val duration =
+                Duration.between(newReservation.startTime, newReservation.endTime).toMinutes()
+            for (i in 0 until duration step 30) {
+                // Creating a FireReservationSlot object for each slot every 30 minutes
+                fireReservationSlots.add(
+                    FireReservationSlot(
+                        null,
+                        newReservation.startTime.plusMinutes(i).toString(),
+                        newReservation.startTime.plusMinutes(i + 30).toString(),
+                        newReservation.playgroundId,
+                        openPlaygroundsIds,
+                        reservationId
+                    )
+                )
+            }
+            return fireReservationSlots
+        }
+
         /**
          * Create a FireReservationSlot object from raw Map<String,Any> data coming from Firestore
          */

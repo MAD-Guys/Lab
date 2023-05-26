@@ -10,7 +10,7 @@ data class NewReservation (
     val id: String?,
     val startTime: LocalDateTime,
     val endTime: LocalDateTime,
-    val playgroundId: Int,
+    val playgroundId: String,
     val playgroundName: String,
     val playgroundPricePerHour: Float,
     val sportId: Int,
@@ -19,5 +19,6 @@ data class NewReservation (
     val sportCenterId: Int,
     val sportCenterName: String,
     val sportCenterAddress: String,
-    val selectedEquipments: List<NewReservationEquipment>
+    val selectedEquipments: List<NewReservationEquipment>,
+    val additionalRequests : String?
 )

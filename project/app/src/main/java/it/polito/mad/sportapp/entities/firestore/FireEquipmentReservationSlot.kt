@@ -1,6 +1,7 @@
 package it.polito.mad.sportapp.entities.firestore
 
 import android.util.Log
+import it.polito.mad.sportapp.entities.DetailedEquipmentReservation
 import java.time.LocalDateTime
 
 data class FireEquipmentReservationSlot(
@@ -28,6 +29,19 @@ data class FireEquipmentReservationSlot(
             "timestamp" to timestamp
         )
     }
+    /**
+     * This method converts a FireEquipmentReservationSlot object into a DetailedEquipmentReservation entity
+     */
+    fun toDetailedEquipmentReservation(): DetailedEquipmentReservation {
+        return DetailedEquipmentReservation(
+            playgroundReservationId,
+            equipment.id,
+            equipment.name,
+            selectedQuantity.toInt(),
+            equipment.unitPrice.toFloat(),
+            (equipment.unitPrice.toFloat() * selectedQuantity.toInt())
+        )
+}
 
     companion object {
         /**

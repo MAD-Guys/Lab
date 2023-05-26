@@ -1,6 +1,8 @@
 package it.polito.mad.sportapp.entities.firestore
 
 import android.util.Log
+import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
+import it.polito.mad.sportapp.entities.PlaygroundInfo
 
 data class FirePlaygroundSport(
     val id: String,
@@ -21,6 +23,49 @@ data class FirePlaygroundSport(
             "sport" to sport.serialize(true),
             "sportCenter" to sportCenter.serialize(true)
         )
+    }
+    /**
+     * Convert the FirePlaygroundSport object into a DetailedPlaygroundSport entity
+     */
+
+    fun toDetailedPlaygroundSport(): DetailedPlaygroundSport {
+        return DetailedPlaygroundSport(
+            id,
+            playgroundName,
+            sport.id,
+            sport.emoji,
+            sport.name,
+            sportCenter.id,
+            sportCenter.name,
+            sportCenter.address,
+            pricePerHour.toFloat()
+        )
+    }
+
+    /**
+     * Convert the FirePlaygroundSport object into a PlaygroundInfo entity including the reviewList and the various ratings
+     */
+    fun toPlaygroundInfo(fireReviewList: List<FireReview>): PlaygroundInfo {
+        val playgroundInfo =  PlaygroundInfo(
+            id,
+            playgroundName,
+            sportCenter.id,
+            sportCenter.name,
+            sport.id,
+            sport.name,
+            sport.emoji,
+            sportCenter.address,
+            sportCenter.openingHours,
+            sportCenter.closingHours,
+            pricePerHour.toFloat()
+        )
+        val overallQualityRating = fireReviewList.map { it.qualityRating }.average().toFloat()
+        val overallFacilitiesRating = fireReviewList.map { it.facilitiesRating }.average().toFloat()
+        playgroundInfo.overallQualityRating = overallQualityRating
+        playgroundInfo.overallFacilitiesRating = overallFacilitiesRating
+        playgroundInfo.overallRating = (overallQualityRating + overallFacilitiesRating) / 2
+        playgroundInfo.reviewList = fireReviewList.map { it.toReview() }
+        return playgroundInfo
     }
 
     companion object {
@@ -66,5 +111,6 @@ data class FirePlaygroundSport(
             )
 
         }
+
     }
 }
