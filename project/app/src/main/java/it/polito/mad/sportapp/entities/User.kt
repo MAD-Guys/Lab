@@ -15,7 +15,7 @@ data class User (
     val bio: String,
     val notificationsToken: String? = null  // TODO
 ) {
-    var sportLevels: List<SportLevel> = listOf()
+    var sportLevels: List<SportLevel> = mutableListOf()
 
     var achievements : Map<Achievement,Boolean> = mapOf(
         AtLeastOneSport to false,
@@ -38,6 +38,16 @@ data class User (
             imageURL,
             bio,
             notificationsToken
-        )
+        ).also { clonedUser ->
+            // clone and add sport levels
+            val clonedSportLevels = mutableListOf<SportLevel>()
+            clonedSportLevels.addAll(this.sportLevels.map { it.clone() })
+            clonedUser.sportLevels = clonedSportLevels
+
+            // clone and add achievements
+            val clonedAchievements = mutableMapOf<Achievement,Boolean>()
+            this.achievements.forEach { (achievement, bool) -> clonedAchievements[achievement] = bool }
+            clonedUser.achievements = clonedAchievements
+        }
     }
 }
