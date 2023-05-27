@@ -2,7 +2,6 @@ package it.polito.mad.sportapp.entities.firestore
 
 import android.util.Log
 import it.polito.mad.sportapp.entities.DetailedEquipmentReservation
-import java.time.LocalDateTime
 
 data class FireEquipmentReservationSlot(
     val id: String?,
@@ -23,7 +22,7 @@ data class FireEquipmentReservationSlot(
             // no id included in serialization
             "startSlot" to startSlot,
             "endSlot" to endSlot,
-            "equipment" to equipment.serialize(),
+            "equipment" to equipment.serialize(withId=true),
             "selectedQuantity" to selectedQuantity,
             "playgroundReservationId" to playgroundReservationId,
             "timestamp" to timestamp
@@ -51,20 +50,29 @@ data class FireEquipmentReservationSlot(
         fun deserialize(id: String, fireMap: Map<String, Any>?): FireEquipmentReservationSlot? {
             if (fireMap == null) {
                 // deserialization error
-                Log.d("deserialization error", "trying to deserialize a equipmentReservationSlot with null data in FireUser.deserialize()")
+                Log.d("deserialization error", "trying to deserialize a equipmentReservationSlot with null data in FireEquipmentReservationSlot.deserialize()")
                 return null
             }
-            val fireMapEquipment  = (fireMap["equipment"] as? Map<String, Any>?)
-            val equipmentId = fireMapEquipment?.get("id") as String?
+
             val startSlot = fireMap["startSlot"] as? String
             val endSlot = fireMap["endSlot"] as? String
-            val equipment = FireEquipment.deserialize( equipmentId, fireMapEquipment)
+            @Suppress("UNCHECKED_CAST")
+            val fireMapEquipment  = fireMap["equipment"] as? Map<String, Any>
             val selectedQuantity = fireMap["selectedQuantity"] as? Long
             val playgroundReservationId  = fireMap["playgroundReservationId"] as? String
             val timestamp = fireMap["timestamp"] as? String
 
-            if( startSlot == null || endSlot == null || equipment == null || selectedQuantity == null || playgroundReservationId == null || timestamp == null){
+            if(startSlot == null || endSlot == null || fireMapEquipment == null ||
+                selectedQuantity == null || playgroundReservationId == null || timestamp == null){
                 Log.d("deserialization error", "Error deserializing equipmentReservationSlot plain properties")
+                return null
+            }
+
+            val equipmentId = fireMapEquipment["id"] as? String
+            val equipment = FireEquipment.deserialize(equipmentId, fireMapEquipment)
+
+            if (equipment == null) {
+                Log.d("deserialization error", "Error deserializing fireEquipment in equipmentReservationSlot properties")
                 return null
             }
 
@@ -77,9 +85,6 @@ data class FireEquipmentReservationSlot(
                 playgroundReservationId,
                 timestamp
             )
-
-
         }
     }
-
 }

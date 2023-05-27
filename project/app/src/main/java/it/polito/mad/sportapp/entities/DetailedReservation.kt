@@ -21,6 +21,7 @@ data class DetailedReservation (
     val playgroundName: String,
     val playgroundPricePerHour: Float,
     val totalPrice: Float,
+    val participants: List<String>   // usernames
 ) {
     var date: LocalDate = LocalDate.parse(startDateTime.substring(0, 10))
     var startTime: LocalTime = LocalTime.parse(startDateTime.substring(11, 19))

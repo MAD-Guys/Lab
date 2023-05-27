@@ -20,5 +20,5 @@ data class PlaygroundInfo (
     val openingHours: LocalTime = LocalTime.parse(openingTime)
     val closingHours: LocalTime = LocalTime.parse(closingTime)
     var overallRating: Float = (overallQualityRating + overallFacilitiesRating) / 2
-    var reviewList: List<Review?> = listOf()
+    var reviewList: List<Review> = listOf()
 }

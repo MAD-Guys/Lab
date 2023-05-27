@@ -1,7 +1,6 @@
 package it.polito.mad.sportapp.entities.firestore
 
 import android.util.Log
-import java.time.LocalDateTime
 
 data class FireSportCenter(
     val id: String,
@@ -39,7 +38,15 @@ data class FireSportCenter(
         /**
          * Create a FireSportCenter object from raw Map<String,Any> data coming from Firestore
          */
-        fun deserialize(id: String, rawSportCenter: Map<String, Any>?): FireSportCenter? {
+        fun deserialize(id: String?, rawSportCenter: Map<String, Any>?): FireSportCenter? {
+            if(id == null) {
+                Log.d(
+                    "deserialization error",
+                    "Error deserializing sport center the id passed is null in FireSportCenter.deserialize()"
+                )
+                return null
+            }
+
             if (rawSportCenter == null) {
                 Log.d(
                     "deserialization error",
@@ -58,7 +65,7 @@ data class FireSportCenter(
                 // deserialization error
                 Log.d(
                     "deserialization error",
-                    "Error deserializing sport center in FireSportCenter.deserialize()"
+                    "Error deserializing sport center properties in FireSportCenter.deserialize()"
                 )
                 return null
             }
@@ -72,9 +79,5 @@ data class FireSportCenter(
                 closingHours
             )
         }
-
-
     }
-
-
 }

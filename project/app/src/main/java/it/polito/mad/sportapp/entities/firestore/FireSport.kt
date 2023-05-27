@@ -49,7 +49,13 @@ data class FireSport(
         /**
          * Deserialize a Map<String,Any> coming from Firestore in a proper FireSport object
          */
-        fun deserialize(id: String, data: Map<String,Any>?): FireSport? {
+        fun deserialize(id: String?, data: Map<String,Any>?): FireSport? {
+            if(id == null) {
+                // deserialization error
+                Log.d("deserialization error", "trying to deserialize a sport with null id in FireSport.deserialize()")
+                return null
+            }
+
             if (data == null) {
                 // deserialization error
                 Log.d("deserialization error", "trying to deserialize a sport with null data in FireSport.deserialize()")

@@ -15,7 +15,7 @@ data class FirePlaygroundSport(
      * Serialize the FirePlaygroundSport object into a Map<String, Any> object
      * to send to the Firestore cloud database
      */
-    fun serialize(): Map<String, Any?> {
+    fun serialize(): Map<String, Any> {
         return mapOf(
             // no id included in serialization
             "playgroundName" to playgroundName,
@@ -24,10 +24,10 @@ data class FirePlaygroundSport(
             "sportCenter" to sportCenter.serialize(true)
         )
     }
+
     /**
      * Convert the FirePlaygroundSport object into a DetailedPlaygroundSport entity
      */
-
     fun toDetailedPlaygroundSport(): DetailedPlaygroundSport {
         return DetailedPlaygroundSport(
             id,
@@ -45,7 +45,7 @@ data class FirePlaygroundSport(
     /**
      * Convert the FirePlaygroundSport object into a PlaygroundInfo entity including the reviewList and the various ratings
      */
-    fun toPlaygroundInfo(fireReviewList: List<FireReview>): PlaygroundInfo {
+    fun toPlaygroundInfo(fireReviewList: List<FireReview>): PlaygroundInfo? {
         val playgroundInfo =  PlaygroundInfo(
             id,
             playgroundName,
@@ -64,7 +64,15 @@ data class FirePlaygroundSport(
         playgroundInfo.overallQualityRating = overallQualityRating
         playgroundInfo.overallFacilitiesRating = overallFacilitiesRating
         playgroundInfo.overallRating = (overallQualityRating + overallFacilitiesRating) / 2
-        playgroundInfo.reviewList = fireReviewList.map { it.toReview() }
+        playgroundInfo.reviewList = fireReviewList.map {
+            val review = it.toReview()
+            if(review == null) {
+                Log.d("Serialization error", "Error: an error occurred converting a fireReview in review, in FirePlaygroundSport.toPlaygroundInfo()")
+                return null
+            }
+            review
+        }
+
         return playgroundInfo
     }
 
@@ -84,33 +92,46 @@ data class FirePlaygroundSport(
 
             val playgroundName = data["playgroundName"] as? String
             val pricePerHour = data["pricePerHour"] as? Double
+            @Suppress("UNCHECKED_CAST")
             val rawSport = data["sport"] as? Map<String, Any>
+            @Suppress("UNCHECKED_CAST")
             val rawSportCenter = data["sportCenter"] as? Map<String, Any>
-            val sportId = rawSport?.get("id") as? String
-            val sportCenterId = rawSportCenter?.get("id") as? String
 
-            if (playgroundName == null || pricePerHour == null || rawSport == null || rawSportCenter == null || sportId == null || sportCenterId == null) {
+            if (playgroundName == null || pricePerHour == null ||
+                rawSport == null || rawSportCenter == null) {
                 // deserialization error
                 Log.d(
                     "deserialization error",
-                    "Error deserializing sport center in FirePlaygroundSport.deserialize()"
+                    "Error deserializing firePlaygroundSport in FirePlaygroundSport.deserialize()"
                 )
                 return null
             }
-            val sport = FireSport.deserialize(sportId, rawSport)
-            val sportCenter =
-                FireSportCenter.deserialize(sportCenterId, rawSportCenter)
 
+            val sportId = rawSport["id"] as? String
+            val sport = FireSport.deserialize(sportId, rawSport)
+
+            if(sport == null ) {
+                // deserialization error
+                Log.d("deserialization error", "Error: deserialization error deserializing sport in FirePlaygroundSport.deserialize()")
+                return null
+            }
+
+            val sportCenterId = rawSportCenter["id"] as? String
+            val sportCenter = FireSportCenter.deserialize(sportCenterId, rawSportCenter)
+
+            if(sportCenter == null) {
+                // deserialization error
+                Log.d("deserialization error", "Error: deserialization error deserializing sport center in FirePlaygroundSport.deserialize()")
+                return null
+            }
 
             return FirePlaygroundSport(
                 id,
                 playgroundName,
                 pricePerHour,
-                sport!!,
-                sportCenter!!
+                sport,
+                sportCenter
             )
-
         }
-
     }
 }

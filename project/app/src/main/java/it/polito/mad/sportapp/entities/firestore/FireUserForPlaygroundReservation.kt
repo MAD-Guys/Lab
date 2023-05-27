@@ -3,7 +3,7 @@ package it.polito.mad.sportapp.entities.firestore
 import android.util.Log
 
 data class FireUserForPlaygroundReservation(
-    val uid: String,
+    val id: String,
     val username: String
 ){
     /**
@@ -11,7 +11,7 @@ data class FireUserForPlaygroundReservation(
      */
     fun serialize(): Map<String, Any> {
         return mapOf(
-            "uid" to uid,
+            "id" to id,
             "username" to username
         )
     }
@@ -24,24 +24,24 @@ data class FireUserForPlaygroundReservation(
             if (data == null) {
                 Log.d(
                     "deserialization error",
-                    "Error deserializing FireUserForPlaygroundReservation the data passed is null in FireUserForPlaygroundReservation.deserialize()"
+                    "Error deserializing FireUserForPlaygroundReservation, the data passed is null in FireUserForPlaygroundReservation.deserialize()"
                 )
                 return null
             }
 
-            val uid = data["uid"] as? String
+            val id = data["id"] as? String
             val username = data["username"] as? String
 
-            if (uid == null || username == null) {
+            if (id == null || username == null) {
                 Log.d(
                     "deserialization error",
-                    "Error deserializing sport center in FireSportCenter.deserialize()"
+                    "Error deserializing user properties in FireUserForPlaygroundReservation.deserialize()"
                 )
                 return null
             }
 
             return FireUserForPlaygroundReservation(
-                uid,
+                id,
                 username
             )
         }
