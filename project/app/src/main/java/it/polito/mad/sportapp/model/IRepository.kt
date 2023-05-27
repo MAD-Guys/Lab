@@ -91,13 +91,31 @@ interface IRepository {
     fun insertOrUpdateReview(review: Review, fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit)
 
     /**
-     * Delete an existing Review in the db
+     * Delete an existing Review from the db
      */
     fun deleteReview(review: Review, fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit)
 
+    /**
+     * This method returns a fireResult "true" if the logged user can review the given playground;
+     * "false" otherwise.
+     * The condition is that the user should have played there almost once in the past, in
+     * other words: if exists a reservation involving the user as a participant,
+     * whose endTime is before the current time, it returns a fireResult "true".
+     * It returns a DefaultFireError in case of an error.
+     * */
+    fun loggedUserCanReviewPlayground(
+        userId: String,
+        playgroundId: String,
+        fireCallback: (FireResult<Boolean, DefaultFireError>) -> Unit
+    )
 
     // * Reservation methods *
 
+    /**
+     * Retrieve a specific (detailed) reservation from the db, given its id
+     * **Note**: the result is **dynamic** (fireCallback is called each time the reservation changes)
+     * Remember to unregister the listener once you don't need the reservation anymore
+     */
     fun getDetailedReservationById(
         reservationId: String,
         fireCallback: (FireResult<DetailedReservation, DefaultGetFireError>) -> Unit
@@ -166,16 +184,6 @@ interface IRepository {
     ) : FireListener
 
     fun getAllPlaygroundsInfo(fireCallback: (FireResult<List<PlaygroundInfo>, DefaultFireError>) -> Unit): FireListener
-
-    /**
-     * This method returns a fireResult "true" if the logged user can review the given playground.
-     * The condition is that the user should have played there almost once in the past, in
-     * other words: exists a reservation created by the user, or with the user among the participants,
-     * which start date is before the current date.
-     * If it is not verified, the method returns a fireResult "false", or a DefaultFireError only
-     * in case of firebase server error.
-    * */
-    fun loggedUserCanReviewPlayground(uid: String, playgroundId: String, fireCallback: (FireResult<Boolean, DefaultFireError>) -> Unit)
 
     // * Notification methods *
     fun getNotificationsByUserId(
