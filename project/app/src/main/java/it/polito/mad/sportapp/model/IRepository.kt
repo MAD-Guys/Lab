@@ -123,13 +123,12 @@ interface IRepository {
 
     /**
      * Create a new reservation in the DB, or override the existing one if
-     * any (with the same reservationId) Returns a Pair of (newReservationId,
-     * error), where:
+     * any (with the same reservationId) Returns a Success with the newReservationId, if
+     * the save went well, or an Error if an error occurred
      * - 'newReservationId' is the new id assigned to the reservation (or the
-     *   same as the previous one, if any), if the save succeeds; 'null'
-     *   otherwise
+     *   same as the previous one, if any)
      * - 'error' is an instance of NewReservationError reflecting the type of
-     *   error occurred, or 'null' otherwise
+     *   error occurred
      */
     fun overrideNewReservation(
         reservation: NewReservation,

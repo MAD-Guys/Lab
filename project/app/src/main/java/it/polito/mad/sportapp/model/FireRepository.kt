@@ -856,11 +856,42 @@ class FireRepository : IRepository {
         }
     }
 
+
+    /**
+     * Create a new reservation in the Firestore cloud db, or override the existing one if
+     * any (with the same reservationId) Returns a Success with the newReservationId, if
+     * the save went well, or an Error if an error occurred
+     * - 'newReservationId' is the new id assigned to the reservation (or the
+     *   same as the previous one, if any)
+     * - 'error' is an instance of NewReservationError reflecting the type of
+     *   error occurred
+     */
     override fun overrideNewReservation(
         reservation: NewReservation,
         fireCallback: (FireResult<Int, NewReservationError>) -> Unit
     ) {
-        TODO("Not yet implemented")
+        // transaction:
+        // - check slots availabilities (excluding the actual reservation, if any)
+        // - check equipments availabilities (excluding the actual reservation ones', if any)
+        // - delete old reservation slots (if any)
+        // - delete old equipment reservation slots (if any)
+        // - create or update existing playground reservation
+        // - save new reservation slots
+        // - save new equipment reservation slots
+
+        val x = db.collection("reservationSlots").
+            whereEqualTo("playgroundId", reservation.playgroundId)
+
+
+        db.runTransaction { transaction ->
+            // check slot availabilities:
+            // search for any busy slot, of that playground, contained in
+            // [reservation.StartTime, reservation.EndTime],
+            // excluding the ones of the reservation itself
+
+
+
+        }
     }
 
     override fun getReservationsPerDateByUserId(
@@ -937,7 +968,9 @@ class FireRepository : IRepository {
         fireCallback: (FireResult<MutableList<Notification>, DefaultGetFireError>) -> Unit
     ): FireListener {
         val fireListener = FireListener()
-        val notificationListener = db.collection("notifications").whereEqualTo("receiverId", userId)
+
+        val notificationListener = db.collection("notifications")
+            .whereEqualTo("receiverId", userId)
             .addSnapshotListener{ documents, error ->
                 if (error != null || documents == null) {
                     // firebase error
@@ -947,10 +980,13 @@ class FireRepository : IRepository {
                     ))
                     return@addSnapshotListener
                 }
+
                 // retrieving all the notifications related to the given user
-                val fireNotifications = mutableListOf<FireNotification?>()
+                val fireNotifications = mutableListOf<FireNotification>()
+
                 documents.forEach() { document ->
                     val fireNotification = FireNotification.deserialize(document.id, document.data)
+
                     if(fireNotification == null) {
                         // deserialization error
                         Log.d("deserialization error", "Error: deserialization error in FireRepository.getNotificationsByUserId($userId)")
@@ -959,67 +995,71 @@ class FireRepository : IRepository {
                         ))
                         return@addSnapshotListener
                     }
-                    fireNotifications.add(fireNotification)
 
-            }
+                    fireNotifications.add(fireNotification)
+                }
+
                 // retrieving notifications only for incoming reservations
-                val notificationIdReservationId = fireNotifications.map { Pair(it?.id, it?.reservationId) }
-                notificationIdReservationId.forEach { (notificationId, reservationId): Pair<String?, String?> ->
-                    if (notificationId != null && reservationId != null) {
-                        db.collection("playgroundReservations").document(reservationId).get()
-                            .addOnSuccessListener { document ->
-                                if (document == null) {
-                                    // generic error
-                                    Log.d(
-                                        "generic error",
-                                        "Error: retrieved null reservation in FireRepository.getNotificationsByUserId($userId)"
-                                    )
-                                    fireCallback(
-                                        DefaultGetFireError.notFound(
-                                            "Error: reservation not found"
-                                        )
-                                    )
-                                    return@addOnSuccessListener
-                                }
-                                val reservation =
-                                    FirePlaygroundReservation.deserialize(document.id, document.data)
-                                if (reservation == null) {
-                                    // deserialization error
-                                    Log.d(
-                                        "deserialization error",
-                                        "Error: deserialization error in FireRepository.getNotificationsByUserId($userId)"
-                                    )
-                                    fireCallback(
-                                        DefaultGetFireError.duringDeserialization(
-                                            "Error: an error occurred retrieving notifications"
-                                        )
-                                    )
-                                    return@addOnSuccessListener
-                                }
-                                // if the reservation is past will be removed from the pair list
-                                if (LocalDateTime.parse(reservation.startDateTime).isBefore(LocalDateTime.now())) {
-                                    // reservation is past, so I remove the notification from fireNotifications
-                                    fireNotifications.removeIf { it?.id == notificationId }
-                                }
-                            }
-                            .addOnFailureListener { exception ->
-                                // firebase generic error
+                val notificationIdReservationId = fireNotifications.map { Pair(it.id!!, it.reservationId) }
+                notificationIdReservationId.forEach { (notificationId, reservationId) ->
+                    db.collection("playgroundReservations")
+                        .document(reservationId)
+                        .get()
+                        .addOnSuccessListener { document ->
+                            if (document == null) {
+                                // generic error
                                 Log.d(
                                     "generic error",
-                                    "Error: a generic error occurred retrieving reservation in FireRepository.getNotificationsByUserId($userId). Message: ${exception.message}"
+                                    "Error: retrieved null reservation in FireRepository.getNotificationsByUserId($userId)"
                                 )
                                 fireCallback(
-                                    DefaultGetFireError.default(
-                                        "Error: a generic error occurred retrieving reservation"
+                                    DefaultGetFireError.notFound(
+                                        "Error: reservation not found"
                                     )
                                 )
-                                return@addOnFailureListener
+                                return@addOnSuccessListener
                             }
-                    }
+
+                            val reservation =
+                                FirePlaygroundReservation.deserialize(document.id, document.data)
+                            if (reservation == null) {
+                                // deserialization error
+                                Log.d(
+                                    "deserialization error",
+                                    "Error: deserialization error in FireRepository.getNotificationsByUserId($userId)"
+                                )
+                                fireCallback(
+                                    DefaultGetFireError.duringDeserialization(
+                                        "Error: an error occurred retrieving notifications"
+                                    )
+                                )
+                                return@addOnSuccessListener
+                            }
+
+                            // if the reservation is past, the corresponding notification will be removed from the list
+                            if (LocalDateTime.parse(reservation.startDateTime).isBefore(LocalDateTime.now())) {
+                                // reservation is past, so I remove the notification from fireNotifications
+                                fireNotifications.removeIf { it.id == notificationId }
+                            }
+                        }
+                        .addOnFailureListener { exception ->
+                            // firebase generic error
+                            Log.d(
+                                "generic error",
+                                "Error: a generic error occurred retrieving reservation in FireRepository.getNotificationsByUserId($userId). Message: ${exception.message}"
+                            )
+                            fireCallback(
+                                DefaultGetFireError.default(
+                                    "Error: a generic error occurred retrieving reservation"
+                                )
+                            )
+                            return@addOnFailureListener
+                        }
                 }
+
                 // converting fireNotifications to notifications
-                val notifications  = fireNotifications.map {
-                    val notification  = it?.toNotification()
+                val notifications = fireNotifications.map {
+                    val notification  = it.toNotification()
                     if(notification == null) {
                         fireCallback(DefaultGetFireError.duringDeserialization(
                             "Error: an error occurred retrieving notifications"
@@ -1028,18 +1068,20 @@ class FireRepository : IRepository {
                     }
                     notification
                 }.toMutableList()
+
                 fireCallback(Success(notifications))
             }
+
         fireListener.add(notificationListener)
         return fireListener
+    }
 
-            }
     override fun deleteNotification(
         notificationId: String,
         fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
     ) {
         TODO("Not yet implemented")
     }
-    }
+}
 
 

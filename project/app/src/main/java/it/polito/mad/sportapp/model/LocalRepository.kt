@@ -110,9 +110,8 @@ class LocalRepository @Inject constructor(
     }
 
     fun loggedUserCanReviewPlayground(playgroundId: Int): Boolean{
-        //dummy implementation only to test the different behaviors
-        if(playgroundId %2 == 0) return true
-        else return false
+        // dummy implementation just to test the different behaviors
+        return playgroundId % 2 == 0
     }
 
     // Reservation methods
@@ -121,7 +120,7 @@ class LocalRepository @Inject constructor(
         val reservation = reservationDao.findDetailedReservationById(id)
         val equipments =
             equipmentDao.findReservationEquipmentsByReservationId(id).toMutableList()
-        if (!equipments.isNullOrEmpty()) {
+        if (equipments.isNotEmpty()) {
             reservation.equipments = equipments
         }
         return reservation
@@ -250,8 +249,6 @@ class LocalRepository @Inject constructor(
 
 
     }
-
-
 
     fun getReservationsPerDateByUserId(userId: Int): Map<LocalDate, List<RoomDetailedReservation>> {
         val userReservations = reservationDao.findByUserId(userId)
