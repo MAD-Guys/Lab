@@ -111,6 +111,11 @@ interface IRepository {
 
     // * Reservation methods *
 
+    /**
+     * Retrieve a specific (detailed) reservation from the db, given its id
+     * **Note**: the result is **dynamic** (fireCallback is called each time the reservation changes)
+     * Remember to unregister the listener once you don't need the reservation anymore
+     */
     fun getDetailedReservationById(
         reservationId: String,
         fireCallback: (FireResult<DetailedReservation, DefaultGetFireError>) -> Unit

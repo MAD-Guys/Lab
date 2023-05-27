@@ -1,5 +1,7 @@
 package it.polito.mad.sportapp.entities
 
+import it.polito.mad.sportapp.entities.firestore.FirePlaygroundReservation
+import it.polito.mad.sportapp.entities.firestore.FirePlaygroundSport
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -23,21 +25,17 @@ data class DetailedReservation (
     val totalPrice: Float,
     val participants: List<String>   // usernames
 ) {
+    var equipments: MutableList<DetailedEquipmentReservation> = mutableListOf()
+
     var date: LocalDate = LocalDate.parse(startDateTime.substring(0, 10))
     var startTime: LocalTime = LocalTime.parse(startDateTime.substring(11, 19))
     var endTime: LocalTime = LocalTime.parse(endDateTime.substring(11, 19))
     var startLocalDateTime: LocalDateTime = LocalDateTime.parse(startDateTime)
     var endLocalDateTime: LocalDateTime = LocalDateTime.parse(endDateTime)
-    var equipments: MutableList<DetailedEquipmentReservation> = mutableListOf()
+    val duration = Duration.between(startTime, endTime).toMinutes()
 
-    val duration = Duration.between(
-        LocalTime.parse(startDateTime.substring(11, 19)), LocalTime.parse(
-            endDateTime.substring(11, 19)
-        )
-    ).toMinutes()
-
-    var endSlot: LocalDateTime = endLocalDateTime.minusMinutes(duration)
     var startSlot: LocalDateTime = startLocalDateTime
+    var endSlot: LocalDateTime = endLocalDateTime.minusMinutes(duration)
 
     fun printSportNameWithEmoji(emojiOnTheLeft: Boolean = false): String {
         return if (emojiOnTheLeft) "$sportEmoji $sportName" else "$sportName $sportEmoji"
