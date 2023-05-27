@@ -941,7 +941,7 @@ class FireRepository : IRepository {
             .addSnapshotListener{ documents, error ->
                 if (error != null || documents == null) {
                     // firebase error
-                    Log.d("generic error", "Error: a generic error in FireRepository.getNotificationsByUserId($userId). Message: ${error.message}")
+                    Log.d("generic error", "Error: a generic error in FireRepository.getNotificationsByUserId($userId). Message: ${error?.message}")
                     fireCallback(DefaultGetFireError.default(
                         "Error: a generic error occurred retrieving notifications"
                     ))
