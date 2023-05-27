@@ -180,7 +180,7 @@ interface IRepository {
     // * Notification methods *
     fun getNotificationsByUserId(
         userId: String,
-        fireCallback: (FireResult<MutableList<Notification>, DefaultFireError>) -> Unit
+        fireCallback: (FireResult<MutableList<Notification>, DefaultGetFireError>) -> Unit
     ): FireListener
 
     fun deleteNotification(
