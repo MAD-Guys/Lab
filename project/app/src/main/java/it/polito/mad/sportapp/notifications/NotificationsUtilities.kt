@@ -95,6 +95,10 @@ internal fun sendInvitationNotification(notification: JSONObject) {
     })
 }
 
+
+
+
+
 internal fun manageNotification(activityIntent: Intent?, navController: NavController) {
 
     // check if the activity has an intent

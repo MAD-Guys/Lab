@@ -53,6 +53,15 @@ interface IRepository {
     fun updateUser(user: User, fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit)
 
     /**
+     * Update the notifications token used by the user
+     */
+    fun updateUserToken(
+        userId: String,
+        newToken: String,
+        fireCallback: (FireResult<Unit,DefaultFireError>) -> Unit
+    )
+
+    /**
      * Retrieve all users from db which the specified user can still send the notification to,
      * for the specified reservation
      * **Note**: the result is **dynamic** (fireCallback is executed each time the list changes)
@@ -147,12 +156,10 @@ interface IRepository {
         fireCallback: (FireResult<Map<LocalDate, List<DetailedReservation>>, DefaultGetFireError>) -> Unit
     ) : FireListener
 
-    fun addUserToReservation(
-        reservationId: String,
-        userId: String,
-        fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit
+    fun deleteReservation(
+        reservation: DetailedReservation,
+        fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
     )
-
 
     // * Equipment methods *
 
@@ -171,11 +178,6 @@ interface IRepository {
         fireCallback: (FireResult<MutableMap<String, Equipment>, DefaultFireError>) -> Unit
     ) : FireListener
 
-    fun deleteReservation(
-        reservation: DetailedReservation,
-        fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
-    )
-
     // * Playground methods *
     fun getPlaygroundInfoById(
         playgroundId: String,
@@ -193,14 +195,37 @@ interface IRepository {
     fun getAllPlaygroundsInfo(fireCallback: (FireResult<List<PlaygroundInfo>, DefaultFireError>) -> Unit): FireListener
 
     // * Notification methods *
+
     fun getNotificationsByUserId(
         userId: String,
         fireCallback: (FireResult<MutableList<Notification>, DefaultGetFireError>) -> Unit
     ): FireListener
 
-    fun updateNotificationStatus(
+    /**
+     * Update invitation status and corresponding reservation participants, based on the old and
+     * the new invitation status:
+     * - if newStatus is ACCEPTED -> update notification status and **insert** new user as a
+     *  reservation's participant (in this case, oldStatus is always PENDING,
+     *  since user cannot accept invitation after a refuse)
+     * - if newStatus is REJECTED and oldStatus is PENDING -> just update notification status
+     *  (user is answering for the first time)
+     * - if newStatus is REJECTED and oldStatus is ACCEPTED -> update notification status and **remove**
+     *  user from reservation's participants
+     */
+    fun updateInvitationStatus(
         notificationId: String,
+        oldStatus: NotificationStatus,
         newStatus: NotificationStatus,
+        reservationId: String,
         fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
+    )
+
+    /**
+     * (1) Save a new invitation to the db and
+     * (2) send the corresponding push notification to the receiver
+     */
+    fun saveAndSendInvitation(
+        notification: Notification,
+        fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit
     )
 }
