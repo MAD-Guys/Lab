@@ -20,8 +20,8 @@ import it.polito.mad.sportapp.invitation.users_recycler_view.UserAdapter
 class InvitationFragment : Fragment(R.layout.fragment_invitation) {
 
     internal val viewModel by viewModels<InvitationViewModel>()
-    internal var reservationId: Int = -1
-    internal var reservationSportId: Int = -1
+    internal var reservationId: String = ""
+    internal var reservationSportId: String = ""
 
     internal lateinit var levelSpinner: Spinner
     internal lateinit var usernameSearch: EditText
@@ -55,8 +55,8 @@ class InvitationFragment : Fragment(R.layout.fragment_invitation) {
         navController = Navigation.findNavController(view)
 
         // Retrieve event id
-        reservationId = arguments?.getInt("id_reservation") ?: -1
-        reservationSportId = arguments?.getInt("id_sport") ?: -1
+        reservationId = arguments?.getString("id_reservation") ?: ""
+        reservationSportId = arguments?.getString("id_sport") ?: ""
 
         // Retrieve views
         usernameSearch = requireView().findViewById(R.id.search_username)
@@ -76,7 +76,7 @@ class InvitationFragment : Fragment(R.layout.fragment_invitation) {
 
     override fun onResume() {
         super.onResume()
-        fireListener = viewModel.getUsersFromDb(reservationSportId)
+        fireListener = viewModel.getUsersFromDb(reservationId, reservationSportId)
     }
 
     override fun onDestroy() {

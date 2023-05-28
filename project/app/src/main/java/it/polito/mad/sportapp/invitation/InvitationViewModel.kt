@@ -32,7 +32,6 @@ class InvitationViewModel @Inject constructor(
      * 3) delete the commented lines, when all will be working.
      * 4) re-write sendInvitations, based on the new repository method
      * 5) retrieve the logged user id, to pass it to getAllUsersToSendInvitationTo(...)
-     * 6) fireRepository returns the User without the sportLevels list !!! TODO: check this
      * **/
 
 
@@ -70,7 +69,7 @@ class InvitationViewModel @Inject constructor(
     //private var sportId = -1
     private var sportId = "x7f9jrM9BTiMoIFoyVFq"
 
-    fun getUsersFromDb(sportId: Int): FireListener {
+    fun getUsersFromDb(reservationId: String, sportId: /*Int*/String): FireListener {
         //repository.getUsersBySport(sportId)
         //TODO: this function is dummy
 
@@ -94,11 +93,12 @@ class InvitationViewModel @Inject constructor(
 
          */
 
-        //TODO: set sportId
+        //set sportId
+        this.sportId = sportId
 
         return iRepository!!.getAllUsersToSendInvitationTo(
             "2", //TODO
-            "1", //TODO
+            reservationId,
         ) { fireResult ->
             when (fireResult) {
                 is FireResult.Success -> {
@@ -180,12 +180,16 @@ class InvitationViewModel @Inject constructor(
         searchUsersByUsername(tempPartialUsername)
     }
 
-    fun sendInvitation(userId: /*Int*/String, reservationId: Int) {
+    fun sendInvitation(userId: /*Int*/String, reservationId: /*Int*/String) {
+    //TODO...
+    /*
         createInvitationNotification(
             userId.toString() /*TODO: use the string id*/,
             reservationId,
             "" /*TODO: Agree on the message*/,
             LocalDateTime.now().toString()
         )
+
+         */
     }
 }

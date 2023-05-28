@@ -22,6 +22,7 @@ import it.polito.mad.sportapp.entities.firestore.FirePlaygroundSport
 import it.polito.mad.sportapp.entities.firestore.FireReservationSlot
 import it.polito.mad.sportapp.entities.firestore.FireReview
 import it.polito.mad.sportapp.entities.firestore.FireSport
+import it.polito.mad.sportapp.entities.firestore.FireSportCenter
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult.*
@@ -841,6 +842,7 @@ class FireRepository : IRepository {
                         // * retrieved playground sport *
 
                         // deserialize playground data
+                        /* TODO: uncomment this block when playgrounds will be available in fireStore
                         val playgroundSportDocument = FirePlaygroundSport.deserialize(document.id, document.data)
 
                         if (playgroundSportDocument == null) {
@@ -851,6 +853,7 @@ class FireRepository : IRepository {
                             ))
                             return@addOnSuccessListener
                         }
+                        */
 
                         // 3 - **dynamically** retrieve any equipments documents associated to this reservation
 
@@ -894,7 +897,14 @@ class FireRepository : IRepository {
                                     // 4 - combine reservation, playground and equipments documents
                                     // into a DetailedReservation entity
                                     val detailedReservation = playgroundReservationDocument.toDetailedReservation(
-                                        playgroundSportDocument,
+                                        //playgroundSportDocument, //TODO: delete the mock FirePlaygroundSport below and resume the playgroundSportDocument
+                                        FirePlaygroundSport(
+                                            "testPlayground",
+                                            "Test Playground",
+                                            15.5,
+                                            FireSport("testSport", "Test Sport", "\uD83C\uDFC0", 4),
+                                            FireSportCenter("testSportCenter", "Test Sport Center", "Corso Castelfidardo 44, Turin", "345678910", "08:00:00", "20:00:00")
+                                        ),
                                         equipmentsDocumentsList
                                     )
 

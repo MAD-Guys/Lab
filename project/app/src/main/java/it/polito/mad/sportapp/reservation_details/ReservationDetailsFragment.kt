@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -26,6 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.reservation_management.ReservationManagementUtilities
 import it.polito.mad.sportapp.application_utilities.showToasty
+import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -34,6 +36,8 @@ import java.time.format.FormatStyle
 
 @AndroidEntryPoint
 class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_details) {
+    private lateinit var progressBar: View
+    private lateinit var card: CardView
     private lateinit var qrCode: ImageView
     private lateinit var reservationNumber: TextView
     private lateinit var reservationDate: TextView
@@ -64,6 +68,8 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
 
     private var eventId: Int = -1
 
+    private lateinit var fireListener: FireListener
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -85,12 +91,19 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         // Retrieve event id
         eventId = arguments?.getInt("id_event") ?: -1
 
+        if (eventId != -1) {
+            fireListener = viewModel.getReservationFromDb(/*eventId*/"8kE1VxbGM1AOIB02WjQF") //TODO: replace with the correct reservationId
+            //viewModel.getParticipants(eventId)
+        }
+
         // Generate QR code
         qrCode = requireView().findViewById(R.id.QR_code)
         viewModel.reservation.value?.let { setQRCodeView(it, qrCode) }
 
         // Retrieve views
         retrieveViews()
+        card.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
 
         // Initialize values
         // initializeValues()
@@ -143,16 +156,16 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                 }else{
                     leaveReviewButton.visibility = Button.VISIBLE
                 }
+
+                progressBar.visibility = View.GONE
+                card.visibility = View.VISIBLE
             }
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (eventId != -1) {
-            viewModel.getReservationFromDb(eventId)
-            viewModel.getParticipants(eventId)
-        }
+    override fun onDestroy() {
+        super.onDestroy()
+        fireListener.unregister()
     }
 
     // manage menu item selection
@@ -193,6 +206,8 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
     }
 
     private fun retrieveViews() {
+        progressBar = requireView().findViewById(R.id.progressBar)
+        card = requireView().findViewById(R.id.reservationTicket)
         reservationNumber = requireView().findViewById(R.id.reservationNumber)
         reservationDate = requireView().findViewById(R.id.reservationDate)
         reservationStartTime = requireView().findViewById(R.id.reservationStartTime)
@@ -272,9 +287,9 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
     private fun initializeParticipants(){
         participants.removeAllViewsInLayout()
 
-        if(viewModel.participants.value != null && viewModel.participants.value!!.isNotEmpty()){
+        if(viewModel.reservation.value?.participants != null && viewModel.reservation.value?.participants!!.isNotEmpty()){
 
-            for((index, p) in viewModel.participants.value!!.withIndex()) {
+            for((index, p) in viewModel.reservation.value!!.participants.withIndex()) {
                 val row = layoutInflater.inflate(R.layout.participant_row, participants, false)
                 row.id = index
                 val username = row.findViewById<TextView>(R.id.username)
@@ -284,17 +299,17 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         }
     }
 
-    private fun handlePlaygroundButton(playgroundId : Int){
+    private fun handlePlaygroundButton(playgroundId : /*Int*/String){
         val bundle = bundleOf("id_playground" to playgroundId)
         navController.navigate(R.id.action_reservationDetailsFragment_to_PlaygroundDetailsFragment, bundle)
     }
 
-    private fun handleLeaveReviewButton(playgroundId : Int){
+    private fun handleLeaveReviewButton(playgroundId : /*Int*/String){
         val bundle = bundleOf("id_playground" to playgroundId, "scroll_to_review" to true)
         navController.navigate(R.id.action_reservationDetailsFragment_to_PlaygroundDetailsFragment, bundle)
     }
 
-    private fun handleInviteButton(reservationId : Int, sportId : Int){
+    private fun handleInviteButton(reservationId : /*Int*/String, sportId : /*Int*/String){
         val bundle = bundleOf("id_reservation" to reservationId, "id_sport" to sportId)
         navController.navigate(R.id.action_reservationDetailsFragment_to_invitationFragment, bundle)
     }
@@ -304,7 +319,8 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         val slotDuration = Duration.ofMinutes(30)
 
         val params = bundleOf(
-            "reservation" to ReservationManagementUtilities.createBundleFrom(reservation, slotDuration)
+            //TODO: Change parameter 'reservation' type of function 'createBundleFrom' to DetailedReservation
+            //"reservation" to ReservationManagementUtilities.createBundleFrom(reservation, slotDuration)
         )
 
         navController.navigate(R.id.action_reservationDetailsFragment_to_playgroundAvailabilitiesFragment, params)
