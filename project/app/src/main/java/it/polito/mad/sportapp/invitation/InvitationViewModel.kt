@@ -27,11 +27,9 @@ class InvitationViewModel @Inject constructor(
     /**
      * TODO:
      * 1) insert IRepository in the constructor: now it raises Dagger/Hilt exceptions...
-     * 2) get sportId and reservationId from the fragment: to do when also other views
-     *    will be linked to fireStore, since they coe from the bundle
-     * 3) delete the commented lines, when all will be working.
-     * 4) re-write sendInvitations, based on the new repository method
-     * 5) retrieve the logged user id, to pass it to getAllUsersToSendInvitationTo(...)
+     * 2) delete the commented lines, when all will be working.
+     * 3) re-write sendInvitations, based on the new repository method
+     * 4) retrieve the logged user id, to pass it to getAllUsersToSendInvitationTo(...)
      * **/
 
 
