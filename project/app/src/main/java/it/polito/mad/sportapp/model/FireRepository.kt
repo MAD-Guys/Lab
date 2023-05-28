@@ -14,6 +14,7 @@ import it.polito.mad.sportapp.entities.PlaygroundInfo
 import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.User
+import it.polito.mad.sportapp.entities.firestore.FireEquipment
 import it.polito.mad.sportapp.entities.firestore.FireEquipmentReservationSlot
 import it.polito.mad.sportapp.entities.firestore.FireNotification
 import it.polito.mad.sportapp.entities.firestore.FirePlaygroundReservation
@@ -1086,9 +1087,42 @@ class FireRepository : IRepository {
     override fun getAllEquipmentsBySportCenterIdAndSportId(
         sportCenterId: String,
         sportId: String,
-        fireCallback: (FireResult<MutableMap<String, Equipment>, DefaultFireError>) -> Unit
+        fireCallback: (FireResult<MutableList<Equipment>, DefaultFireError>) -> Unit
     ): FireListener {
-        TODO("Not yet implemented")
+
+        val listener = db.collection("equipments")
+            .whereEqualTo("sportCenterId", sportCenterId)
+            .whereEqualTo("sportId", sportId)
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    // a generic error occurred
+                    Log.d("generic error", "Error: a generic error occurred getting an equipments snapshot with sportCenterId $sportCenterId and sportId $sportId in FireRepository.getAllEquipmentsBySportCenterIdAndSportId(). Message: ${error.message}")
+                    fireCallback(DefaultFireError.withMessage(
+                        "Error: a generic error occurred retrieving equipments"
+                    ))
+                    return@addSnapshotListener
+                }
+
+                if (value == null) {
+                    Log.d("not found error", "Error: equipments with sportCenterId $sportCenterId and sportId $sportId in FireRepository.getAllEquipmentsBySportCenterIdAndSportId()")
+                    fireCallback(DefaultFireError.withMessage(
+                        "Error: equipments list is null"
+                    ))
+                    return@addSnapshotListener
+                }
+
+                // deserialize equipments
+                val allEquipmentsList = mutableListOf<Equipment>()
+                for (rawEquipment in value) {
+                    val equipmentDocument = FireEquipment.deserialize(rawEquipment.id, rawEquipment.data)
+                    equipmentDocument?.toEquipment()?.let { allEquipmentsList.add(it) }
+                }
+
+                // return successfully the equipments list
+                fireCallback(Success(allEquipmentsList))
+            }
+
+        return FireListener(listener)
     }
 
     /* playgrounds */
@@ -1222,8 +1256,95 @@ class FireRepository : IRepository {
     // TODO
     override fun getAllPlaygroundsInfo(
         fireCallback: (FireResult<List<PlaygroundInfo>, DefaultFireError>) -> Unit
-    ): FireListener {
-        TODO("Not yet implemented")
+    ) {
+
+        // retrieve all playgrounds statically
+        db.collection("playgroundSports")
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents == null) {
+                    // generic error
+                    Log.d("generic error", "Error: retrieved null playgroundSports list in FireRepository.getAllPlaygroundsInfo()")
+                    fireCallback(DefaultFireError.withMessage(
+                        "Error: playgrounds not found"
+                    ))
+                    return@addOnSuccessListener
+                }
+
+                val allPlaygrounds = mutableListOf<PlaygroundInfo>()
+
+                for (document in documents) {
+                    // deserialize playgroundSports
+                    val playgroundSport = FirePlaygroundSport.deserialize(document.id, document.data)
+
+                    if(playgroundSport == null){
+                        // deserialization error
+                        Log.d("deserialization error", "Error: deserialization error occurred for playground with id ${document.id} in FireRepository.getAllPlaygroundInfo()")
+                        fireCallback(DefaultFireError.withMessage(
+                            "Error: an error occurred retrieving playground"
+                        ))
+                        return@addOnSuccessListener
+                    }
+
+                    //get all the reviews by playgroundId
+                    val playgroundReviews = mutableListOf<FireReview>()
+                    db.collection("reviews")
+                        .whereEqualTo("playgroundId", playgroundSport.id)
+                        .get()
+                        .addOnSuccessListener { value ->
+                            if (!value.isEmpty) {
+                                for (rawReview in value) {
+                                    //deserialize each review document
+                                    val reviewDocument = FireReview.deserialize(rawReview.id, rawReview.data)
+
+                                    if (reviewDocument == null) {
+                                        // deserialization error
+                                        Log.d(
+                                            "deserialization error",
+                                            "Error: an error occurred deserializing review with id ${rawReview.id} in FireRepository.getPlaygroundInfoById()"
+                                        )
+                                        fireCallback(
+                                            DefaultFireError.withMessage(
+                                                "Error: an error occurred retrieving a review"
+                                            )
+                                        )
+                                        return@addOnSuccessListener
+                                    }
+
+                                    playgroundReviews.add(reviewDocument)
+                                }
+                            }
+
+                        }
+                        .addOnFailureListener {
+                            // generic error
+                            Log.d("generic error", "Error: a generic error occurred retrieving reviews in FireRepository.getAllPlaygroundInfo(). Message: ${it.message}")
+                            fireCallback(DefaultFireError.withMessage(
+                                "Error: a generic error occurred retrieving reviews"
+                            ))
+                        }
+
+                    playgroundSport.toPlaygroundInfo(playgroundReviews)?.let {
+                        allPlaygrounds.add(
+                            it
+                        )
+                    }
+
+
+
+                }
+
+                //return successfully
+                fireCallback(Success(allPlaygrounds))
+
+            }
+            .addOnFailureListener {
+                // generic error
+                Log.d("generic error", "Error: a generic error occurred retrieving playgrounds in FireRepository.getAllPlaygroundInfo(). Message: ${it.message}")
+                fireCallback(DefaultFireError.withMessage(
+                    "Error: a generic error occurred retrieving playgrounds"
+                ))
+            }
     }
 
     /* notifications */
