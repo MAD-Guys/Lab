@@ -9,6 +9,7 @@ import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.Notification
+import it.polito.mad.sportapp.entities.NotificationStatus
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
@@ -191,8 +192,9 @@ interface IRepository {
         fireCallback: (FireResult<MutableList<Notification>, DefaultGetFireError>) -> Unit
     ): FireListener
 
-    fun deleteNotification(
+    fun updateNotificationStatus(
         notificationId: String,
+        newStatus: NotificationStatus,
         fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
     )
 }

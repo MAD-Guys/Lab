@@ -2,6 +2,7 @@ package it.polito.mad.sportapp.model
 
 import android.util.Log
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import it.polito.mad.sportapp.entities.Achievement
@@ -10,6 +11,7 @@ import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.entities.Equipment
 import it.polito.mad.sportapp.entities.NewReservation
 import it.polito.mad.sportapp.entities.Notification
+import it.polito.mad.sportapp.entities.NotificationStatus
 import it.polito.mad.sportapp.entities.PlaygroundInfo
 import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.entities.Sport
@@ -17,6 +19,7 @@ import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.firestore.FireEquipment
 import it.polito.mad.sportapp.entities.firestore.FireEquipmentReservationSlot
 import it.polito.mad.sportapp.entities.firestore.FireNotification
+import it.polito.mad.sportapp.entities.firestore.FireNotificationStatus
 import it.polito.mad.sportapp.entities.firestore.FirePlaygroundReservation
 import it.polito.mad.sportapp.entities.firestore.FirePlaygroundSport
 import it.polito.mad.sportapp.entities.firestore.FireReservationSlot
@@ -1863,9 +1866,10 @@ class FireRepository : IRepository {
                 // retrieving a list of pairs (notificationId, reservationId)
                 val notificationIdReservationId =
                     fireNotifications.map { Pair(it.id!!, it.reservationId) }
+                val reservationIds = notificationIdReservationId.map { it.second }
 
                 // retrieving reservations to filter out the past ones
-                db.collection("playgroundReservations").whereEqualTo("user.id", userId).get()
+                db.collection("playgroundReservations").whereIn(FieldPath.documentId(),reservationIds).get()
                     .addOnSuccessListener { documents ->
                         if (documents == null) {
                             // generic error
@@ -1949,12 +1953,37 @@ class FireRepository : IRepository {
         return fireListener
     }
 
-    override fun deleteNotification(
+    override fun updateNotificationStatus(
         notificationId: String,
+        newStatus: NotificationStatus,
         fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
     ) {
         TODO("Not yet implemented")
     }
+
+    /*override fun updateNotificationStatus(
+        notificationId: String,
+        newStatus: NotificationStatus,
+        fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
+    ) {
+        db.collection("notifications").document(notificationId)
+            .update("status", newStatus.ordinal )
+            .addOnSuccessListener {
+                fireCallback(Success(Unit))
+            }
+            .addOnFailureListener {
+                // generic error
+                Log.d(
+                    "generic error",
+                    "Error: generic error in FireRepository.updateNotificationStatus($notificationId, $newStatus). Message: ${it.message}"
+                )
+                fireCallback(
+                    DefaultFireError.default(
+                        "Error: a generic error occurred updating notification status"
+                    )
+                )
+            }
+    }*/
 }
 
 
