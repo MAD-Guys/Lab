@@ -175,7 +175,7 @@ interface IRepository {
     fun getAllEquipmentsBySportCenterIdAndSportId(
         sportCenterId: String,
         sportId: String,
-        fireCallback: (FireResult<MutableMap<String, Equipment>, DefaultFireError>) -> Unit
+        fireCallback: (FireResult<MutableList<Equipment>, DefaultFireError>) -> Unit
     ) : FireListener
 
     // * Playground methods *

@@ -14,6 +14,7 @@ import it.polito.mad.sportapp.entities.PlaygroundInfo
 import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.User
+import it.polito.mad.sportapp.entities.firestore.FireEquipment
 import it.polito.mad.sportapp.entities.firestore.FireEquipmentReservationSlot
 import it.polito.mad.sportapp.entities.firestore.FireNotification
 import it.polito.mad.sportapp.entities.firestore.FirePlaygroundReservation
@@ -1086,9 +1087,42 @@ class FireRepository : IRepository {
     override fun getAllEquipmentsBySportCenterIdAndSportId(
         sportCenterId: String,
         sportId: String,
-        fireCallback: (FireResult<MutableMap<String, Equipment>, DefaultFireError>) -> Unit
+        fireCallback: (FireResult<MutableList<Equipment>, DefaultFireError>) -> Unit
     ): FireListener {
-        TODO("Not yet implemented")
+
+        val listener = db.collection("equipments")
+            .whereEqualTo("sportCenterId", sportCenterId)
+            .whereEqualTo("sportId", sportId)
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    // a generic error occurred
+                    Log.d("generic error", "Error: a generic error occurred getting an equipments snapshot with sportCenterId $sportCenterId and sportId $sportId in FireRepository.getAllEquipmentsBySportCenterIdAndSportId(). Message: ${error.message}")
+                    fireCallback(DefaultFireError.withMessage(
+                        "Error: a generic error occurred retrieving equipments"
+                    ))
+                    return@addSnapshotListener
+                }
+
+                if (value == null) {
+                    Log.d("not found error", "Error: equipments with sportCenterId $sportCenterId and sportId $sportId in FireRepository.getAllEquipmentsBySportCenterIdAndSportId()")
+                    fireCallback(DefaultFireError.withMessage(
+                        "Error: equipments list is null"
+                    ))
+                    return@addSnapshotListener
+                }
+
+                // deserialize equipments
+                val allEquipmentsList = mutableListOf<Equipment>()
+                for (rawEquipment in value) {
+                    val equipmentDocument = FireEquipment.deserialize(rawEquipment.id, rawEquipment.data)
+                    equipmentDocument?.toEquipment()?.let { allEquipmentsList.add(it) }
+                }
+
+                // return successfully the equipments list
+                fireCallback(Success(allEquipmentsList))
+            }
+
+        return FireListener(listener)
     }
 
     /* playgrounds */
