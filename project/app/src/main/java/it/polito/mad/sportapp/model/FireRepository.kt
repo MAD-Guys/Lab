@@ -1953,15 +1953,12 @@ class FireRepository : IRepository {
         return fireListener
     }
 
-    override fun updateNotificationStatus(
-        notificationId: String,
-        newStatus: NotificationStatus,
-        fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
-    ) {
-        TODO("Not yet implemented")
-    }
+    /**
+     * Updates the status of the notification with the given id.
+     * The fireCallback is called when the operation is completed.
+     */
 
-    /*override fun updateNotificationStatus(
+    override fun updateNotificationStatus(
         notificationId: String,
         newStatus: NotificationStatus,
         fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
@@ -1978,12 +1975,12 @@ class FireRepository : IRepository {
                     "Error: generic error in FireRepository.updateNotificationStatus($notificationId, $newStatus). Message: ${it.message}"
                 )
                 fireCallback(
-                    DefaultFireError.default(
+                    DefaultFireError.withMessage(
                         "Error: a generic error occurred updating notification status"
                     )
                 )
             }
-    }*/
+    }
 }
 
 
