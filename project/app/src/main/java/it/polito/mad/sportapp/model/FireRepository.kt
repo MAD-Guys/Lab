@@ -1,7 +1,6 @@
 package it.polito.mad.sportapp.model
 
 import android.util.Log
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -17,7 +16,6 @@ import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.firestore.FireEquipmentReservationSlot
 import it.polito.mad.sportapp.entities.firestore.FireNotification
-import it.polito.mad.sportapp.entities.firestore.FireNotificationStatus
 import it.polito.mad.sportapp.entities.firestore.FirePlaygroundReservation
 import it.polito.mad.sportapp.entities.firestore.FirePlaygroundSport
 import it.polito.mad.sportapp.entities.firestore.FireReview
@@ -1188,7 +1186,7 @@ class FireRepository : IRepository {
 
                         if(playgroundInfo == null){
                             // conversion error
-                            Log.d("conversion error", "Error: an error occurred converting FirePlaygroundSports with id ${playgroundId} into PlaygroundInfo in FireRepository.getPlaygroundInfoById()")
+                            Log.d("conversion error", "Error: an error occurred converting FirePlaygroundSports with id $playgroundId into PlaygroundInfo in FireRepository.getPlaygroundInfoById()")
                             fireCallback(DefaultGetFireError.duringDeserialization(
                                 "Error: an error converting FirePlaygroundSport into PlaygroundInfo"
                             ))
@@ -1325,15 +1323,15 @@ class FireRepository : IRepository {
                             LocalDateTime.parse(it.startDateTime).isAfter(LocalDateTime.now())
                         }
                         // filtering out the notifications related to the past reservations
-                        notificationIdReservationId.forEach() { (notificationId, reservationId) ->
+                        notificationIdReservationId.forEach { (notificationId, reservationId) ->
                             // if the reservation is not in the incoming reservations list, the notification is removed
-                            if (incomingReservations.none() { it.id == reservationId }) {
+                            if (incomingReservations.none { it.id == reservationId }) {
                                 fireNotifications.removeIf { it.id == notificationId }
                             }
                         }
 
                     }
-                    .addOnFailureListener() {
+                    .addOnFailureListener {
                         // generic error
                         Log.d(
                             "generic error",
