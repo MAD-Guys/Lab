@@ -9,6 +9,7 @@ import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.Notification
+import it.polito.mad.sportapp.entities.NotificationStatus
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
@@ -137,6 +138,10 @@ interface IRepository {
         fireCallback: (FireResult<String, NewReservationError>) -> Unit
     )
 
+    /**
+     * Retrieve from the db all the reservations
+     * in which the user is involved as a participant
+     */
     fun getReservationsPerDateByUserId(
         userId: String,
         fireCallback: (FireResult<Map<LocalDate, List<DetailedReservation>>, DefaultGetFireError>) -> Unit
@@ -148,7 +153,9 @@ interface IRepository {
         fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit
     )
 
+
     // * Equipment methods *
+
     fun getAvailableEquipmentsBySportCenterIdAndSportId(
         sportCenterId: String,
         sportId: String,
@@ -191,8 +198,9 @@ interface IRepository {
         fireCallback: (FireResult<MutableList<Notification>, DefaultGetFireError>) -> Unit
     ): FireListener
 
-    fun deleteNotification(
+    fun updateNotificationStatus(
         notificationId: String,
+        newStatus: NotificationStatus,
         fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
     )
 }
