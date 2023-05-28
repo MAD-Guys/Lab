@@ -190,7 +190,7 @@ interface IRepository {
         ) -> Unit
     ) : FireListener
 
-    fun getAllPlaygroundsInfo(fireCallback: (FireResult<List<PlaygroundInfo>, DefaultFireError>) -> Unit): FireListener
+    fun getAllPlaygroundsInfo(fireCallback: (FireResult<List<PlaygroundInfo>, DefaultFireError>) -> Unit)
 
     // * Notification methods *
     fun getNotificationsByUserId(
