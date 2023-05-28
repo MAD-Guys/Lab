@@ -1099,10 +1099,11 @@ class FireRepository : IRepository {
     ): FireListener {
 
         // (1) retrieve the playgroundSports document **dynamic**
-        // (2) retrieve the related review collection
+        // (2) retrieve the related reviews collection
         // (3) combine them to create a PlaygroundInfo entity
 
         val reviewListener = FireListener()
+        val reviewListenerLock = Unit
 
         // (1) retrieve the playgroundSports document **dynamic**
         val listener = db.collection("playgroundSports")
@@ -1140,64 +1141,68 @@ class FireRepository : IRepository {
                     return@addSnapshotListener
                 }
 
-                // (2) retrieve the related review collection
-                val internalListener = db.collection("reviews")
-                    .whereEqualTo("playgroundId", playgroundId)
-                    .addSnapshotListener addSnapshotListenerInternal@ { value, error ->
-                        if (error != null || value == null) {
-                            // generic error
-                            Log.d("generic error", "Error: a generic error occurred getting reviews snapshot for playground $playgroundId in FireRepository.getPlaygroundInfoById(). Message: ${error?.message}")
-                            fireCallback(DefaultGetFireError.default(
-                                "Error: a generic error occurred retrieving reviews"
-                            ))
-                            return@addSnapshotListenerInternal
-                        }
+                // (2) retrieve the related reviews collection
+                synchronized(reviewListenerLock) {
+                    reviewListener.unregister()
 
-                        val reviewsDocumentsList = mutableListOf<FireReview>()
-
-                        if (!value.isEmpty) {
-                            for (rawReview in value) {
-                                //deserialize each review document
-                                val reviewDocument =
-                                    FireReview.deserialize(rawReview.id, rawReview.data)
-
-                                if (reviewDocument == null) {
-                                    // deserialization error
-                                    Log.d(
-                                        "deserialization error",
-                                        "Error: an error occurred deserializing review with id ${rawReview.id} in FireRepository.getPlaygroundInfoById()"
-                                    )
-                                    fireCallback(
-                                        DefaultGetFireError.duringDeserialization(
-                                            "Error: an error occurred retrieving a review"
-                                        )
-                                    )
-                                    return@addSnapshotListenerInternal
-                                }
-
-                                reviewsDocumentsList.add(reviewDocument)
+                    val internalListener = db.collection("reviews")
+                        .whereEqualTo("playgroundId", playgroundId)
+                        .addSnapshotListener addSnapshotListenerInternal@ { value, error ->
+                            if (error != null || value == null) {
+                                // generic error
+                                Log.d("generic error", "Error: a generic error occurred getting reviews snapshot for playground $playgroundId in FireRepository.getPlaygroundInfoById(). Message: ${error?.message}")
+                                fireCallback(DefaultGetFireError.default(
+                                    "Error: a generic error occurred retrieving reviews"
+                                ))
+                                return@addSnapshotListenerInternal
                             }
+
+                            val reviewsDocumentsList = mutableListOf<FireReview>()
+
+                            if (!value.isEmpty) {
+                                for (rawReview in value) {
+                                    //deserialize each review document
+                                    val reviewDocument =
+                                        FireReview.deserialize(rawReview.id, rawReview.data)
+
+                                    if (reviewDocument == null) {
+                                        // deserialization error
+                                        Log.d(
+                                            "deserialization error",
+                                            "Error: an error occurred deserializing review with id ${rawReview.id} in FireRepository.getPlaygroundInfoById()"
+                                        )
+                                        fireCallback(
+                                            DefaultGetFireError.duringDeserialization(
+                                                "Error: an error occurred retrieving a review"
+                                            )
+                                        )
+                                        return@addSnapshotListenerInternal
+                                    }
+
+                                    reviewsDocumentsList.add(reviewDocument)
+                                }
+                            }
+
+                            // * review list retrieved *
+
+                            // (3) combine them to create a PlaygroundInfo entity
+                            val playgroundInfo = playgroundSportsDocument.toPlaygroundInfo(reviewsDocumentsList)
+
+                            if(playgroundInfo == null){
+                                // conversion error
+                                Log.d("conversion error", "Error: an error occurred converting FirePlaygroundSport with id $playgroundId into PlaygroundInfo in FireRepository.getPlaygroundInfoById()")
+                                fireCallback(DefaultGetFireError.duringDeserialization(
+                                    "Error: an error occurred retrieving the playground"
+                                ))
+                                return@addSnapshotListenerInternal
+                            }
+
+                            // * return successfully the playground info *
+                            fireCallback(Success(playgroundInfo))
                         }
 
-                        // * review list retrieved *
-
-                        // (3) combine them to create a PlaygroundInfo entity
-                        val playgroundInfo = playgroundSportsDocument.toPlaygroundInfo(reviewsDocumentsList)
-
-                        if(playgroundInfo == null){
-                            // conversion error
-                            Log.d("conversion error", "Error: an error occurred converting FirePlaygroundSports with id $playgroundId into PlaygroundInfo in FireRepository.getPlaygroundInfoById()")
-                            fireCallback(DefaultGetFireError.duringDeserialization(
-                                "Error: an error converting FirePlaygroundSport into PlaygroundInfo"
-                            ))
-                            return@addSnapshotListenerInternal
-                        }
-
-                        // * return successfully the playground info *
-                        fireCallback(Success(playgroundInfo))
-                    }
-
-                reviewListener.add(FireListener(internalListener))
+                    reviewListener.add(FireListener(internalListener))
+                }
             }
 
         return FireListener(listener).also {

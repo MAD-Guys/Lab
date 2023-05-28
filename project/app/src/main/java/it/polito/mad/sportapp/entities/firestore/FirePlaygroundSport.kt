@@ -64,6 +64,7 @@ data class FirePlaygroundSport(
         playgroundInfo.overallQualityRating = overallQualityRating
         playgroundInfo.overallFacilitiesRating = overallFacilitiesRating
         playgroundInfo.overallRating = (overallQualityRating + overallFacilitiesRating) / 2
+
         playgroundInfo.reviewList = fireReviewList.map {
             val review = it.toReview()
             if(review == null) {
