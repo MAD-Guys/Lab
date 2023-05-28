@@ -1376,7 +1376,7 @@ class FireRepository : IRepository {
         fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
     ) {
         db.collection("notifications").document(notificationId)
-            .update("status", newStatus.ordinal )
+            .update("status", newStatus.ordinal.toLong() )
             .addOnSuccessListener {
                 fireCallback(Success(Unit))
             }
