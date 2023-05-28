@@ -131,19 +131,20 @@ interface IRepository {
      *   error occurred
      */
     fun overrideNewReservation(
+        userId: String,
         reservation: NewReservation,
         // * custom error type *
-        fireCallback: (FireResult<Int, NewReservationError>) -> Unit
+        fireCallback: (FireResult<String, NewReservationError>) -> Unit
     )
 
     fun getReservationsPerDateByUserId(
-        uid: String,
+        userId: String,
         fireCallback: (FireResult<Map<LocalDate, List<DetailedReservation>>, DefaultGetFireError>) -> Unit
     ) : FireListener
 
     fun addUserToReservation(
         reservationId: String,
-        uid: String,
+        userId: String,
         fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit
     )
 
@@ -154,13 +155,13 @@ interface IRepository {
         reservationId: String,
         startDateTime: LocalDateTime,
         endDateTime: LocalDateTime,
-        fireCallback: (FireResult<MutableMap<Int, Equipment>, DefaultFireError>) -> Unit
+        fireCallback: (FireResult<MutableMap<String, Equipment>, DefaultFireError>) -> Unit
     ) : FireListener
 
     fun getAllEquipmentsBySportCenterIdAndSportId(
         sportCenterId: String,
         sportId: String,
-        fireCallback: (FireResult<MutableMap<Int, Equipment>, DefaultFireError>) -> Unit
+        fireCallback: (FireResult<MutableMap<String, Equipment>, DefaultFireError>) -> Unit
     ) : FireListener
 
     fun deleteReservation(

@@ -1,6 +1,7 @@
 package it.polito.mad.sportapp.model
 
 import android.util.Log
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import it.polito.mad.sportapp.entities.Achievement
@@ -13,16 +14,19 @@ import it.polito.mad.sportapp.entities.PlaygroundInfo
 import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.User
+import it.polito.mad.sportapp.entities.firestore.FireEquipment
 import it.polito.mad.sportapp.entities.firestore.FireEquipmentReservationSlot
 import it.polito.mad.sportapp.entities.firestore.FireNotification
 import it.polito.mad.sportapp.entities.firestore.FirePlaygroundReservation
 import it.polito.mad.sportapp.entities.firestore.FirePlaygroundSport
+import it.polito.mad.sportapp.entities.firestore.FireReservationSlot
 import it.polito.mad.sportapp.entities.firestore.FireReview
 import it.polito.mad.sportapp.entities.firestore.FireSport
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult.*
 import it.polito.mad.sportapp.entities.firestore.FireUser
+import it.polito.mad.sportapp.entities.firestore.FireUserForPlaygroundReservation
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultGetFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultInsertFireError
@@ -30,6 +34,7 @@ import it.polito.mad.sportapp.entities.firestore.utilities.NewReservationError
 import java.lang.Exception
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
@@ -112,6 +117,66 @@ class FireRepository : IRepository {
         fireListener.add(userListener)
 
         return fireListener
+    }
+
+    private fun getStaticUser(
+        userId: String,
+        fireCallback: (FireResult<User, DefaultGetFireError>) -> Unit
+    ) {
+        db.collection("users")
+            .document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document == null || !document.exists()) {
+                    // no data exists
+                    fireCallback(
+                        DefaultGetFireError.notFound(
+                            "Error: User has not been found"
+                        ))
+                    return@addOnSuccessListener
+                }
+
+                // * user exists *
+
+                // deserialize data from db
+                val fireUser = FireUser.deserialize(document.id, document.data)
+
+                if (fireUser == null) {
+                    // deserialization error
+                    Log.d("deserialization error", "Error: a generic error occurred deserializing user with id $userId in FireRepository.getUser()")
+
+                    fireCallback(DefaultGetFireError.duringDeserialization(
+                        "Error: a generic error occurred retrieving user"
+                    ))
+                    return@addOnSuccessListener
+                }
+
+                // * user correctly retrieved *
+
+                // transform to user entity
+                val user = fireUser.toUser()
+
+                // compute user achievements (statically)
+                this.buildAchievements(userId) { result ->
+                    when (result) {
+                        is Success -> {
+                            // attach user achievements and return successfully
+                            user.achievements = result.unwrap()
+                            fireCallback(Success(user))
+                        }
+                        is Error -> {
+                            fireCallback(Error(result.errorType()))
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener {
+                Log.d("default error", "Error: a generic error occurred retrieving user with id $userId in FireRepository.getStaticUser(). Message: ${it.message}")
+                fireCallback(DefaultGetFireError.default(
+                        "Error: a generic error occurred retrieving user",
+                ))
+                return@addOnFailureListener
+            }
     }
 
     private fun buildAchievements(
@@ -867,35 +932,474 @@ class FireRepository : IRepository {
      *   error occurred
      */
     override fun overrideNewReservation(
+        userId: String,
         reservation: NewReservation,
-        fireCallback: (FireResult<Int, NewReservationError>) -> Unit
+        fireCallback: (FireResult<String, NewReservationError>) -> Unit
     ) {
-        // transaction:
-        // - check slots availabilities (excluding the actual reservation, if any)
-        // - check equipments availabilities (excluding the actual reservation ones', if any)
-        // - delete old reservation slots (if any)
-        // - delete old equipment reservation slots (if any)
-        // - create or update existing playground reservation
-        // - save new reservation slots
-        // - save new equipment reservation slots
+        // (0.1) retrieve the current user
+        this.getStaticUser(userId) { fireResult ->
+            if(fireResult.isError()) {
+                fireCallback(NewReservationError.unexpected(fireResult.errorMessage()))
+                return@getStaticUser
+            }
 
-        val x = db.collection("reservationSlots").
-            whereEqualTo("playgroundId", reservation.playgroundId)
+            // * user exists *
+            val user = fireResult.unwrap()
 
+            // (0.2) retrieve reservation slots documents references, if any
+            this.getReservationSlotsDocumentsReferences(reservation.id) { fireResult2 ->
+                if(fireResult2.isError()) {
+                    fireCallback(Error(fireResult2.errorType()))
+                    return@getReservationSlotsDocumentsReferences
+                }
 
-        db.runTransaction { transaction ->
-            // check slot availabilities:
-            // search for any busy slot, of that playground, contained in
-            // [reservation.StartTime, reservation.EndTime],
-            // excluding the ones of the reservation itself
+                val reservationSlotsDocumentsRefs = fireResult2.unwrap()
 
+                // (0.3) then retrieve equipment reservation slots documents references, if any
+                this.getEquipmentReservationSlotsDocumentsReferences(reservation.id) { fireResult3 ->
+                    if(fireResult3.isError()) {
+                        fireCallback(Error(fireResult3.errorType()))
+                        return@getEquipmentReservationSlotsDocumentsReferences
+                    }
 
+                    val equipmentReservationSlotsDocumentsRefs = fireResult3.unwrap()
 
+                    // * Note: no possible query inside transaction *
+                    // so first checks happen before the transaction
+
+                    // (1) check slots availabilities (excluding the actual reservation, if any)
+                    this.checkSlotsAvailabilities(reservation) { fireResult4 ->
+                        if(fireResult4.isError()) {
+                            fireCallback(Error(fireResult4.errorType()))
+                            return@checkSlotsAvailabilities
+                        }
+
+                        // * slots are available here *
+
+                        // (2) check equipments availabilities
+                        // (excluding the actual reservation ones', if any)
+                        this.checkEquipmentsAvailabilities(reservation) { fireResult5 ->
+                            if(fireResult5.isError()) {
+                                fireCallback(Error(fireResult5.errorType()))
+                                return@checkEquipmentsAvailabilities
+                            }
+
+                            // * selected equipments are available *
+
+                            // retrieve all playgrounds of the same sports
+                            this.getPlaygroundsBySportId(reservation.sportId) { fireResult6 ->
+                                if(fireResult6.isError()) {
+                                    fireCallback(NewReservationError.unexpected())
+                                    return@getPlaygroundsBySportId
+                                }
+
+                                val allSportPlaygrounds = fireResult6.unwrap()
+
+                                // retrieve equipments docs of the selected equipments
+                                this.getReservationEquipmentsById(reservation) { fireResult7 ->
+                                    if(fireResult7.isError()) {
+                                        fireCallback(NewReservationError.unexpected())
+                                        return@getReservationEquipmentsById
+                                    }
+
+                                    val reservationEquipmentsById = fireResult7.unwrap()
+
+                                    // save reservation data in batch
+                                    this.saveNewReservationDataInBatch(
+                                        reservationSlotsDocumentsRefs,
+                                        equipmentReservationSlotsDocumentsRefs,
+                                        reservation,
+                                        user,
+                                        allSportPlaygrounds,
+                                        reservationEquipmentsById
+                                    ) { fireResult8 ->
+                                        if(fireResult8.isError()) {
+                                            fireCallback(NewReservationError.unexpected())
+                                            return@saveNewReservationDataInBatch
+                                        }
+
+                                        // * everything went well *
+                                        val newReservationId = fireResult8.unwrap()
+
+                                        // return the new id
+                                        fireCallback(Success(newReservationId))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
+    private fun getReservationSlotsDocumentsReferences(
+        reservationId: String?,
+        fireCallback: (FireResult<List<DocumentReference>, NewReservationError>) -> Unit
+    ) {
+        if (reservationId == null) {
+            fireCallback(Success(mutableListOf()))
+            return
+        }
+
+        db.collection("reservationSlots")
+            .whereEqualTo("reservationId", reservationId)
+            .get()
+            .addOnSuccessListener { res ->
+                if (res == null) {
+                    // generic error
+                    Log.d("generic error", "Error: a generic error occurred retrieving reservation slots references in FireRepository.getReservationSlotsDocumentsReferences()")
+                    fireCallback(NewReservationError.unexpected())
+                    return@addOnSuccessListener
+                }
+
+                val reservationSlotsDocumentsRefs = res.map { it.reference }
+                fireCallback(Success(reservationSlotsDocumentsRefs))
+            }
+            .addOnFailureListener {
+                // generic error
+                Log.d("generic error", "Error: a generic error occurred retrieving reservation slots references in FireRepository.getReservationSlotsDocumentsReferences(). Message: ${it.message}")
+                fireCallback(NewReservationError.unexpected())
+            }
+    }
+
+    private fun getEquipmentReservationSlotsDocumentsReferences(
+        reservationId: String?,
+        fireCallback: (FireResult<List<DocumentReference>, NewReservationError>) -> Unit
+    ) {
+        if (reservationId == null) {
+            fireCallback(Success(mutableListOf()))
+            return
+        }
+
+        db.collection("equipmentReservationSlots")
+            .whereEqualTo("playgroundReservationId", reservationId)
+            .get()
+            .addOnSuccessListener { res ->
+                if (res == null) {
+                    // generic error
+                    Log.d("generic error", "Error: a generic error occurred retrieving equipment reservation slots references in FireRepository.getEquipmentReservationSlotsDocumentsReferences()")
+                    fireCallback(NewReservationError.unexpected())
+                    return@addOnSuccessListener
+                }
+
+                val equipmentReservationSlotsDocumentsRefs = res.map { it.reference }
+                fireCallback(Success(equipmentReservationSlotsDocumentsRefs))
+            }
+            .addOnFailureListener {
+                // generic error
+                Log.d("generic error", "Error: a generic error occurred retrieving equipment reservation slots references in FireRepository.getEquipmentReservationSlotsDocumentsReferences(). Message: ${it.message}")
+                fireCallback(NewReservationError.unexpected())
+            }
+    }
+
+    private fun checkSlotsAvailabilities(
+        reservation: NewReservation,
+        fireCallback: (FireResult<Unit,NewReservationError>) -> Unit
+    ) {
+        // search for any busy slot, of that playground, contained in
+        // [reservation.StartTime, reservation.EndTime],
+        // excluding the ones of the reservation itself (if any)
+        db.collection("reservationSlots")
+            .whereEqualTo("playgroundId", reservation.playgroundId)
+            .whereGreaterThanOrEqualTo("startSlot", reservation.startTime.format(DateTimeFormatter.ISO_DATE_TIME))
+            .whereLessThanOrEqualTo("endSlot", reservation.endTime.format(DateTimeFormatter.ISO_DATE_TIME))
+            .get()
+            .addOnSuccessListener { res ->
+                if (res == null) {
+                    // generic error
+                    Log.d(
+                        "generic error",
+                        "Error: a generic error occurred retrieving reservationSlots in FireRepository.checkSlotsAvailabilities()"
+                    )
+                    fireCallback(NewReservationError.unexpected())
+                    return@addOnSuccessListener
+                }
+
+                // deserialize reservation slots
+                var reservationSlotsDocuments = res.map { rawDocument ->
+                    val deserializedDocument =
+                        FireReservationSlot.deserialize(rawDocument.id, rawDocument.data)
+
+                    if (deserializedDocument == null) {
+                        // deserialization error
+                        Log.d(
+                            "deserialization error",
+                            "Error: an error occurred deserializing reservation slot $rawDocument in FireRepository.checkSlotsAvailabilities()"
+                        )
+                        fireCallback(NewReservationError.unexpected())
+                        return@addOnSuccessListener
+                    }
+
+                    deserializedDocument
+                }
+
+                // filter slots occupied by the current existing reservation, if any
+                reservationSlotsDocuments = reservationSlotsDocuments.filter { doc ->
+                    doc.reservationId != reservation.id
+                }
+
+                // if any slots exists, they are *busy*, so there is a conflict in the reservation booking
+                if (reservationSlotsDocuments.isNotEmpty()) {
+                    // slots conflict: the slots you are trying to reserve are already busy!
+                    Log.d(
+                        "conflict error",
+                        "A conflict emerged checking available slots, in FireRepository.overrideNewReservation()"
+                    )
+                    fireCallback(NewReservationError.slotConflict())
+                    return@addOnSuccessListener
+                }
+
+                // * slots are available *
+                fireCallback(Success(Unit))
+                return@addOnSuccessListener
+            }
+            .addOnFailureListener {
+                // generic error
+                Log.d("generic error", "Error: a generic error occurred retrieving reservationSlots in FireRepository.checkSlotsAvailabilities(). Message: ${it.message}")
+                fireCallback(NewReservationError.unexpected())
+                return@addOnFailureListener
+            }
+    }
+
+    private fun checkEquipmentsAvailabilities(
+        reservation: NewReservation,
+        fireCallback: (FireResult<Unit,NewReservationError>) -> Unit
+    ) {
+        // check for equipments availability: retrieve all the equipments slots
+        // in [reservation.startTime, reservation.endTime] related to the requested equipments,
+        // excluding the slots of this reservation (if any); then, for each slot and equipments
+        // compute the remaining qty, and check if it is < of the requested one; in this case,
+        // the equipments are NOT available for the new reservation
+        db.collection("equipmentReservationSlots")
+            .whereGreaterThanOrEqualTo("startSlot", reservation.startTime.format(DateTimeFormatter.ISO_DATE_TIME))
+            .whereLessThanOrEqualTo("endSlot", reservation.endTime.format(DateTimeFormatter.ISO_DATE_TIME))
+            .whereIn("equipment.id", reservation.selectedEquipments.map { it.equipmentId })
+            .get()
+            .addOnSuccessListener { result ->
+                if (result == null) {
+                    // generic error
+                    Log.d("generic error", "Error: a generic error occurred retrieving equipment reservation slots in FireRepository.checkEquipmentsAvailabilities()")
+                    fireCallback(NewReservationError.unexpected())
+                    return@addOnSuccessListener
+                }
+
+                // deserialize equipment reservation slots documents
+                var equipmentReservationSlotsDocs = result.map { doc ->
+                    val equipmentReservationSlotDoc = FireEquipmentReservationSlot.deserialize(doc.id, doc.data)
+
+                    if(equipmentReservationSlotDoc == null) {
+                        // deserialization error
+                        Log.d("deserialization error", "Error: an error occurred deserializing equipment reservation slot $doc in FireRepository.checkEquipmentsAvailabilities()")
+                        fireCallback(NewReservationError.unexpected())
+                        return@addOnSuccessListener
+                    }
+
+                    equipmentReservationSlotDoc
+                }
+
+                // filter the slots of the current reservation, if any
+                equipmentReservationSlotsDocs = equipmentReservationSlotsDocs.filter { doc ->
+                    doc.playgroundReservationId != reservation.id
+                }
+
+                val selectedEquipmentsQuantities = reservation.selectedEquipments.associate {
+                    Pair(it.equipmentId, it.selectedQuantity)
+                }
+
+                // check if in each slots, selected quantities are available
+                equipmentReservationSlotsDocs.groupBy { equipmentReservationSlot ->
+                    equipmentReservationSlot.startSlot
+                }.forEach { (_, equipmentReservations) ->
+                    equipmentReservations.groupBy(
+                        // group by equipment id
+                        { it.equipment.id },
+                        { Pair(it.selectedQuantity, it.equipment.maxQuantity) }
+                    ).forEach { (equipmentId, quantities) ->
+                        // for each equipment (in each slot) compute the available qty
+                        // check if the selected qty exceeds the available one; if so, return equipment conflict error
+                        val totalOccupiedQty = quantities.sumOf { (selectedQty, _) -> selectedQty }
+                        val maxQty = quantities[0].second
+
+                        // compute available quantity
+                        val availableQty = maxQty - totalOccupiedQty
+
+                        val selectedQty = selectedEquipmentsQuantities[equipmentId]!!   // equipment must be there
+
+                        if(selectedQty > availableQty) {
+                            // selected qty for this reservation *exceeds* the available one -> equipment conflict
+                            Log.d("equipment conflict", "Error: selected qty $selectedQty exceeds available qty $availableQty for equipment $equipmentId, in FireRepository.checkEquipmentsAvailabilities()")
+                            fireCallback(NewReservationError.equipmentConflict())
+                            return@addOnSuccessListener
+                        }
+                    }
+                }
+
+                // * selected equipments are available *
+
+                fireCallback(Success(Unit))
+                return@addOnSuccessListener
+            }
+            .addOnFailureListener {
+                // generic error
+                Log.d("generic error", "Error: a generic error occurred retrieving equipment reservation slots in FireRepository.checkEquipmentsAvailabilities(). Message: ${it.message}")
+                fireCallback(NewReservationError.unexpected())
+                return@addOnFailureListener
+            }
+    }
+
+    private fun saveNewReservationDataInBatch(
+        reservationSlotsDocumentsRefs: List<DocumentReference>,
+        equipmentReservationSlotsDocumentsRefs: List<DocumentReference>,
+        reservation: NewReservation,
+        user: User,
+        sportPlaygrounds: List<FirePlaygroundSport>,
+        reservationEquipmentsById: Map<String, FireEquipment>,
+        fireCallback: (FireResult<String, DefaultInsertFireError>) -> Unit
+    ) {
+        db.runTransaction { transaction ->
+            // (3) delete old reservation slots (if any)
+            reservationSlotsDocumentsRefs.forEach(transaction::delete)
+
+            // (4) delete old equipment reservation slots (if any)
+            equipmentReservationSlotsDocumentsRefs.forEach(transaction::delete)
+
+            // (5) create or update existing playground reservation
+            val firePlaygroundReservation = FirePlaygroundReservation.fromNewReservation(
+                reservation,
+                FireUserForPlaygroundReservation.from(user)
+            )
+
+            val newReservationId = if (reservation.id != null) {
+                // update existing playground reservation
+                val docRef = db.collection("playgroundReservations").document(reservation.id)
+
+                // update everything except for user and participants
+                val dataToUpdate = firePlaygroundReservation.serialize()
+                    .toMutableMap()
+
+                dataToUpdate.remove("user")
+                dataToUpdate.remove("participants")
+
+                transaction.update(docRef, dataToUpdate)
+
+                reservation.id
+            }
+            else {
+                // set new playground reservation
+                val newDocRef = db.collection("playgroundReservations").document()
+                transaction.set(newDocRef, firePlaygroundReservation.serialize())
+
+                newDocRef.id
+            }
+
+            // (6) save new reservation slots
+            val newSlots = FireReservationSlot.slotsFromNewReservation(
+                reservation,
+                newReservationId
+            )
+
+            // fill these slots' open playgrounds ids
+            newSlots.forEach { fireReservationSlot ->
+                fireReservationSlot.openPlaygroundsIds = sportPlaygrounds.filter { playground ->
+                    val openingTime = LocalTime.parse(playground.sportCenter.openingHours)
+                    val closingTime = LocalTime.parse(playground.sportCenter.closingHours)
+                    val startSlot = LocalDateTime.parse(fireReservationSlot.startSlot).toLocalTime()
+                    val endSlot = LocalDateTime.parse(fireReservationSlot.endSlot).toLocalTime()
+
+                    startSlot >= openingTime && endSlot <= closingTime
+                }
+                .map { playground -> playground.id }
+            }
+
+            newSlots.forEach { newSlot ->
+                val newDocRef = db.collection("reservationSlots").document()
+                transaction.set(newDocRef, newSlot.serialize())
+            }
+
+            // (7) save new equipment reservation slots
+            val newEquipmentSlots = FireEquipmentReservationSlot.slotsFromNewReservation(
+                reservation,
+                newReservationId,
+                reservationEquipmentsById
+            )
+
+            newEquipmentSlots.forEach { newSlot ->
+                val newDocRef = db.collection("equipmentReservationSlots").document()
+                transaction.set(newDocRef, newSlot.serialize())
+            }
+
+            // every save has been scheduled -> return new assigned reservation id
+
+            newReservationId
+        }.addOnSuccessListener { newReservationId ->
+            // * everything was successfully saved *
+            fireCallback(Success(newReservationId))
+        }.addOnFailureListener {
+            // generic error
+            Log.d("generic error", "Error: a generic error occurred saving new reservation data in FireRepository.saveNewReservationDataInBatch(). Message: ${it.message}")
+            fireCallback(DefaultInsertFireError.default(
+                "Error: an unexpected error occurred saving the reservation"
+            ))
+            return@addOnFailureListener
+        }
+    }
+
+    private fun getReservationEquipmentsById(
+        reservation: NewReservation,
+        fireCallback: (FireResult<Map<String,FireEquipment>, DefaultGetFireError>) -> Unit
+    ) {
+        db.collection("equipments")
+            .whereEqualTo("sportId", reservation.sportId)
+            .whereEqualTo("sportCenterId", reservation.sportCenterId)
+            .get()
+            .addOnSuccessListener { res ->
+                if(res == null) {
+                    // generic error
+                    Log.d("generic error", "Error: a generic error occurred retrieving equipments in FireRepository.getReservationEquipmentsById()")
+                    fireCallback(DefaultGetFireError.default(
+                        "Error: a generic error occurred retrieving equipments"
+                    ))
+                    return@addOnSuccessListener
+                }
+
+                val equipmentsDocuments = res.map { doc ->
+                    val deserializedDoc = FireEquipment.deserialize(doc.id, doc.data)
+
+                    if(deserializedDoc == null) {
+                        // deserialization error
+                        Log.d("deserialization error", "Error: an error occurred deserializing equipment $doc in FireRepository.getReservationEquipmentsById()")
+                        fireCallback(DefaultGetFireError.duringDeserialization(
+                            "Error: an error occurred retrieving equipments"
+                        ))
+                        return@addOnSuccessListener
+                    }
+
+                    deserializedDoc
+                }
+
+                val ids = reservation.selectedEquipments.map { it.equipmentId }
+
+                val selectedEquipmentsDocByIds = equipmentsDocuments.filter {
+                    ids.contains(it.id)
+                }.associateBy { it.id }
+
+
+                fireCallback(Success(selectedEquipmentsDocByIds))
+            }
+            .addOnFailureListener {
+                // generic error
+                Log.d("generic error", "Error: a generic error occurred retrieving equipments in FireRepository.getReservationEquipmentsById(). Message: ${it.message}")
+                fireCallback(DefaultGetFireError.default(
+                    "Error: a generic error occurred retrieving equipments"
+                ))
+                return@addOnFailureListener
+            }
+    }
+
+
     override fun getReservationsPerDateByUserId(
-        uid: String,
+        userId: String,
         fireCallback: (FireResult<Map<LocalDate, List<DetailedReservation>>, DefaultGetFireError>) -> Unit
     ): FireListener {
         TODO("Not yet implemented")
@@ -903,7 +1407,7 @@ class FireRepository : IRepository {
 
     override fun addUserToReservation(
         reservationId: String,
-        uid: String,
+        userId: String,
         fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit
     ) {
         TODO("Not yet implemented")
@@ -915,7 +1419,7 @@ class FireRepository : IRepository {
         reservationId: String,
         startDateTime: LocalDateTime,
         endDateTime: LocalDateTime,
-        fireCallback: (FireResult<MutableMap<Int, Equipment>, DefaultFireError>) -> Unit
+        fireCallback: (FireResult<MutableMap<String, Equipment>, DefaultFireError>) -> Unit
     ): FireListener {
         TODO("Not yet implemented")
     }
@@ -923,7 +1427,7 @@ class FireRepository : IRepository {
     override fun getAllEquipmentsBySportCenterIdAndSportId(
         sportCenterId: String,
         sportId: String,
-        fireCallback: (FireResult<MutableMap<Int, Equipment>, DefaultFireError>) -> Unit
+        fireCallback: (FireResult<MutableMap<String, Equipment>, DefaultFireError>) -> Unit
     ): FireListener {
         TODO("Not yet implemented")
     }
@@ -956,6 +1460,49 @@ class FireRepository : IRepository {
         TODO("Not yet implemented")
     }
 
+    private fun getPlaygroundsBySportId(
+        sportId: String,
+        fireCallback: (FireResult<List<FirePlaygroundSport>, DefaultGetFireError>) -> Unit
+    ) {
+        db.collection("playgroundSports")
+            .whereEqualTo("sport.id", sportId)
+            .get()
+            .addOnSuccessListener { res ->
+                if (res == null) {
+                    // generic error
+                    Log.d("generic error", "Error: generic error occurred retrieving playground sports with sport id $sportId in FireRepository.getPlaygroundsBySportId()")
+                    fireCallback(DefaultGetFireError.default(
+                        "Error: a generic error occurred retrieving playgrounds"
+                    ))
+                    return@addOnSuccessListener
+                }
+
+                val playgroundsDocs = res.map {
+                    val deserializedDoc = FirePlaygroundSport.deserialize(it.id, it.data)
+
+                    if(deserializedDoc == null) {
+                        // deserialization error
+                        Log.d("deserialization error", "Error: deserialization error occurred deserializing playground sport $it in FireRepository.getPlaygroundsBySportId()")
+                        fireCallback(DefaultGetFireError.default(
+                            "Error: a generic error occurred retrieving playgrounds"
+                        ))
+                        return@addOnSuccessListener
+                    }
+
+                    deserializedDoc
+                }
+
+                fireCallback(Success(playgroundsDocs))
+            }
+            .addOnFailureListener {
+                // generic error
+                Log.d("generic error", "Error: generic error occurred retrieving playground sports with sport id $sportId in FireRepository.getPlaygroundsBySportId(). Message: ${it.message}")
+                fireCallback(DefaultGetFireError.default(
+                    "Error: a generic error occurred retrieving playgrounds"
+                ))
+            }
+    }
+
     /* notifications */
 
     /**
@@ -984,7 +1531,7 @@ class FireRepository : IRepository {
                 // retrieving all the notifications related to the given user
                 val fireNotifications = mutableListOf<FireNotification>()
 
-                documents.forEach() { document ->
+                documents.forEach { document ->
                     val fireNotification = FireNotification.deserialize(document.id, document.data)
 
                     if(fireNotification == null) {

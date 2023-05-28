@@ -73,15 +73,13 @@ data class FirePlaygroundReservation(
          */
         fun fromNewReservation(
             reservation: NewReservation,
-            id: String? = null,
             user: FireUserForPlaygroundReservation,
-            playgroundPricePerHour: Double
         ): FirePlaygroundReservation {
             // Calculate the total price
             val durationInMinutes =
                 Duration.between(reservation.startTime, reservation.endTime).toMinutes()
             val durationInHours = durationInMinutes.toDouble() / 60.0
-            var totalPrice = playgroundPricePerHour * durationInHours
+            var totalPrice = reservation.playgroundPricePerHour * durationInHours
 
             // Adding the price of the equipments
             for (equipment in reservation.selectedEquipments) {
@@ -94,7 +92,7 @@ data class FirePlaygroundReservation(
             }
 
             return FirePlaygroundReservation(
-                id,
+                reservation.id,
                 reservation.playgroundId,
                 user,
                 participants,
@@ -104,7 +102,6 @@ data class FirePlaygroundReservation(
                 reservation.additionalRequests,
                 LocalDateTime.now().toString()
             )
-
         }
 
         /**

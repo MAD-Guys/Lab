@@ -10,7 +10,7 @@ data class FireReservationSlot(
     val startSlot: String,
     val endSlot: String,
     val playgroundId: String,
-    val openPlaygroundsIds: List<String>,
+    var openPlaygroundsIds: List<String>,
     val reservationId: String
 ) {
     /**
@@ -34,7 +34,7 @@ data class FireReservationSlot(
          * Starting from a NewReservation object, create a list of FireReservationSlot objects
          * subdividing the reservation into slots
          */
-        fun fromNewReservation(
+        fun slotsFromNewReservation(
             newReservation: NewReservation,
             reservationId: String,
         ): List<FireReservationSlot>

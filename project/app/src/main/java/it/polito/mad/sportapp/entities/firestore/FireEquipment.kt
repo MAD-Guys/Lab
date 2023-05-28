@@ -53,6 +53,17 @@ data class FireEquipment(
         )
     }
 
+    fun clone(): FireEquipment {
+        return FireEquipment(
+            id,
+            name,
+            sportId,
+            sportCenterId,
+            unitPrice,
+            maxQuantity
+        )
+    }
+
     companion object {
         /**
          * Convert an Equipment object into a FireEquipment object

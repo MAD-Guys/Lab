@@ -2,6 +2,10 @@ package it.polito.mad.sportapp.entities.firestore
 
 import android.util.Log
 import it.polito.mad.sportapp.entities.DetailedEquipmentReservation
+import it.polito.mad.sportapp.entities.NewReservation
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 data class FireEquipmentReservationSlot(
     val id: String?,
@@ -85,6 +89,41 @@ data class FireEquipmentReservationSlot(
                 playgroundReservationId,
                 timestamp
             )
+        }
+
+        fun slotsFromNewReservation(
+            newReservation: NewReservation,
+            newReservationId: String,
+            reservationEquipmentsById: Map<String, FireEquipment>
+        ): List<FireEquipmentReservationSlot> {
+
+            val equipmentReservationSlots = mutableListOf<FireEquipmentReservationSlot>()
+
+            // Computing the duration useful to retrieve the number of slots needed for the reservation
+            val durationInMinutes =
+                Duration.between(newReservation.startTime, newReservation.endTime).toMinutes()
+
+            val nowTimestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
+
+            // Creating a FireEquipmentReservationSlot object for each slot
+            // every 30 minutes and for each equipment type
+            for (i in 0 until durationInMinutes step 30) {
+                for (equipment in newReservation.selectedEquipments) {
+                    equipmentReservationSlots.add(
+                        FireEquipmentReservationSlot(
+                            null,
+                            newReservation.startTime.plusMinutes(i).format(DateTimeFormatter.ISO_DATE_TIME),
+                            newReservation.startTime.plusMinutes(i + 30).format(DateTimeFormatter.ISO_DATE_TIME),
+                            reservationEquipmentsById[equipment.equipmentId]!!.clone(),
+                            equipment.selectedQuantity.toLong(),
+                            newReservationId,
+                            nowTimestamp
+                        )
+                    )
+                }
+            }
+
+            return equipmentReservationSlots
         }
     }
 }

@@ -110,7 +110,7 @@ data class FirePlaygroundSport(
             val sportId = rawSport["id"] as? String
             val sport = FireSport.deserialize(sportId, rawSport)
 
-            if(sport == null ) {
+            if(sport == null) {
                 // deserialization error
                 Log.d("deserialization error", "Error: deserialization error deserializing sport in FirePlaygroundSport.deserialize()")
                 return null

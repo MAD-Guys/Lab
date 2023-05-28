@@ -1,6 +1,7 @@
 package it.polito.mad.sportapp.entities.firestore
 
 import android.util.Log
+import it.polito.mad.sportapp.entities.User
 
 data class FireUserForPlaygroundReservation(
     val id: String,
@@ -43,6 +44,16 @@ data class FireUserForPlaygroundReservation(
             return FireUserForPlaygroundReservation(
                 id,
                 username
+            )
+        }
+
+        /**
+         * Create a FireUserForPlaygroundReservation from a User entity
+         */
+        fun from(user: User): FireUserForPlaygroundReservation {
+            return FireUserForPlaygroundReservation(
+                user.id!!,
+                user.username
             )
         }
     }

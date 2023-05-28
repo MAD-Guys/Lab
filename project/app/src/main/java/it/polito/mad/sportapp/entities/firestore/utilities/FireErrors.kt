@@ -117,21 +117,32 @@ enum class NewReservationError(val message: String) : FireErrorType {
         "An unexpected error occurred while saving your reservation. Please try again or check your connection status."
     );
 
+    private var customMessage = message
+
     override fun message(): String {
-        return message
+        return customMessage
     }
 
     companion object {
-        fun <T> slotConflict(): Error<T, NewReservationError> {
-            return Error(SLOT_CONFLICT)
+        fun <T> slotConflict(customMessage: String? = null): Error<T, NewReservationError> {
+            return Error(SLOT_CONFLICT.also {
+                if(customMessage != null)
+                    it.customMessage = customMessage
+            })
         }
 
-        fun <T> equipmentConflict(): Error<T, NewReservationError> {
-            return Error(EQUIPMENT_CONFLICT)
+        fun <T> equipmentConflict(customMessage: String? = null): Error<T, NewReservationError> {
+            return Error(EQUIPMENT_CONFLICT.also{
+                if(customMessage != null)
+                    it.customMessage = customMessage
+            })
         }
 
-        fun <T> unexpected(): Error<T, NewReservationError> {
-            return Error(UNEXPECTED_ERROR)
+        fun <T> unexpected(customMessage: String? = null): Error<T, NewReservationError> {
+            return Error(UNEXPECTED_ERROR.also{
+                if(customMessage != null)
+                    it.customMessage = customMessage
+            })
         }
     }
 }

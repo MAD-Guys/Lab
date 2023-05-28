@@ -144,7 +144,7 @@ enum class FireNotificationType(val type: String) {
     }
 }
 
-enum class FireNotificationStatus (status: String){
+enum class FireNotificationStatus (val status: String){
     ACCEPTED("Accepted"),
     CANCELED("Canceled"),
     PENDING("Pending"),
