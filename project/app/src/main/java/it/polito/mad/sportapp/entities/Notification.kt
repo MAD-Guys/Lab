@@ -10,7 +10,7 @@ data class Notification (
     val reservationId: String,
     val senderUid: String,
     val receiverUid: String,
-    val profileUrl: String?,     // TODO: it might be null
+    var profileUrl: String?,     // TODO: it might be null
     val status: NotificationStatus,
     val description: String,
     val timestamp: String

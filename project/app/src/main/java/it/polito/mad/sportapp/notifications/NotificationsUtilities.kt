@@ -19,86 +19,6 @@ import java.io.IOException
 
 /* NOTIFICATION UTILITIES */
 
-internal fun createInvitationNotification(
-    receiverUid: String,
-    reservationId: Int,
-    notificationDescription: String,
-    notificationTimestamp: String
-) {
-
-    // notification variables
-    val tag = "NOTIFICATION TAG"
-
-    val notificationTitle = "New Invitation"
-
-    // set the notification receiver
-    //TODO: retrieve the receiver's token from db with the receiverUid
-    val receiver =
-        "ctFun_SCT5-oph334SVeZW:APA91bFjQV_eqaXo0MP6RZWf8dr7qaNDjC62uOTXBTT4alLQYsfhIQaGA_lhndivZGqvodh-7ZNLognzLUVjksPJM0VYeK-iT-uMTkHv8Fr8ooBSF3OxVyRWxVBroN_Jgi35zufQ1Ea4"
-
-    //TODO: send notification object to firestore database
-
-    val notification = JSONObject()
-    val notificationBody = JSONObject()
-
-    try {
-        // create notification body
-        notificationBody.put("action", "invitation")
-        notificationBody.put("title", notificationTitle)
-        notificationBody.put("message", notificationDescription)
-        notificationBody.put("id_reservation", reservationId)
-        notificationBody.put("status", "PENDING")
-        notificationBody.put("timestamp", notificationTimestamp)
-
-        // create notification
-        notification.put("to", receiver)
-        notification.put("data", notificationBody)
-    } catch (e: JSONException) {
-        Log.e(tag, "createInvitationNotification function: " + e.message)
-    }
-
-    // send notification
-    sendInvitationNotification(notification)
-}
-
-internal fun sendInvitationNotification(notification: JSONObject) {
-
-    // API variables
-    val fcmAPI = "https://fcm.googleapis.com/fcm/send"
-    val serverKey =
-        "key=" + "AAAAEgeVTRw:APA91bH_I9ilwfS5o7n3U45BdKy2TQiHlBEqzbP0hONdx7IFbn1PgZdIEOk3GoMSVpQWGzKJ4so5ax50wW7hHFBuZsyVXcgp8hyM3EAqZtzSn99F5ntvV4aDht3Zl4TK5bwoWipF_9IH"
-    val contentType = "application/json"
-
-    // create request
-    val request = Request.Builder()
-        .url(fcmAPI)
-        .post(RequestBody.create(MediaType.parse(contentType), notification.toString()))
-        .addHeader("Authorization", serverKey)
-        .build()
-
-    // Send the request
-    val client = OkHttpClient()
-
-    client.newCall(request).enqueue(object : Callback {
-        override fun onFailure(call: Call, e: IOException) {
-            Log.e("SEND INVITATION NOTIFICATION", "Notification sending failed! ${e.message}")
-        }
-
-        override fun onResponse(call: Call, response: Response) {
-            // Handle request success
-            if (response.isSuccessful) {
-                Log.i("SEND INVITATION NOTIFICATION", "Notification successfully sent!")
-            } else {
-                Log.e("SEND INVITATION NOTIFICATION", "Notification sending failed!")
-            }
-        }
-    })
-}
-
-
-
-
-
 internal fun manageNotification(activityIntent: Intent?, navController: NavController) {
 
     // check if the activity has an intent
@@ -135,11 +55,6 @@ internal fun manageNotification(activityIntent: Intent?, navController: NavContr
 }
 
 /* tokens */
-internal fun sendTokenToDatabase(token: String, uid: String) {
-
-    //TODO: send token to database and delete the old one associate to the same user id
-
-}
 
 internal fun deleteCurrentToken() {
     FirebaseMessaging.getInstance().deleteToken()

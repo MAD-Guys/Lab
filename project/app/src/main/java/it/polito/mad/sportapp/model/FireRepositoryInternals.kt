@@ -5,9 +5,11 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldPath
 import it.polito.mad.sportapp.entities.Achievement
 import it.polito.mad.sportapp.entities.NewReservation
+import it.polito.mad.sportapp.entities.Notification
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.firestore.FireEquipment
 import it.polito.mad.sportapp.entities.firestore.FireEquipmentReservationSlot
+import it.polito.mad.sportapp.entities.firestore.FireNotification
 import it.polito.mad.sportapp.entities.firestore.FirePlaygroundReservation
 import it.polito.mad.sportapp.entities.firestore.FirePlaygroundSport
 import it.polito.mad.sportapp.entities.firestore.FireReservationSlot
@@ -19,6 +21,16 @@ import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult.*
 import it.polito.mad.sportapp.entities.firestore.utilities.NewReservationError
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.Response
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.IOException
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -600,3 +612,125 @@ internal fun FireRepository.getPlaygroundsByIds(
             return@addOnFailureListener
         }
 }
+
+/* notifications */
+
+internal fun FireRepository.saveInvitation(
+    notification: Notification,
+    fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit
+) {
+    // convert notification entity to fireNotification
+    val fireNotification = FireNotification.from(notification)
+
+    if(fireNotification == null) {
+        // conversion error
+        Log.d("conversion error", "Error: an error occurred converting a notification entity in a fireNotification, in FireRepository.saveInvitation()")
+        fireCallback(DefaultInsertFireError.duringSerialization(
+            "Error: an error occurred saving the invitation"))
+        return
+    }
+
+    // save notification document in the collection
+    db.collection("notifications")
+        .document()
+        .set(fireNotification.serialize())
+        .addOnSuccessListener {
+            // * save was successful *
+            fireCallback(Success(Unit))
+        }
+        .addOnFailureListener {
+            // generic error
+            Log.d("generic error", "Error: a generic error occured saving invitation $notification in FireRepository.saveInvitation(). Message: ${it.message}")
+            fireCallback(DefaultInsertFireError.default(
+                "Error: a generic error occurred saving the invitation"))
+            return@addOnFailureListener
+        }
+}
+
+internal fun FireRepository.createInvitationNotification(
+    receiverToken: String,
+    reservationId: String,
+    notificationDescription: String,
+    notificationTimestamp: String,
+    fireCallback: (FireResult<Unit,DefaultInsertFireError>) -> Unit
+) {
+    // notification variables
+    val tag = "NOTIFICATION TAG"
+    val notificationTitle = "New Invitation"
+
+    val notification = JSONObject()
+    val notificationBody = JSONObject()
+
+    try {
+        // create notification body
+        notificationBody.put("action", "invitation")
+        notificationBody.put("title", notificationTitle)
+        notificationBody.put("message", notificationDescription)
+        notificationBody.put("id_reservation", reservationId)
+        notificationBody.put("status", "PENDING")
+        notificationBody.put("timestamp", notificationTimestamp)
+
+        // create notification
+        notification.put("to", receiverToken)
+        notification.put("data", notificationBody)
+    } catch (e: JSONException) {
+        Log.e(tag, "createInvitationNotification function: " + e.message)
+
+        Log.d("serialization error", "Error: a generic error occurred serializing notification JSON in FireRepository.createInvitationNotification()")
+        fireCallback(DefaultInsertFireError.default(
+            "Error: an error occurred sending the notification"
+        ))
+        return
+    }
+
+    // send notification
+    sendInvitationNotification(notification, fireCallback)
+}
+
+private fun sendInvitationNotification(
+    notification: JSONObject,
+    fireCallback: (FireResult<Unit,DefaultInsertFireError>) -> Unit
+) {
+
+    // API variables
+    val fcmAPI = "https://fcm.googleapis.com/fcm/send"
+    val serverKey =
+        "key=" + "AAAAEgeVTRw:APA91bH_I9ilwfS5o7n3U45BdKy2TQiHlBEqzbP0hONdx7IFbn1PgZdIEOk3GoMSVpQWGzKJ4so5ax50wW7hHFBuZsyVXcgp8hyM3EAqZtzSn99F5ntvV4aDht3Zl4TK5bwoWipF_9IH"
+    val contentType = "application/json"
+
+    // create request
+    val request = Request.Builder()
+        .url(fcmAPI)
+        .post(RequestBody.create(MediaType.parse(contentType), notification.toString()))
+        .addHeader("Authorization", serverKey)
+        .build()
+
+    // Send the request
+    val client = OkHttpClient()
+
+    client.newCall(request).enqueue(object : Callback {
+        override fun onFailure(call: Call, e: IOException) {
+            Log.e("SEND INVITATION NOTIFICATION", "Notification sending failed! ${e.message}")
+            fireCallback(DefaultInsertFireError.default(
+                "Error: an error occurred sending the notification"
+            ))
+        }
+
+        override fun onResponse(call: Call, response: Response) {
+            // Handle request success
+            if (response.isSuccessful) {
+                Log.i("SEND INVITATION NOTIFICATION", "Notification successfully sent!")
+                // * push notification successfully sent *
+                fireCallback(Success(Unit))
+            } else {
+                Log.e("SEND INVITATION NOTIFICATION", "Notification sending failed!")
+                // push notification not sent
+                fireCallback(DefaultInsertFireError.default(
+                    "Error: an error occurred sending the notification"
+                ))
+            }
+        }
+    })
+}
+
+

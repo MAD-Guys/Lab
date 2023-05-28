@@ -1409,16 +1409,76 @@ class FireRepository : IRepository {
             }
     }
 
-    // TODO
     /**
-     * (1) Save a new invitation to the db and
+     * (1) Save a new invitation to the db
      * (2) send the corresponding push notification to the receiver
      */
     override fun saveAndSendInvitation(
         notification: Notification,
         fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit
     ) {
-        TODO("Not yet implemented")
+        // retrieve current user
+        this.getUser(notification.senderUid) { fireResult ->
+            if(fireResult.isError()) {
+                fireCallback(DefaultInsertFireError.default(
+                    "Error: an error occurred retrieving user info"
+                ))
+                return@getUser
+            }
+
+            val user = fireResult.unwrap()
+
+            // set notification's profile image URL
+            notification.profileUrl = user.imageURL
+
+            this.saveInvitation(notification) { fireResult2 ->
+                if(fireResult2.isError()) {
+                    fireCallback(DefaultInsertFireError.default(
+                        "Error: an error occurred saving invitation"
+                    ))
+                    return@saveInvitation
+                }
+
+                // * notification saved successfully here *
+
+                // retrieve receiver user
+                this.getUser(notification.receiverUid) getUser2@ { fireResult3 ->
+                    if(fireResult3.isError()) {
+                        fireCallback(DefaultInsertFireError.default(
+                            "Error: an error occurred sending push notification"
+                        ))
+                        return@getUser2
+                    }
+
+                    val receiverUser = fireResult3.unwrap()
+
+                    if (receiverUser.notificationsToken == null) {
+                        // no token -> user did not give permissions to send push notifications
+                        // return without sending push notification
+                        fireCallback(Success(Unit))
+                        return@getUser2
+                    }
+
+                    // * create and send push notification to the receiver *
+
+                    this.createInvitationNotification(
+                        receiverUser.notificationsToken,
+                        notification.reservationId,
+                        notification.description,
+                        notification.timestamp
+                    ) { fireResult4 ->
+                        if(fireResult4.isError()) {
+                            // generic error
+                            fireCallback(Error(fireResult4.errorType()))
+                            return@createInvitationNotification
+                        }
+
+                        // * push notification successfully sent *
+                        fireCallback(Success(Unit))
+                    }
+                }
+            }
+        }
     }
 }
 
