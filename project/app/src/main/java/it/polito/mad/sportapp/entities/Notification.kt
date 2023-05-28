@@ -10,10 +10,10 @@ data class Notification (
     val reservationId: String,
     val senderUid: String,
     val receiverUid: String,
-    val profileUrl: String?,     // TODO
+    val profileUrl: String?,     // TODO: it might be null
     val status: NotificationStatus,
     val description: String,
-    val timestamp: String,
+    val timestamp: String
 ) {
     var publicationDate: LocalDate = LocalDateTime.parse(timestamp).toLocalDate()
     var publicationTime: LocalTime = LocalDateTime.parse(timestamp).toLocalTime()

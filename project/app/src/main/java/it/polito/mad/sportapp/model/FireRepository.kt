@@ -260,6 +260,17 @@ class FireRepository : IRepository {
     }
 
     /**
+     * Update the notifications token used by the user
+     */
+    override fun updateUserToken(
+        userId: String,
+        newToken: String,
+        fireCallback: (FireResult<Unit,DefaultFireError>) -> Unit
+    ) {
+        TODO()
+    }
+
+    /**
      * Retrieve all users from Firestore cloud db which the specified user
      * can still send the notification to, for the specified reservation
      * **Note**: the result is **dynamic** (fireCallback is executed each time the list changes)
@@ -968,7 +979,6 @@ class FireRepository : IRepository {
         }
     }
 
-    // TODO
     /**
      * Retrieve from the Firestore cloud db all the reservations
      * in which the user is involved as a participant
@@ -1051,10 +1061,9 @@ class FireRepository : IRepository {
     }
 
     // TODO
-    override fun addUserToReservation(
-        reservationId: String,
-        userId: String,
-        fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit
+    override fun deleteReservation(
+        reservation: DetailedReservation,
+        fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
     ) {
         TODO("Not yet implemented")
     }
@@ -1082,27 +1091,19 @@ class FireRepository : IRepository {
         TODO("Not yet implemented")
     }
 
-    // TODO
-    override fun deleteReservation(
-        reservation: DetailedReservation,
-        fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
-    ) {
-        TODO("Not yet implemented")
-    }
-
     /* playgrounds */
 
-    // TODO
     override fun getPlaygroundInfoById(
         playgroundId: String,
         fireCallback: (FireResult<PlaygroundInfo, DefaultGetFireError>) -> Unit
     ): FireListener {
 
         // (1) retrieve the playgroundSports document **dynamic**
-        // (2) retrieve the related review collection
+        // (2) retrieve the related reviews collection
         // (3) combine them to create a PlaygroundInfo entity
 
         val reviewListener = FireListener()
+        val reviewListenerLock = Unit
 
         // (1) retrieve the playgroundSports document **dynamic**
         val listener = db.collection("playgroundSports")
@@ -1140,64 +1141,68 @@ class FireRepository : IRepository {
                     return@addSnapshotListener
                 }
 
-                // (2) retrieve the related review collection
-                val internalListener = db.collection("reviews")
-                    .whereEqualTo("playgroundId", playgroundId)
-                    .addSnapshotListener addSnapshotListenerInternal@ { value, error ->
-                        if (error != null || value == null) {
-                            // generic error
-                            Log.d("generic error", "Error: a generic error occurred getting reviews snapshot for playground $playgroundId in FireRepository.getPlaygroundInfoById(). Message: ${error?.message}")
-                            fireCallback(DefaultGetFireError.default(
-                                "Error: a generic error occurred retrieving reviews"
-                            ))
-                            return@addSnapshotListenerInternal
-                        }
+                // (2) retrieve the related reviews collection
+                synchronized(reviewListenerLock) {
+                    reviewListener.unregister()
 
-                        val reviewsDocumentsList = mutableListOf<FireReview>()
-
-                        if (!value.isEmpty) {
-                            for (rawReview in value) {
-                                //deserialize each review document
-                                val reviewDocument =
-                                    FireReview.deserialize(rawReview.id, rawReview.data)
-
-                                if (reviewDocument == null) {
-                                    // deserialization error
-                                    Log.d(
-                                        "deserialization error",
-                                        "Error: an error occurred deserializing review with id ${rawReview.id} in FireRepository.getPlaygroundInfoById()"
-                                    )
-                                    fireCallback(
-                                        DefaultGetFireError.duringDeserialization(
-                                            "Error: an error occurred retrieving a review"
-                                        )
-                                    )
-                                    return@addSnapshotListenerInternal
-                                }
-
-                                reviewsDocumentsList.add(reviewDocument)
+                    val internalListener = db.collection("reviews")
+                        .whereEqualTo("playgroundId", playgroundId)
+                        .addSnapshotListener addSnapshotListenerInternal@ { value, error ->
+                            if (error != null || value == null) {
+                                // generic error
+                                Log.d("generic error", "Error: a generic error occurred getting reviews snapshot for playground $playgroundId in FireRepository.getPlaygroundInfoById(). Message: ${error?.message}")
+                                fireCallback(DefaultGetFireError.default(
+                                    "Error: a generic error occurred retrieving reviews"
+                                ))
+                                return@addSnapshotListenerInternal
                             }
+
+                            val reviewsDocumentsList = mutableListOf<FireReview>()
+
+                            if (!value.isEmpty) {
+                                for (rawReview in value) {
+                                    //deserialize each review document
+                                    val reviewDocument =
+                                        FireReview.deserialize(rawReview.id, rawReview.data)
+
+                                    if (reviewDocument == null) {
+                                        // deserialization error
+                                        Log.d(
+                                            "deserialization error",
+                                            "Error: an error occurred deserializing review with id ${rawReview.id} in FireRepository.getPlaygroundInfoById()"
+                                        )
+                                        fireCallback(
+                                            DefaultGetFireError.duringDeserialization(
+                                                "Error: an error occurred retrieving a review"
+                                            )
+                                        )
+                                        return@addSnapshotListenerInternal
+                                    }
+
+                                    reviewsDocumentsList.add(reviewDocument)
+                                }
+                            }
+
+                            // * review list retrieved *
+
+                            // (3) combine them to create a PlaygroundInfo entity
+                            val playgroundInfo = playgroundSportsDocument.toPlaygroundInfo(reviewsDocumentsList)
+
+                            if(playgroundInfo == null){
+                                // conversion error
+                                Log.d("conversion error", "Error: an error occurred converting FirePlaygroundSport with id $playgroundId into PlaygroundInfo in FireRepository.getPlaygroundInfoById()")
+                                fireCallback(DefaultGetFireError.duringDeserialization(
+                                    "Error: an error occurred retrieving the playground"
+                                ))
+                                return@addSnapshotListenerInternal
+                            }
+
+                            // * return successfully the playground info *
+                            fireCallback(Success(playgroundInfo))
                         }
 
-                        // * review list retrieved *
-
-                        // (3) combine them to create a PlaygroundInfo entity
-                        val playgroundInfo = playgroundSportsDocument.toPlaygroundInfo(reviewsDocumentsList)
-
-                        if(playgroundInfo == null){
-                            // conversion error
-                            Log.d("conversion error", "Error: an error occurred converting FirePlaygroundSports with id $playgroundId into PlaygroundInfo in FireRepository.getPlaygroundInfoById()")
-                            fireCallback(DefaultGetFireError.duringDeserialization(
-                                "Error: an error converting FirePlaygroundSport into PlaygroundInfo"
-                            ))
-                            return@addSnapshotListenerInternal
-                        }
-
-                        // * return successfully the playground info *
-                        fireCallback(Success(playgroundInfo))
-                    }
-
-                reviewListener.add(FireListener(internalListener))
+                    reviewListener.add(FireListener(internalListener))
+                }
             }
 
         return FireListener(listener).also {
@@ -1312,8 +1317,8 @@ class FireRepository : IRepository {
 
     // TODO
     /**
-     * Returns a fireListener that listens  notifications for the given user.
-     * The notifications are related to the incoming reservations NOT the past ones.
+     * Return a fireListener listening to notifications for the given user
+     * The notifications are related to the incoming reservations and NOT the past ones.
      * The fireCallback is called every time a new notification is received.
      */
     override fun getNotificationsByUserId(
@@ -1454,16 +1459,26 @@ class FireRepository : IRepository {
 
     // TODO
     /**
-     * Updates the status of the notification with the given id.
-     * The fireCallback is called when the operation is completed.
+     * Update invitation status and corresponding reservation participants, based on the old and
+     * the new invitation status:
+     * - if newStatus is ACCEPTED -> update notification status and **insert** new user as a
+     *  reservation's participant (in this case, oldStatus is always PENDING,
+     *  since user cannot accept invitation after a refuse)
+     * - if newStatus is REJECTED and oldStatus is PENDING -> just update notification status
+     *  (user is answering for the first time)
+     * - if newStatus is REJECTED and oldStatus is ACCEPTED -> update notification status and **remove**
+     *  user from reservation's participants
      */
-    override fun updateNotificationStatus(
+    override fun updateInvitationStatus(
         notificationId: String,
+        oldStatus: NotificationStatus,
         newStatus: NotificationStatus,
+        reservationId: String,
         fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
     ) {
-        db.collection("notifications").document(notificationId)
-            .update("status", newStatus.ordinal.toLong() )
+        db.collection("notifications")
+            .document(notificationId)
+            .update("status", newStatus.ordinal.toLong())
             .addOnSuccessListener {
                 fireCallback(Success(Unit))
             }
@@ -1479,6 +1494,18 @@ class FireRepository : IRepository {
                     )
                 )
             }
+    }
+
+    // TODO
+    /**
+     * (1) Save a new invitation to the db and
+     * (2) send the corresponding push notification to the receiver
+     */
+    override fun saveAndSendInvitation(
+        notification: Notification,
+        fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit
+    ) {
+        TODO("Not yet implemented")
     }
 }
 
