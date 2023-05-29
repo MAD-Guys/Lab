@@ -1,15 +1,21 @@
 package it.polito.mad.sportapp
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.room.RoomNotification
 import it.polito.mad.sportapp.entities.room.RoomNotificationStatus
 import it.polito.mad.sportapp.application_utilities.checkIfUserIsLoggedIn
 import it.polito.mad.sportapp.application_utilities.getCurrentUserUid
+import it.polito.mad.sportapp.entities.User
+import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
+import it.polito.mad.sportapp.model.FireRepository
 import it.polito.mad.sportapp.model.LocalRepository
+import it.polito.mad.sportapp.profile.Gender
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -20,13 +26,15 @@ class SportAppViewModel @Inject constructor(
     private val repository: LocalRepository
 ) : ViewModel() {
 
+    private val iRepository = FireRepository()
+
     /* notifications */
     private val _notifications =
         MutableLiveData<MutableList<RoomNotification>>().also { it.value = mutableListOf() }
     val notifications: LiveData<MutableList<RoomNotification>> = _notifications
 
     //TODO: remove the two functions below when firestore db is implemented
-    fun startNotificationThread(context: Context) {
+    fun startNotificationThread() {
 
         val thread = Thread {
 
@@ -200,14 +208,56 @@ class SportAppViewModel @Inject constructor(
 
     /* user */
     fun checkIfUserAlreadyExists(uid: String) {
-        //TODO: setup firestore db properly and uncomment the following lines of code
-        // check if user already exists in the db
-        //repository.userAlreadyExists(uid)
-    }
+        iRepository.userAlreadyExists(uid) {
+            when (it) {
+                is FireResult.Error -> {
+                    Log.e("checkIfUserAlreadyExists", "Error: ${it.errorMessage()}")
+                    return@userAlreadyExists
+                }
 
-    fun addUserOnDb() {
-        //TODO: setup firestore db properly and uncomment the following lines of code
-        // create user
-        //repository.insertNewUser(user)
+                is FireResult.Success -> {
+                    if(!it.value){
+
+                        val user = FirebaseAuth.getInstance().currentUser
+
+                        val userUid = user!!.uid
+
+                        val displayName = user.displayName!!.split(" ")
+                        val userFirstName = displayName[0]
+                        val userLastName = displayName[displayName.size - 1]
+                        val userImageUrl = user.photoUrl.toString()
+                        val userUsername = user.email!!
+
+                        // create new user
+                        val newUser = User(
+                            userUid,
+                            userFirstName,
+                            userLastName,
+                            userUsername,
+                            Gender.Other.name,
+                            25,
+                            "Turin",
+                            userImageUrl,
+                            "Hello, I'm using EzSport!",
+                            null
+                        )
+
+                        // insert user on db
+                        iRepository.insertNewUser(newUser) { insertResult ->
+                            when(insertResult) {
+                                is FireResult.Error -> {
+                                    Log.e("insertNewUser", "Error: ${insertResult.errorMessage()}")
+                                    return@insertNewUser
+                                }
+
+                                is FireResult.Success -> {
+                                    Log.d("insertNewUser", "Success: ${insertResult.value}")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

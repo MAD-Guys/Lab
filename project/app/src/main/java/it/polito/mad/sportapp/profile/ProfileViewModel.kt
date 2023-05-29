@@ -65,7 +65,7 @@ class ProfileViewModel @Inject constructor(
 
     private val _userBio = MutableLiveData<String>().also {
         it.value =
-            "I’m a Computer Engineering student from Latina. I love playing basketball and tennis with my friends, especially on the weekend."
+            "Hello, I'm using EzSport!"
     }
     val userBio: LiveData<String> = _userBio
 
@@ -111,8 +111,6 @@ class ProfileViewModel @Inject constructor(
             }.addOnSuccessListener {
                 // upload of user profile picture succeeded
                 Log.d("ProfileViewModel", "Upload of user profile picture succeeded!")
-                // load user profile picture just saved
-                this.loadProfilePictureFromFirebaseStorage(pictureLabel)
             }
         }
     }

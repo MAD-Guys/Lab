@@ -144,7 +144,7 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         askNotificationPermission()
 
         //TODO: setup firestore db properly and delete the following line of code
-        activityVm.startNotificationThread(this)
+        activityVm.startNotificationThread()
     }
 
     // manage notification click when the activity instance is already created

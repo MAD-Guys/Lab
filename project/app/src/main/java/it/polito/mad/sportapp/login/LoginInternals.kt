@@ -26,6 +26,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.application_utilities.showToasty
+import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.notifications.manageNotification
 
 // manage menu item selection
@@ -129,10 +130,44 @@ internal fun LoginFragment.onSignInResult(result: FirebaseAuthUIAuthenticationRe
                         ) ==
                         PackageManager.PERMISSION_GRANTED
                     ) {
-                        //TODO: send token to database
+                        iRepository.updateUserToken(user.uid, token) { updateResult ->
+                            when (updateResult) {
+                                is FireResult.Error -> {
+                                    Log.e(
+                                        tag,
+                                        "Error updating user token: ${updateResult.errorMessage()}"
+                                    )
+                                    return@updateUserToken
+                                }
+
+                                is FireResult.Success -> {
+                                    Log.i(
+                                        tag,
+                                        "User token with $user, updated successfully with token: $token"
+                                    )
+                                }
+                            }
+                        }
                     }
                 } else {
-                    //TODO: send token to database
+                    iRepository.updateUserToken(user.uid, token) { updateResult ->
+                        when (updateResult) {
+                            is FireResult.Error -> {
+                                Log.e(
+                                    tag,
+                                    "Error updating user token: ${updateResult.errorMessage()}"
+                                )
+                                return@updateUserToken
+                            }
+
+                            is FireResult.Success -> {
+                                Log.i(
+                                    tag,
+                                    "User token with $user, updated successfully with token: $token"
+                                )
+                            }
+                        }
+                    }
                 }
             })
         }

@@ -13,14 +13,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.SportAppViewModel
 import it.polito.mad.sportapp.application_utilities.checkIfUserIsLoggedIn
+import it.polito.mad.sportapp.model.FireRepository
 import it.polito.mad.sportapp.notifications.manageNotification
 
 @AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.fragment_login) {
+
+    internal val iRepository = FireRepository()
 
     // view model
     internal lateinit var vm: SportAppViewModel
@@ -45,24 +49,19 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // initialize view model
+        vm = ViewModelProvider(requireActivity())[SportAppViewModel::class.java]
+
         // initialize navigation controller
         navController = findNavController()
 
         // check if user is already logged in
         if (checkIfUserIsLoggedIn()) {
-
-            //TODO: setup firestore db properly and uncomment the following lines of code
-            // check if user already exists in firestore db
-            /*
-            if (vm.checkIfUserAlreadyExists(FirebaseAuth.getInstance().currentUser!!.uid)) {
-                vm.addUserOnDb()
-            }*/
+            // check if user already exists in database and insert into firestore db if user does not exist
+            vm.checkIfUserAlreadyExists(FirebaseAuth.getInstance().currentUser!!.uid)
 
             manageNotification(requireActivity().intent, navController)
         }
-
-        // initialize view model
-        vm = ViewModelProvider(requireActivity())[SportAppViewModel::class.java]
 
         // setup icon image view
         iconLauncherImageView = requireView().findViewById(R.id.icon_launcher_image_view)

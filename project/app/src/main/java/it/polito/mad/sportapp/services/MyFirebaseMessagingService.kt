@@ -20,12 +20,15 @@ import com.google.firebase.messaging.RemoteMessage
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.SportAppActivity
 import it.polito.mad.sportapp.application_utilities.checkIfUserIsLoggedIn
+import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
+import it.polito.mad.sportapp.model.FireRepository
 import java.util.Random
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     private val channelId = "ezsport_channel"
     private val tag = "MyFirebaseMessagingService"
+    private val iRepository = FireRepository()
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
@@ -41,10 +44,38 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     ) ==
                     PackageManager.PERMISSION_GRANTED
                 ) {
-                    //TODO: send token to database
+                    iRepository.updateUserToken(user, token) {
+                        when (it) {
+                            is FireResult.Error -> {
+                                Log.e(tag, "Error updating user token: ${it.errorMessage()}")
+                                return@updateUserToken
+                            }
+
+                            is FireResult.Success -> {
+                                Log.i(
+                                    tag,
+                                    "User token with $user, updated successfully with token: $token"
+                                )
+                            }
+                        }
+                    }
                 }
             } else {
-                //TODO: send token to database
+                iRepository.updateUserToken(user, token) {
+                    when (it) {
+                        is FireResult.Error -> {
+                            Log.e(tag, "Error updating user token: ${it.errorMessage()}")
+                            return@updateUserToken
+                        }
+
+                        is FireResult.Success -> {
+                            Log.i(
+                                tag,
+                                "User token with $user, updated successfully with token: $token"
+                            )
+                        }
+                    }
+                }
             }
         }
 

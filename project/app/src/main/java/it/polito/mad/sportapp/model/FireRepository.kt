@@ -200,7 +200,7 @@ class FireRepository : IRepository {
         // * No check about username uniqueness *
 
         db.collection("users")
-            .document()
+            .document(user.id!!) // this id is the authentication uid
             .set(serializedUser)
             .addOnSuccessListener {
                 fireCallback(Success(Unit))
@@ -268,7 +268,18 @@ class FireRepository : IRepository {
         newToken: String,
         fireCallback: (FireResult<Unit,DefaultFireError>) -> Unit
     ) {
-        TODO()
+        db.collection("users")
+            .document(userId)
+            .update("notificationsToken", newToken)
+            .addOnSuccessListener {
+                fireCallback(Success(Unit))
+            }
+            .addOnFailureListener {
+                Log.e("default error", "Error: a generic error occurred updating user $userId token in FireRepository.updateUserToken(). Message: ${it.message}")
+                fireCallback(DefaultFireError.withMessage(
+                    "Error: a generic error occurred updating user $userId token"
+                ))
+            }
     }
 
     /**
