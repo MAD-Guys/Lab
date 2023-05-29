@@ -1,10 +1,6 @@
 package it.polito.mad.sportapp
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,7 +10,6 @@ import it.polito.mad.sportapp.entities.room.RoomNotificationStatus
 import it.polito.mad.sportapp.application_utilities.checkIfUserIsLoggedIn
 import it.polito.mad.sportapp.application_utilities.getCurrentUserUid
 import it.polito.mad.sportapp.model.LocalRepository
-import it.polito.mad.sportapp.notifications.createInvitationNotification
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -49,7 +44,7 @@ class SportAppViewModel @Inject constructor(
                         reservationId,
                         sender ?: "",
                         "fpnyG2AyUehysyf72bjov8kSc5i1",
-                        "https://static.vecteezy.com/ti/vettori-gratis/p1/2318271-icona-profilo-utente-vettoriale.jpg",
+                        "https://firebasestorage.googleapis.com/v0/b/sportapp-project.appspot.com/o/profile_pictures%2FfpnyG2AyUehysyf72bjov8kSc5i1%2Fprofile_picture.jpeg?alt=media&token=6b42485c-b04e-4ae7-9c5f-5ffea7bc2c0c",
                         RoomNotificationStatus.PENDING,
                         "@francescorosati has invited you to play a tennis match!",
                         LocalDateTime.now().toString()
@@ -57,30 +52,6 @@ class SportAppViewModel @Inject constructor(
 
                     // add a new notification every minute
                     Thread.sleep(20000)
-
-                    // send notification only if the android version is >= 13 and the permission is granted
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        if (ContextCompat.checkSelfPermission(
-                                context,
-                                Manifest.permission.POST_NOTIFICATIONS
-                            ) ==
-                            PackageManager.PERMISSION_GRANTED
-                        ) {
-                            createInvitationNotification(
-                                notification.receiverUid,
-                                notification.reservationId,
-                                notification.description,
-                                notification.timestamp
-                            )
-                        }
-                    } else {
-                        createInvitationNotification(
-                            notification.receiverUid,
-                            notification.reservationId,
-                            notification.description,
-                            notification.timestamp
-                        )
-                    }
 
                     _notifications.postValue(_notifications.value?.apply { add(notification) })
 

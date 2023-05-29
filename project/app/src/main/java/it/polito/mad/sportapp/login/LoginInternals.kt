@@ -11,6 +11,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
@@ -21,10 +22,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.messaging.FirebaseMessaging
+import android.Manifest
+import android.content.pm.PackageManager
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.application_utilities.showToasty
 import it.polito.mad.sportapp.notifications.manageNotification
-import it.polito.mad.sportapp.notifications.sendTokenToDatabase
 
 // manage menu item selection
 internal fun LoginFragment.menuInit() {
@@ -119,8 +121,19 @@ internal fun LoginFragment.onSignInResult(result: FirebaseAuthUIAuthenticationRe
 
                 // Get new FCM registration token
                 val token = task.result
-                // send token to firebase server if already exists
-                sendTokenToDatabase(token, it.uid)
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    if (ContextCompat.checkSelfPermission(
+                            requireContext(),
+                            Manifest.permission.POST_NOTIFICATIONS
+                        ) ==
+                        PackageManager.PERMISSION_GRANTED
+                    ) {
+                        //TODO: send token to database
+                    }
+                } else {
+                    //TODO: send token to database
+                }
             })
         }
 

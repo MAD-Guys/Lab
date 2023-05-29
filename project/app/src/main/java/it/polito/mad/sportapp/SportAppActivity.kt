@@ -1,12 +1,10 @@
 package it.polito.mad.sportapp
 
 import android.Manifest
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -18,18 +16,16 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.navigation.NavigationBarView
-import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.application_utilities.checkIfUserIsLoggedIn
 import it.polito.mad.sportapp.application_utilities.setApplicationLocale
 import it.polito.mad.sportapp.application_utilities.showToasty
 import it.polito.mad.sportapp.application_utilities.toastyInit
 import it.polito.mad.sportapp.notifications.manageNotification
+import it.polito.mad.sportapp.profile.ProfileViewModel
 
 @AndroidEntryPoint
 class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener {
-
-    val db = FirebaseFirestore.getInstance()
 
     // request notification permission launcher
     private val notificationPermissionLauncher = registerForActivityResult(
@@ -42,8 +38,9 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         }
     }
 
-    // activity view model
+    // activity view models
     private lateinit var vm: SportAppViewModel
+    private lateinit var profileVm: ProfileViewModel
 
     private lateinit var bottomNavigationView: NavigationBarView
     private lateinit var navController: NavController
@@ -60,8 +57,9 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         // set light theme as default
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-        // initialize activity view model
+        // initialize activity view models
         vm = ViewModelProvider(this)[SportAppViewModel::class.java]
+        profileVm = ViewModelProvider(this)[ProfileViewModel::class.java]
 
         /* bottom bar */
 
@@ -83,10 +81,6 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
 
         // configure toasts appearance
         toastyInit()
-
-        //TODO: setup firestore db properly and delete these functions
-        //tryWriteFirestoreDb()
-        //tryReadFirestoreDb()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -182,58 +176,5 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
                 notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
-    }
-
-    //TODO: delete the two function below
-    private fun tryWriteFirestoreDb() {
-
-        // Create a new user with a first and last name
-        val user = hashMapOf(
-            "first" to "Ada",
-            "last" to "Lovelace",
-            "born" to 1815
-        )
-
-        // Create a new user with a first, middle, and last name
-        val user2 = hashMapOf(
-            "first" to "Alan",
-            "middle" to "Mathison",
-            "last" to "Turing",
-            "born" to 1912
-        )
-
-        // Add a new document with a generated ID
-        db.collection("users")
-            .add(user)
-            .addOnSuccessListener { documentReference ->
-                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "Error adding document", e)
-            }
-
-        // Add a new document with a generated ID
-        db.collection("users")
-            .add(user2)
-            .addOnSuccessListener { documentReference ->
-                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "Error adding document", e)
-            }
-
-    }
-
-    private fun tryReadFirestoreDb() {
-        db.collection("users")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    Log.d(TAG, "${document.id} => ${document.data}")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
     }
 }

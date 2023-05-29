@@ -19,7 +19,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.canhub.cropper.CropImageContract
@@ -58,7 +58,7 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
     internal lateinit var navController: NavController
 
     // edit profile view model
-    internal val vm by activityViewModels<ProfileViewModel>()
+    internal lateinit var vm: ProfileViewModel
 
     // Sports temporary state
     internal var sportsTemp: MutableMap<String, Sport> = mutableMapOf()
@@ -81,8 +81,8 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
     // Profile picture
     internal lateinit var profilePicture: ImageView
     internal lateinit var backgroundProfilePicture: ImageView
-    internal var profilePictureBitmap: Bitmap? = null
-    internal var backgroundProfilePictureBitmap: Bitmap? = null
+    private var profilePictureBitmap: Bitmap? = null
+    private var backgroundProfilePictureBitmap: Bitmap? = null
 
     internal var cameraUri: Uri? = null
     private lateinit var cropImageOptions: CropImageOptions
@@ -159,6 +159,7 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
 
             // set profile picture
             profilePicture.setImageBitmap(profilePictureBitmap)
+            vm.saveProfilePictureOnFirebaseStorage(profilePictureBitmap, "profile_picture.jpeg")
 
             // copy the profile picture to create the blurred background image
             val backgroundPicture = profilePictureBitmap?.copy(profilePictureBitmap!!.config, true)
@@ -170,6 +171,9 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
 
                 // set background profile picture
                 backgroundProfilePicture.setImageBitmap(backgroundProfilePictureBitmap)
+
+                // save background profile picture on firebase storage
+                vm.saveProfilePictureOnFirebaseStorage(backgroundProfilePictureBitmap, "background_profile_picture.jpeg")
             }
 
         } else {
@@ -179,6 +183,9 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // retrieve profile view model instance
+        vm = ViewModelProvider(requireActivity())[ProfileViewModel::class.java]
 
         // get activity action bar
         actionBar = (requireActivity() as AppCompatActivity).supportActionBar
@@ -223,9 +230,6 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
             aspectRatioX = 1,
             aspectRatioY = 1
         )
-
-        // load profile pictures from storage
-        loadPicturesFromInternalStorage()
 
         /* manage listeners */
 

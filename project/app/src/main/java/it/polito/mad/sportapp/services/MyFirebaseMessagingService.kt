@@ -1,23 +1,25 @@
 package it.polito.mad.sportapp.services
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.media.RingtoneManager
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.SportAppActivity
 import it.polito.mad.sportapp.application_utilities.checkIfUserIsLoggedIn
-import it.polito.mad.sportapp.notifications.sendTokenToDatabase
 import java.util.Random
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
@@ -32,8 +34,18 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val user = FirebaseAuth.getInstance().currentUser?.uid
 
         user?.let {
-            // send token to Firebase server
-            sendTokenToDatabase(token, it)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (ContextCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) ==
+                    PackageManager.PERMISSION_GRANTED
+                ) {
+                    //TODO: send token to database
+                }
+            } else {
+                //TODO: send token to database
+            }
         }
 
         Log.i(tag, "onNewToken completed with token: $token")

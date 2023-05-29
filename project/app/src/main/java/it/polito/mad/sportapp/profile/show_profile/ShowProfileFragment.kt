@@ -9,14 +9,13 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.application_utilities.getPictureFromInternalStorage
 import it.polito.mad.sportapp.profile.ProfileViewModel
 import it.polito.mad.sportapp.profile.Sport
 
@@ -58,10 +57,13 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
     internal lateinit var navController: NavController
 
     // show profile view model
-    internal val vm by activityViewModels<ProfileViewModel>()
+    internal lateinit var vm: ProfileViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // retrieve profile view model instance
+        vm = ViewModelProvider(requireActivity())[ProfileViewModel::class.java]
 
         // get activity action bar
         actionBar = (requireActivity() as AppCompatActivity).supportActionBar
@@ -106,18 +108,5 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
 
         // get all sports from db
         vm.loadSportsFromDb()
-
-        // retrieve profile and background picture from the internal storage
-        val profilePictureBitmap =
-            getPictureFromInternalStorage(requireActivity().filesDir, "profilePicture.jpeg")
-        val backgroundProfilePictureBitmap =
-            getPictureFromInternalStorage(
-                requireActivity().filesDir,
-                "backgroundProfilePicture.jpeg"
-            )
-
-        // update profile and background picture with the ones uploaded by the user, if any
-        profilePictureBitmap?.let { profilePicture.setImageBitmap(it) }
-        backgroundProfilePictureBitmap?.let { backgroundProfilePicture.setImageBitmap(it) }
     }
 }

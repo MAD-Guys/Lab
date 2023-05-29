@@ -6,16 +6,6 @@ import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import com.google.firebase.messaging.FirebaseMessaging
 import it.polito.mad.sportapp.R
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.MediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
-import okhttp3.Response
-import org.json.JSONException
-import org.json.JSONObject
-import java.io.IOException
 
 /* NOTIFICATION UTILITIES */
 

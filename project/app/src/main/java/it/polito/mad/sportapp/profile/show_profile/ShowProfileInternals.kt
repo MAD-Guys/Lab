@@ -110,6 +110,16 @@ internal fun ShowProfileFragment.viewsSetup() {
 
 internal fun ShowProfileFragment.observersSetup() {
 
+    // user profile picture observer
+    vm.userProfilePicture.observe(viewLifecycleOwner) {
+        profilePicture.setImageBitmap(it)
+    }
+
+    // user background profile picture observer
+    vm.userBackgroundProfilePicture.observe(viewLifecycleOwner) {
+        backgroundProfilePicture.setImageBitmap(it)
+    }
+
     // user first name observer
     vm.userFirstName.observe(viewLifecycleOwner) {
         firstName.text = it

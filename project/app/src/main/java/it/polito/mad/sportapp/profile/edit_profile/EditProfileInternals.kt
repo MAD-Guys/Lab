@@ -22,13 +22,11 @@ import androidx.lifecycle.Lifecycle
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.application_utilities.getPictureFromInternalStorage
 import it.polito.mad.sportapp.profile.Gender
 import it.polito.mad.sportapp.profile.Level
 import it.polito.mad.sportapp.profile.Sport
 import it.polito.mad.sportapp.profile.SportChips
 import it.polito.mad.sportapp.entities.room.RoomSport as SportEntity
-import it.polito.mad.sportapp.application_utilities.savePictureOnInternalStorage
 import it.polito.mad.sportapp.application_utilities.setProfilePictureSize
 import it.polito.mad.sportapp.application_utilities.showToasty
 import java.io.File
@@ -92,6 +90,16 @@ internal fun EditProfileFragment.observersSetup() {
         if (sportsList.isNotEmpty()) {
             setupTemporarySports(sportsList)
         }
+    }
+
+    // user profile picture observer
+    vm.userProfilePicture.observe(viewLifecycleOwner) {
+        profilePicture.setImageBitmap(it)
+    }
+
+    // user background profile picture observer
+    vm.userBackgroundProfilePicture.observe(viewLifecycleOwner) {
+        backgroundProfilePicture.setImageBitmap(it)
     }
 
     // user first name observer
@@ -237,23 +245,6 @@ internal fun EditProfileFragment.initializeTempVariables() {
     bioTemp = vm.userBio.value ?: getString(R.string.user_bio)
 }
 
-internal fun EditProfileFragment.loadPicturesFromInternalStorage() {
-    /* manage profile and background picture */
-
-    // retrieve profile picture and update it with the one uploaded by the user, if any
-    getPictureFromInternalStorage(requireActivity().filesDir, "profilePicture.jpeg")?.let {
-        profilePicture.setImageBitmap(it)
-    }
-
-    // retrieve background picture and update it with the one uploaded by the user, if any
-    getPictureFromInternalStorage(
-        requireActivity().filesDir,
-        "backgroundProfilePicture.jpeg"
-    )?.let {
-        backgroundProfilePicture.setImageBitmap(it)
-    }
-}
-
 internal fun EditProfileFragment.saveInformationOnStorage() {
 
     // update view model variables
@@ -267,18 +258,6 @@ internal fun EditProfileFragment.saveInformationOnStorage() {
 
     // update user sports
     vm.setUserSports(sportsTemp.filter { it.value.selected }.map { it.value.toSportLevel() })
-
-    // save profile and background pictures into the internal storage
-    profilePictureBitmap?.let {
-        savePictureOnInternalStorage(it, requireActivity().filesDir, "profilePicture.jpeg")
-    }
-    backgroundProfilePictureBitmap?.let {
-        savePictureOnInternalStorage(
-            it,
-            requireActivity().filesDir,
-            "backgroundProfilePicture.jpeg"
-        )
-    }
 
     if (isErrorFree()) {
         // update db user information
