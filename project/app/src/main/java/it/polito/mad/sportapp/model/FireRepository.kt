@@ -1071,7 +1071,6 @@ class FireRepository : IRepository {
 
     // * Equipments methods *
 
-    // TODO
     override fun getAvailableEquipmentsBySportCenterIdAndSportId(
         sportCenterId: String,
         sportId: String,
@@ -1080,10 +1079,120 @@ class FireRepository : IRepository {
         endDateTime: LocalDateTime,
         fireCallback: (FireResult<MutableMap<String, Equipment>, DefaultFireError>) -> Unit
     ): FireListener {
-        TODO("Not yet implemented")
+
+        // 1 - first of all, retrieve all the available equipment (statically)
+        val allEquipments = mutableListOf<Equipment>()
+        db.collection("equipments")
+            .whereEqualTo("sportCenterId", sportCenterId)
+            .whereEqualTo("sportId", sportId)
+            .get()
+            .addOnSuccessListener { value ->
+                if (!value.isEmpty) {
+                    for (rawEquipment in value) {
+                        //deserialize each equipment document
+                        val equipmentDocument =
+                            FireEquipment.deserialize(rawEquipment.id, rawEquipment.data)
+
+                        if (equipmentDocument == null) {
+                            // deserialization error
+                            Log.d(
+                                "deserialization error",
+                                "Error: an error occurred deserializing equipmrnt with id ${rawEquipment.id} in FireRepository.getAvailableEquipmentsBySportCenterIdAndSportId()"
+                            )
+                            fireCallback(
+                                DefaultFireError.withMessage(
+                                    "Error: an error occurred deserializing an equipment"
+                                )
+                            )
+                            return@addOnSuccessListener
+                        }
+
+                        allEquipments.add(equipmentDocument.toEquipment())
+                    }
+                }
+            }
+            .addOnFailureListener {
+                // generic error
+                Log.d("generic error", "Error: a generic error occurred retrieving all equipments in FireRepository.getAvailableEquipmentsBySportCenterIdAndSportId(). Message: ${it.message}")
+                fireCallback(DefaultFireError.withMessage(
+                    "Error: a generic error occurred retrieving all equipments"
+                ))
+                return@addOnFailureListener
+            }
+
+        // 2 - map the equipments by equipmentId
+        val equipmentsMap = mutableMapOf<String, Equipment>()
+        allEquipments.map { equipmentsMap.put(it.id, it) }
+
+        // 3 - then, add a snapshotListener to the equipmentReservationSlots collection
+        //      where:
+        //          (1) equipment.sportCenterId == sportCenterId
+        //          (2) equipment.sportId == sportId
+        //          (3) startSlot < (is strictly before) endDateTame
+        //          (4) endSlot > (is strictly after) startDateTime
+        val listener = db.collection("equipmentReservationSlots")
+            .whereEqualTo("equipment.sportCenterId", sportCenterId)
+            .whereEqualTo("equipment.sportId", sportId)
+            .whereLessThan("startSlot", endDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+            .whereGreaterThan("endSlot", startDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    // a generic error occurred
+                    Log.d("generic error", "Error: a generic error occurred getting an equipmentReservationSlots snapshot with sportCenterId $sportCenterId and sportId $sportId in FireRepository.getAvailableEquipmentsBySportCenterIdAndSportId(). Message: ${error.message}")
+                    fireCallback(DefaultFireError.withMessage(
+                        "Error: a generic error occurred retrieving equipments reservations"
+                    ))
+                    return@addSnapshotListener
+                }
+
+                if (value == null) {
+                    Log.d("not found error", "Error: equipmentReservationSlots with sportCenterId $sportCenterId and sportId $sportId in FireRepository.getAvailableEquipmentsBySportCenterIdAndSportId()")
+                    fireCallback(DefaultFireError.withMessage(
+                        "Error: equipment reservations list is null"
+                    ))
+                    return@addSnapshotListener
+                }
+
+                // deserialize equipment reservation slots
+                val allEquipmentReservationsList = mutableListOf<FireEquipmentReservationSlot>()
+                for (rawEquipmentReservation in value) {
+                    val equipmentReservationSlotDocument = FireEquipmentReservationSlot.deserialize(rawEquipmentReservation.id, rawEquipmentReservation.data)
+                    if (equipmentReservationSlotDocument != null) {
+                        allEquipmentReservationsList.add(equipmentReservationSlotDocument)
+                    }
+                }
+
+                // * Now, we have all the equipments for this playground, and all the reservations for this playground and time *
+
+                // 4 - for each reservation slot, decrement the quantity available in the playground
+                for(equipmentReservationSlot in allEquipmentReservationsList) {
+
+                    //retrieve the equipment
+                    val equipment = equipmentsMap[equipmentReservationSlot.equipment.id]
+
+                    if (equipment != null) {
+
+                        //decrement the quantity
+                        equipment.availability = equipment.availability - equipmentReservationSlot.selectedQuantity.toInt()
+
+                        //if the new quantity is > 0 add the updated value, else remove the equipment from the map
+                        if(equipment.availability > 0){
+                            equipmentsMap.replace(equipment.id, equipment)
+                        } else {
+                            equipmentsMap.remove(equipment.id)
+                        }
+                    }
+
+                }
+
+
+                // return successfully the equipments map
+                fireCallback(Success(equipmentsMap))
+            }
+
+        return FireListener(listener)
     }
 
-    // TODO
     override fun getAllEquipmentsBySportCenterIdAndSportId(
         sportCenterId: String,
         sportId: String,
@@ -1253,7 +1362,6 @@ class FireRepository : IRepository {
         TODO("Not yet implemented")
     }
 
-    // TODO
     override fun getAllPlaygroundsInfo(
         fireCallback: (FireResult<List<PlaygroundInfo>, DefaultFireError>) -> Unit
     ) {
