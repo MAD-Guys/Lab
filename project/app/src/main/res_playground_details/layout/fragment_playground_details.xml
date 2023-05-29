@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     tools:context=".playground_details.PlaygroundDetailsFragment"
     android:background="@color/background_orange"
    >
@@ -166,6 +166,36 @@
                             android:fontFamily="@font/poppins_medium"
                             android:includeFontPadding="false"
                             android:text="Via Roma 1, Turin"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/default_text_size"
+                            tools:ignore="HardcodedText" />
+                    </LinearLayout>
+
+                    <!-- Address -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4sp"
+                        android:orientation="horizontal">
+
+                        <!-- icon -->
+                        <ImageView
+                            android:id="@+id/phone_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:contentDescription="@string/image_location_content_description"
+                            app:srcCompat="@drawable/baseline_phone_24" />
+
+                        <TextView
+                            android:id="@+id/playgroundPhoneNumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="4sp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
+                            android:text="123456789"
                             android:textColor="@color/black"
                             android:textSize="@dimen/default_text_size"
                             tools:ignore="HardcodedText" />

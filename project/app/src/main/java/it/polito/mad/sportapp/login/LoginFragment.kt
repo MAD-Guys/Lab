@@ -13,18 +13,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.SportAppViewModel
 import it.polito.mad.sportapp.application_utilities.checkIfUserIsLoggedIn
-import it.polito.mad.sportapp.model.FireRepository
 import it.polito.mad.sportapp.notifications.manageNotification
 
 @AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.fragment_login) {
-
-    internal val iRepository = FireRepository()
 
     // view model
     internal lateinit var vm: SportAppViewModel
@@ -57,9 +53,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         // check if user is already logged in
         if (checkIfUserIsLoggedIn()) {
-            // check if user already exists in database and insert into firestore db if user does not exist
-            vm.checkIfUserAlreadyExists(FirebaseAuth.getInstance().currentUser!!.uid)
-
             manageNotification(requireActivity().intent, navController)
         }
 

@@ -24,7 +24,6 @@ import it.polito.mad.sportapp.application_utilities.toastyInit
 import it.polito.mad.sportapp.notifications.manageNotification
 import it.polito.mad.sportapp.playgrounds.PlaygroundsViewModel
 import it.polito.mad.sportapp.profile.ProfileViewModel
-import it.polito.mad.sportapp.show_reservations.ShowReservationsViewModel
 
 @AndroidEntryPoint
 class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener {
@@ -43,7 +42,6 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
     // activity view models
     private lateinit var activityVm: SportAppViewModel
     private lateinit var profileVm: ProfileViewModel
-    private lateinit var showReservationsVm: ShowReservationsViewModel
     private lateinit var playgroundsVm: PlaygroundsViewModel
 
     private lateinit var bottomNavigationView: NavigationBarView
@@ -64,7 +62,6 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         // initialize activity view models
         activityVm = ViewModelProvider(this)[SportAppViewModel::class.java]
         profileVm = ViewModelProvider(this)[ProfileViewModel::class.java]
-        showReservationsVm = ViewModelProvider(this)[ShowReservationsViewModel::class.java]
         playgroundsVm = ViewModelProvider(this)[PlaygroundsViewModel::class.java]
 
         /* bottom bar */

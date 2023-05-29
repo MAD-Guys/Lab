@@ -1,6 +1,5 @@
 package it.polito.mad.sportapp
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -52,7 +51,7 @@ class SportAppViewModel @Inject constructor(
                         reservationId,
                         sender ?: "",
                         "fpnyG2AyUehysyf72bjov8kSc5i1",
-                        "https://firebasestorage.googleapis.com/v0/b/sportapp-project.appspot.com/o/profile_pictures%2FfpnyG2AyUehysyf72bjov8kSc5i1%2Fprofile_picture.jpeg?alt=media&token=6b42485c-b04e-4ae7-9c5f-5ffea7bc2c0c",
+                        "https://firebasestorage.googleapis.com/v0/b/sportapp-project.appspot.com/o/profile_pictures%2FfpnyG2AyUehysyf72bjov8kSc5i1%2Fprofile_picture.jpeg?alt=media&token=f7dbe2af-70fd-4e79-aea1-c29eacc2b29b",
                         RoomNotificationStatus.PENDING,
                         "@francescorosati has invited you to play a tennis match!",
                         LocalDateTime.now().toString()
@@ -205,9 +204,9 @@ class SportAppViewModel @Inject constructor(
         )
     }
 
-
     /* user */
-    fun checkIfUserAlreadyExists(uid: String) {
+    fun checkIfUserAlreadyExists(uid: String, token: String?) {
+
         iRepository.userAlreadyExists(uid) {
             when (it) {
                 is FireResult.Error -> {
@@ -216,7 +215,7 @@ class SportAppViewModel @Inject constructor(
                 }
 
                 is FireResult.Success -> {
-                    if(!it.value){
+                    if (!it.value) {
 
                         val user = FirebaseAuth.getInstance().currentUser
 
@@ -225,7 +224,6 @@ class SportAppViewModel @Inject constructor(
                         val displayName = user.displayName!!.split(" ")
                         val userFirstName = displayName[0]
                         val userLastName = displayName[displayName.size - 1]
-                        val userImageUrl = user.photoUrl.toString()
                         val userUsername = user.email!!
 
                         // create new user
@@ -237,14 +235,14 @@ class SportAppViewModel @Inject constructor(
                             Gender.Other.name,
                             25,
                             "Turin",
-                            userImageUrl,
+                            null,
                             "Hello, I'm using EzSport!",
-                            null
+                            token
                         )
 
                         // insert user on db
                         iRepository.insertNewUser(newUser) { insertResult ->
-                            when(insertResult) {
+                            when (insertResult) {
                                 is FireResult.Error -> {
                                     Log.e("insertNewUser", "Error: ${insertResult.errorMessage()}")
                                     return@insertNewUser
@@ -252,6 +250,30 @@ class SportAppViewModel @Inject constructor(
 
                                 is FireResult.Success -> {
                                     Log.d("insertNewUser", "Success: ${insertResult.value}")
+                                }
+                            }
+                        }
+                    } else {
+                        Log.d("checkIfUserAlreadyExists", "User already exists")
+
+                        // update user token
+                        token?.let {
+                            iRepository.updateUserToken(uid, token) { updateResult ->
+                                when (updateResult) {
+                                    is FireResult.Error -> {
+                                        Log.e(
+                                            "updateUserToken",
+                                            "Error updating user token: ${updateResult.errorMessage()}"
+                                        )
+                                        return@updateUserToken
+                                    }
+
+                                    is FireResult.Success -> {
+                                        Log.i(
+                                            "updateUserToken",
+                                            "User token with $uid, updated successfully with token: $token"
+                                        )
+                                    }
                                 }
                             }
                         }
