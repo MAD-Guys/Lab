@@ -26,7 +26,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.application_utilities.showToasty
-import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.notifications.manageNotification
 
 // manage menu item selection
@@ -113,63 +112,7 @@ internal fun LoginFragment.onSignInResult(result: FirebaseAuthUIAuthenticationRe
         user?.let {
             // update UI
             updateUI(it)
-
-            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                    return@OnCompleteListener
-                }
-
-                // Get new FCM registration token
-                val token = task.result
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    if (ContextCompat.checkSelfPermission(
-                            requireContext(),
-                            Manifest.permission.POST_NOTIFICATIONS
-                        ) ==
-                        PackageManager.PERMISSION_GRANTED
-                    ) {
-                        iRepository.updateUserToken(user.uid, token) { updateResult ->
-                            when (updateResult) {
-                                is FireResult.Error -> {
-                                    Log.e(
-                                        tag,
-                                        "Error updating user token: ${updateResult.errorMessage()}"
-                                    )
-                                    return@updateUserToken
-                                }
-
-                                is FireResult.Success -> {
-                                    Log.i(
-                                        tag,
-                                        "User token with $user, updated successfully with token: $token"
-                                    )
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    iRepository.updateUserToken(user.uid, token) { updateResult ->
-                        when (updateResult) {
-                            is FireResult.Error -> {
-                                Log.e(
-                                    tag,
-                                    "Error updating user token: ${updateResult.errorMessage()}"
-                                )
-                                return@updateUserToken
-                            }
-
-                            is FireResult.Success -> {
-                                Log.i(
-                                    tag,
-                                    "User token with $user, updated successfully with token: $token"
-                                )
-                            }
-                        }
-                    }
-                }
-            })
+            onUserLoggedIn(user.uid)
         }
 
         // print log
@@ -186,6 +129,7 @@ internal fun LoginFragment.onSignInResult(result: FirebaseAuthUIAuthenticationRe
 @SuppressLint("Deprecation")
 internal fun LoginFragment.updateUI(currentUser: FirebaseUser?) {
     if (currentUser != null) {
+
         // user is logged in
         // show success message
         showToasty("success", requireContext(), "Login successfully done!")
@@ -208,4 +152,33 @@ internal fun LoginFragment.updateUI(currentUser: FirebaseUser?) {
         // show error message
         showToasty("error", requireContext(), "Something went wrong,\nplease try again!")
     }
+}
+
+private fun LoginFragment.onUserLoggedIn(uid: String) {
+
+    FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+        if (!task.isSuccessful) {
+            Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+            return@OnCompleteListener
+        }
+
+        // Get new FCM registration token
+        val token = task.result
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) ==
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                // check if user already exists in database and insert into firestore db if not
+                vm.checkIfUserAlreadyExists(uid, token)
+            } else {
+                vm.checkIfUserAlreadyExists(uid, null)
+            }
+        } else {
+            vm.checkIfUserAlreadyExists(uid, token)
+        }
+    })
 }

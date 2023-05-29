@@ -62,6 +62,15 @@ interface IRepository {
     )
 
     /**
+     * Update the profile url of the user
+     */
+    fun updateUserImageUrl(
+        userId: String,
+        newImageUrl: String,
+        fireCallback: (FireResult<Unit,DefaultFireError>) -> Unit
+    )
+
+    /**
      * Retrieve all users from db which the specified user can still send the notification to,
      * for the specified reservation
      * **Note**: the result is **dynamic** (fireCallback is executed each time the list changes)

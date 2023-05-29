@@ -285,6 +285,28 @@ class FireRepository : IRepository {
     }
 
     /**
+     * Update the profile url of the user
+     */
+    override fun updateUserImageUrl(
+        userId: String,
+        newImageUrl: String,
+        fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
+    ) {
+        db.collection("users")
+            .document(userId)
+            .update("imageURL", newImageUrl)
+            .addOnSuccessListener {
+                fireCallback(Success(Unit))
+            }
+            .addOnFailureListener {
+                Log.e("default error", "Error: a generic error occurred updating user $userId image url in FireRepository.updateUserImageUrl(). Message: ${it.message}")
+                fireCallback(DefaultFireError.withMessage(
+                    "Error: a generic error occurred updating user $userId image url"
+                ))
+            }
+    }
+
+    /**
      * Retrieve all users from Firestore cloud db which the specified user
      * can still send the notification to, for the specified reservation
      * **Note**: the result is **dynamic** (fireCallback is executed each time the list changes)
@@ -1689,7 +1711,7 @@ class FireRepository : IRepository {
                                 return@runTransaction
                             }
                             // create participant map
-                            val participant : Map<String,String> = mapOf("id" to userId, "username" to rawData?.get("username").toString())
+                            val participant : Map<String,String> = mapOf("id" to userId, "username" to rawData["username"].toString())
 
                             // update notification status
                             transaction.update(
@@ -1772,7 +1794,7 @@ class FireRepository : IRepository {
                                 return@runTransaction
                             }
                             // create participant map
-                            val participant : Map<String,String> = mapOf("id" to userId, "username" to rawData?.get("username").toString())
+                            val participant : Map<String,String> = mapOf("id" to userId, "username" to rawData.get("username").toString())
 
                             // update notification status
                             transaction.update(
