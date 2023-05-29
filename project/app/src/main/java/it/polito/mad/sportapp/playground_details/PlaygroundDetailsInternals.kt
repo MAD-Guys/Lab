@@ -29,6 +29,7 @@ internal fun PlaygroundDetailsFragment.retrieveViews() {
     sportEmoji = requireView().findViewById(R.id.sportEmoji)
     playgroundSport = requireView().findViewById(R.id.playgroundSport)
     playgroundAddress = requireView().findViewById(R.id.playgroundAddress)
+    playgroundPhoneNumber = requireView().findViewById(R.id.playgroundPhoneNumber)
     playgroundOpeningTime = requireView().findViewById(R.id.playgroundOpeningTime)
     playgroundClosingTime = requireView().findViewById(R.id.playgroundClosingTime)
     playgroundPrice = requireView().findViewById(R.id.playgroundPrice)
@@ -52,6 +53,7 @@ internal fun PlaygroundDetailsFragment.initViews() {
     sportEmoji.text = viewModel.playground.value?.sportEmoji
     playgroundSport.text = viewModel.playground.value?.sportName
     playgroundAddress.text = viewModel.playground.value?.sportCenterAddress
+    playgroundPhoneNumber.text = viewModel.playground.value?.sportCenterPhoneNumber
     playgroundOpeningTime.text = viewModel.playground.value?.openingHours!!.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
     playgroundClosingTime.text = viewModel.playground.value?.closingHours!!.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
     playgroundPrice.text = String.format("%.2f", viewModel.playground.value?.pricePerHour)

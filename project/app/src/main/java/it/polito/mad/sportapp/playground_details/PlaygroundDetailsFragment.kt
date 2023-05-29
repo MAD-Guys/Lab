@@ -41,6 +41,7 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
     internal lateinit var sportEmoji: TextView
     internal lateinit var playgroundSport: TextView
     internal lateinit var playgroundAddress: TextView
+    internal lateinit var playgroundPhoneNumber: TextView
     internal lateinit var playgroundOpeningTime: TextView
     internal lateinit var playgroundClosingTime: TextView
     internal lateinit var playgroundPrice: TextView

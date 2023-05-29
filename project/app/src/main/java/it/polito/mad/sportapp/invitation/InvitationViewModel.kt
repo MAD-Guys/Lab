@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.Notification
 import it.polito.mad.sportapp.entities.NotificationStatus
@@ -26,13 +27,13 @@ class InvitationViewModel @Inject constructor(
     /**
      * TODO:
      * (1) insert iRepository in the constructor: now it raises Dagger/Hilt exceptions...
-     * (2) retrieve the logged user id, to pass it to getAllUsersToSendInvitationTo(...)
      * **/
 
 
     private var iRepository = FireRepository()
 
-    private var _loggedUser: User? = null
+    val userId = FirebaseAuth.getInstance().currentUser?.uid
+    private var _loggedUser : User? = null
 
     private val _allUsers = MutableLiveData<MutableList<User>>()
     private val _beginnerUsers = mutableListOf<User>()
@@ -55,11 +56,13 @@ class InvitationViewModel @Inject constructor(
     fun getUsersFromDb(reservationId: String, sportId: String, sportName: String): FireListener {
 
         // set current user
-        iRepository.getStaticUser("2"){
-            when (it) {
-                is FireResult.Error -> Log.d(it.type.message(), it.errorMessage())
-                is FireResult.Success -> {
-                    _loggedUser = it.value
+        if (userId != null) {
+            iRepository.getStaticUser(userId){
+                when (it) {
+                    is FireResult.Error -> Log.d(it.type.message(), it.errorMessage())
+                    is FireResult.Success -> {
+                        _loggedUser = it.value
+                    }
                 }
             }
         }
@@ -69,7 +72,7 @@ class InvitationViewModel @Inject constructor(
         this.sportName = sportName
 
         return iRepository.getAllUsersToSendInvitationTo(
-            "2", //TODO
+            userId!!,
             reservationId,
         ) { fireResult ->
             when (fireResult) {
@@ -87,7 +90,7 @@ class InvitationViewModel @Inject constructor(
         }
     }
 
-    private fun initUserLists(/*sportId: Int*/sportId: String) {
+    private fun initUserLists(sportId: String) {
         _beginnerUsers.clear()
         _intermediateUsers.clear()
         _expertUsers.clear()
@@ -138,15 +141,15 @@ class InvitationViewModel @Inject constructor(
         searchUsersByUsername(tempPartialUsername)
     }
 
-    fun sendInvitation(userId: String, reservationId: String) {
+    fun sendInvitation(receiverId: String, reservationId: String) {
 
         iRepository.saveAndSendInvitation(
             Notification(
                 null,
                 "INVITATION",
                 reservationId,
-                _loggedUser!!.id!!,
-                userId,
+                userId!!,
+                receiverId,
                 null,
                 NotificationStatus.PENDING,
                 "@${_loggedUser?.username} has invited you to play a $sportName match!",

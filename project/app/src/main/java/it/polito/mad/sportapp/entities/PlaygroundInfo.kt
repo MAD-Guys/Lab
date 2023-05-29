@@ -11,6 +11,7 @@ data class PlaygroundInfo (
     val sportName: String,
     val sportEmoji: String,
     val sportCenterAddress: String,
+    val sportCenterPhoneNumber: String,
     val openingTime: String,
     val closingTime: String,
     val pricePerHour: Float

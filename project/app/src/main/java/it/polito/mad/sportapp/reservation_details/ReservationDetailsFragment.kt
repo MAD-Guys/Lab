@@ -156,6 +156,11 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                     leaveReviewButton.visibility = Button.VISIBLE
                 }
 
+                // show Invite button only to the owner
+                if(reservation.userId != viewModel.userId){
+                    inviteButton.visibility = Button.GONE
+                }
+
                 progressBar.visibility = View.GONE
                 card.visibility = View.VISIBLE
             }
