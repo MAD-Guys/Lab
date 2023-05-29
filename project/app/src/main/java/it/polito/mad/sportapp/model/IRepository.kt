@@ -224,7 +224,6 @@ interface IRepository {
 
     // * Notification methods *
 
-    // TODO!!
     /**
      * Return all the notifications related to future reservations for a given user
      * **Note**: the result is **dynamic** (the fireCallback is called every time
@@ -235,7 +234,6 @@ interface IRepository {
         fireCallback: (FireResult<MutableList<Notification>, DefaultGetFireError>) -> Unit
     ): FireListener
 
-    // TODO!!
     /**
      * Update invitation status and corresponding reservation participants, based on the old and
      * the new invitation status:
