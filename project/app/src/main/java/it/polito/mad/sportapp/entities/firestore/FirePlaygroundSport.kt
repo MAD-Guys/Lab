@@ -55,6 +55,7 @@ data class FirePlaygroundSport(
             sport.name,
             sport.emoji,
             sportCenter.address,
+            sportCenter.phoneNumber,
             sportCenter.openingHours,
             sportCenter.closingHours,
             pricePerHour.toFloat()
@@ -92,7 +93,7 @@ data class FirePlaygroundSport(
             }
 
             val playgroundName = data["playgroundName"] as? String
-            var pricePerHour = data["pricePerHour"] as? Double ?: (data["pricePerHour"] as? Long)?.toDouble()
+            val pricePerHour = (data["pricePerHour"] as? Double) ?: (data["pricePerHour"] as? Long)?.toDouble()
             @Suppress("UNCHECKED_CAST")
             val rawSport = data["sport"] as? Map<String, Any>
             @Suppress("UNCHECKED_CAST")

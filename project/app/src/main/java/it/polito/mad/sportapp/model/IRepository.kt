@@ -16,6 +16,7 @@ import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultGetFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultInsertFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.NewReservationError
+import it.polito.mad.sportapp.entities.firestore.utilities.SaveAndSendInvitationFireError
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
@@ -24,6 +25,7 @@ interface IRepository {
 
     // * User methods *
 
+    // TODO
     /**
      * This method gets the user given its uid
      * **Note**: the result is **dynamic**: the fireCallback gets called each time the user changes.
@@ -47,6 +49,7 @@ interface IRepository {
      */
     fun insertNewUser(user: User, fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit)
 
+    // TODO
     /**
      * Update an existing user
      */
@@ -58,6 +61,15 @@ interface IRepository {
     fun updateUserToken(
         userId: String,
         newToken: String,
+        fireCallback: (FireResult<Unit,DefaultFireError>) -> Unit
+    )
+
+    /**
+     * Update the profile url of the user
+     */
+    fun updateUserImageUrl(
+        userId: String,
+        newImageUrl: String,
         fireCallback: (FireResult<Unit,DefaultFireError>) -> Unit
     )
 
@@ -156,6 +168,7 @@ interface IRepository {
         fireCallback: (FireResult<Map<LocalDate, List<DetailedReservation>>, DefaultGetFireError>) -> Unit
     ) : FireListener
 
+    // TODO
     fun deleteReservation(
         reservation: DetailedReservation,
         fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
@@ -169,21 +182,30 @@ interface IRepository {
         reservationId: String,
         startDateTime: LocalDateTime,
         endDateTime: LocalDateTime,
-        fireCallback: (FireResult<MutableMap<String, Equipment>, DefaultFireError>) -> Unit
+        fireCallback: (FireResult<MutableMap<String, Equipment>, DefaultGetFireError>) -> Unit
     ) : FireListener
 
+    /**
+     * Retrieve from the db all the equipments related to a given sport,
+     * available in the specified sport center
+     */
     fun getAllEquipmentsBySportCenterIdAndSportId(
         sportCenterId: String,
         sportId: String,
-        fireCallback: (FireResult<MutableList<Equipment>, DefaultFireError>) -> Unit
+        fireCallback: (FireResult<MutableList<Equipment>, DefaultGetFireError>) -> Unit
     ) : FireListener
 
     // * Playground methods *
+
+    /**
+     * Retrieve the specified Playground info entity from the db
+     */
     fun getPlaygroundInfoById(
         playgroundId: String,
         fireCallback: (FireResult<PlaygroundInfo, DefaultGetFireError>) -> Unit
     ) : FireListener
 
+    // TODO
     fun getAvailablePlaygroundsPerSlot(
         month: YearMonth, sport: Sport?, fireCallback: (
             FireResult<
@@ -192,15 +214,28 @@ interface IRepository {
         ) -> Unit
     ) : FireListener
 
-    fun getAllPlaygroundsInfo(fireCallback: (FireResult<List<PlaygroundInfo>, DefaultFireError>) -> Unit)
+    /**
+     * Retrieve all the Playground Info entities from the db
+     * Note: the result is **static** (the fireCallback is executed just once)
+     */
+    fun getAllPlaygroundsInfo(
+        fireCallback: (FireResult<List<PlaygroundInfo>, DefaultGetFireError>) -> Unit
+    )
 
     // * Notification methods *
 
+    // TODO!!
+    /**
+     * Return all the notifications related to future reservations for a given user
+     * **Note**: the result is **dynamic** (the fireCallback is called every time
+     * a new notification is received)
+     */
     fun getNotificationsByUserId(
         userId: String,
         fireCallback: (FireResult<MutableList<Notification>, DefaultGetFireError>) -> Unit
     ): FireListener
 
+    // TODO!!
     /**
      * Update invitation status and corresponding reservation participants, based on the old and
      * the new invitation status:
@@ -226,6 +261,6 @@ interface IRepository {
      */
     fun saveAndSendInvitation(
         notification: Notification,
-        fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit
+        fireCallback: (FireResult<Unit, SaveAndSendInvitationFireError>) -> Unit
     )
 }

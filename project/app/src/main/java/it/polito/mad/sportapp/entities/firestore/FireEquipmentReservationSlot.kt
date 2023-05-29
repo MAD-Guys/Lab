@@ -11,6 +11,7 @@ data class FireEquipmentReservationSlot(
     val id: String?,
     val startSlot: String,
     val endSlot: String,
+    val date: String,
     val equipment: FireEquipment,
     val selectedQuantity: Long,
     val playgroundReservationId: String,
@@ -26,6 +27,7 @@ data class FireEquipmentReservationSlot(
             // no id included in serialization
             "startSlot" to startSlot,
             "endSlot" to endSlot,
+            "date" to date,
             "equipment" to equipment.serialize(withId=true),
             "selectedQuantity" to selectedQuantity,
             "playgroundReservationId" to playgroundReservationId,
@@ -60,13 +62,14 @@ data class FireEquipmentReservationSlot(
 
             val startSlot = fireMap["startSlot"] as? String
             val endSlot = fireMap["endSlot"] as? String
+            val date = fireMap["date"] as? String
             @Suppress("UNCHECKED_CAST")
             val fireMapEquipment  = fireMap["equipment"] as? Map<String, Any>
             val selectedQuantity = fireMap["selectedQuantity"] as? Long
             val playgroundReservationId  = fireMap["playgroundReservationId"] as? String
             val timestamp = fireMap["timestamp"] as? String
 
-            if(startSlot == null || endSlot == null || fireMapEquipment == null ||
+            if(startSlot == null || endSlot == null || date == null || fireMapEquipment == null ||
                 selectedQuantity == null || playgroundReservationId == null || timestamp == null){
                 Log.d("deserialization error", "Error deserializing equipmentReservationSlot plain properties")
                 return null
@@ -84,6 +87,7 @@ data class FireEquipmentReservationSlot(
                 id,
                 startSlot,
                 endSlot,
+                date,
                 equipment,
                 selectedQuantity,
                 playgroundReservationId,
@@ -114,6 +118,7 @@ data class FireEquipmentReservationSlot(
                             null,
                             newReservation.startTime.plusMinutes(i).format(DateTimeFormatter.ISO_DATE_TIME),
                             newReservation.startTime.plusMinutes(i + 30).format(DateTimeFormatter.ISO_DATE_TIME),
+                            newReservation.startTime.toLocalDate().format(DateTimeFormatter.ISO_DATE),
                             reservationEquipmentsById[equipment.equipmentId]!!.clone(),
                             equipment.selectedQuantity.toLong(),
                             newReservationId,

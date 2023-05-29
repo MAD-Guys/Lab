@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
@@ -32,6 +34,8 @@ class ReservationDetailsViewModel @Inject constructor(
 
     private var _reservation = MutableLiveData<DetailedReservation>()
     val reservation: LiveData<DetailedReservation> = _reservation
+
+    val userId = FirebaseAuth.getInstance().currentUser?.uid
 
     fun getReservationFromDb(reservationId: String) : FireListener {
         return iRepository.getDetailedReservationById(reservationId){ fireResult ->

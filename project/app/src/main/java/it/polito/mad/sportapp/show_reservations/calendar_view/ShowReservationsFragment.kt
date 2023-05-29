@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -51,13 +51,10 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
     internal lateinit var nextMonthButton: ImageView
 
     // show reservations view model
-    internal lateinit var vm: ShowReservationsViewModel
+    internal val vm by activityViewModels<ShowReservationsViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // retrieve view model from activity
-        vm = ViewModelProvider(requireActivity())[ShowReservationsViewModel::class.java]
 
         // get activity action bar
         actionBar = (requireActivity() as AppCompatActivity).supportActionBar

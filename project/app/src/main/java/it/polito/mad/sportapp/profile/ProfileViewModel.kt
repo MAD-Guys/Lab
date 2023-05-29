@@ -10,10 +10,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.entities.room.RoomAchievement
 import it.polito.mad.sportapp.entities.room.RoomSport
 import it.polito.mad.sportapp.entities.room.RoomSportLevel
 import it.polito.mad.sportapp.entities.room.RoomUser
+import it.polito.mad.sportapp.model.FireRepository
 import it.polito.mad.sportapp.model.LocalRepository
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
@@ -24,6 +26,8 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val repository: LocalRepository
 ) : ViewModel() {
+
+    private val iRepository = FireRepository()
 
     /* firebase storage */
     private val storageRef = Firebase.storage("gs://sportapp-project.appspot.com/").reference
@@ -40,7 +44,8 @@ class ProfileViewModel @Inject constructor(
 
     /* user information */
 
-    private val userId = FirebaseAuth.getInstance().currentUser?.uid
+    private val userId =
+        MutableLiveData<String>().also { it.value = FirebaseAuth.getInstance().currentUser?.uid }
 
     private val _usernameAlreadyExists = MutableLiveData<Boolean>().also { it.value = false }
     val usernameAlreadyExists: LiveData<Boolean> = _usernameAlreadyExists
@@ -95,42 +100,89 @@ class ProfileViewModel @Inject constructor(
         pictureLabel: String
     ) {
 
-        pictureBitmap?.let {
-            val pictureRef = storageRef.child("profile_pictures/$userId/$pictureLabel")
+        userId.value?.let { uid ->
+            pictureBitmap?.let {
+                val pictureRef = storageRef.child("profile_pictures/$uid/$pictureLabel")
 
-            // convert bitmap to byte array
-            val bytes = ByteArrayOutputStream()
-            pictureBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+                // convert bitmap to byte array
+                val bytes = ByteArrayOutputStream()
+                pictureBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
 
-            // upload byte array to firebase storage
-            val uploadTask = pictureRef.putStream(bytes.toByteArray().inputStream())
+                // upload byte array to firebase storage
+                val uploadTask = pictureRef.putStream(bytes.toByteArray().inputStream())
 
-            uploadTask.addOnFailureListener {
-                // upload of user profile picture failed
-                Log.e("ProfileViewModel", "Upload of user profile picture failed!")
-            }.addOnSuccessListener {
-                // upload of user profile picture succeeded
-                Log.d("ProfileViewModel", "Upload of user profile picture succeeded!")
+                uploadTask.addOnFailureListener {
+                    // upload of user profile picture failed
+                    Log.e("ProfileViewModel", "Upload of user profile picture failed!")
+                }.addOnSuccessListener {
+                    // upload of user profile picture succeeded
+                    Log.d("ProfileViewModel", "Upload of user profile picture succeeded!")
+
+                    // set new profile picture bitmap
+                    when (pictureLabel) {
+                        "profile_picture.jpeg" -> _userProfilePicture.postValue(pictureBitmap)
+                        "background_profile_picture.jpeg" -> _userBackgroundProfilePicture.postValue(
+                            pictureBitmap
+                        )
+                    }
+
+                    // get picture url
+                    pictureRef.downloadUrl.addOnSuccessListener { uri ->
+                        // load of user profile picture succeeded
+                        Log.i(
+                            "ProfileViewModel",
+                            "Download of user profile picture succeeded! URL = $uri"
+                        )
+
+                        // set new profile picture bitmap
+                        when (pictureLabel) {
+                            "profile_picture.jpeg" -> updateUserProfileUrl(uri.toString())
+                        }
+                    }
+                }
             }
         }
     }
 
     // load profile picture from firebase storage
     private fun loadProfilePictureFromFirebaseStorage(pictureLabel: String) {
-        val pictureRef = storageRef.child("profile_pictures/$userId/$pictureLabel")
-        val maxDownloadSize: Long = 1024 * 1024 * 10 // 10MB
 
-        pictureRef.getBytes(maxDownloadSize).addOnSuccessListener {
-            // convert byte array to bitmap
-            val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
+        userId.value?.let { uid ->
+            val pictureRef = storageRef.child("profile_pictures/$uid/$pictureLabel")
+            val maxDownloadSize: Long = 1024 * 1024 * 10 // 10MB
 
-            when (pictureLabel) {
-                "profile_picture.jpeg" -> _userProfilePicture.postValue(bitmap)
-                "background_profile_picture.jpeg" -> _userBackgroundProfilePicture.postValue(bitmap)
+            pictureRef.getBytes(maxDownloadSize).addOnSuccessListener {
+                // convert byte array to bitmap
+                val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
+
+                when (pictureLabel) {
+                    "profile_picture.jpeg" -> _userProfilePicture.postValue(bitmap)
+                    "background_profile_picture.jpeg" -> _userBackgroundProfilePicture.postValue(
+                        bitmap
+                    )
+                }
+            }.addOnFailureListener {
+                // load of user profile picture failed
+                Log.e("ProfileViewModel", "Load of user profile picture failed!")
             }
-        }.addOnFailureListener {
-            // load of user profile picture failed
-            Log.e("ProfileViewModel", "Load of user profile picture failed!")
+        }
+    }
+
+    private fun updateUserProfileUrl(pictureUrl: String) {
+
+        userId.value?.let { uid ->
+            iRepository.updateUserImageUrl(uid, pictureUrl) {
+                when (it) {
+                    is FireResult.Error -> {
+                        Log.e("ProfileViewModel", "Error updating user profile picture url!")
+                        return@updateUserImageUrl
+                    }
+
+                    is FireResult.Success -> {
+                        Log.d("ProfileViewModel", "User profile picture url updated successfully!")
+                    }
+                }
+            }
         }
     }
 

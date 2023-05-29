@@ -11,8 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,14 +35,11 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
     private lateinit var navController: NavController
 
     // events list view model
-    private lateinit var vm: ShowReservationsViewModel
+    private val vm by activityViewModels<ShowReservationsViewModel>()
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // retrieve view model from activity
-        vm = ViewModelProvider(requireActivity())[ShowReservationsViewModel::class.java]
 
         // get activity action bar
         actionBar = (requireActivity() as AppCompatActivity).supportActionBar
