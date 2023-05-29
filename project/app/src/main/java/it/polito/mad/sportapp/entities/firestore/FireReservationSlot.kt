@@ -9,6 +9,7 @@ data class FireReservationSlot(
     val id: String?,
     val startSlot: String,
     val endSlot: String,
+    val date: String,
     val playgroundId: String,
     var openPlaygroundsIds: List<String>,
     val reservationId: String
@@ -22,6 +23,7 @@ data class FireReservationSlot(
             // no id included in serialization
             "startSlot" to startSlot,
             "endSlot" to endSlot,
+            "date" to date,
             "playgroundId" to playgroundId,
             "openPlaygroundsIds" to openPlaygroundsIds,
             "reservationId" to reservationId
@@ -52,8 +54,9 @@ data class FireReservationSlot(
                         null,
                         newReservation.startTime.plusMinutes(i).format(DateTimeFormatter.ISO_DATE_TIME),
                         newReservation.startTime.plusMinutes(i + 30).format(DateTimeFormatter.ISO_DATE_TIME),
+                        newReservation.startTime.toLocalDate().format(DateTimeFormatter.ISO_DATE),
                         newReservation.playgroundId,
-                        openPlaygroundsIds=mutableListOf(), // TODO: * temporary empty list * -> fill it after in the repository
+                        mutableListOf(), // TODO: * temporary empty list * -> fill it after in the repository
                         reservationId
                     )
                 )
@@ -76,11 +79,12 @@ data class FireReservationSlot(
 
             val startSlot = data["startSlot"] as? String
             val endSlot = data["endSlot"] as? String
+            val date = data["date"] as? String
             val playgroundId = data["playgroundId"] as? String
             val rawOpenPlaygroundsIds = data["openPlaygroundsIds"] as? List<*>
             val reservationId = data["reservationId"] as? String
 
-            if (startSlot == null || endSlot == null || playgroundId == null ||
+            if (startSlot == null || endSlot == null || date == null || playgroundId == null ||
                 rawOpenPlaygroundsIds == null || reservationId == null) {
                 Log.d(
                     "deserialization error",
@@ -107,6 +111,7 @@ data class FireReservationSlot(
                 id,
                 startSlot,
                 endSlot,
+                date,
                 playgroundId,
                 openPlaygroundIds,
                 reservationId

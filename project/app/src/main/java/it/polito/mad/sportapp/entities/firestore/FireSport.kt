@@ -92,5 +92,4 @@ data class FireSport(
             )
         }
     }
-
 }

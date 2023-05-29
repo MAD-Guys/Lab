@@ -106,6 +106,8 @@ enum class DefaultInsertFireError(private var message: String) : FireErrorType {
     }
 }
 
+/* custom errors */
+
 enum class NewReservationError(val message: String) : FireErrorType {
     SLOT_CONFLICT(
         "Ouch! the selected slots have just been booked by someone else \uD83D\uDE41. Please select new ones for your reservation!"
@@ -147,3 +149,23 @@ enum class NewReservationError(val message: String) : FireErrorType {
     }
 }
 
+enum class SaveAndSendInvitationFireError(message: String) : FireErrorType {
+    NO_SAVE_AND_NO_PUSH_ERROR("Error: an error occurred send the invitation"),
+    NO_PUSH_ERROR("Error: an error occurred send the invitation");
+
+    var customMessage: String = message
+
+    override fun message(): String {
+        return customMessage
+    }
+
+    companion object {
+        fun <T> beforeSaveAndSendPush(customMessage: String): Error<T, SaveAndSendInvitationFireError> {
+            return Error(NO_SAVE_AND_NO_PUSH_ERROR.also { it.customMessage = customMessage })
+        }
+
+        fun <T> beforeSendPush(customMessage: String): Error<T, SaveAndSendInvitationFireError> {
+            return Error(NO_PUSH_ERROR.also { it.customMessage = customMessage })
+        }
+    }
+}

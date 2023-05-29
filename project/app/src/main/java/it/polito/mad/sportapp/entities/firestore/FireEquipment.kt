@@ -11,6 +11,20 @@ data class FireEquipment(
     val unitPrice: Double,
     val maxQuantity: Long
 ) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as FireEquipment
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
 
     /**
      * Serialize the FireEquipment object into a Map<String, Any> object
@@ -101,7 +115,7 @@ data class FireEquipment(
             val name = fireMap["name"] as? String
             val sportId = fireMap["sportId"] as? String
             val sportCenterId = fireMap["sportCenterId"] as? String
-            var unitPrice = fireMap["unitPrice"] as? Double ?: (fireMap["unitPrice"] as? Long)?.toDouble()
+            val unitPrice = (fireMap["unitPrice"] as? Double) ?: (fireMap["unitPrice"] as? Long)?.toDouble()
             val maxQuantity = fireMap["maxQuantity"] as? Long
 
             if (name == null || sportId == null || sportCenterId == null || unitPrice == null || maxQuantity == null) {
@@ -119,9 +133,5 @@ data class FireEquipment(
                 maxQuantity
             )
         }
-
-
-
     }
-
 }

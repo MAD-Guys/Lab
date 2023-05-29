@@ -122,7 +122,7 @@ data class FirePlaygroundReservation(
             val rawParticipants = data["participants"] as? List<*>
             val startDateTime = data["startDateTime"] as? String
             val endDateTime = data["endDateTime"] as? String
-            var totalPrice = data["totalPrice"] as? Double ?: (data["totalPrice"] as? Long)?.toDouble()
+            val totalPrice = (data["totalPrice"] as? Double) ?: (data["totalPrice"] as? Long)?.toDouble()
             val additionalRequests = data["additionalRequests"] as? String?
             val timestamp = data["timestamp"] as? String
 
