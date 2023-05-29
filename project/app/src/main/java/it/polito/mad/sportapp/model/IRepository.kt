@@ -25,7 +25,6 @@ interface IRepository {
 
     // * User methods *
 
-    // TODO
     /**
      * This method gets the user given its uid
      * **Note**: the result is **dynamic**: the fireCallback gets called each time the user changes.

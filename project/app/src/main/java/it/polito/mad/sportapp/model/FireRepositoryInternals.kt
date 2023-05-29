@@ -4,7 +4,6 @@ import android.util.Log
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldPath
 import it.polito.mad.sportapp.entities.Achievement
-import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.entities.NewReservation
 import it.polito.mad.sportapp.entities.Notification
 import it.polito.mad.sportapp.entities.User
@@ -103,148 +102,63 @@ internal fun FireRepository.getStaticUser(
         }
 }
 
-// TODO
 internal fun FireRepository.buildAchievements(
     userId: String,
     username: String,
     fireCallback: (FireResult<Map<Achievement, Boolean>, DefaultGetFireError>) -> Unit
 ) {
-    db.collection("playgroundReservations").whereEqualTo("user.id", userId).get().addOnSuccessListener { res ->
-        if (res == null) {
-            // generic error
-            Log.d(
-                "generic error",
-                "Error: a generic error occurred retrieving playground reservations in FireRepository.buildAchievements()"
-            )
-            fireCallback(DefaultGetFireError.default("Error: a generic error occurred retrieving playground reservations"))
-            return@addOnSuccessListener
+    // get all the user reservations first
+    this.getPlaygroundReservationsOfUser(FireUserForPlaygroundReservation(userId, username)) { fireResult ->
+        if(fireResult.isError()) {
+            fireCallback(Error(fireResult.errorType()))
+            return@getPlaygroundReservationsOfUser
         }
 
+        val userReservations = fireResult.unwrap()
 
-        val ownedReservations = res.documents.map { FirePlaygroundReservation.deserialize(it.id, it.data) }
-
-        //Now I consider only the past reservations
-        var playedGames = ownedReservations.filter {
-            val startDateTime = LocalDateTime.parse(it?.startDateTime, DateTimeFormatter.ISO_DATE_TIME)
-            startDateTime.isBefore(LocalDateTime.now())
+        // Now I consider only the past reservations (*already ended*)
+        val playedGames = userReservations.filter {
+            val endDateTime = LocalDateTime.parse(it.endDateTime, DateTimeFormatter.ISO_DATE_TIME)
+            endDateTime.isBefore(LocalDateTime.now())
         }.size
 
-        val playgroundIds = ownedReservations.map { it?.playgroundId }.distinct().toMutableList()
+        val playgroundIds = userReservations.map { it.playgroundId }.distinct().toMutableList()
 
-        db.collection("playgroundReservation").whereArrayContains("participants", mapOf("id" to userId, "username" to username)).get().addOnSuccessListener {res ->
-            if (res == null) {
-                // generic error
-                Log.d(
-                    "generic error",
-                    "Error: a generic error occurred retrieving playground reservations in FireRepository.buildAchievements()"
-                )
-                fireCallback(DefaultGetFireError.default("Error: a generic error occurred retrieving playground reservations"))
-                return@addOnSuccessListener
+        // Now I can calculate the total number of sports played through the playgrounds
+        this.getPlaygroundsByIds(playgroundIds) { fireResult2 ->
+            if(fireResult2.isError()) {
+                fireCallback(Error(fireResult2.errorType()))
+                return@getPlaygroundsByIds
             }
-            val participatedReservation = res.documents.map { FirePlaygroundReservation.deserialize(it.id, it.data) }
 
-            //Now I consider only the past reservations
-            var participatedGames = participatedReservation.filter {
-                val startDateTime = LocalDateTime.parse(it?.startDateTime, DateTimeFormatter.ISO_DATE_TIME)
-                startDateTime.isBefore(LocalDateTime.now())
-            }.size
-
-            // Now I can calculate the total number of games played
-            playedGames += participatedGames
-
-            playgroundIds.addAll(participatedReservation.map { it?.playgroundId }.distinct().toMutableList())
+            val firePlaygroundSports = fireResult2.unwrap()
 
             // Now I can calculate the total number of sports played through the playgrounds
+            val playedSports = firePlaygroundSports.map { it.sport.id }.distinct().size
 
-            db.collection("playgroundSports").whereIn(FieldPath.documentId(),playgroundIds).get().addOnSuccessListener { res ->
-                if (res == null) {
-                    // generic error
-                    Log.d(
-                        "generic error",
-                        "Error: a generic error occurred retrieving playground reservations in FireRepository.buildAchievements()"
-                    )
-                    fireCallback(DefaultGetFireError.default("Error: a generic error occurred retrieving playground reservations"))
-                    return@addOnSuccessListener
+            // Now I can calculate the achievements retrieving the total number of sports
+            this.getAllSports { fireResult3 ->
+                if(fireResult3.isError()) {
+                    fireCallback(Error(fireResult3.errorType()))
+                    return@getAllSports
                 }
 
-                // Now I map the playgrounds
-                val firePlaygroundSports = res.documents.map { FirePlaygroundSport.deserialize(it.id, it.data) }
+                val sportCount = fireResult3.unwrap().size
 
-                // Now I can calculate the total number of sports played through the playgrounds
-                val playedSports = firePlaygroundSports.map { it?.sport }.distinct().size
-
-                // Now I can calculate the achievements retrieving the total number of sports
-                db.collection("sports").get().addOnSuccessListener { res ->
-                if (res == null) {
-                    // generic error
-                    Log.d(
-                        "generic error",
-                        "Error: a generic error occurred retrieving playground reservations in FireRepository.buildAchievements()"
-                    )
-                    fireCallback(DefaultGetFireError.default("Error: a generic error occurred retrieving playground reservations"))
-                    return@addOnSuccessListener
-                }
-                    val sportCount = res.documents.size
-                    val achievements = mapOf<Achievement, Boolean>(
-                        Achievement.AtLeastOneSport to (playedSports >= 1),
-                        Achievement.AtLeastFiveSports to (playedSports >= 5),
-                        Achievement.AllSports to (playedSports >= sportCount),
-                        Achievement.AtLeastThreeMatches to (playedGames >= 2),
-                        Achievement.AtLeastTenMatches to (playedGames >= 5),
-                        Achievement.AtLeastTwentyFiveMatches to (playedGames >= 25),
-                    )
-
-                    // Now I can return the achievements
-                    fireCallback(Success(achievements))
-
-
-                }.addOnFailureListener{
-                    // generic error
-                    Log.d(
-                        "generic error",
-                        "Error: a generic error occurred retrieving playground reservations in FireRepository.buildAchievements(). Message: ${it.message}"
-                    )
-                    fireCallback(DefaultGetFireError.default("Error: a generic error occurred retrieving sports"))
-                    return@addOnFailureListener
-                }
-
-
-
-
-            }.addOnFailureListener {
-                // generic error
-                Log.d(
-                    "generic error",
-                    "Error: a generic error occurred retrieving playground reservations in FireRepository.buildAchievements(). Message: ${it.message}"
+                val achievements = mapOf(
+                    Achievement.AtLeastOneSport to (playedSports >= 1),
+                    Achievement.AtLeastFiveSports to (playedSports >= 5),
+                    Achievement.AllSports to (playedSports >= sportCount),
+                    Achievement.AtLeastThreeMatches to (playedGames >= 3),
+                    Achievement.AtLeastTenMatches to (playedGames >= 10),
+                    Achievement.AtLeastTwentyFiveMatches to (playedGames >= 25),
                 )
-                fireCallback(DefaultGetFireError.default("Error: a generic error occurred retrieving playground reservations"))
-                return@addOnFailureListener
 
+                // * Now I can return the achievements *
+                fireCallback(Success(achievements))
             }
         }
-            .addOnFailureListener {
-                Log.d(
-                    "generic error",
-                    "Error: a generic error occurred retrieving playground reservations in FireRepository.buildAchievements(). Message: ${it.message}"
-                )
-                fireCallback(DefaultGetFireError.default("Error: a generic error occurred retrieving playground reservations"))
-                return@addOnFailureListener
-            }
-
-    }.addOnFailureListener {
-        // generic error
-        Log.d(
-            "generic error",
-            "Error: a generic error occurred retrieving playground reservations in FireRepository.buildAchievements(). Message: ${it.message}"
-        )
-        fireCallback(DefaultGetFireError.default("Error: a generic error occurred retrieving playground reservations"))
     }
-
-
-
-
-
-
 }
 
 /* reviews */

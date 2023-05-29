@@ -43,7 +43,6 @@ class FireRepository : IRepository {
 
     /* users */
 
-    // TODO
     /**
      * This method gets the user given its uid
      * Note: the result is *dynamic*, i.e. the fireCallback gets called each time the user changes
