@@ -105,9 +105,9 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
         navController = Navigation.findNavController(view)
 
         // Retrieve playground id
-        //playgroundId = arguments?.getString("id_playground") ?: ""
+        playgroundId = arguments?.getString("id_playground") ?: ""
         //TODO: remove this hardcoded assignment
-        playgroundId = "v3MXUPjN8F5t8WN4F7qr"
+        //playgroundId = "v3MXUPjN8F5t8WN4F7qr"
         selectedSlotInPlaygroundAvailabilities = arguments?.getString("selected_slot")
         scrollToReview = arguments?.getBoolean("scroll_to_review") ?: false
 

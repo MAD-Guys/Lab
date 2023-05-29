@@ -7,16 +7,17 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.entities.PlaygroundInfo
 import it.polito.mad.sportapp.entities.room.RoomPlaygroundInfo
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class PlaygroundVH(
     val view: View,
-    val navigateToPlayground: (Int) -> Unit
+    val navigateToPlayground: (String) -> Unit
 ) : AbstractPlaygroundVH(view)
 {
-    private lateinit var playground: RoomPlaygroundInfo
+    private lateinit var playground: PlaygroundInfo
 
     // sub views
     private val playgroundImage = view.findViewById<ImageView>(R.id.playground_image)
@@ -36,7 +37,7 @@ class PlaygroundVH(
         }
     }
 
-    fun bindPlayground(playground: RoomPlaygroundInfo) {
+    fun bindPlayground(playground: PlaygroundInfo) {
         // save playground reference
         this.playground = playground
 
@@ -70,18 +71,18 @@ class PlaygroundVH(
         costPerHourView.text = String.format("%.2f", playground.pricePerHour)
     }
 
-    private fun getSportImage(sportId: Int): Drawable {
+    private fun getSportImage(sportId: String): Drawable {
         return when(sportId) {
-            1 -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._01_tennis, null)!!
-            2 -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._02_table_tennis, null)!!
-            3 -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._03_padel, null)!!
-            4 -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._04_basket, null)!!
-            5 -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._05_football11, null)!!
-            6 -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._06_volleyball, null)!!
-            7 -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._07_beach_volley, null)!!
-            8 -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._08_football5, null)!!
-            9 -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._09_football8, null)!!
-            10 -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._10_minigolf, null)!!
+            "x7f9jrM9BTiMoIFoyVFq" -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._01_tennis, null)!!
+            "RQgUy37JaJcE8uRmLanb" -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._02_table_tennis, null)!!
+            "fpkrSYDrMUDdqZ4kPfOc" -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._03_padel, null)!!
+            "ZoasHiiaJ3CoNWMEr3RF" -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._04_basket, null)!!
+            "te2BgJjzIJbC9qTgLrT4" -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._05_football11, null)!!
+            "dU8Nvc3SfXfYaQKYzRbr" -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._06_volleyball, null)!!
+            "plGE1kMDKhqE17Azvdw8" -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._07_beach_volley, null)!!
+            "7AIqD0iwHOW6FIycvlwo" -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._08_football5, null)!!
+            "qrwiJsMOa3eCiq6fwOW2" -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._09_football8, null)!!
+            "4nFO9rfxo6iIJVTluCcn" -> ResourcesCompat.getDrawable(view.context.resources, R.drawable._10_minigolf, null)!!
             else -> ResourcesCompat.getDrawable(view.context.resources, R.drawable.unknown_playground, null)!!
         }
     }

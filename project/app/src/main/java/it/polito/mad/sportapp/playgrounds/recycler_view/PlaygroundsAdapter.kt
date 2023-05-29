@@ -4,13 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.entities.PlaygroundInfo
 import it.polito.mad.sportapp.entities.room.RoomPlaygroundInfo
 import it.polito.mad.sportapp.playgrounds.PlaygroundsViewModel
 
 class PlaygroundsAdapter(
     private val orderKey: PlaygroundsViewModel.PlaygroundOrderKey,
-    var orderedAndSeparatedPlaygrounds: List<RoomPlaygroundInfo?>,   // contains 'null' before each key group
-    private val navigateToPlayground: (Int) -> Unit
+    var orderedAndSeparatedPlaygrounds: List<PlaygroundInfo?>,   // contains 'null' before each key group
+    private val navigateToPlayground: (String) -> Unit
 ) : RecyclerView.Adapter<AbstractPlaygroundVH>()
 {
     override fun getItemCount() = orderedAndSeparatedPlaygrounds.size
