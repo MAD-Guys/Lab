@@ -29,7 +29,7 @@ data class FirePlaygroundReservation(
             "participants" to participants.map{ it.serialize() } ,
             "startDateTime" to startDateTime,
             "endDateTime" to endDateTime,
-            "totalPrice" to String.format("%f", totalPrice),
+            "totalPrice" to totalPrice,
             "additionalRequests" to additionalRequests,
             "timestamp" to timestamp
         )
@@ -122,7 +122,7 @@ data class FirePlaygroundReservation(
             val rawParticipants = data["participants"] as? List<*>
             val startDateTime = data["startDateTime"] as? String
             val endDateTime = data["endDateTime"] as? String
-            val totalPrice = data["totalPrice"] as? String
+            var totalPrice = data["totalPrice"] as? Double ?: (data["totalPrice"] as? Long)?.toDouble()
             val additionalRequests = data["additionalRequests"] as? String?
             val timestamp = data["timestamp"] as? String
 
@@ -171,7 +171,7 @@ data class FirePlaygroundReservation(
                 participants,
                 startDateTime,
                 endDateTime,
-                totalPrice.toDouble(),
+                totalPrice,
                 additionalRequests,
                 timestamp
             )
