@@ -109,7 +109,7 @@ class FireRepository : IRepository {
                 val user = fireUser.toUser()
 
                 // compute user achievements (statically)
-                this.buildAchievements(userId) { result ->
+                this.buildAchievements(userId, user.username) { result ->
                     when (result) {
                         is Success -> {
                             // attach user achievements and return successfully
