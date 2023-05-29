@@ -93,7 +93,6 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
 
         if (eventId != -1) {
             fireListener = viewModel.getReservationFromDb(/*eventId*/"8kE1VxbGM1AOIB02WjQF") //TODO: replace with the correct reservationId
-            //viewModel.getParticipants(eventId)
         }
 
         // Generate QR code
@@ -107,7 +106,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
 
         // Initialize values
         // initializeValues()
-        initializeEquipment()
+        // initializeEquipment()
 
         // add link to Playground Details
         playgroundButton.setOnClickListener {
@@ -118,7 +117,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
 
         inviteButton.setOnClickListener {
             viewModel.reservation.value?.let {
-                handleInviteButton(it.id, it.sportId)
+                handleInviteButton(it.id, it.sportId, it.sportName)
             }
         }
 
@@ -299,18 +298,18 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         }
     }
 
-    private fun handlePlaygroundButton(playgroundId : /*Int*/String){
+    private fun handlePlaygroundButton(playgroundId: String){
         val bundle = bundleOf("id_playground" to playgroundId)
         navController.navigate(R.id.action_reservationDetailsFragment_to_PlaygroundDetailsFragment, bundle)
     }
 
-    private fun handleLeaveReviewButton(playgroundId : /*Int*/String){
+    private fun handleLeaveReviewButton(playgroundId: String){
         val bundle = bundleOf("id_playground" to playgroundId, "scroll_to_review" to true)
         navController.navigate(R.id.action_reservationDetailsFragment_to_PlaygroundDetailsFragment, bundle)
     }
 
-    private fun handleInviteButton(reservationId : /*Int*/String, sportId : /*Int*/String){
-        val bundle = bundleOf("id_reservation" to reservationId, "id_sport" to sportId)
+    private fun handleInviteButton(reservationId: String, sportId: String, sportName: String){
+        val bundle = bundleOf("id_reservation" to reservationId, "id_sport" to sportId, "sport_name" to sportName)
         navController.navigate(R.id.action_reservationDetailsFragment_to_invitationFragment, bundle)
     }
 

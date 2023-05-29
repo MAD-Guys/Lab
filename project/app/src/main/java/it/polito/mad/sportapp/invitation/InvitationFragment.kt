@@ -22,6 +22,7 @@ class InvitationFragment : Fragment(R.layout.fragment_invitation) {
     internal val viewModel by viewModels<InvitationViewModel>()
     internal var reservationId: String = ""
     internal var reservationSportId: String = ""
+    internal var reservationSportName: String = ""
 
     internal lateinit var levelSpinner: Spinner
     internal lateinit var usernameSearch: EditText
@@ -57,6 +58,10 @@ class InvitationFragment : Fragment(R.layout.fragment_invitation) {
         // Retrieve event id
         reservationId = arguments?.getString("id_reservation") ?: ""
         reservationSportId = arguments?.getString("id_sport") ?: ""
+        reservationSportName = arguments?.getString("sport_name") ?: ""
+
+        // Initialize fireListener
+        fireListener = viewModel.getUsersFromDb(reservationId, reservationSportId, reservationSportName)
 
         // Retrieve views
         usernameSearch = requireView().findViewById(R.id.search_username)
@@ -72,11 +77,6 @@ class InvitationFragment : Fragment(R.layout.fragment_invitation) {
                 initUserList()
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        fireListener = viewModel.getUsersFromDb(reservationId, reservationSportId)
     }
 
     override fun onDestroy() {

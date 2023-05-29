@@ -59,7 +59,7 @@ data class FireSportCenter(
             val address = rawSportCenter["address"] as? String
             val phoneNumber = rawSportCenter["phoneNumber"] as? String
             val openingHours = rawSportCenter["openingHours"] as? String
-            val closingHours = rawSportCenter["ClosingHours"] as? String
+            val closingHours = rawSportCenter["closingHours"] as? String
 
             if (name == null || address == null || phoneNumber == null || openingHours == null || closingHours == null) {
                 // deserialization error

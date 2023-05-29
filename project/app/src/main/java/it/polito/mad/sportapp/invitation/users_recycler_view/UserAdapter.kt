@@ -7,9 +7,8 @@ import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.room.RoomUser
 
-class UserAdapter(private val buttonListener: (/*Int*/String, String) -> Unit) : RecyclerView.Adapter<UserViewHolder>() {
+class UserAdapter(private val buttonListener: (String, String) -> Unit) : RecyclerView.Adapter<UserViewHolder>() {
 
-    //val users = mutableListOf<RoomUser>()
     val users = mutableListOf<User>()
     var reservationId : Int = -1
 

@@ -23,7 +23,7 @@ data class FireEquipment(
                 "name" to name,
                 "sportId" to sportId,
                 "sportCenterId" to sportCenterId,
-                "unitPrice" to unitPrice,
+                "unitPrice" to String.format("%f", unitPrice),
                 "maxQuantity" to maxQuantity
             )
         }
@@ -33,7 +33,7 @@ data class FireEquipment(
                 "name" to name,
                 "sportId" to sportId,
                 "sportCenterId" to sportCenterId,
-                "unitPrice" to unitPrice,
+                "unitPrice" to String.format("%f", unitPrice),
                 "maxQuantity" to maxQuantity
             )
         }
@@ -101,7 +101,7 @@ data class FireEquipment(
             val name = fireMap["name"] as? String
             val sportId = fireMap["sportId"] as? String
             val sportCenterId = fireMap["sportCenterId"] as? String
-            val unitPrice = fireMap["unitPrice"] as? Double
+            val unitPrice = fireMap["unitPrice"] as? String
             val maxQuantity = fireMap["maxQuantity"] as? Long
 
             if (name == null || sportId == null || sportCenterId == null || unitPrice == null || maxQuantity == null) {
@@ -115,7 +115,7 @@ data class FireEquipment(
                 name,
                 sportId,
                 sportCenterId,
-                unitPrice,
+                unitPrice.toDouble(),
                 maxQuantity
             )
         }

@@ -19,7 +19,7 @@ data class FirePlaygroundSport(
         return mapOf(
             // no id included in serialization
             "playgroundName" to playgroundName,
-            "pricePerHour" to pricePerHour,
+            "pricePerHour" to String.format("%f", pricePerHour),
             "sport" to sport.serialize(true),
             "sportCenter" to sportCenter.serialize(true)
         )
@@ -92,7 +92,7 @@ data class FirePlaygroundSport(
             }
 
             val playgroundName = data["playgroundName"] as? String
-            val pricePerHour = data["pricePerHour"] as? Double
+            val pricePerHour = data["pricePerHour"] as? String
             @Suppress("UNCHECKED_CAST")
             val rawSport = data["sport"] as? Map<String, Any>
             @Suppress("UNCHECKED_CAST")
@@ -129,7 +129,7 @@ data class FirePlaygroundSport(
             return FirePlaygroundSport(
                 id,
                 playgroundName,
-                pricePerHour,
+                pricePerHour.toDouble(),
                 sport,
                 sportCenter
             )

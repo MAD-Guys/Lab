@@ -6,7 +6,7 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.room.RoomReview
+import it.polito.mad.sportapp.entities.Review
 import java.time.format.DateTimeFormatter
 
 class ReviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -20,7 +20,7 @@ class ReviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val lastUpdate = view.findViewById<TextView>(R.id.lastUpdate)
     private val lastUpdateContainer = view.findViewById<LinearLayout>(R.id.lastUpdate_container)
 
-    fun bind(review : RoomReview){
+    fun bind(review : Review){
         title.text = review.title
         username.text = review.username
         date.text = review.publicationDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))

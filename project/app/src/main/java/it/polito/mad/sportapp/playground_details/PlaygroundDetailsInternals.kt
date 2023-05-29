@@ -21,6 +21,7 @@ import java.time.format.FormatStyle
 
 internal fun PlaygroundDetailsFragment.retrieveViews() {
     scrollView = requireView().findViewById(R.id.playgroundScrollView)
+    progressBar = requireView().findViewById(R.id.progressBar)
     playgroundImage = requireView().findViewById(R.id.playgroundImage)
     overallRatingBar = requireView().findViewById(R.id.overallRating)
     playgroundName = requireView().findViewById(R.id.playgroundName)
@@ -136,16 +137,16 @@ internal fun PlaygroundDetailsFragment.menuInit() {
 internal fun PlaygroundDetailsFragment.chooseImage(view: ImageView) {
     lateinit var image: android.graphics.drawable.Drawable
     when (viewModel.playground.value?.sportId) {
-        1 -> image = ResourcesCompat.getDrawable(resources, R.drawable._01_tennis, null)!!
-        2 -> image = ResourcesCompat.getDrawable(resources, R.drawable._02_table_tennis, null)!!
-        3 -> image = ResourcesCompat.getDrawable(resources, R.drawable._03_padel, null)!!
-        4 -> image = ResourcesCompat.getDrawable(resources, R.drawable._04_basket, null)!!
-        5 -> image = ResourcesCompat.getDrawable(resources, R.drawable._05_football11, null)!!
-        6 -> image = ResourcesCompat.getDrawable(resources, R.drawable._06_volleyball, null)!!
-        7 -> image = ResourcesCompat.getDrawable(resources, R.drawable._07_beach_volley, null)!!
-        8 -> image = ResourcesCompat.getDrawable(resources, R.drawable._08_football5, null)!!
-        9 -> image = ResourcesCompat.getDrawable(resources, R.drawable._09_football8, null)!!
-        10 -> image = ResourcesCompat.getDrawable(resources, R.drawable._10_minigolf, null)!!
+        "x7f9jrM9BTiMoIFoyVFq" -> image = ResourcesCompat.getDrawable(resources, R.drawable._01_tennis, null)!!
+        "RQgUy37JaJcE8uRmLanb" -> image = ResourcesCompat.getDrawable(resources, R.drawable._02_table_tennis, null)!!
+        "fpkrSYDrMUDdqZ4kPfOc" -> image = ResourcesCompat.getDrawable(resources, R.drawable._03_padel, null)!!
+        "ZoasHiiaJ3CoNWMEr3RF" -> image = ResourcesCompat.getDrawable(resources, R.drawable._04_basket, null)!!
+        "te2BgJjzIJbC9qTgLrT4" -> image = ResourcesCompat.getDrawable(resources, R.drawable._05_football11, null)!!
+        "dU8Nvc3SfXfYaQKYzRbr" -> image = ResourcesCompat.getDrawable(resources, R.drawable._06_volleyball, null)!!
+        "plGE1kMDKhqE17Azvdw8" -> image = ResourcesCompat.getDrawable(resources, R.drawable._07_beach_volley, null)!!
+        "7AIqD0iwHOW6FIycvlwo" -> image = ResourcesCompat.getDrawable(resources, R.drawable._08_football5, null)!!
+        "qrwiJsMOa3eCiq6fwOW2" -> image = ResourcesCompat.getDrawable(resources, R.drawable._09_football8, null)!!
+        "4nFO9rfxo6iIJVTluCcn" -> image = ResourcesCompat.getDrawable(resources, R.drawable._10_minigolf, null)!!
     }
 
     view.setImageDrawable(image)

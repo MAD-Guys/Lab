@@ -12,6 +12,7 @@ import it.polito.mad.sportapp.application_utilities.showToasty
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+@SuppressLint("SetTextI18n")
 internal fun PlaygroundDetailsFragment.initYourReview() {
     yourReviewContainer.removeAllViewsInLayout()
     yourReview = layoutInflater.inflate(R.layout.your_review, yourReviewContainer, false)
@@ -74,7 +75,7 @@ internal fun PlaygroundDetailsFragment.initYourReview() {
             writeReview.visibility = LinearLayout.VISIBLE
 
         } else if ( //Case 1: no rate and no review
-            (viewModel.yourReview.value?.id == 0)
+            (viewModel.yourReview.value?.id == null)
             && (viewModel.yourReview.value?.qualityRating == 0f)
             && (viewModel.yourReview.value?.facilitiesRating == 0f)
             && (viewModel.yourReview.value?.title == "")
@@ -137,7 +138,7 @@ internal fun PlaygroundDetailsFragment.initYourReview() {
         yourReviewContainer.addView(yourReview)
     } else {
         yourReviewBody.visibility = LinearLayout.GONE
-        youCanNotReviewMessage.text = "Play at ${viewModel.playground.value!!.playgroundName} to leave your review"
+        youCanNotReviewMessage.text = "Play at ${viewModel.playground.value!!.playgroundName} to leave your review!"
         youCanNotReviewMessage.visibility = TextView.VISIBLE
 
         yourReviewContainer.addView(yourReview)
@@ -153,7 +154,7 @@ internal fun PlaygroundDetailsFragment.initReviewList() {
     }
     reviewAdapter.reviews.clear()
     viewModel.playground.value?.reviewList?.let {
-        reviewAdapter.reviews.addAll(it.filter { r -> r.userId != 1 }) //TODO: replace 1 with the id of the logged user
+        reviewAdapter.reviews.addAll(it.filter { r -> r.userId != "1" }) //TODO: replace 1 with the id of the logged user
     }
     reviewAdapter.notifyDataSetChanged()
 }

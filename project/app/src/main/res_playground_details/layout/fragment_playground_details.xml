@@ -8,6 +8,32 @@
     android:background="@color/background_orange"
    >
 
+    <!-- progress bar -->
+    <FrameLayout
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:paddingBottom="50dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/poppins_medium"
+            android:includeFontPadding="false"
+            android:text="@string/loading_text"
+            android:textSize="18sp"
+            tools:ignore="VisualLintOverlap" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyle"
+            android:layout_width="360dp"
+            android:layout_height="280dp"
+            android:layout_marginStart="80dp"
+            android:indeterminateDrawable="@drawable/steph_curry_gif" />
+    </FrameLayout>
+
     <ScrollView
         android:id="@+id/playgroundScrollView"
         android:layout_width="match_parent"

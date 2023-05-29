@@ -19,6 +19,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.playground_details.reviews_recycler_view.ReviewAdapter
 
 @AndroidEntryPoint
@@ -26,11 +27,12 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
 
     internal val viewModel by viewModels<PlaygroundDetailsViewModel>()
 
-    internal var playgroundId = -1
+    internal var playgroundId = ""
     internal var selectedSlotInPlaygroundAvailabilities: String? = null
     private var scrollToReview = false
 
     internal lateinit var scrollView: ScrollView
+    internal lateinit var progressBar: View
 
     internal lateinit var playgroundImage: ImageView
     internal lateinit var overallRatingBar: RatingBar
@@ -83,6 +85,8 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
     private lateinit var bottomNavigationBar: View
     internal lateinit var navController: NavController
 
+    private lateinit var fireListener: FireListener
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -100,20 +104,35 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
         // initialize navigation controller
         navController = Navigation.findNavController(view)
 
-        // Retrieve event id
-        playgroundId = arguments?.getInt("id_playground") ?: -1
+        // Retrieve playground id
+        //playgroundId = arguments?.getString("id_playground") ?: ""
+        //TODO: remove this hardcoded assignment
+        playgroundId = "v3MXUPjN8F5t8WN4F7qr"
         selectedSlotInPlaygroundAvailabilities = arguments?.getString("selected_slot")
         scrollToReview = arguments?.getBoolean("scroll_to_review") ?: false
 
+        if(playgroundId != ""){
+            fireListener = viewModel.getPlaygroundFromDb(playgroundId)
+        }
+
         // Retrieve views
         retrieveViews()
+        scrollView.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
 
         viewModel.playground.observe(viewLifecycleOwner) {
             if (viewModel.playground.value != null) {
+                if(viewModel.equipments.value == null) {
+                    viewModel.loadEquipmentsFromDb()
+                }
                 viewModel.setYourReview()
                 initViews()
                 initYourReview()
                 initReviewList()
+
+                progressBar.visibility = View.GONE
+                scrollView.visibility = View.VISIBLE
+
                 if(scrollToReview){
                     //if this page was called from the "Leave a review" button, it will
                     //immediately scroll to the review form
@@ -128,22 +147,21 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
         }
 
         viewModel.yourReview.observe(viewLifecycleOwner) {
-            if(viewModel.yourReview.value?.id != 0){
+            if(viewModel.yourReview.value?.id != null){
                 initYourReview()
             }
         }
 
         viewModel.equipments.observe(viewLifecycleOwner) {
-            initEquipments()
+            viewModel.equipments.value?.let {
+                initEquipments()
+            }
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (playgroundId != -1) {
-            viewModel.getPlaygroundFromDb(playgroundId)
-            viewModel.loadEquipmentsFromDb()
-        }
+    override fun onDestroy() {
+        super.onDestroy()
+        fireListener.unregister()
     }
 
 }
