@@ -22,7 +22,9 @@ import it.polito.mad.sportapp.application_utilities.setApplicationLocale
 import it.polito.mad.sportapp.application_utilities.showToasty
 import it.polito.mad.sportapp.application_utilities.toastyInit
 import it.polito.mad.sportapp.notifications.manageNotification
+import it.polito.mad.sportapp.playgrounds.PlaygroundsViewModel
 import it.polito.mad.sportapp.profile.ProfileViewModel
+import it.polito.mad.sportapp.show_reservations.ShowReservationsViewModel
 
 @AndroidEntryPoint
 class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener {
@@ -39,8 +41,10 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
     }
 
     // activity view models
-    private lateinit var vm: SportAppViewModel
+    private lateinit var activityVm: SportAppViewModel
     private lateinit var profileVm: ProfileViewModel
+    private lateinit var showReservationsVm: ShowReservationsViewModel
+    private lateinit var playgroundsVm: PlaygroundsViewModel
 
     private lateinit var bottomNavigationView: NavigationBarView
     private lateinit var navController: NavController
@@ -58,8 +62,10 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         // initialize activity view models
-        vm = ViewModelProvider(this)[SportAppViewModel::class.java]
+        activityVm = ViewModelProvider(this)[SportAppViewModel::class.java]
         profileVm = ViewModelProvider(this)[ProfileViewModel::class.java]
+        showReservationsVm = ViewModelProvider(this)[ShowReservationsViewModel::class.java]
+        playgroundsVm = ViewModelProvider(this)[PlaygroundsViewModel::class.java]
 
         /* bottom bar */
 
@@ -77,7 +83,7 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
 
         // get new notifications from db
         //TODO: setup firestore db properly and change the following line of code
-        vm.initializeNotificationsList()
+        activityVm.initializeNotificationsList()
 
         // configure toasts appearance
         toastyInit()
@@ -138,7 +144,7 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         askNotificationPermission()
 
         //TODO: setup firestore db properly and delete the following line of code
-        vm.startNotificationThread(this)
+        activityVm.startNotificationThread(this)
     }
 
     // manage notification click when the activity instance is already created

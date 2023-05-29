@@ -18,7 +18,9 @@ class ShowReservationsViewModel @Inject constructor(
 ) : ViewModel() {
 
     // mutable live data for the user events
-    private var _userEvents = MutableLiveData<Map<LocalDate, List<RoomDetailedReservation>>>()
+    private var _userEvents = MutableLiveData<Map<LocalDate, List<RoomDetailedReservation>>>().also {
+        this.loadEventsFromDb()
+    }
     val userEvents: LiveData<Map<LocalDate, List<RoomDetailedReservation>>> = _userEvents
 
     // mutable live data for the current month, the selected date and the previous selected date

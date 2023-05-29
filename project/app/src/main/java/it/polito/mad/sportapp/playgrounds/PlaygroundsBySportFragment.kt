@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +20,7 @@ import it.polito.mad.sportapp.playgrounds.PlaygroundsViewModel.PlaygroundOrderKe
 @AndroidEntryPoint
 class PlaygroundsBySportFragment : Fragment(R.layout.playgrounds_view)
 {
-    private val viewModel by activityViewModels<PlaygroundsViewModel>()
+    private lateinit var viewModel: PlaygroundsViewModel
 
     private lateinit var progressBar: View
     private lateinit var scrollView: View
@@ -33,6 +33,9 @@ class PlaygroundsBySportFragment : Fragment(R.layout.playgrounds_view)
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // retrieve view model from activity
+        viewModel = ViewModelProvider(requireActivity())[PlaygroundsViewModel::class.java]
 
         progressBar = view.findViewById(R.id.progressBar)
         scrollView = view.findViewById(R.id.playgrounds_scroll_view_container)
