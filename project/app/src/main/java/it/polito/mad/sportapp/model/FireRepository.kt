@@ -1,7 +1,9 @@
 package it.polito.mad.sportapp.model
 
 import android.util.Log
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldPath
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
@@ -1629,25 +1631,211 @@ class FireRepository : IRepository {
         reservationId: String,
         fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
     ) {
-        db.collection("notifications")
-            .document(notificationId)
-            .update("status", newStatus.ordinal.toLong())
-            .addOnSuccessListener {
-                fireCallback(Success(Unit))
+        when (newStatus){
+            NotificationStatus.REJECTED -> {
+                when (oldStatus){
+                    NotificationStatus.PENDING -> {
+                        // update notification status
+                        db.collection("notifications").document(notificationId)
+                            .update("status", newStatus.ordinal.toLong())
+                            .addOnSuccessListener {
+                                // return successfully
+                                fireCallback(Success(Unit))
+                            }
+                            .addOnFailureListener {
+                                // generic error
+                                Log.d(
+                                    "generic error",
+                                    "Error: generic error in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: ${it.message}"
+                                )
+                                fireCallback(
+                                    DefaultFireError.withMessage(
+                                        "Error: a generic error occurred updating invitation status"
+                                    )
+                                )
+                            }
+                    }
+                    NotificationStatus.ACCEPTED -> {
+                        // starting a transaction
+                        db.runTransaction { transaction ->
+                            // retrieve user id
+                            val userId = FirebaseAuth.getInstance().currentUser?.uid
+                            if (userId == null) {
+                                // generic error
+                                Log.d(
+                                    "generic error",
+                                    "Error: generic error in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: userId is null"
+                                )
+                                fireCallback(
+                                    DefaultFireError.withMessage(
+                                        "Error: a generic error occurred updating invitation status"
+                                    )
+                                )
+                                return@runTransaction
+                            }
+                            // retrieve user data
+                            val rawData =  transaction.get(db.collection("users").document(userId)).data
+                            if (rawData == null) {
+                                // generic error
+                                Log.d(
+                                    "generic error",
+                                    "Error: generic error in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: rawData is null"
+                                )
+                                fireCallback(
+                                    DefaultFireError.withMessage(
+                                        "Error: a generic error occurred updating invitation status"
+                                    )
+                                )
+                                return@runTransaction
+                            }
+                            // create participant map
+                            val participant : Map<String,String> = mapOf("id" to userId, "username" to rawData?.get("username").toString())
+
+                            // update notification status
+                            transaction.update(
+                                db.collection("notifications").document(notificationId),
+                                "status",
+                                newStatus.ordinal.toLong()
+                            )
+
+                            // remove user from reservation's participants
+                            transaction.update(
+                                db.collection("playgroundReservations").document(reservationId),
+                                "participants",
+                                FieldValue.arrayRemove(participant)
+                            )
+                        }
+                            .addOnSuccessListener {
+                                // return successfully
+                                fireCallback(Success(Unit))
+                            }
+                            .addOnFailureListener {
+                                // generic error
+                                Log.d(
+                                    "generic error",
+                                    "Error: generic error in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: ${it.message}"
+                                )
+                                fireCallback(
+                                    DefaultFireError.withMessage(
+                                        "Error: a generic error occurred updating invitation status"
+                                    )
+                                )
+                            }
+                    }
+                    else -> {
+                        // generic error
+                        Log.d(
+                            "generic error",
+                            "Error: generic error in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: oldStatus is not PENDING or ACCEPTED"
+                        )
+                        fireCallback(
+                            DefaultFireError.withMessage(
+                                "Error: a generic error occurred updating invitation status"
+                            )
+                        )
+                    }
+                }
             }
-            .addOnFailureListener {
+            NotificationStatus.ACCEPTED -> {
+                when (oldStatus){
+                    NotificationStatus.PENDING -> {
+                        // starting a transaction
+                        db.runTransaction { transaction ->
+                            // retrieve user id
+                            val userId = FirebaseAuth.getInstance().currentUser?.uid
+                            if (userId == null) {
+                                // generic error
+                                Log.d(
+                                    "generic error",
+                                    "Error: generic error in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: userId is null"
+                                )
+                                fireCallback(
+                                    DefaultFireError.withMessage(
+                                        "Error: a generic error occurred updating invitation status"
+                                    )
+                                )
+                                return@runTransaction
+                            }
+                            // retrieve user data
+                            val rawData = transaction.get(db.collection("users").document(userId)).data
+                            if (rawData == null) {
+                                // generic error
+                                Log.d(
+                                    "generic error",
+                                    "Error: generic error in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: rawData is null"
+                                )
+                                fireCallback(
+                                    DefaultFireError.withMessage(
+                                        "Error: a generic error occurred updating invitation status"
+                                    )
+                                )
+                                return@runTransaction
+                            }
+                            // create participant map
+                            val participant : Map<String,String> = mapOf("id" to userId, "username" to rawData?.get("username").toString())
+
+                            // update notification status
+                            transaction.update(
+                                db.collection("notifications").document(notificationId),
+                                "status",
+                                newStatus.ordinal.toLong()
+                            )
+
+                            // insert user as a reservation's participant
+                            transaction.update(
+                                db.collection("playgroundReservations").document(reservationId),
+                                "participants",
+                                FieldValue.arrayUnion(participant)
+                            )
+                        }
+                            .addOnSuccessListener {
+                                // return successfully
+                                fireCallback(Success(Unit))
+                            }
+                            .addOnFailureListener {
+                                // generic error
+                                Log.d(
+                                    "generic error",
+                                    "Error: generic error in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: ${it.message}"
+                                )
+                                fireCallback(
+                                    DefaultFireError.withMessage(
+                                        "Error: a generic error occurred updating invitation status"
+                                    )
+                                )
+                            }
+                    }
+                    else -> {
+                        // generic error
+                        Log.d(
+                            "generic error",
+                            "Error: generic error in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: oldStatus is not PENDING"
+                        )
+                        fireCallback(
+                            DefaultFireError.withMessage(
+                                "Error: a generic error occurred updating invitation status"
+                            )
+                        )
+                    }
+                }
+            }
+            else -> {
                 // generic error
                 Log.d(
                     "generic error",
-                    "Error: generic error in FireRepository.updateNotificationStatus($notificationId, $newStatus). Message: ${it.message}"
+                    "Error: generic error in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: newStatus is not ACCEPTED or REJECTED"
                 )
                 fireCallback(
                     DefaultFireError.withMessage(
-                        "Error: a generic error occurred updating notification status"
+                        "Error: a generic error occurred updating invitation status"
                     )
                 )
             }
+
+        }
+
     }
+
 
     /**
      * (1) Save a new invitation to the db
