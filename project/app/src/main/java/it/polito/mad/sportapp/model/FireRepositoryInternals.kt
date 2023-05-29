@@ -121,12 +121,6 @@ internal fun FireRepository.buildAchievements(
         }
 
 
-        // no games played, immediately return no other checks needed
-        if (res.documents.size == 0) {
-            fireCallback(Success(mapOf()))
-            return@addOnSuccessListener
-        }
-
         val ownedReservations = res.documents.map { FirePlaygroundReservation.deserialize(it.id, it.data) }
 
         //Now I consider only the past reservations
