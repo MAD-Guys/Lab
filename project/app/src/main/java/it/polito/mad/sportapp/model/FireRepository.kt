@@ -2,8 +2,6 @@ package it.polito.mad.sportapp.model
 
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -33,6 +31,7 @@ import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultGetFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultInsertFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.NewReservationError
+import it.polito.mad.sportapp.entities.firestore.utilities.SaveAndSendInvitationFireError
 import java.lang.Exception
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -44,7 +43,6 @@ class FireRepository : IRepository {
 
     /* users */
 
-    // TODO
     /**
      * This method gets the user given its uid
      * Note: the result is *dynamic*, i.e. the fireCallback gets called each time the user changes
@@ -110,7 +108,7 @@ class FireRepository : IRepository {
                 val user = fireUser.toUser()
 
                 // compute user achievements (statically)
-                this.buildAchievements(userId) { result ->
+                this.buildAchievements(userId, user.username) { result ->
                     when (result) {
                         is Success -> {
                             // attach user achievements and return successfully
@@ -1098,6 +1096,19 @@ class FireRepository : IRepository {
     }
 
     // TODO
+    /**
+     * Delete a reservation from the Firestore cloud db
+     * 1. retrieve all the reservationSlots documents associated to this reservation, and save their ids
+     * 2. retrieve all the equipmentReservationSlots documents associated to this reservation, and save their ids
+     * 3. retrieve all the notifications documents associated to this reservation, and save their ids
+     * 4. start a transaction to:
+     *      - delete the associated playground reservation document
+     *      - delete all the retrieved reservationSlots
+     *      - delete all the retrieved equipmentReservationSlots
+     *      - update all the retrieved notifications' status to CANCELED
+     *
+     *      (manage errors)
+     */
     override fun deleteReservation(
         reservation: DetailedReservation,
         fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
@@ -1234,126 +1245,107 @@ class FireRepository : IRepository {
         reservationId: String,
         startDateTime: LocalDateTime,
         endDateTime: LocalDateTime,
-        fireCallback: (FireResult<MutableMap<String, Equipment>, DefaultFireError>) -> Unit
+        fireCallback: (FireResult<MutableMap<String, Equipment>, DefaultGetFireError>) -> Unit
     ): FireListener {
+        val fireListener = FireListener()
 
-        // 1 - first of all, retrieve all the available equipment (statically)
-        val allEquipments = mutableListOf<Equipment>()
-        db.collection("equipments")
-            .whereEqualTo("sportCenterId", sportCenterId)
-            .whereEqualTo("sportId", sportId)
-            .get()
-            .addOnSuccessListener { value ->
-                if (!value.isEmpty) {
-                    for (rawEquipment in value) {
-                        //deserialize each equipment document
-                        val equipmentDocument =
-                            FireEquipment.deserialize(rawEquipment.id, rawEquipment.data)
-
-                        if (equipmentDocument == null) {
-                            // deserialization error
-                            Log.d(
-                                "deserialization error",
-                                "Error: an error occurred deserializing equipmrnt with id ${rawEquipment.id} in FireRepository.getAvailableEquipmentsBySportCenterIdAndSportId()"
-                            )
-                            fireCallback(
-                                DefaultFireError.withMessage(
-                                    "Error: an error occurred deserializing an equipment"
-                                )
-                            )
-                            return@addOnSuccessListener
-                        }
-
-                        allEquipments.add(equipmentDocument.toEquipment())
-                    }
-                }
-            }
-            .addOnFailureListener {
-                // generic error
-                Log.d("generic error", "Error: a generic error occurred retrieving all equipments in FireRepository.getAvailableEquipmentsBySportCenterIdAndSportId(). Message: ${it.message}")
-                fireCallback(DefaultFireError.withMessage(
-                    "Error: a generic error occurred retrieving all equipments"
-                ))
-                return@addOnFailureListener
+        // first, (statically) retrieve all the available equipments for the given sport and sport center
+        this.getStaticAllEquipmentsBySportCenterIdAndSportId(sportCenterId, sportId) { fireResult ->
+            if(fireResult.isError()) {
+                fireCallback(Error(fireResult.errorType()))
+                return@getStaticAllEquipmentsBySportCenterIdAndSportId
             }
 
-        // 2 - map the equipments by equipmentId
-        val equipmentsMap = mutableMapOf<String, Equipment>()
-        allEquipments.map { equipmentsMap.put(it.id, it) }
+            val allEquipmentsById = fireResult.unwrap().associateBy { it.id }
 
-        // 3 - then, add a snapshotListener to the equipmentReservationSlots collection
-        //      where:
-        //          (1) equipment.sportCenterId == sportCenterId
-        //          (2) equipment.sportId == sportId
-        //          (3) startSlot < (is strictly before) endDateTame
-        //          (4) endSlot > (is strictly after) startDateTime
-        val listener = db.collection("equipmentReservationSlots")
-            .whereEqualTo("equipment.sportCenterId", sportCenterId)
-            .whereEqualTo("equipment.sportId", sportId)
-            .whereLessThan("startSlot", endDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
-            .whereGreaterThan("endSlot", startDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
-            .addSnapshotListener { value, error ->
-                if (error != null) {
-                    // a generic error occurred
-                    Log.d("generic error", "Error: a generic error occurred getting an equipmentReservationSlots snapshot with sportCenterId $sportCenterId and sportId $sportId in FireRepository.getAvailableEquipmentsBySportCenterIdAndSportId(). Message: ${error.message}")
-                    fireCallback(DefaultFireError.withMessage(
-                        "Error: a generic error occurred retrieving equipments reservations"
-                    ))
-                    return@addSnapshotListener
+            // **dynamically** retrieve now all the slots reservations happening in
+            // [startDateTime,endDateTime] for those equipments and without considering
+            // the given reservation ones
+            val listener = this.getDynamicEquipmentReservationSlots(
+                sportCenterId,
+                sportId,
+                reservationId,
+                startDateTime.toLocalDate().format(DateTimeFormatter.ISO_DATE),
+                startDateTime.format(DateTimeFormatter.ISO_DATE_TIME),
+                endDateTime.format(DateTimeFormatter.ISO_DATE_TIME)
+            ) { fireResult2 ->
+                if(fireResult2.isError()) {
+                    fireCallback(Error(fireResult2.errorType()))
+                    return@getDynamicEquipmentReservationSlots
                 }
 
-                if (value == null) {
-                    Log.d("not found error", "Error: equipmentReservationSlots with sportCenterId $sportCenterId and sportId $sportId in FireRepository.getAvailableEquipmentsBySportCenterIdAndSportId()")
-                    fireCallback(DefaultFireError.withMessage(
-                        "Error: equipment reservations list is null"
-                    ))
-                    return@addSnapshotListener
-                }
+                val interestingEquipmentReservationSlots = fireResult2.unwrap()
 
-                // deserialize equipment reservation slots
-                val allEquipmentReservationsList = mutableListOf<FireEquipmentReservationSlot>()
-                for (rawEquipmentReservation in value) {
-                    val equipmentReservationSlotDocument = FireEquipmentReservationSlot.deserialize(rawEquipmentReservation.id, rawEquipmentReservation.data)
-                    if (equipmentReservationSlotDocument != null) {
-                        allEquipmentReservationsList.add(equipmentReservationSlotDocument)
+                // * here we have just the slots whose reserved equipments reduce
+                //   the available qty in the corresponding slot *
+
+                // compute the available qty of each equipment for all the slots
+                // (here we are ignoring the equipments with full availability)
+                val availableQtyInSlotsPerEquipment = interestingEquipmentReservationSlots.groupBy { equipmentReservationSlot ->
+                    try {
+                        val slot = LocalDateTime.parse(equipmentReservationSlot.startSlot)
+                        val equipment = equipmentReservationSlot.equipment
+                        Pair(slot, equipment)
                     }
-                }
-
-                // * Now, we have all the equipments for this playground, and all the reservations for this playground and time *
-
-                // 4 - for each reservation slot, decrement the quantity available in the playground
-                for(equipmentReservationSlot in allEquipmentReservationsList) {
-
-                    //retrieve the equipment
-                    val equipment = equipmentsMap[equipmentReservationSlot.equipment.id]
-
-                    if (equipment != null) {
-
-                        //decrement the quantity
-                        equipment.availability = equipment.availability - equipmentReservationSlot.selectedQuantity.toInt()
-
-                        //if the new quantity is > 0 add the updated value, else remove the equipment from the map
-                        if(equipment.availability > 0){
-                            equipmentsMap.replace(equipment.id, equipment)
-                        } else {
-                            equipmentsMap.remove(equipment.id)
-                        }
+                    catch(e: Exception) {
+                        // parsing error
+                        Log.d("parsing error", "Error: an error occurred parsing a start slot date time in FireRepository.getDynamicEquipmentReservationSlots()")
+                        fireCallback(DefaultGetFireError.duringDeserialization(
+                            "Error: an error occurred retrieving the equipments availabilities"
+                        ))
+                        return@getDynamicEquipmentReservationSlots
                     }
+                }.mapValues { (_, slotList) ->
+                    // compute, for each slot, the busy quantity of each equipment
+                    // (summing the ones of all the reservations)
+                    val equipmentTotalSelectedQuantity = slotList.sumOf { it.selectedQuantity }
+                    equipmentTotalSelectedQuantity
+                }.asSequence().groupBy { (slotEquipmentPair, _) ->
+                    val equipment = slotEquipmentPair.second
+                    equipment
+                }.mapValues { (equipment, selectedQuantityPerSlotEquipmentPair) ->
+                    // for each equipment, compute the max selected qty among the one of the slots
+                    val maxSelectedQtyInSlots = selectedQuantityPerSlotEquipmentPair.maxOf { it.value }
+                    // from that, compute the availableQty in all the slots
+                    val availableQtyInSlots = equipment.maxQuantity - maxSelectedQtyInSlots
+                    availableQtyInSlots
+                }.toMutableMap()
 
+                // now add missing equipments, which will have max availability
+                allEquipmentsById.forEach { (_, equipment) ->
+                    if(!availableQtyInSlotsPerEquipment.contains(equipment))
+                        availableQtyInSlotsPerEquipment[equipment] = equipment.maxQuantity
                 }
 
+                // * now availableQtyInSlotsPerEquipment contains all the correct
+                //   equipment availabilities in the specified time interval *
 
-                // return successfully the equipments map
-                fireCallback(Success(equipmentsMap))
+                // convert all the fireEquipments in Equipment entities with the right available qty
+                val equipmentsAvailabilitiesById = availableQtyInSlotsPerEquipment.map { (equipment, availableQty) ->
+                    val equipmentEntity = equipment.toEquipment()
+                    equipmentEntity.availability = availableQty.toInt()
+                    equipmentEntity
+                }.associateBy { it.id }
+                    .toMutableMap()
+
+                // * return successfully *
+                fireCallback(Success(equipmentsAvailabilitiesById))
             }
 
-        return FireListener(listener)
+            fireListener.add(listener)
+        }
+
+        return fireListener
     }
 
+    /**
+     * Retrieve from the Firestore cloud db all the equipments related to a given sport,
+     * available in the specified sport center
+     */
     override fun getAllEquipmentsBySportCenterIdAndSportId(
         sportCenterId: String,
         sportId: String,
-        fireCallback: (FireResult<MutableList<Equipment>, DefaultFireError>) -> Unit
+        fireCallback: (FireResult<MutableList<Equipment>, DefaultGetFireError>) -> Unit
     ): FireListener {
 
         val listener = db.collection("equipments")
@@ -1363,7 +1355,7 @@ class FireRepository : IRepository {
                 if (error != null) {
                     // a generic error occurred
                     Log.d("generic error", "Error: a generic error occurred getting an equipments snapshot with sportCenterId $sportCenterId and sportId $sportId in FireRepository.getAllEquipmentsBySportCenterIdAndSportId(). Message: ${error.message}")
-                    fireCallback(DefaultFireError.withMessage(
+                    fireCallback(DefaultGetFireError.default(
                         "Error: a generic error occurred retrieving equipments"
                     ))
                     return@addSnapshotListener
@@ -1371,7 +1363,7 @@ class FireRepository : IRepository {
 
                 if (value == null) {
                     Log.d("not found error", "Error: equipments with sportCenterId $sportCenterId and sportId $sportId in FireRepository.getAllEquipmentsBySportCenterIdAndSportId()")
-                    fireCallback(DefaultFireError.withMessage(
+                    fireCallback(DefaultGetFireError.default(
                         "Error: equipments list is null"
                     ))
                     return@addSnapshotListener
@@ -1379,9 +1371,20 @@ class FireRepository : IRepository {
 
                 // deserialize equipments
                 val allEquipmentsList = mutableListOf<Equipment>()
+
                 for (rawEquipment in value) {
                     val equipmentDocument = FireEquipment.deserialize(rawEquipment.id, rawEquipment.data)
-                    equipmentDocument?.toEquipment()?.let { allEquipmentsList.add(it) }
+
+                    if(equipmentDocument == null) {
+                        // deserialization error
+                        Log.d("deserialization error", "Error: an error occurred deserializing equipment $rawEquipment in FireRepository.getAllEquipmentsBySportCenterIdAndSportId")
+                        fireCallback(DefaultGetFireError.duringDeserialization(
+                            "Error: an error occurred retrieving the equipments"
+                        ))
+                        return@addSnapshotListener
+                    }
+
+                    allEquipmentsList.add(equipmentDocument.toEquipment())
                 }
 
                 // return successfully the equipments list
@@ -1393,6 +1396,9 @@ class FireRepository : IRepository {
 
     /* playgrounds */
 
+    /**
+     * Retrieve the specified Playground info entity from the Firestore cloud db
+     */
     override fun getPlaygroundInfoById(
         playgroundId: String,
         fireCallback: (FireResult<PlaygroundInfo, DefaultGetFireError>) -> Unit
@@ -1510,113 +1516,141 @@ class FireRepository : IRepository {
         }
     }
 
-    // TODO
+    /**
+     * Retrieve from the db all the available playgrounds, for a given sport, in each slot of a given month
+     */
     override fun getAvailablePlaygroundsPerSlot(
         month: YearMonth,
         sport: Sport?,
-        fireCallback: (FireResult<MutableMap<LocalDate, MutableMap<LocalDateTime, MutableList<DetailedPlaygroundSport>>>, DefaultFireError>) -> Unit
+        fireCallback: (FireResult<MutableMap<LocalDate, MutableMap<LocalDateTime, MutableList<DetailedPlaygroundSport>>>, DefaultGetFireError>) -> Unit
     ): FireListener {
-        TODO("Not yet implemented")
+        val fireListener = FireListener()
+
+        if(sport == null) {
+            fireCallback(Success(mutableMapOf()))
+            return fireListener
+        }
+
+        this.getPlaygroundsBySportId(sport.id) { fireResult ->
+            if(fireResult.isError()) {
+                fireCallback(Error(fireResult.errorType()))
+                return@getPlaygroundsBySportId
+            }
+
+            val sportPlaygrounds = fireResult.unwrap()
+            val sportPlaygroundsMap = sportPlaygrounds.associateBy { it.id }
+            val playgroundsIds = sportPlaygrounds.map { it.id }
+
+            val listener = this.getDynamicReservationSlots(playgroundsIds, month) { fireResult2 ->
+                if(fireResult2.isError()) {
+                    fireCallback(Error(fireResult2.errorType()))
+                    return@getDynamicReservationSlots
+                }
+
+                val reservationSlots = fireResult2.unwrap()
+
+                val availablePlaygroundsPerSlot = reservationSlots.groupBy { reservationSlot ->
+                    try {
+                        LocalDateTime.parse(reservationSlot.startSlot)
+                    }
+                    catch (e: Exception) {
+                        // parsing error
+                        Log.d("parsing error", "Error: an error occurred parsing a slot in FireRepository.getAvailablePlaygroundsPerSlot()")
+                        fireCallback(DefaultGetFireError.duringDeserialization(
+                            "Error: an error occurred retrieving playground availabilities"))
+                        return@getDynamicReservationSlots
+                    }
+                }.mapValues { (_, reservationSlots) ->
+                    // extract busy playgrounds, per each slot
+                    val busyPlaygroundsIdsInSlot = reservationSlots.map { rs ->
+                        rs.playgroundId
+                    }.toSet()
+                    // extract open playgrounds, per each slot
+                    val openPlaygroundsIdsInSlot = reservationSlots[0].openPlaygroundsIds.toSet()
+
+                    // compute available playgrounds (ids) as the set difference of them
+                    val availablePlaygroundsIdsInSlot = openPlaygroundsIdsInSlot - busyPlaygroundsIdsInSlot
+                    val sortedAvailablePlaygroundsIdsInSlot = availablePlaygroundsIdsInSlot.toMutableList().sorted()
+
+                    val sortedAvailablePlaygroundsInSlot = sortedAvailablePlaygroundsIdsInSlot.map { id ->
+                        sportPlaygroundsMap[id]!!.clone().toDetailedPlaygroundSport()
+                    }.toMutableList()
+
+                    sortedAvailablePlaygroundsInSlot
+                }
+
+                // convert result to a map having date as key, each having a map with slot as key
+                val availablePlaygroundsPerDateAndSlot = availablePlaygroundsPerSlot.toList().groupBy {
+                        (slot, availablePlaygrounds) ->
+                    slot.toLocalDate()
+                }.mapValues { (_, pairList) ->
+                    pairList.toMap().toMutableMap()
+                }.toMutableMap()
+
+                // * return successfully *
+                fireCallback(Success(availablePlaygroundsPerDateAndSlot))
+            }
+
+            fireListener.add(listener)
+        }
+
+        return fireListener
     }
 
+    /**
+     * Retrieve all the Playground Info entities from the db
+     * Note: the result is **static** (the fireCallback is executed just once)
+     */
     override fun getAllPlaygroundsInfo(
-        fireCallback: (FireResult<List<PlaygroundInfo>, DefaultFireError>) -> Unit
+        fireCallback: (FireResult<List<PlaygroundInfo>, DefaultGetFireError>) -> Unit
     ) {
+        // retrieve all playground sports first
+        this.getAllPlaygrounds { fireResult ->
+            if(fireResult.isError()) {
+                fireCallback(Error(fireResult.errorType()))
+                return@getAllPlaygrounds
+            }
 
-        // retrieve all playgrounds statically
-        db.collection("playgroundSports")
-            .get()
-            .addOnSuccessListener { documents ->
-                if (documents == null) {
-                    // generic error
-                    Log.d("generic error", "Error: retrieved null playgroundSports list in FireRepository.getAllPlaygroundsInfo()")
-                    fireCallback(DefaultFireError.withMessage(
-                        "Error: playgrounds not found"
-                    ))
-                    return@addOnSuccessListener
+            val allPlaygroundsDocuments = fireResult.unwrap()
+
+            // then retrieve all the reviews associated to those playgrounds
+            this.getAllReviewsByPlaygroundId { fireResult2 ->
+                if(fireResult2.isError()) {
+                    fireCallback(Error(fireResult2.errorType()))
+                    return@getAllReviewsByPlaygroundId
                 }
 
-                val allPlaygrounds = mutableListOf<PlaygroundInfo>()
+                val allReviewsByPlaygroundId = fireResult2.unwrap()
 
-                for (document in documents) {
-                    // deserialize playgroundSports
-                    val playgroundSport = FirePlaygroundSport.deserialize(document.id, document.data)
+                // combine each playground sport and its reviews into a PlaygroundInfo entity
+                val allPlaygroundsInfo = allPlaygroundsDocuments.map { playgroundSport ->
+                    // retrieve all the playground reviews (or an empty list, if none)
+                    val playgroundReviews = allReviewsByPlaygroundId[playgroundSport.id] ?: listOf()
+                    // create playground info entity
+                    val playgroundInfo = playgroundSport.toPlaygroundInfo(playgroundReviews)
 
-                    if(playgroundSport == null){
-                        // deserialization error
-                        Log.d("deserialization error", "Error: deserialization error occurred for playground with id ${document.id} in FireRepository.getAllPlaygroundInfo()")
-                        fireCallback(DefaultFireError.withMessage(
-                            "Error: an error occurred retrieving playground"
+                    if(playgroundInfo == null) {
+                        // review deserialization error
+                        Log.d("Deserialization error", "Error: an error occurred creating the playground info in FireRepository.getAllPlaygroundsInfo()")
+                        fireCallback(DefaultGetFireError.duringDeserialization(
+                            "Error: an error occurred retrieving all the playground info"
                         ))
-                        return@addOnSuccessListener
+                        return@getAllReviewsByPlaygroundId
                     }
 
-                    //get all the reviews by playgroundId
-                    val playgroundReviews = mutableListOf<FireReview>()
-                    db.collection("reviews")
-                        .whereEqualTo("playgroundId", playgroundSport.id)
-                        .get()
-                        .addOnSuccessListener { value ->
-                            if (!value.isEmpty) {
-                                for (rawReview in value) {
-                                    //deserialize each review document
-                                    val reviewDocument = FireReview.deserialize(rawReview.id, rawReview.data)
-
-                                    if (reviewDocument == null) {
-                                        // deserialization error
-                                        Log.d(
-                                            "deserialization error",
-                                            "Error: an error occurred deserializing review with id ${rawReview.id} in FireRepository.getPlaygroundInfoById()"
-                                        )
-                                        fireCallback(
-                                            DefaultFireError.withMessage(
-                                                "Error: an error occurred retrieving a review"
-                                            )
-                                        )
-                                        return@addOnSuccessListener
-                                    }
-
-                                    playgroundReviews.add(reviewDocument)
-                                }
-                            }
-
-                        }
-                        .addOnFailureListener {
-                            // generic error
-                            Log.d("generic error", "Error: a generic error occurred retrieving reviews in FireRepository.getAllPlaygroundInfo(). Message: ${it.message}")
-                            fireCallback(DefaultFireError.withMessage(
-                                "Error: a generic error occurred retrieving reviews"
-                            ))
-                        }
-
-                    playgroundSport.toPlaygroundInfo(playgroundReviews)?.let {
-                        allPlaygrounds.add(
-                            it
-                        )
-                    }
-
-
-
+                    playgroundInfo
                 }
 
-                //return successfully
-                fireCallback(Success(allPlaygrounds))
-
+                // * return successfully the playground info list *
+                fireCallback(Success(allPlaygroundsInfo))
             }
-            .addOnFailureListener {
-                // generic error
-                Log.d("generic error", "Error: a generic error occurred retrieving playgrounds in FireRepository.getAllPlaygroundInfo(). Message: ${it.message}")
-                fireCallback(DefaultFireError.withMessage(
-                    "Error: a generic error occurred retrieving playgrounds"
-                ))
-            }
+        }
     }
 
     /* notifications */
 
-    // TODO
     /**
-     * Return a fireListener listening to notifications for the given user
+     * Return a fireListener listening to notifications for the given user (as the receiver)
      * The notifications are related to the incoming reservations and NOT the past ones.
      * The fireCallback is called every time a new notification is received.
      */
@@ -1626,137 +1660,68 @@ class FireRepository : IRepository {
     ): FireListener {
         val fireListener = FireListener()
 
-        val notificationListener = db.collection("notifications")
-            .whereEqualTo("receiverId", userId)
-            .addSnapshotListener { documents, error ->
-                if (error != null || documents == null) {
-                    // firebase error
-                    Log.d(
-                        "generic error",
-                        "Error: a generic error in FireRepository.getNotificationsByUserId($userId). Message: ${error?.message}"
-                    )
-                    fireCallback(
-                        DefaultGetFireError.default(
-                            "Error: a generic error occurred retrieving notifications"
-                        )
-                    )
-                    return@addSnapshotListener
+        // first, retrieve and listen to all the user notifications
+        val notificationListener = this.getDynamicAllUserNotifications(userId) { fireResult ->
+            if(fireResult.isError()) {
+                fireCallback(Error(fireResult.errorType()))
+                return@getDynamicAllUserNotifications
+            }
+
+            val fireNotifications = fireResult.unwrap()
+
+            // retrieving a list of pairs (notificationId, reservationId)
+            val notificationIdReservationId = fireNotifications.map { Pair(it.id!!, it.reservationId) }
+            val reservationIds = notificationIdReservationId.map { it.second }
+
+            // retrieving all the corresponding reservations to filter out the past ones
+            this.getPlaygroundReservationsByIds(reservationIds) { fireResult2 ->
+                if(fireResult2.isError()) {
+                    fireCallback(Error(fireResult2.errorType()))
+                    return@getPlaygroundReservationsByIds
                 }
 
-                // retrieving all the notifications related to the given user
-                val fireNotifications = mutableListOf<FireNotification>()
+                val reservations = fireResult2.unwrap()
 
-                documents.forEach { document ->
-                    val fireNotification = FireNotification.deserialize(document.id, document.data)
+                // filtering out the past reservations
+                val now = LocalDateTime.now()
 
-                    if (fireNotification == null) {
-                        // deserialization error
-                        Log.d(
-                            "deserialization error",
-                            "Error: deserialization error in FireRepository.getNotificationsByUserId($userId)"
-                        )
-                        fireCallback(
-                            DefaultGetFireError.duringDeserialization(
-                                "Error: an error occurred retrieving notifications"
-                            )
-                        )
-                        return@addSnapshotListener
-                    }
-
-                    fireNotifications.add(fireNotification)
+                val incomingReservations = reservations.filter {
+                    LocalDateTime.parse(it.startDateTime).isAfter(now)
                 }
 
-                // retrieving a list of pairs (notificationId, reservationId)
-                val notificationIdReservationId =
-                    fireNotifications.map { Pair(it.id!!, it.reservationId) }
-                val reservationIds = notificationIdReservationId.map { it.second }
-
-                // retrieving reservations to filter out the past ones
-                db.collection("playgroundReservations").whereIn(FieldPath.documentId(),reservationIds).get()
-                    .addOnSuccessListener { documents ->
-                        if (documents == null) {
-                            // generic error
-                            Log.d(
-                                "generic error",
-                                "Error: retrieved null reservations in FireRepository.getNotificationsByUserId($userId)"
-                            )
-                            fireCallback(
-                                DefaultGetFireError.notFound(
-                                    "Error: reservation not found"
-                                )
-                            )
-                            return@addOnSuccessListener
-                        }
-
-                        val reservations = documents.map {
-                            val reservation =
-                                FirePlaygroundReservation.deserialize(it.id, it.data)
-
-                            if (reservation == null) {
-                                // deserialization error
-                                Log.d(
-                                    "deserialization error",
-                                    "Error: deserialization error in FireRepository.getNotificationsByUserId($userId)"
-                                )
-                                fireCallback(
-                                    DefaultGetFireError.duringDeserialization(
-                                        "Error: an error occurred retrieving notifications"
-                                    )
-                                )
-                                return@addOnSuccessListener
-                            }
-
-                            reservation
-                        }
-
-                        // filtering out the past reservations
-                        val incomingReservations = reservations.filter {
-                            LocalDateTime.parse(it.startDateTime).isAfter(LocalDateTime.now())
-                        }
-                        // filtering out the notifications related to the past reservations
-                        notificationIdReservationId.forEach { (notificationId, reservationId) ->
-                            // if the reservation is not in the incoming reservations list, the notification is removed
-                            if (incomingReservations.none { it.id == reservationId }) {
-                                fireNotifications.removeIf { it.id == notificationId }
-                            }
-                        }
-
+                // filtering out the notifications related to the past reservations
+                notificationIdReservationId.forEach { (notificationId, reservationId) ->
+                    // if the reservation is not in the incoming reservations list, the notification is removed
+                    if (incomingReservations.none { it.id == reservationId }) {
+                        fireNotifications.removeIf { it.id == notificationId }
                     }
-                    .addOnFailureListener {
-                        // generic error
-                        Log.d(
-                            "generic error",
-                            "Error: generic error in FireRepository.getNotificationsByUserId($userId). Message: ${it.message}"
-                        )
-                        fireCallback(
-                            DefaultGetFireError.default(
-                                "Error: an error occurred retrieving reservations"
-                            )
-                        )
-                    }
+                }
 
                 // converting fireNotifications to notifications
                 val notifications = fireNotifications.map {
                     val notification = it.toNotification()
+
                     if (notification == null) {
                         fireCallback(
                             DefaultGetFireError.duringDeserialization(
-                                "Error: an error occurred retrieving notifications"
+                                "Error: an error occurred retrieving user notifications"
                             )
                         )
-                        return@addSnapshotListener
+                        return@getPlaygroundReservationsByIds
                     }
+
                     notification
                 }.toMutableList()
 
+                // * return user notifications successfully *
                 fireCallback(Success(notifications))
             }
+        }
 
         fireListener.add(notificationListener)
         return fireListener
     }
 
-    // TODO
     /**
      * Update invitation status and corresponding reservation participants, based on the old and
      * the new invitation status:
@@ -1781,9 +1746,9 @@ class FireRepository : IRepository {
                     NotificationStatus.PENDING -> {
                         // update notification status
                         db.collection("notifications").document(notificationId)
-                            .update("status", newStatus.ordinal.toLong())
+                            .update("status", newStatus.index)
                             .addOnSuccessListener {
-                                // return successfully
+                                // * return successfully *
                                 fireCallback(Success(Unit))
                             }
                             .addOnFailureListener {
@@ -1805,41 +1770,58 @@ class FireRepository : IRepository {
                             // retrieve user id
                             val userId = FirebaseAuth.getInstance().currentUser?.uid
                             if (userId == null) {
-                                // generic error
+                                // not authenticated error
                                 Log.d(
-                                    "generic error",
-                                    "Error: generic error in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: userId is null"
+                                    "not authenticated error",
+                                    "Error: user is not authenticated in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: userId is null"
                                 )
                                 fireCallback(
                                     DefaultFireError.withMessage(
-                                        "Error: a generic error occurred updating invitation status"
+                                        "Error: an error occurred updating invitation status"
                                     )
                                 )
                                 return@runTransaction
                             }
+
                             // retrieve user data
                             val rawData =  transaction.get(db.collection("users").document(userId)).data
                             if (rawData == null) {
-                                // generic error
+                                // not found error
                                 Log.d(
-                                    "generic error",
-                                    "Error: generic error in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: rawData is null"
+                                    "not found error",
+                                    "Error: user with id $userId is not found in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: rawData is null"
                                 )
                                 fireCallback(
                                     DefaultFireError.withMessage(
-                                        "Error: a generic error occurred updating invitation status"
+                                        "Error: an error occurred updating invitation status"
                                     )
                                 )
                                 return@runTransaction
                             }
-                            // create participant map
-                            val participant : Map<String,String> = mapOf("id" to userId, "username" to rawData["username"].toString())
 
-                            // update notification status
+                            val username = rawData["username"] as? String
+
+                            if(username == null) {
+                                // deserialization error
+                                Log.d("deserialization error", "Error: a deserialization error occurred for user $userId in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId)")
+                                fireCallback(DefaultFireError.withMessage(
+                                    "Error: an error occurred updating invitation status"
+                                ))
+                                return@runTransaction
+                            }
+
+
+                            // create participant map
+                            val participant : Map<String,String> = mapOf(
+                                "id" to userId,
+                                "username" to username
+                            )
+
+                            // update notification status (to REJECTED)
                             transaction.update(
                                 db.collection("notifications").document(notificationId),
                                 "status",
-                                newStatus.ordinal.toLong()
+                                newStatus.index
                             )
 
                             // remove user from reservation's participants
@@ -1848,23 +1830,21 @@ class FireRepository : IRepository {
                                 "participants",
                                 FieldValue.arrayRemove(participant)
                             )
+                        }.addOnSuccessListener {
+                            // * return successfully *
+                            fireCallback(Success(Unit))
+                        }.addOnFailureListener {
+                            // generic error
+                            Log.d(
+                                "generic error",
+                                "Error: a generic error occurred in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: ${it.message}"
+                            )
+                            fireCallback(
+                                DefaultFireError.withMessage(
+                                    "Error: a generic error occurred updating invitation status"
+                                )
+                            )
                         }
-                            .addOnSuccessListener {
-                                // return successfully
-                                fireCallback(Success(Unit))
-                            }
-                            .addOnFailureListener {
-                                // generic error
-                                Log.d(
-                                    "generic error",
-                                    "Error: generic error in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: ${it.message}"
-                                )
-                                fireCallback(
-                                    DefaultFireError.withMessage(
-                                        "Error: a generic error occurred updating invitation status"
-                                    )
-                                )
-                            }
                     }
                     else -> {
                         // generic error
@@ -1890,23 +1870,24 @@ class FireRepository : IRepository {
                             if (userId == null) {
                                 // generic error
                                 Log.d(
-                                    "generic error",
-                                    "Error: generic error in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: userId is null"
+                                    "not authenticated error",
+                                    "Error: user is not authenticated in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: userId is null"
                                 )
                                 fireCallback(
                                     DefaultFireError.withMessage(
-                                        "Error: a generic error occurred updating invitation status"
+                                        "Error: an error occurred updating invitation status"
                                     )
                                 )
                                 return@runTransaction
                             }
+
                             // retrieve user data
                             val rawData = transaction.get(db.collection("users").document(userId)).data
                             if (rawData == null) {
-                                // generic error
+                                // not found error
                                 Log.d(
-                                    "generic error",
-                                    "Error: generic error in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: rawData is null"
+                                    "not found error",
+                                    "Error: user $userId is not found in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: rawData is null"
                                 )
                                 fireCallback(
                                     DefaultFireError.withMessage(
@@ -1915,14 +1896,29 @@ class FireRepository : IRepository {
                                 )
                                 return@runTransaction
                             }
-                            // create participant map
-                            val participant : Map<String,String> = mapOf("id" to userId, "username" to rawData.get("username").toString())
 
-                            // update notification status
+                            val username = rawData["username"] as? String
+
+                            if(username == null) {
+                                // deserialization error
+                                Log.d("deserialization error", "Error: a deserialization error occurred for user $userId in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId)")
+                                fireCallback(DefaultFireError.withMessage(
+                                    "Error: an error occurred updating invitation status"
+                                ))
+                                return@runTransaction
+                            }
+
+                            // create participant map
+                            val participant : Map<String,String> = mapOf(
+                                "id" to userId,
+                                "username" to username
+                            )
+
+                            // update notification status (to ACCEPTED)
                             transaction.update(
                                 db.collection("notifications").document(notificationId),
                                 "status",
-                                newStatus.ordinal.toLong()
+                                newStatus.index
                             )
 
                             // insert user as a reservation's participant
@@ -1931,23 +1927,21 @@ class FireRepository : IRepository {
                                 "participants",
                                 FieldValue.arrayUnion(participant)
                             )
+                        }.addOnSuccessListener {
+                            // * return successfully *
+                            fireCallback(Success(Unit))
+                        }.addOnFailureListener {
+                            // generic error
+                            Log.d(
+                                "generic error",
+                                "Error: a generic error occurred in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: ${it.message}"
+                            )
+                            fireCallback(
+                                DefaultFireError.withMessage(
+                                    "Error: a generic error occurred updating invitation status"
+                                )
+                            )
                         }
-                            .addOnSuccessListener {
-                                // return successfully
-                                fireCallback(Success(Unit))
-                            }
-                            .addOnFailureListener {
-                                // generic error
-                                Log.d(
-                                    "generic error",
-                                    "Error: generic error in FireRepository.updateInvitationStatus($notificationId, $oldStatus, $newStatus, $reservationId). Message: ${it.message}"
-                                )
-                                fireCallback(
-                                    DefaultFireError.withMessage(
-                                        "Error: a generic error occurred updating invitation status"
-                                    )
-                                )
-                            }
                     }
                     else -> {
                         // generic error
@@ -1975,9 +1969,7 @@ class FireRepository : IRepository {
                     )
                 )
             }
-
         }
-
     }
 
 
@@ -1987,12 +1979,12 @@ class FireRepository : IRepository {
      */
     override fun saveAndSendInvitation(
         notification: Notification,
-        fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit
+        fireCallback: (FireResult<Unit, SaveAndSendInvitationFireError>) -> Unit
     ) {
         // retrieve current user
         this.getUser(notification.senderUid) { fireResult ->
             if(fireResult.isError()) {
-                fireCallback(DefaultInsertFireError.default(
+                fireCallback(SaveAndSendInvitationFireError.beforeSaveAndSendPush(
                     "Error: an error occurred retrieving user info"
                 ))
                 return@getUser
@@ -2005,9 +1997,7 @@ class FireRepository : IRepository {
 
             this.saveInvitation(notification) { fireResult2 ->
                 if(fireResult2.isError()) {
-                    fireCallback(DefaultInsertFireError.default(
-                        "Error: an error occurred saving invitation"
-                    ))
+                    fireCallback(Error(fireResult2.errorType()))
                     return@saveInvitation
                 }
 
@@ -2016,7 +2006,7 @@ class FireRepository : IRepository {
                 // retrieve receiver user
                 this.getUser(notification.receiverUid) getUser2@ { fireResult3 ->
                     if(fireResult3.isError()) {
-                        fireCallback(DefaultInsertFireError.default(
+                        fireCallback(SaveAndSendInvitationFireError.beforeSendPush(
                             "Error: an error occurred sending push notification"
                         ))
                         return@getUser2
@@ -2033,7 +2023,7 @@ class FireRepository : IRepository {
 
                     // * create and send push notification to the receiver *
 
-                    this.createInvitationNotification(
+                    createInvitationNotification(
                         receiverUser.notificationsToken,
                         notification.reservationId,
                         notification.description,

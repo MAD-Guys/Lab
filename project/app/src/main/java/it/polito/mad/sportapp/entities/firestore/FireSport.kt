@@ -43,6 +43,14 @@ data class FireSport(
         }
     }
 
+    fun clone(): FireSport {
+        return FireSport(
+            id,
+            name,
+            emoji,
+            maxParticipants
+        )
+    }
 
 
     companion object {
@@ -92,5 +100,4 @@ data class FireSport(
             )
         }
     }
-
 }
