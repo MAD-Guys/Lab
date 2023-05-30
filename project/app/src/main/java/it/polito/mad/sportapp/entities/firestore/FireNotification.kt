@@ -48,11 +48,11 @@ data class FireNotification(
                 senderId,
                 receiverId,
                 profileUrl,
-                NotificationStatus.values()[status.index],
+                NotificationStatus.values()[status.ordinal],
                 description,
                 timestamp
             )
-        } catch (dtpe: DateTimeParseException) {
+        } catch (e: DateTimeParseException) {
             Log.e(
                 "conversion error",
                 "Error: error parsing dates in converting fireNotification to notification in FireNotification.toNotification()"
@@ -161,7 +161,7 @@ enum class FireNotificationStatus(val status: String) {
     PENDING("Pending"),
     REJECTED("Rejected");
 
-    val index = ordinal
+    val index = ordinal.toLong()
 
     companion object {
         fun of(rawStatus: Long?): FireNotificationStatus? {
