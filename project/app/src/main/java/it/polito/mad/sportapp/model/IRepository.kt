@@ -26,6 +26,16 @@ interface IRepository {
     // * User methods *
 
     /**
+     * This method gets the user with its achievements given its uid Note: the result is *dynamic*,
+     * i.e. the fireCallback gets called each time the user changes (but the
+     * achievements are static)
+     */
+    fun getUserWithAchievements(
+        userId: String,
+        fireCallback: (FireResult<User, DefaultGetFireError>) -> Unit
+    ): FireListener
+
+    /**
      * This method gets the user given its uid **Note**: the result is
      * **dynamic**: the fireCallback gets called each time the user changes.
      * Remember to **unregister** the listener once you don't need it anymore

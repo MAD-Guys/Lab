@@ -60,11 +60,11 @@ class FireRepository : IRepository {
     /* users */
 
     /**
-     * This method gets the user given its uid Note: the result is *dynamic*,
+     * This method gets the user with its achievements given its uid Note: the result is *dynamic*,
      * i.e. the fireCallback gets called each time the user changes (but the
      * achievements are static)
      */
-    override fun getUser(
+    override fun getUserWithAchievements(
         userId: String,
         fireCallback: (FireResult<User, DefaultGetFireError>) -> Unit
     ): FireListener {
@@ -146,6 +146,79 @@ class FireRepository : IRepository {
     }
 
     /**
+     * This method gets the user given its uid **Note**: the result is
+     * **dynamic**: the fireCallback gets called each time the user changes.
+     * Remember to **unregister** the listener once you don't need it anymore
+     */
+    override fun getUser(
+        userId: String,
+        fireCallback: (FireResult<User, DefaultGetFireError>) -> Unit
+    ): FireListener {
+        val fireListener = FireListener()
+
+        val userListener = db.collection("users")
+            .document(userId)
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    Log.e(
+                        "default error",
+                        "Error: a generic error occurred retrieving user with id $userId in FireRepository.getUser(). Message: ${error.message}"
+                    )
+
+                    fireCallback(
+                        DefaultGetFireError.default(
+                            "Error: a generic error occurred retrieving user",
+                        )
+                    )
+
+                    return@addSnapshotListener
+                }
+
+                if (value == null || !value.exists()) {
+                    // no data exists
+                    fireCallback(
+                        DefaultGetFireError.notFound(
+                            "Error: User has not been found"
+                        )
+                    )
+                    return@addSnapshotListener
+                }
+
+                // * user exists *
+
+                // deserialize data from db
+                val fireUser = FireUser.deserialize(value.id, value.data)
+
+                if (fireUser == null) {
+                    // deserialization error
+                    Log.e(
+                        "deserialization error",
+                        "Error: a generic error occurred deserializing user with id $userId in FireRepository.getUser()"
+                    )
+
+                    fireCallback(
+                        DefaultGetFireError.duringDeserialization(
+                            "Error: a generic error occurred retrieving user"
+                        )
+                    )
+                    return@addSnapshotListener
+                }
+
+                // * user correctly retrieved *
+
+                // transform to user entity
+                val user = fireUser.toUser()
+
+                fireCallback(Success(user))
+            }
+
+        // track listener that will have to be unregistered
+        fireListener.add(userListener)
+
+        return fireListener
+    }
+
+    /**
      * This method gets the user given its uid Note: the result is *static*,
      * i.e. the fireCallback gets called just once
      */
@@ -192,20 +265,7 @@ class FireRepository : IRepository {
                 // transform to user entity
                 val user = fireUser.toUser()
 
-                // compute user achievements (statically)
-                this.buildAchievements(userId, user.username) { result ->
-                    when (result) {
-                        is Success -> {
-                            // attach user achievements and return successfully
-                            user.achievements = result.unwrap()
-                            fireCallback(Success(user))
-                        }
-
-                        is Error -> {
-                            fireCallback(Error(result.errorType()))
-                        }
-                    }
-                }
+                fireCallback(Success(user))
             }
             .addOnFailureListener {
                 Log.e(
