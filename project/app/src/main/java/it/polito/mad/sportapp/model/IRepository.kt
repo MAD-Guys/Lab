@@ -36,19 +36,8 @@ interface IRepository {
     ): FireListener
 
     /**
-     * This method gets the user given its uid **Note**: the result is
-     * **dynamic**: the fireCallback gets called each time the user changes.
-     * Remember to **unregister** the listener once you don't need it anymore
-     */
-    fun getUser(
-        userId: String,
-        fireCallback: (FireResult<User, DefaultGetFireError>) -> Unit
-    ): FireListener
-
-    /**
-     * This method gets the user given its uid
-     * Note: the result is *static*,
-     * i.e. the fireCallback gets called just once
+     * Retrieve the user given its id from the db
+     * Note: the result is *static* (i.e. the fireCallback gets called just once)
      */
     fun getStaticUser(
         userId: String,

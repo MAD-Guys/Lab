@@ -146,81 +146,8 @@ class FireRepository : IRepository {
     }
 
     /**
-     * This method gets the user given its uid **Note**: the result is
-     * **dynamic**: the fireCallback gets called each time the user changes.
-     * Remember to **unregister** the listener once you don't need it anymore
-     */
-    override fun getUser(
-        userId: String,
-        fireCallback: (FireResult<User, DefaultGetFireError>) -> Unit
-    ): FireListener {
-        val fireListener = FireListener()
-
-        val userListener = db.collection("users")
-            .document(userId)
-            .addSnapshotListener { value, error ->
-                if (error != null) {
-                    Log.e(
-                        "default error",
-                        "Error: a generic error occurred retrieving user with id $userId in FireRepository.getUser(). Message: ${error.message}"
-                    )
-
-                    fireCallback(
-                        DefaultGetFireError.default(
-                            "Error: a generic error occurred retrieving user",
-                        )
-                    )
-
-                    return@addSnapshotListener
-                }
-
-                if (value == null || !value.exists()) {
-                    // no data exists
-                    fireCallback(
-                        DefaultGetFireError.notFound(
-                            "Error: User has not been found"
-                        )
-                    )
-                    return@addSnapshotListener
-                }
-
-                // * user exists *
-
-                // deserialize data from db
-                val fireUser = FireUser.deserialize(value.id, value.data)
-
-                if (fireUser == null) {
-                    // deserialization error
-                    Log.e(
-                        "deserialization error",
-                        "Error: a generic error occurred deserializing user with id $userId in FireRepository.getUser()"
-                    )
-
-                    fireCallback(
-                        DefaultGetFireError.duringDeserialization(
-                            "Error: a generic error occurred retrieving user"
-                        )
-                    )
-                    return@addSnapshotListener
-                }
-
-                // * user correctly retrieved *
-
-                // transform to user entity
-                val user = fireUser.toUser()
-
-                fireCallback(Success(user))
-            }
-
-        // track listener that will have to be unregistered
-        fireListener.add(userListener)
-
-        return fireListener
-    }
-
-    /**
-     * This method gets the user given its uid Note: the result is *static*,
-     * i.e. the fireCallback gets called just once
+     * This method statically retrieve the user given its id from the Firestore cloud db
+     * **Note**: the result is *static* (i.e. the fireCallback gets called just once)
      */
     override fun getStaticUser(
         userId: String,
@@ -1435,14 +1362,14 @@ class FireRepository : IRepository {
         val fireListener = FireListener()
 
         // first retrieve the user
-        this.getUser(userId) { fireResult ->
+        this.getStaticUser(userId) { fireResult ->
             if (fireResult.isError()) {
                 fireCallback(
                     DefaultGetFireError.default(
                         "Error: an error occurred retrieving the reservations"
                     )
                 )
-                return@getUser
+                return@getStaticUser
             }
 
             val user = fireResult.unwrap()
@@ -2522,14 +2449,14 @@ class FireRepository : IRepository {
         fireCallback: (FireResult<Unit, SaveAndSendInvitationFireError>) -> Unit
     ) {
         // retrieve current user
-        this.getUser(notification.senderUid) { fireResult ->
+        this.getStaticUser(notification.senderUid) { fireResult ->
             if (fireResult.isError()) {
                 fireCallback(
                     SaveAndSendInvitationFireError.beforeSaveAndSendPush(
                         "Error: an error occurred retrieving user info"
                     )
                 )
-                return@getUser
+                return@getStaticUser
             }
 
             val user = fireResult.unwrap()
@@ -2546,7 +2473,7 @@ class FireRepository : IRepository {
                 // * notification saved successfully here *
 
                 // retrieve receiver user
-                this.getUser(notification.receiverUid) getUser2@{ fireResult3 ->
+                this.getStaticUser(notification.receiverUid) getUser2@{ fireResult3 ->
                     if (fireResult3.isError()) {
                         fireCallback(
                             SaveAndSendInvitationFireError.beforeSendPush(
