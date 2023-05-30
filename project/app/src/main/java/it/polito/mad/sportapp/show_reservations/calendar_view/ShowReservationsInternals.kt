@@ -20,7 +20,6 @@ import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.view.MonthDayBinder
-import it.polito.mad.sportapp.application_utilities.logOut
 import it.polito.mad.sportapp.R
 import java.time.DayOfWeek
 import java.time.LocalDate

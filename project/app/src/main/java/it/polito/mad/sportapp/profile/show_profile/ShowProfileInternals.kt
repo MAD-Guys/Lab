@@ -19,11 +19,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.Chip
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.SportAppViewModel
-import it.polito.mad.sportapp.entities.room.RoomAchievement
-import it.polito.mad.sportapp.entities.room.RoomSportLevel
+import it.polito.mad.sportapp.entities.Achievement
+import it.polito.mad.sportapp.entities.SportLevel
 import it.polito.mad.sportapp.application_utilities.logOut
 import it.polito.mad.sportapp.profile.Level
-import it.polito.mad.sportapp.profile.Sport
+import it.polito.mad.sportapp.profile.ProfileSport
 import it.polito.mad.sportapp.application_utilities.setProfilePictureSize
 import it.polito.mad.sportapp.application_utilities.showToasty
 
@@ -209,7 +209,7 @@ internal fun ShowProfileFragment.observersSetup() {
     }
 }
 
-internal fun ShowProfileFragment.setupSports(userSports: List<RoomSportLevel>) {
+internal fun ShowProfileFragment.setupSports(userSports: List<SportLevel>) {
     /* manage sports */
 
     // clean sports container amd sportChips
@@ -219,11 +219,11 @@ internal fun ShowProfileFragment.setupSports(userSports: List<RoomSportLevel>) {
     // create sports chips
     userSports.forEach {
 
-        val sportId: Int = getDbSportId(it.sport!!)
+        val sportId: String? = getDbSportId(it.sport!!)
         val sportString: String = getDbSportName(it.sport) ?: it.sport
 
-        if (sportId != -1) {
-            val sport = Sport.from(sportId, it.sport, sportString, it.level!!)
+        if (sportId != null) {
+            val sport = ProfileSport.from(sportId, it.sport, sportString, it.level!!)
             val sportChip = createSportChip(sport, sportsContainer)
 
             sportChips[it.sport] = sportChip
@@ -241,7 +241,7 @@ internal fun ShowProfileFragment.setupSports(userSports: List<RoomSportLevel>) {
     vm.setSportsInflated(true)
 }
 
-private fun ShowProfileFragment.getDbSportId(sportName: String): Int {
+private fun ShowProfileFragment.getDbSportId(sportName: String): String? {
 
     vm.sportsList.value?.let { sportList ->
         val sport = sportList.find { it.name == sportName }
@@ -250,7 +250,7 @@ private fun ShowProfileFragment.getDbSportId(sportName: String): Int {
         }
     }
 
-    return -1
+    return null
 }
 
 private fun ShowProfileFragment.getDbSportName(sportName: String): String? {
@@ -308,7 +308,7 @@ internal fun ShowProfileFragment.inflateAchievementsLayout() {
     achievementsContainer.addView(sportsAchievements)
 }
 
-internal fun ShowProfileFragment.updateAchievements(achievementsMap: Map<RoomAchievement, Boolean>) {
+internal fun ShowProfileFragment.updateAchievements(achievementsMap: Map<Achievement, Boolean>) {
 
     achievementsMap.forEach { (achievement, boolean) ->
 
@@ -316,7 +316,7 @@ internal fun ShowProfileFragment.updateAchievements(achievementsMap: Map<RoomAch
 
         when (achievement) {
             // one sport achievement
-            RoomAchievement.AtLeastOneSport -> {
+            Achievement.AtLeastOneSport -> {
                 achievementLayout = requireView().findViewById(R.id.at_least_one_sport_layout)
 
                 if (boolean) {
@@ -331,7 +331,7 @@ internal fun ShowProfileFragment.updateAchievements(achievementsMap: Map<RoomAch
             }
 
             // five sports achievement
-            RoomAchievement.AtLeastFiveSports -> {
+            Achievement.AtLeastFiveSports -> {
                 achievementLayout = requireView().findViewById(R.id.at_least_five_sports_layout)
 
                 if (boolean) {
@@ -346,7 +346,7 @@ internal fun ShowProfileFragment.updateAchievements(achievementsMap: Map<RoomAch
             }
 
             // all sports achievement
-            RoomAchievement.AllSports -> {
+            Achievement.AllSports -> {
                 achievementLayout = requireView().findViewById(R.id.all_sports_layout)
 
                 if (boolean) {
@@ -361,7 +361,7 @@ internal fun ShowProfileFragment.updateAchievements(achievementsMap: Map<RoomAch
             }
 
             // three matches achievement
-            RoomAchievement.AtLeastThreeMatches -> {
+            Achievement.AtLeastThreeMatches -> {
                 achievementLayout = requireView().findViewById(R.id.at_least_three_matches_layout)
 
                 if (boolean) {
@@ -376,7 +376,7 @@ internal fun ShowProfileFragment.updateAchievements(achievementsMap: Map<RoomAch
             }
 
             // ten matches achievement
-            RoomAchievement.AtLeastTenMatches -> {
+            Achievement.AtLeastTenMatches -> {
                 achievementLayout = requireView().findViewById(R.id.at_least_ten_matches_layout)
 
                 if (boolean) {
@@ -391,7 +391,7 @@ internal fun ShowProfileFragment.updateAchievements(achievementsMap: Map<RoomAch
             }
 
             // twenty five matches achievement
-            RoomAchievement.AtLeastTwentyFiveMatches -> {
+            Achievement.AtLeastTwentyFiveMatches -> {
                 achievementLayout =
                     requireView().findViewById(R.id.at_least_twenty_five_matches_layout)
 
@@ -425,7 +425,7 @@ internal fun ShowProfileFragment.setupBottomBar() {
     bottomBar.menu.findItem(R.id.profile).isChecked = true
 }
 
-internal fun ShowProfileFragment.createSportChip(sport: Sport, parent: ViewGroup): Chip {
+internal fun ShowProfileFragment.createSportChip(sport: ProfileSport, parent: ViewGroup): Chip {
     val chip = layoutInflater.inflate(R.layout.show_profile_chip, parent, false) as Chip
 
     chip.apply {

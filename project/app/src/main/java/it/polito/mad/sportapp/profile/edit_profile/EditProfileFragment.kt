@@ -34,7 +34,7 @@ import it.polito.mad.sportapp.application_utilities.fastblur
 import it.polito.mad.sportapp.profile.Gender
 import it.polito.mad.sportapp.profile.Level
 import it.polito.mad.sportapp.profile.ProfileViewModel
-import it.polito.mad.sportapp.profile.Sport
+import it.polito.mad.sportapp.profile.ProfileSport
 import it.polito.mad.sportapp.profile.SportChips
 import it.polito.mad.sportapp.application_utilities.rotateBitmap
 import it.polito.mad.sportapp.application_utilities.uriToBitmap
@@ -61,7 +61,7 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
     internal lateinit var vm: ProfileViewModel
 
     // Sports temporary state
-    internal var sportsTemp: MutableMap<String, Sport> = mutableMapOf()
+    internal var sportsTemp: MutableMap<String, ProfileSport> = mutableMapOf()
 
     // used to distinguish between tapped sports
     internal lateinit var consideredSport: String

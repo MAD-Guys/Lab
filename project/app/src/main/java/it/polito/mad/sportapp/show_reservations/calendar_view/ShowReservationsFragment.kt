@@ -110,13 +110,4 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        // update events list
-        // the invocation is in the onResume method because the list of events
-        // should be refreshed each time this activity is resumed
-        vm.loadEventsFromDb()
-    }
-
 }

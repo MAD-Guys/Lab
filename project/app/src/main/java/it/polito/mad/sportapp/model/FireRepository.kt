@@ -1288,6 +1288,7 @@ class FireRepository : IRepository {
                     // (1) check slots availabilities (excluding the actual reservation, if any)
                     this.checkSlotsAvailabilities(reservation) { fireResult4 ->
                         if (fireResult4.isError()) {
+                            // slots are not available!
                             fireCallback(Error(fireResult4.errorType()))
                             return@checkSlotsAvailabilities
                         }
@@ -1298,6 +1299,7 @@ class FireRepository : IRepository {
                         // (excluding the actual reservation ones', if any)
                         this.checkEquipmentsAvailabilities(reservation) { fireResult5 ->
                             if (fireResult5.isError()) {
+                                // equipments are not available!
                                 fireCallback(Error(fireResult5.errorType()))
                                 return@checkEquipmentsAvailabilities
                             }
