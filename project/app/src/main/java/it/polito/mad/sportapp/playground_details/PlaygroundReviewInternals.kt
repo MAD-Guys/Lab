@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.application_utilities.showToasty
 import java.time.LocalDateTime
@@ -38,7 +39,7 @@ internal fun PlaygroundDetailsFragment.initYourReview() {
     writeReview = yourReview.findViewById(R.id.writeReview)
 
     //first of all: check if the logged user can review this playground
-    if(viewModel.loggedUserCanReviewThisPlayground()) {
+    if(viewModel.loggedUserCanReviewThisPlayground.value == true) {
 
         //Common initializations
         if (viewModel.yourReview.value?.username.isNullOrBlank())
@@ -154,7 +155,7 @@ internal fun PlaygroundDetailsFragment.initReviewList() {
     }
     reviewAdapter.reviews.clear()
     viewModel.playground.value?.reviewList?.let {
-        reviewAdapter.reviews.addAll(it.filter { r -> r.userId != "1" }) //TODO: replace 1 with the id of the logged user
+        reviewAdapter.reviews.addAll(it.filter { r -> r.userId != FirebaseAuth.getInstance().currentUser?.uid!! })
     }
     reviewAdapter.notifyDataSetChanged()
 }
@@ -167,10 +168,6 @@ internal fun PlaygroundDetailsFragment.handleQualityRatingBar(rating: Float) {
     if(viewModel.isEditMode()){
         viewModel.saveEditStatus(yourReviewEditTitle.text.toString(), yourReviewEditText.text.toString())
     }
-
-    // reload the playground with the new rating
-    viewModel.clearPlayground()
-    viewModel.getPlaygroundFromDb(viewModel.playground.value!!.playgroundId)
 }
 
 internal fun PlaygroundDetailsFragment.handleFacilitiesRatingBar(rating: Float) {
@@ -181,10 +178,6 @@ internal fun PlaygroundDetailsFragment.handleFacilitiesRatingBar(rating: Float) 
     if(viewModel.isEditMode()){
         viewModel.saveEditStatus(yourReviewEditTitle.text.toString(), yourReviewEditText.text.toString())
     }
-
-    // reload the playground with the new rating
-    viewModel.clearPlayground()
-    viewModel.getPlaygroundFromDb(viewModel.playground.value!!.playgroundId)
 }
 
 internal fun PlaygroundDetailsFragment.handleAddReviewButton() {
@@ -212,10 +205,6 @@ internal fun PlaygroundDetailsFragment.handleDeleteReviewButton() {
                 requireContext(),
                 "Review correctly deleted"
             )
-
-            // reload the playground with the new rating
-            viewModel.clearPlayground()
-            viewModel.getPlaygroundFromDb(viewModel.playground.value!!.playgroundId)
         }
         .setNegativeButton("NO") { d, _ -> d.cancel() }
         .create()

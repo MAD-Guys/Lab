@@ -92,7 +92,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         eventId = arguments?.getInt("id_event") ?: -1
 
         if (eventId != -1) {
-            fireListener = viewModel.getReservationFromDb(/*eventId*/"8kE1VxbGM1AOIB02WjQF") //TODO: replace with the correct reservationId
+            fireListener = viewModel.getReservationFromDb(/*eventId "8kE1VxbGM1AOIB02WjQF"*/ "VmPmrEYpoNiZorNJ3P8U") //TODO: replace with the correct reservationId
         }
 
         // Generate QR code
@@ -150,15 +150,12 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                 // show delete reservation button only if the reservation starts in the future
                 val currentDateTime = LocalDateTime.now()
 
-                if (currentDateTime.isBefore(reservation.startLocalDateTime)) {
+
+                if (currentDateTime.isBefore(reservation.startLocalDateTime) && reservation.userId == viewModel.userId) {
                     deleteButton.visibility = Button.VISIBLE
+                    inviteButton.visibility = Button.VISIBLE
                 }else{
                     leaveReviewButton.visibility = Button.VISIBLE
-                }
-
-                // show Invite button only to the owner
-                if(reservation.userId != viewModel.userId){
-                    inviteButton.visibility = Button.GONE
                 }
 
                 progressBar.visibility = View.GONE

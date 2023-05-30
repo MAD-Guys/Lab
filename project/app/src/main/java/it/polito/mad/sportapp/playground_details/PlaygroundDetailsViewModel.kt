@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.Equipment
 import it.polito.mad.sportapp.entities.PlaygroundInfo
@@ -25,6 +26,8 @@ class PlaygroundDetailsViewModel @Inject constructor(
 
     private val iRepository = FireRepository()
 
+    val userId = FirebaseAuth.getInstance().currentUser?.uid
+
     private val _playground = MutableLiveData<PlaygroundInfo?>()
     val playground: LiveData<PlaygroundInfo?> = _playground
 
@@ -37,7 +40,8 @@ class PlaygroundDetailsViewModel @Inject constructor(
     private var _edit = false
     private var _tempTitle = ""
     private var _tempText = ""
-    private var _loggedUserCanReviewThisPlayground = false
+    private var _loggedUserCanReviewThisPlayground = MutableLiveData<Boolean?>()
+    val loggedUserCanReviewThisPlayground: LiveData<Boolean?> = _loggedUserCanReviewThisPlayground
 
     fun getPlaygroundFromDb(id: String): FireListener {
 
@@ -48,24 +52,6 @@ class PlaygroundDetailsViewModel @Inject constructor(
 
                     // get playground from database
                     _playground.postValue(fireResult.value)
-
-                    // ask if the current user can review
-                    playground.value?.let {
-                        iRepository.loggedUserCanReviewPlayground(
-                            "1", //TODO
-                            it.playgroundId
-                        ) { it ->
-                            when (it) {
-                                is FireResult.Error -> Log.d(
-                                    fireResult.errorType().message(),
-                                    fireResult.errorMessage()
-                                )
-
-                                is FireResult.Success -> _loggedUserCanReviewThisPlayground =
-                                    it.value
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -78,9 +64,9 @@ class PlaygroundDetailsViewModel @Inject constructor(
     fun setYourReview() {
         if (playground.value != null) {
             val review =
-                playground.value!!.reviewList.find { it.userId == "1" } //TODO: change 1 with the logged user id
+                playground.value!!.reviewList.find { it.userId == userId!! }
             _yourReview.value = review ?: Review(
-                null, "1", playground.value!!.playgroundId, "",
+                null, userId!!, playground.value!!.playgroundId, "",
                 0f, 0f, "", LocalDateTime.now().toString(), LocalDateTime.now().toString()
             )
         }
@@ -89,7 +75,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
     fun updateReview(qualityRating: Float, facilitiesRating: Float, title: String, text: String) {
         val updatedReview = Review(
             _yourReview.value?.id,
-            "1", //TODO: change 1 with the logged user id
+            userId!!,
             _yourReview.value?.playgroundId ?: playground.value!!.playgroundId,
             title,
             qualityRating,
@@ -111,7 +97,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
     fun updateQualityRating(r: Float) {
         val updatedReview = Review(
             _yourReview.value?.id,
-            "1", //TODO: change 1 with the logged user id
+            userId!!,
             _yourReview.value?.playgroundId ?: playground.value!!.playgroundId,
             _yourReview.value?.title ?: "",
             r,
@@ -133,7 +119,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
     fun updateFacilitiesRating(r: Float) {
         val updatedReview = Review(
             _yourReview.value?.id,
-            "1", //TODO: change 1 with the logged user id
+            userId!!,
             _yourReview.value?.playgroundId ?: playground.value!!.playgroundId,
             _yourReview.value?.title ?: "",
             _yourReview.value?.qualityRating ?: 0f,
@@ -177,9 +163,13 @@ class PlaygroundDetailsViewModel @Inject constructor(
 
     fun getTempTitle() = _tempTitle
     fun getTempText() = _tempText
+
+    /*
     fun loggedUserCanReviewThisPlayground(): Boolean {
         return _loggedUserCanReviewThisPlayground
     }
+
+     */
 
     fun loadEquipmentsFromDb() {
         _playground.value?.let {
@@ -199,6 +189,32 @@ class PlaygroundDetailsViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun setLoggedUserCanReviewThisPlayground() {
+
+        _loggedUserCanReviewThisPlayground.postValue(true)
+
+        /*
+        // ask if the current user can review
+        playground.value?.let {
+            iRepository.loggedUserCanReviewPlayground(
+                userId!!,
+                it.playgroundId
+            ) { it ->
+                when (it) {
+                    is FireResult.Error -> Log.e(
+                        it.errorType().message(),
+                        it.errorMessage()
+                    )
+
+                    is FireResult.Success -> _loggedUserCanReviewThisPlayground.postValue(it.value)
+
+                }
+            }
+        }
+
+         */
     }
 
 }

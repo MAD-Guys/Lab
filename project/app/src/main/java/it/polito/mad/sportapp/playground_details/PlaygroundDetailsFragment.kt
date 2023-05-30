@@ -126,6 +126,9 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
                 if(viewModel.equipments.value == null) {
                     viewModel.loadEquipmentsFromDb()
                 }
+                if(viewModel.loggedUserCanReviewThisPlayground.value == null){
+                    viewModel.setLoggedUserCanReviewThisPlayground()
+                }
                 viewModel.setYourReview()
                 initViews()
                 initYourReview()
@@ -156,6 +159,12 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
         viewModel.equipments.observe(viewLifecycleOwner) {
             viewModel.equipments.value?.let {
                 initEquipments()
+            }
+        }
+
+        viewModel.loggedUserCanReviewThisPlayground.observe(viewLifecycleOwner) {
+            if(viewModel.loggedUserCanReviewThisPlayground.value == true){
+                initYourReview()
             }
         }
     }
