@@ -2,18 +2,27 @@ package it.polito.mad.sportapp.playgrounds
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.application_utilities.showToasty
 import it.polito.mad.sportapp.playgrounds.recycler_view.PlaygroundsAdapter
 import it.polito.mad.sportapp.playgrounds.PlaygroundsViewModel.PlaygroundOrderKey
 
@@ -30,12 +39,20 @@ class PlaygroundsBySportFragment : Fragment(R.layout.playgrounds_view)
     private lateinit var overlayBarSportButton: View
     private lateinit var overlayBarCenterButton: View
 
+    private var actionBar: ActionBar? = null
+
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // get activity action bar
+        actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+
         // retrieve view model from activity
         viewModel = ViewModelProvider(requireActivity())[PlaygroundsViewModel::class.java]
+
+        //menu init
+        menuInit()
 
         progressBar = view.findViewById(R.id.progressBar)
         scrollView = view.findViewById(R.id.playgrounds_scroll_view_container)
@@ -90,6 +107,20 @@ class PlaygroundsBySportFragment : Fragment(R.layout.playgrounds_view)
                 scrollView.visibility = View.VISIBLE
             }
         }
+
+        // error observer
+        viewModel.getError.observe(viewLifecycleOwner) {
+            if(it != null){
+                showToasty(
+                    "error",
+                    requireContext(),
+                    it.message()
+                )
+
+                // go back
+                findNavController().popBackStack()
+            }
+        }
     }
 
     override fun onResume() {
@@ -132,5 +163,22 @@ class PlaygroundsBySportFragment : Fragment(R.layout.playgrounds_view)
 
         // clear listener
         overlayBarCenterButton.setOnClickListener(null)
+    }
+
+    private fun menuInit() {
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                actionBar?.let {
+                    it.setDisplayHomeAsUpEnabled(false)
+                    it.title = "Playgrounds"
+                }
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return false
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 }

@@ -100,14 +100,13 @@ internal fun InvitationFragment.initUserList() {
     userAdapter.notifyDataSetChanged()
 }
 
-internal val InvitationFragment.inviteButtonListener: (/*Int*/String, String) -> Unit
-    get() = { userId: /*Int*/String, username: String ->
+internal val InvitationFragment.inviteButtonListener: (String, String) -> Unit
+    get() = { userId: String, username: String ->
 
         AlertDialog.Builder(requireContext())
             .setMessage("Do you want to send an invitation to @$username?")
             .setPositiveButton("YES") { _, _ ->
-                viewModel.sendInvitation(userId, reservationId)
-                showToasty("success", this.requireContext(), "Invitation sent to @$username")
+                viewModel.sendInvitation(userId, reservationId, username)
             }
             .setNegativeButton("NO") { d, _ -> d.cancel() }
             .create()
