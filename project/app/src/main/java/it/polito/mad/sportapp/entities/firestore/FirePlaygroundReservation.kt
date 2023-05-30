@@ -18,15 +18,15 @@ data class FirePlaygroundReservation(
     val timestamp: String
 ) {
     /**
-     * Serialize the FirePlaygroundReservation object into a Map<String, Any> object
-     * to send to the Firestore cloud database
+     * Serialize the FirePlaygroundReservation object into a Map<String, Any>
+     * object to send to the Firestore cloud database
      */
     fun serialize(): Map<String, Any?> {
         return mapOf(
             // no id included in serialization
             "playgroundId" to playgroundId,
             "user" to user.serialize(),
-            "participants" to participants.map{ it.serialize() } ,
+            "participants" to participants.map { it.serialize() },
             "startDateTime" to startDateTime,
             "endDateTime" to endDateTime,
             "totalPrice" to totalPrice,
@@ -36,8 +36,9 @@ data class FirePlaygroundReservation(
     }
 
     /**
-     * Convert the FirePlaygroundReservation object into a DetailedReservation entity
-     * passing the FirePlaygroundSport and the list of FireEquipmentReservationSlot objects
+     * Convert the FirePlaygroundReservation object into a DetailedReservation
+     * entity passing the FirePlaygroundSport and the list of
+     * FireEquipmentReservationSlot objects
      */
     fun toDetailedReservation(
         firePlaygroundSport: FirePlaygroundSport,
@@ -59,7 +60,7 @@ data class FirePlaygroundReservation(
             firePlaygroundSport.playgroundName,
             firePlaygroundSport.pricePerHour.toFloat(),
             totalPrice.toFloat(),
-            participants.map{ it.username }
+            participants.map { it.username }
         )
         detailedReservation.equipments =
             fireEquipmentReservationSlotList.map { it.toDetailedEquipmentReservation() }
@@ -68,9 +69,7 @@ data class FirePlaygroundReservation(
     }
 
     companion object {
-        /**
-         * Create a FirePlaygroundReservation object from a NewReservation object
-         */
+        /** Create a FirePlaygroundReservation object from a NewReservation object */
         fun fromNewReservation(
             reservation: NewReservation,
             user: FireUserForPlaygroundReservation,
@@ -105,11 +104,12 @@ data class FirePlaygroundReservation(
         }
 
         /**
-         * Create a FirePlaygroundReservation object from raw Map<String,Any?> data coming from Firestore
+         * Create a FirePlaygroundReservation object from raw Map<String,Any?> data
+         * coming from Firestore
          */
         fun deserialize(id: String, data: Map<String, Any?>?): FirePlaygroundReservation? {
             if (data == null) {
-                Log.d(
+                Log.e(
                     "deserialization error",
                     "Error deserializing FirePlaygroundReservation the data passed is null in FirePlaygroundReservation.deserialize()"
                 )
@@ -117,19 +117,22 @@ data class FirePlaygroundReservation(
             }
 
             val playgroundId = data["playgroundId"] as? String
+
             @Suppress("UNCHECKED_CAST")
             val rawUser = data["user"] as? Map<String, Any>
             val rawParticipants = data["participants"] as? List<*>
             val startDateTime = data["startDateTime"] as? String
             val endDateTime = data["endDateTime"] as? String
-            val totalPrice = (data["totalPrice"] as? Double) ?: (data["totalPrice"] as? Long)?.toDouble()
+            val totalPrice =
+                (data["totalPrice"] as? Double) ?: (data["totalPrice"] as? Long)?.toDouble()
             val additionalRequests = data["additionalRequests"] as? String?
             val timestamp = data["timestamp"] as? String
 
             if (playgroundId == null || rawUser == null || rawParticipants == null ||
                 startDateTime == null || endDateTime == null || totalPrice == null ||
-                timestamp == null) {
-                Log.d(
+                timestamp == null
+            ) {
+                Log.e(
                     "deserialization error",
                     "Error deserializing FirePlaygroundReservation plain properties in FirePlaygroundReservation.deserialize()"
                 )
@@ -138,8 +141,8 @@ data class FirePlaygroundReservation(
 
             val user = FireUserForPlaygroundReservation.deserialize(rawUser)
 
-            if(user == null) {
-                Log.d(
+            if (user == null) {
+                Log.e(
                     "deserialization error",
                     "Error deserializing user in FirePlaygroundReservation.deserialize()"
                 )
@@ -150,11 +153,11 @@ data class FirePlaygroundReservation(
 
             for (rawParticipant in rawParticipants) {
                 @Suppress("UNCHECKED_CAST")
-                val participantMap = rawParticipant as? Map<String,Any>
+                val participantMap = rawParticipant as? Map<String, Any>
                 val participant = FireUserForPlaygroundReservation.deserialize(participantMap)
 
                 if (participant == null) {
-                    Log.d(
+                    Log.e(
                         "deserialization error",
                         "Error deserializing participant in FirePlaygroundReservation.deserialize()"
                     )

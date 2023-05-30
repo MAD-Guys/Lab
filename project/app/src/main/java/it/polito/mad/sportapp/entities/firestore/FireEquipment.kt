@@ -27,8 +27,8 @@ data class FireEquipment(
     }
 
     /**
-     * Serialize the FireEquipment object into a Map<String, Any> object
-     * to send to the Firestore cloud database
+     * Serialize the FireEquipment object into a Map<String, Any> object to
+     * send to the Firestore cloud database
      */
     fun serialize(withId: Boolean = false): Map<String, Any> {
         return if (withId) {
@@ -40,8 +40,7 @@ data class FireEquipment(
                 "unitPrice" to unitPrice,
                 "maxQuantity" to maxQuantity
             )
-        }
-        else {
+        } else {
             mapOf(
                 // no id included in serialization
                 "name" to name,
@@ -53,9 +52,7 @@ data class FireEquipment(
         }
     }
 
-    /**
-     * Convert the FireUser object into a User entity
-     */
+    /** Convert the FireUser object into a User entity */
     fun toEquipment(): Equipment {
         return Equipment(
             id,
@@ -79,9 +76,7 @@ data class FireEquipment(
     }
 
     companion object {
-        /**
-         * Convert an Equipment object into a FireEquipment object
-         */
+        /** Convert an Equipment object into a FireEquipment object */
 
         fun from(equipment: Equipment): FireEquipment {
             return FireEquipment(
@@ -96,31 +91,38 @@ data class FireEquipment(
 
 
         /**
-         * Deserialize a Map<String,Any> coming from Firestore in a proper FireUser object;
-         * it returns 'null' if the deserialization fails
+         * Deserialize a Map<String,Any> coming from Firestore in a proper FireUser
+         * object; it returns 'null' if the deserialization fails
          */
         fun deserialize(id: String?, fireMap: Map<String, Any>?): FireEquipment? {
             if (id == null) {
                 // deserialization error
-                Log.d("deserialization error", "trying to deserialize a equipment with null id in FireEquipment.deserialize()")
+                Log.e(
+                    "deserialization error",
+                    "trying to deserialize a equipment with null id in FireEquipment.deserialize()"
+                )
                 return null
             }
 
             if (fireMap == null) {
                 // deserialization error
-                Log.d("deserialization error", "trying to deserialize a equipment with null data in FireEquipment.deserialize()")
+                Log.e(
+                    "deserialization error",
+                    "trying to deserialize a equipment with null data in FireEquipment.deserialize()"
+                )
                 return null
             }
 
             val name = fireMap["name"] as? String
             val sportId = fireMap["sportId"] as? String
             val sportCenterId = fireMap["sportCenterId"] as? String
-            val unitPrice = (fireMap["unitPrice"] as? Double) ?: (fireMap["unitPrice"] as? Long)?.toDouble()
+            val unitPrice =
+                (fireMap["unitPrice"] as? Double) ?: (fireMap["unitPrice"] as? Long)?.toDouble()
             val maxQuantity = fireMap["maxQuantity"] as? Long
 
             if (name == null || sportId == null || sportCenterId == null || unitPrice == null || maxQuantity == null) {
                 // deserialization error
-                Log.d("deserialization error", "Error deserializing equipment plain properties")
+                Log.e("deserialization error", "Error deserializing equipment plain properties")
                 return null
             }
 

@@ -6,9 +6,10 @@ import it.polito.mad.sportapp.entities.User
 data class FireUserForPlaygroundReservation(
     val id: String,
     val username: String
-){
+) {
     /**
-     * Serialize FireUserForPlaygroundReservation document data to send it to cloud firestore db
+     * Serialize FireUserForPlaygroundReservation document data to send it to
+     * cloud firestore db
      */
     fun serialize(): Map<String, Any> {
         return mapOf(
@@ -19,11 +20,12 @@ data class FireUserForPlaygroundReservation(
 
     companion object {
         /**
-         * Deserialize a Map<String,Any> coming from Firestore in a proper FireUserForPlaygroundReservation object
+         * Deserialize a Map<String,Any> coming from Firestore in a proper
+         * FireUserForPlaygroundReservation object
          */
-        fun deserialize(data: Map<String,Any>?): FireUserForPlaygroundReservation? {
+        fun deserialize(data: Map<String, Any>?): FireUserForPlaygroundReservation? {
             if (data == null) {
-                Log.d(
+                Log.e(
                     "deserialization error",
                     "Error deserializing FireUserForPlaygroundReservation, the data passed is null in FireUserForPlaygroundReservation.deserialize()"
                 )
@@ -34,7 +36,7 @@ data class FireUserForPlaygroundReservation(
             val username = data["username"] as? String
 
             if (id == null || username == null) {
-                Log.d(
+                Log.e(
                     "deserialization error",
                     "Error deserializing user properties in FireUserForPlaygroundReservation.deserialize()"
                 )
@@ -47,9 +49,7 @@ data class FireUserForPlaygroundReservation(
             )
         }
 
-        /**
-         * Create a FireUserForPlaygroundReservation from a User entity
-         */
+        /** Create a FireUserForPlaygroundReservation from a User entity */
         fun from(user: User): FireUserForPlaygroundReservation {
             return FireUserForPlaygroundReservation(
                 user.id!!,

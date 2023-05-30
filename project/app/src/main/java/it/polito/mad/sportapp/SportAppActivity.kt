@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.navigation.NavigationBarView
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.application_utilities.checkIfUserIsLoggedIn
 import it.polito.mad.sportapp.application_utilities.setApplicationLocale
@@ -24,6 +25,7 @@ import it.polito.mad.sportapp.application_utilities.toastyInit
 import it.polito.mad.sportapp.notifications.manageNotification
 import it.polito.mad.sportapp.playgrounds.PlaygroundsViewModel
 import it.polito.mad.sportapp.profile.ProfileViewModel
+import it.polito.mad.sportapp.show_reservations.ShowReservationsViewModel
 
 @AndroidEntryPoint
 class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener {
@@ -39,10 +41,14 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         }
     }
 
+    // authentication listener
+    private lateinit var authenticationListener: FirebaseAuth.AuthStateListener
+
     // activity view models
     private lateinit var activityVm: SportAppViewModel
-    private lateinit var profileVm: ProfileViewModel
-    private lateinit var playgroundsVm: PlaygroundsViewModel
+    private var profileVm: ProfileViewModel? = null
+    private var playgroundsVm: PlaygroundsViewModel? = null
+    private var showReservationVm: ShowReservationsViewModel? = null
 
     private lateinit var bottomNavigationView: NavigationBarView
     private lateinit var navController: NavController
@@ -61,8 +67,15 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
 
         // initialize activity view models
         activityVm = ViewModelProvider(this)[SportAppViewModel::class.java]
-        profileVm = ViewModelProvider(this)[ProfileViewModel::class.java]
-        playgroundsVm = ViewModelProvider(this)[PlaygroundsViewModel::class.java]
+
+        // initialize authentication listener
+        authenticationListener = FirebaseAuth.AuthStateListener {
+            if (checkIfUserIsLoggedIn()) {
+                profileVm = ViewModelProvider(this)[ProfileViewModel::class.java]
+                playgroundsVm = ViewModelProvider(this)[PlaygroundsViewModel::class.java]
+                showReservationVm = ViewModelProvider(this)[ShowReservationsViewModel::class.java]
+            }
+        }
 
         /* bottom bar */
 
@@ -77,10 +90,6 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
 
         // set bottom navigation bar listener
         bottomNavigationView.setOnItemSelectedListener(this)
-
-        // get new notifications from db
-        //TODO: setup firestore db properly and change the following line of code
-        activityVm.initializeNotificationsList()
 
         // configure toasts appearance
         toastyInit()
@@ -137,11 +146,18 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
     override fun onStart() {
         super.onStart()
 
+        // add authentication listeners
+        FirebaseAuth.getInstance().addAuthStateListener(authenticationListener)
+
         // request notification permission
         askNotificationPermission()
+    }
 
-        //TODO: setup firestore db properly and delete the following line of code
-        activityVm.startNotificationThread()
+    override fun onPause() {
+        super.onPause()
+
+        // remove authentication listeners
+        FirebaseAuth.getInstance().removeAuthStateListener(authenticationListener)
     }
 
     // manage notification click when the activity instance is already created

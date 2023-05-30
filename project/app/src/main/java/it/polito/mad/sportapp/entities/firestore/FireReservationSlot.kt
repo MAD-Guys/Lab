@@ -33,14 +33,13 @@ data class FireReservationSlot(
     companion object {
 
         /**
-         * Starting from a NewReservation object, create a list of FireReservationSlot objects
-         * subdividing the reservation into slots
+         * Starting from a NewReservation object, create a list of
+         * FireReservationSlot objects subdividing the reservation into slots
          */
         fun slotsFromNewReservation(
             newReservation: NewReservation,
             reservationId: String,
-        ): List<FireReservationSlot>
-        {
+        ): List<FireReservationSlot> {
             val fireReservationSlots = mutableListOf<FireReservationSlot>()
 
             // Computing the duration useful to retrieve the number of slots needed for the reservation
@@ -52,8 +51,10 @@ data class FireReservationSlot(
                 fireReservationSlots.add(
                     FireReservationSlot(
                         null,
-                        newReservation.startTime.plusMinutes(i).format(DateTimeFormatter.ISO_DATE_TIME),
-                        newReservation.startTime.plusMinutes(i + 30).format(DateTimeFormatter.ISO_DATE_TIME),
+                        newReservation.startTime.plusMinutes(i)
+                            .format(DateTimeFormatter.ISO_DATE_TIME),
+                        newReservation.startTime.plusMinutes(i + 30)
+                            .format(DateTimeFormatter.ISO_DATE_TIME),
                         newReservation.startTime.toLocalDate().format(DateTimeFormatter.ISO_DATE),
                         newReservation.playgroundId,
                         mutableListOf(), // TODO: * temporary empty list * -> fill it after in the repository
@@ -65,12 +66,13 @@ data class FireReservationSlot(
         }
 
         /**
-         * Create a FireReservationSlot object from raw Map<String,Any> data coming from Firestore
+         * Create a FireReservationSlot object from raw Map<String,Any> data coming
+         * from Firestore
          */
         fun deserialize(id: String, data: Map<String, Any>?): FireReservationSlot? {
             if (data == null) {
                 // deserialization error
-                Log.d(
+                Log.e(
                     "deserialization error",
                     "Error deserializing FireReservationSlot the data passed is null in FireReservationSlot.deserialize()"
                 )
@@ -85,8 +87,9 @@ data class FireReservationSlot(
             val reservationId = data["reservationId"] as? String
 
             if (startSlot == null || endSlot == null || date == null || playgroundId == null ||
-                rawOpenPlaygroundsIds == null || reservationId == null) {
-                Log.d(
+                rawOpenPlaygroundsIds == null || reservationId == null
+            ) {
+                Log.e(
                     "deserialization error",
                     "Error deserializing FireReservationSlot properties in FireReservationSlot.deserialize()"
                 )
@@ -98,9 +101,12 @@ data class FireReservationSlot(
             for (rawOpenPlaygroundId in rawOpenPlaygroundsIds) {
                 val openPlaygroundId = rawOpenPlaygroundId as? String
 
-                if(openPlaygroundId == null) {
+                if (openPlaygroundId == null) {
                     // deserialization error
-                    Log.d("deserialization error", "Error: error deserializing open playground id in FireReservationSlot.deserialize()")
+                    Log.e(
+                        "deserialization error",
+                        "Error: error deserializing open playground id in FireReservationSlot.deserialize()"
+                    )
                     return null
                 }
 

@@ -4,15 +4,18 @@ import android.util.Log
 import it.polito.mad.sportapp.entities.SportLevel
 
 data class FireSportLevel(
-    val sportId : String,
+    val sportId: String,
     val sportName: String,
     val sportLevel: Level
 ) {
     companion object {
         fun deserialize(rawSportLevel: Map<String, Any>?): FireSportLevel? {
-            if(rawSportLevel == null) {
+            if (rawSportLevel == null) {
                 // deserialization error
-                Log.d("deserialization error", "Error deserializing user sport level in FireSportLevel.deserialize()")
+                Log.e(
+                    "deserialization error",
+                    "Error deserializing user sport level in FireSportLevel.deserialize()"
+                )
                 return null
             }
 
@@ -22,7 +25,7 @@ data class FireSportLevel(
 
             if (sportId == null || sportName == null || sportLevel == null) {
                 // deserialization error
-                Log.d("deserialization error", "Error deserializing user sport level")
+                Log.e("deserialization error", "Error deserializing user sport level")
                 return null
             }
 
@@ -38,9 +41,7 @@ data class FireSportLevel(
         )
     }
 
-    /**
-     * Convert firestore user sport level data to a proper SportLevel entity
-     */
+    /** Convert firestore user sport level data to a proper SportLevel entity */
     fun toSportLevel(): SportLevel {
         return SportLevel(
             sportId,
@@ -50,7 +51,7 @@ data class FireSportLevel(
     }
 
 
-    enum class Level (val level: String) {
+    enum class Level(val level: String) {
         BEGINNER("beginner"),
         INTERMEDIATE("intermediate"),
         EXPERT("expert"),
@@ -60,7 +61,7 @@ data class FireSportLevel(
 
         companion object {
             fun of(rawLevel: Long?): Level? {
-                if(rawLevel == null || rawLevel > Level.values().size)
+                if (rawLevel == null || rawLevel > Level.values().size)
                     return null
 
                 return Level.values()[rawLevel.toInt()]

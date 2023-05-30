@@ -5,14 +5,12 @@ import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.entities.room.RoomSport
 
 data class FireSport(
-    val id : String,
+    val id: String,
     val name: String,
     val emoji: String,
     val maxParticipants: Long
 ) {
-    /**
-     * convert Firestore sport document to Sport entity
-     */
+    /** convert Firestore sport document to Sport entity */
     fun toSport(): Sport {
         return Sport(
             id,
@@ -22,18 +20,16 @@ data class FireSport(
         )
     }
 
-    /**
-     * Serialize sport document data to send it to cloud firestore db
-     */
+    /** Serialize sport document data to send it to cloud firestore db */
     fun serialize(withId: Boolean = false): Map<String, Any> {
-        return if (withId)  {
+        return if (withId) {
             mapOf(
-            "id" to id,
-            "name" to name,
-            "emoji" to emoji,
-            "maxParticipants" to maxParticipants
-        )}
-        else {
+                "id" to id,
+                "name" to name,
+                "emoji" to emoji,
+                "maxParticipants" to maxParticipants
+            )
+        } else {
             mapOf(
                 // no id included in serialization
                 "name" to name,
@@ -55,18 +51,25 @@ data class FireSport(
 
     companion object {
         /**
-         * Deserialize a Map<String,Any> coming from Firestore in a proper FireSport object
+         * Deserialize a Map<String,Any> coming from Firestore in a proper
+         * FireSport object
          */
-        fun deserialize(id: String?, data: Map<String,Any>?): FireSport? {
-            if(id == null) {
+        fun deserialize(id: String?, data: Map<String, Any>?): FireSport? {
+            if (id == null) {
                 // deserialization error
-                Log.d("deserialization error", "trying to deserialize a sport with null id in FireSport.deserialize()")
+                Log.e(
+                    "deserialization error",
+                    "trying to deserialize a sport with null id in FireSport.deserialize()"
+                )
                 return null
             }
 
             if (data == null) {
                 // deserialization error
-                Log.d("deserialization error", "trying to deserialize a sport with null data in FireSport.deserialize()")
+                Log.e(
+                    "deserialization error",
+                    "trying to deserialize a sport with null data in FireSport.deserialize()"
+                )
                 return null
             }
 
@@ -76,7 +79,10 @@ data class FireSport(
 
             if (name == null || emoji == null || maxParticipants == null) {
                 // deserialization error
-                Log.d("deserialization error", "trying to deserialize a sport with null properties in FireSport.deserialize()")
+                Log.e(
+                    "deserialization error",
+                    "trying to deserialize a sport with null properties in FireSport.deserialize()"
+                )
                 return null
             }
 
@@ -89,9 +95,10 @@ data class FireSport(
         }
 
         /**
-         * Convert a Sport entity in a FireSport object compliant to Firestore collection
+         * Convert a Sport entity in a FireSport object compliant to Firestore
+         * collection
          */
-        fun from(sport: RoomSport) : FireSport {
+        fun from(sport: RoomSport): FireSport {
             return FireSport(
                 sport.id.toString(), // TODO
                 sport.name,

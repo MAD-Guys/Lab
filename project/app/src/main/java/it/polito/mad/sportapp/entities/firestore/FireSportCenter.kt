@@ -11,7 +11,8 @@ data class FireSportCenter(
     val closingHours: String
 ) {
     /**
-     * Serialize a FireSportCenter in a raw Map<String,Any> to store it in Firestore cloud db
+     * Serialize a FireSportCenter in a raw Map<String,Any> to store it in
+     * Firestore cloud db
      */
     fun serialize(withId: Boolean = false): Map<String, Any> {
         return if (withId) {
@@ -47,11 +48,12 @@ data class FireSportCenter(
 
     companion object {
         /**
-         * Create a FireSportCenter object from raw Map<String,Any> data coming from Firestore
+         * Create a FireSportCenter object from raw Map<String,Any> data coming
+         * from Firestore
          */
         fun deserialize(id: String?, rawSportCenter: Map<String, Any>?): FireSportCenter? {
-            if(id == null) {
-                Log.d(
+            if (id == null) {
+                Log.e(
                     "deserialization error",
                     "Error deserializing sport center the id passed is null in FireSportCenter.deserialize()"
                 )
@@ -59,7 +61,7 @@ data class FireSportCenter(
             }
 
             if (rawSportCenter == null) {
-                Log.d(
+                Log.e(
                     "deserialization error",
                     "Error deserializing sport center the data passed is null in FireSportCenter.deserialize()"
                 )
@@ -74,7 +76,7 @@ data class FireSportCenter(
 
             if (name == null || address == null || phoneNumber == null || openingHours == null || closingHours == null) {
                 // deserialization error
-                Log.d(
+                Log.e(
                     "deserialization error",
                     "Error deserializing sport center properties in FireSportCenter.deserialize()"
                 )

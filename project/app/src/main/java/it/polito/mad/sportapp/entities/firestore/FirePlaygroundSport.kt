@@ -26,7 +26,8 @@ data class FirePlaygroundSport(
     }
 
     /**
-     * Convert the FirePlaygroundSport object into a DetailedPlaygroundSport entity
+     * Convert the FirePlaygroundSport object into a DetailedPlaygroundSport
+     * entity
      */
     fun toDetailedPlaygroundSport(): DetailedPlaygroundSport {
         return DetailedPlaygroundSport(
@@ -43,10 +44,11 @@ data class FirePlaygroundSport(
     }
 
     /**
-     * Convert the FirePlaygroundSport object into a PlaygroundInfo entity including the reviewList and the various ratings
+     * Convert the FirePlaygroundSport object into a PlaygroundInfo entity
+     * including the reviewList and the various ratings
      */
     fun toPlaygroundInfo(fireReviewList: List<FireReview>): PlaygroundInfo? {
-        val playgroundInfo =  PlaygroundInfo(
+        val playgroundInfo = PlaygroundInfo(
             id,
             playgroundName,
             sportCenter.id,
@@ -68,8 +70,11 @@ data class FirePlaygroundSport(
 
         playgroundInfo.reviewList = fireReviewList.map {
             val review = it.toReview()
-            if(review == null) {
-                Log.d("Serialization error", "Error: an error occurred converting a fireReview in review, in FirePlaygroundSport.toPlaygroundInfo()")
+            if (review == null) {
+                Log.e(
+                    "Serialization error",
+                    "Error: an error occurred converting a fireReview in review, in FirePlaygroundSport.toPlaygroundInfo()"
+                )
                 return null
             }
             review
@@ -90,12 +95,13 @@ data class FirePlaygroundSport(
 
     companion object {
         /**
-         * Create a FirePlaygroundSport object from raw Map<String,Any> data coming from Firestore
+         * Create a FirePlaygroundSport object from raw Map<String,Any> data coming
+         * from Firestore
          */
         fun deserialize(id: String, data: Map<String, Any>?): FirePlaygroundSport? {
             if (data == null) {
                 // deserialization error
-                Log.d(
+                Log.e(
                     "deserialization error",
                     "Error deserializing FirePlaygroundSport the data passed is null in FirePlaygroundSport.deserialize()"
                 )
@@ -103,16 +109,20 @@ data class FirePlaygroundSport(
             }
 
             val playgroundName = data["playgroundName"] as? String
-            val pricePerHour = (data["pricePerHour"] as? Double) ?: (data["pricePerHour"] as? Long)?.toDouble()
+            val pricePerHour =
+                (data["pricePerHour"] as? Double) ?: (data["pricePerHour"] as? Long)?.toDouble()
+
             @Suppress("UNCHECKED_CAST")
             val rawSport = data["sport"] as? Map<String, Any>
+
             @Suppress("UNCHECKED_CAST")
             val rawSportCenter = data["sportCenter"] as? Map<String, Any>
 
             if (playgroundName == null || pricePerHour == null ||
-                rawSport == null || rawSportCenter == null) {
+                rawSport == null || rawSportCenter == null
+            ) {
                 // deserialization error
-                Log.d(
+                Log.e(
                     "deserialization error",
                     "Error deserializing firePlaygroundSport in FirePlaygroundSport.deserialize()"
                 )
@@ -122,18 +132,24 @@ data class FirePlaygroundSport(
             val sportId = rawSport["id"] as? String
             val sport = FireSport.deserialize(sportId, rawSport)
 
-            if(sport == null) {
+            if (sport == null) {
                 // deserialization error
-                Log.d("deserialization error", "Error: deserialization error deserializing sport in FirePlaygroundSport.deserialize()")
+                Log.e(
+                    "deserialization error",
+                    "Error: deserialization error deserializing sport in FirePlaygroundSport.deserialize()"
+                )
                 return null
             }
 
             val sportCenterId = rawSportCenter["id"] as? String
             val sportCenter = FireSportCenter.deserialize(sportCenterId, rawSportCenter)
 
-            if(sportCenter == null) {
+            if (sportCenter == null) {
                 // deserialization error
-                Log.d("deserialization error", "Error: deserialization error deserializing sport center in FirePlaygroundSport.deserialize()")
+                Log.e(
+                    "deserialization error",
+                    "Error: deserialization error deserializing sport center in FirePlaygroundSport.deserialize()"
+                )
                 return null
             }
 

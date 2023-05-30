@@ -18,7 +18,8 @@ data class FireNotification(
     val timestamp: String,
 ) {
     /**
-     * Serialize fireNotification to raw Map<String,Any?> data to be sent to Firestore cloud db
+     * Serialize fireNotification to raw Map<String,Any?> data to be sent to
+     * Firestore cloud db
      */
     fun serialize(): Map<String, Any?> {
         return mapOf(
@@ -35,7 +36,8 @@ data class FireNotification(
     }
 
     /**
-     * Convert fireNotification to Notification entity; returns null if the conversion fails
+     * Convert fireNotification to Notification entity; returns null if the
+     * conversion fails
      */
     fun toNotification(): Notification? {
         try {
@@ -50,13 +52,17 @@ data class FireNotification(
                 description,
                 timestamp
             )
-        }
-        catch (dtpe: DateTimeParseException) {
-            Log.d("conversion error", "Error: error parsing dates in converting fireNotification to notification in FireNotification.toNotification()")
+        } catch (dtpe: DateTimeParseException) {
+            Log.e(
+                "conversion error",
+                "Error: error parsing dates in converting fireNotification to notification in FireNotification.toNotification()"
+            )
             return null
-        }
-        catch (e: Exception) {
-            Log.d("conversion error", "Error: generic error converting fireNotification to notification in FireNotification.toNotification()")
+        } catch (e: Exception) {
+            Log.e(
+                "conversion error",
+                "Error: generic error converting fireNotification to notification in FireNotification.toNotification()"
+            )
             return null
         }
     }
@@ -66,9 +72,12 @@ data class FireNotification(
          * Deserialize raw Map<String,Any?> data coming from Firestore cloud db and
          * return the corresponding fireNotification
          */
-        fun deserialize(id: String, data: Map<String,Any?>?): FireNotification? {
-            if(data == null) {
-                Log.d("deserialization error", "Error: null data deserializing notification with id $id in FireNotification.deserialize()")
+        fun deserialize(id: String, data: Map<String, Any?>?): FireNotification? {
+            if (data == null) {
+                Log.e(
+                    "deserialization error",
+                    "Error: null data deserializing notification with id $id in FireNotification.deserialize()"
+                )
                 return null
             }
 
@@ -82,8 +91,12 @@ data class FireNotification(
             val timestamp = data["timestamp"] as? String
 
             if (type == null || reservationId == null || senderId == null || receiverId == null ||
-                    status == null || description == null || timestamp == null) {
-                Log.d("deserialization error", "Error: null properties deserializing notification with id $id in FireNotification.deserialize()")
+                status == null || description == null || timestamp == null
+            ) {
+                Log.e(
+                    "deserialization error",
+                    "Error: null properties deserializing notification with id $id in FireNotification.deserialize()"
+                )
                 return null
             }
 
@@ -101,15 +114,13 @@ data class FireNotification(
             )
         }
 
-        /**
-         * Convert a notification entity to a FireNotification document object
-         */
+        /** Convert a notification entity to a FireNotification document object */
         fun from(notification: Notification): FireNotification? {
-            val notificationStatus = FireNotificationStatus.of(notification.status.ordinal.toLong()) ?: return null
+            val notificationStatus =
+                FireNotificationStatus.of(notification.status.ordinal.toLong()) ?: return null
             val notificationType = try {
                 FireNotificationType.valueOf(notification.type.uppercase())
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 return null
             }
 
@@ -136,7 +147,7 @@ enum class FireNotificationType(val type: String) {
 
     companion object {
         fun of(rawNotificationType: Long?): FireNotificationType? {
-            if(rawNotificationType == null || rawNotificationType > FireNotificationType.values().size)
+            if (rawNotificationType == null || rawNotificationType > FireNotificationType.values().size)
                 return null
 
             return FireNotificationType.values()[rawNotificationType.toInt()]
@@ -144,7 +155,7 @@ enum class FireNotificationType(val type: String) {
     }
 }
 
-enum class FireNotificationStatus (val status: String){
+enum class FireNotificationStatus(val status: String) {
     ACCEPTED("Accepted"),
     CANCELED("Canceled"),
     PENDING("Pending"),
@@ -154,7 +165,7 @@ enum class FireNotificationStatus (val status: String){
 
     companion object {
         fun of(rawStatus: Long?): FireNotificationStatus? {
-            if(rawStatus == null || rawStatus > FireNotificationStatus.values().size)
+            if (rawStatus == null || rawStatus > FireNotificationStatus.values().size)
                 return null
 
             return FireNotificationStatus.values()[rawStatus.toInt()]

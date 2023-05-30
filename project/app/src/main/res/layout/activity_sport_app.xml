@@ -34,6 +34,7 @@
             android:layout_height="@dimen/bottom_navigation_bar_height"
             android:layout_weight="0"
             app:labelVisibilityMode="labeled"
+            android:paddingBottom="6dp"
             app:itemIconSize="@dimen/bottom_navigation_bar_icon_size"
             app:itemTextAppearanceActive="@style/CustomBottomNavigationViewTextStyle"
             app:itemTextAppearanceInactive="@style/CustomBottomNavigationViewTextStyle"

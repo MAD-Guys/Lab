@@ -14,7 +14,7 @@ enum class Gender(val gender: String) {
 
     companion object {
         fun of(rawGender: Long?): Gender? {
-            if(rawGender == null || rawGender > Gender.values().size)
+            if (rawGender == null || rawGender > Gender.values().size)
                 return null
 
             return Gender.values()[rawGender.toInt()]
@@ -36,8 +36,8 @@ data class FireUser(
     val notificationsToken: String?
 ) {
     /**
-     * Serialize the FireUser object into a Map<String, Any> object
-     * to send to the Firestore cloud database
+     * Serialize the FireUser object into a Map<String, Any> object to send to
+     * the Firestore cloud database
      */
     fun serialize(): Map<String, Any?> {
         return mapOf(
@@ -55,16 +55,14 @@ data class FireUser(
         )
     }
 
-    /**
-     * Convert the FireUser object into a User entity
-     */
-    fun toUser() : User {
+    /** Convert the FireUser object into a User entity */
+    fun toUser(): User {
         val entity = User(
             id,
             firstName,
             lastName,
             username,
-            gender.gender.substring(0,1).uppercase() + gender.gender.substring(1),
+            gender.gender.substring(0, 1).uppercase() + gender.gender.substring(1),
             age.toInt(),
             location,
             imageURL,
@@ -79,9 +77,7 @@ data class FireUser(
     }
 
     companion object {
-        /**
-         * Convert a User object into a FireUser object
-         */
+        /** Convert a User object into a FireUser object */
         fun from(user: User): FireUser {
 
             return FireUser(
@@ -106,13 +102,17 @@ data class FireUser(
         }
 
         /**
-         * This method deserializes a Map<String, Any> object coming from Firestore DB into
-         * a FireUser object; it returns 'null' if the deserialization fails
+         * This method deserializes a Map<String, Any> object coming from Firestore
+         * DB into a FireUser object; it returns 'null' if the deserialization
+         * fails
          */
         fun deserialize(id: String, fireMap: Map<String, Any>?): FireUser? {
             if (fireMap == null) {
                 // deserialization error
-                Log.d("deserialization error", "trying to deserialize a user with null data in FireUser.deserialize()")
+                Log.e(
+                    "deserialization error",
+                    "trying to deserialize a user with null data in FireUser.deserialize()"
+                )
                 return null
             }
 
@@ -128,16 +128,18 @@ data class FireUser(
             val notificationsToken = fireMap["notificationsToken"] as? String?
 
             if (firstName == null || lastName == null || username == null || gender == null ||
-                age == null || location == null || bio == null || rawSportLevels == null) {
+                age == null || location == null || bio == null || rawSportLevels == null
+            ) {
                 // deserialization error
-                Log.d("deserialization error", "Error deserializing user plain properties")
+                Log.e("deserialization error", "Error deserializing user plain properties")
                 return null
             }
 
             val sportLevels = rawSportLevels.map {
                 @Suppress("UNCHECKED_CAST")
                 val rawSportLevel = it as? Map<String, Any>
-                val deserializedSportLevel = FireSportLevel.deserialize(rawSportLevel) ?: return null
+                val deserializedSportLevel =
+                    FireSportLevel.deserialize(rawSportLevel) ?: return null
 
                 deserializedSportLevel
             }

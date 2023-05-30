@@ -17,9 +17,10 @@ data class FireReview(
     val lastUpdate: String  // TODO: note: I would prefer to use ISO string here, rather than Firebase Timestamp
 ) {
     /**
-     * Serialize a FireReview in a raw Map<String,Any> to store it in Firestore cloud db
+     * Serialize a FireReview in a raw Map<String,Any> to store it in Firestore
+     * cloud db
      */
-    fun serialize(): Map<String,Any> {
+    fun serialize(): Map<String, Any> {
         return mapOf(
             // no id in serialization
             "userId" to userId,
@@ -34,9 +35,7 @@ data class FireReview(
         )
     }
 
-    /**
-     * Convert a FireReview document object to a Review entity
-     */
+    /** Convert a FireReview document object to a Review entity */
     fun toReview(): Review? {
         try {
             return Review(
@@ -52,20 +51,26 @@ data class FireReview(
             ).apply {
                 this.username = this@FireReview.username
             }
-        }
-        catch (e: DateTimeParseException) {
-            Log.d("deserialization error", "Error: an error occurred parsing fireReview dates in FireReview.toReview()")
+        } catch (e: DateTimeParseException) {
+            Log.e(
+                "deserialization error",
+                "Error: an error occurred parsing fireReview dates in FireReview.toReview()"
+            )
             return null
         }
     }
 
     companion object {
         /**
-         * Create a FireReview object from raw Map<String,Any> data coming from Firestore
+         * Create a FireReview object from raw Map<String,Any> data coming from
+         * Firestore
          */
-        fun deserialize(id: String, data: Map<String,Any>?): FireReview? {
+        fun deserialize(id: String, data: Map<String, Any>?): FireReview? {
             if (data == null) {
-                Log.d("deserialization error", "Error: trying to deserialize review with null data in FireReview.deserialize()")
+                Log.e(
+                    "deserialization error",
+                    "Error: trying to deserialize review with null data in FireReview.deserialize()"
+                )
                 return null
             }
 
@@ -79,10 +84,14 @@ data class FireReview(
             val timestamp = data["timestamp"] as? String
             val lastUpdate = data["timestamp"] as? String
 
-            if(userId == null || username == null || playgroundId == null || title == null ||
+            if (userId == null || username == null || playgroundId == null || title == null ||
                 qualityRating == null || facilitiesRating == null || textualReview == null ||
-                timestamp == null || lastUpdate == null) {
-                Log.d("deserialization error", "Error: an error occurred deserialize review plain properties in FireReview.deserialize()")
+                timestamp == null || lastUpdate == null
+            ) {
+                Log.e(
+                    "deserialization error",
+                    "Error: an error occurred deserialize review plain properties in FireReview.deserialize()"
+                )
                 return null
             }
 
@@ -101,9 +110,7 @@ data class FireReview(
             )
         }
 
-        /**
-         * Convert a Review entity to a FireReview document object
-         */
+        /** Convert a Review entity to a FireReview document object */
         fun from(review: Review): FireReview {
             return FireReview(
                 review.id,
