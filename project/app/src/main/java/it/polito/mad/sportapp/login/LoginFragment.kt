@@ -53,6 +53,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         // check if user is already logged in
         if (checkIfUserIsLoggedIn()) {
+            vm.setUserLoggedIn(true)
             manageNotification(requireActivity().intent, navController)
         }
 

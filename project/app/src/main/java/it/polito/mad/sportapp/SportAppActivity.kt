@@ -16,7 +16,6 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.navigation.NavigationBarView
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.application_utilities.checkIfUserIsLoggedIn
 import it.polito.mad.sportapp.application_utilities.setApplicationLocale
@@ -41,11 +40,10 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         }
     }
 
-    // authentication listener
-    private lateinit var authenticationListener: FirebaseAuth.AuthStateListener
-
-    // activity view models
+    // activity view model
     private lateinit var activityVm: SportAppViewModel
+
+    // shared instances of fragments view models
     private var profileVm: ProfileViewModel? = null
     private var playgroundsVm: PlaygroundsViewModel? = null
     private var showReservationVm: ShowReservationsViewModel? = null
@@ -65,15 +63,17 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
         // set light theme as default
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-        // initialize activity view models
+        // initialize activity view model
         activityVm = ViewModelProvider(this)[SportAppViewModel::class.java]
 
-        // initialize authentication listener
-        authenticationListener = FirebaseAuth.AuthStateListener {
-            if (checkIfUserIsLoggedIn()) {
+        // initialize fragments view models
+        activityVm.isUserLoggedIn.observe(this) { isLoggedIn ->
+            if (isLoggedIn && activityVm.areVmInstancesCreated == false) {
                 profileVm = ViewModelProvider(this)[ProfileViewModel::class.java]
                 playgroundsVm = ViewModelProvider(this)[PlaygroundsViewModel::class.java]
                 showReservationVm = ViewModelProvider(this)[ShowReservationsViewModel::class.java]
+
+                activityVm.setVmInstancesCreated()
             }
         }
 
@@ -146,18 +146,8 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
     override fun onStart() {
         super.onStart()
 
-        // add authentication listeners
-        FirebaseAuth.getInstance().addAuthStateListener(authenticationListener)
-
         // request notification permission
         askNotificationPermission()
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        // remove authentication listeners
-        FirebaseAuth.getInstance().removeAuthStateListener(authenticationListener)
     }
 
     // manage notification click when the activity instance is already created
