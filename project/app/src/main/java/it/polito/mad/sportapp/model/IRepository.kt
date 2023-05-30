@@ -177,7 +177,6 @@ interface IRepository {
         fireCallback: (FireResult<Map<LocalDate, List<DetailedReservation>>, DefaultGetFireError>) -> Unit
     ): FireListener
 
-    // TODO
     /** Delete a reservation from the db */
     fun deleteReservation(
         reservation: DetailedReservation,

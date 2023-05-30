@@ -46,10 +46,10 @@ internal fun FireRepository.buildAchievements(
     fireCallback: (FireResult<Map<Achievement, Boolean>, DefaultGetFireError>) -> Unit
 ) {
     // get all the user reservations first
-    this.getPlaygroundReservationsOfUser(FireUserForPlaygroundReservation(userId, username)) { fireResult ->
+    this.getDynamicPlaygroundReservationsOfUserAsParticipant(FireUserForPlaygroundReservation(userId, username)) { fireResult ->
         if(fireResult.isError()) {
             fireCallback(Error(fireResult.errorType()))
-            return@getPlaygroundReservationsOfUser
+            return@getDynamicPlaygroundReservationsOfUserAsParticipant
         }
 
         val userReservations = fireResult.unwrap()
@@ -144,6 +144,50 @@ internal fun FireRepository.getAllReviewsByPlaygroundId(
             return@addOnFailureListener
         }
 }
+
+internal fun FireRepository.getUserReviewsIds(
+    userId: String,
+    fireCallback: (FireResult<List<String>, DefaultGetFireError>) -> Unit
+) {
+    db.collection("reviews")
+        .whereEqualTo("userId", userId)
+        .get()
+        .addOnSuccessListener { res ->
+            if (res == null) {
+                // generic error
+                Log.e(
+                    "generic error",
+                    "Error: a generic error occurred retrieving user reviews in FireRepository.getUserReviews(${userId})"
+                )
+                fireCallback(
+                    DefaultGetFireError.default(
+                        "Error: a generic error occurred updating user"
+                    )
+                )
+                return@addOnSuccessListener
+            }
+
+            // Saving reviews ids
+            val userReviewsIds = res.documents.map { it.id }
+
+            // * return them successfully *
+            fireCallback(Success(userReviewsIds))
+        }
+        .addOnFailureListener {
+            // generic error
+            Log.e(
+                "generic error",
+                "Error: a generic error occurred retrieving user reviews in FireRepository.getUserReviews(). Message: ${it.message}"
+            )
+            fireCallback(
+                DefaultGetFireError.default(
+                    "Error: a generic error occurred updating user $userId"
+                )
+            )
+            return@addOnFailureListener
+        }
+}
+
 
 /* reservations */
 
@@ -512,7 +556,7 @@ internal fun FireRepository.getReservationEquipmentsById(
         }
 }
 
-internal fun FireRepository.getPlaygroundReservationsOfUser(
+internal fun FireRepository.getDynamicPlaygroundReservationsOfUserAsParticipant(
     user: FireUserForPlaygroundReservation,
     fireCallback: (FireResult<List<FirePlaygroundReservation>, DefaultGetFireError>) -> Unit
 ): FireListener {
@@ -521,7 +565,7 @@ internal fun FireRepository.getPlaygroundReservationsOfUser(
         .addSnapshotListener { value, error ->
             if (error != null || value == null) {
                 // generic error
-                Log.e("generic error", "Error: a generic error occurred retrieving all the user playground reservations, for user $user, in FireRepository.getPlaygroundReservationsOfUser()")
+                Log.e("generic error", "Error: a generic error occurred retrieving all the user playground reservations, for user $user, in FireRepository.getDynamicPlaygroundReservationsOfUserAsParticipant()")
                 fireCallback(DefaultGetFireError.default(
                     "Error: a generic error occurred retrieving user reservations"
                 ))
@@ -533,7 +577,7 @@ internal fun FireRepository.getPlaygroundReservationsOfUser(
 
                 if (deserializedDoc == null) {
                     // deserialization error
-                    Log.e("deserialization error", "Error: an error occurred deserializing playground reservation $doc in FireRepository.getPlaygroundReservationsOfUser(${user.id})")
+                    Log.e("deserialization error", "Error: an error occurred deserializing playground reservation $doc in FireRepository.getDynamicPlaygroundReservationsOfUserAsParticipant(${user.id})")
                     fireCallback(DefaultGetFireError.default(
                         "Error: an error occurred retrieving user reservations"
                     ))
@@ -547,6 +591,95 @@ internal fun FireRepository.getPlaygroundReservationsOfUser(
         }
 
     return FireListener(listener)
+}
+
+internal fun FireRepository.getStaticPlaygroundReservationsOfUserAsParticipant(
+    user: FireUserForPlaygroundReservation,
+    fireCallback: (FireResult<List<FirePlaygroundReservation>, DefaultGetFireError>) -> Unit
+) {
+    db.collection("playgroundReservations")
+        .whereArrayContains("participants", user.serialize())
+        .get()
+        .addOnSuccessListener { res ->
+            if (res == null) {
+                // generic error
+                Log.e("generic error", "Error: a generic error occurred retrieving all the user playground reservations, for user $user, in FireRepository.getStaticPlaygroundReservationsOfUserAsParticipant()")
+                fireCallback(DefaultGetFireError.default(
+                    "Error: a generic error occurred retrieving user reservations"
+                ))
+                return@addOnSuccessListener
+            }
+
+            val userReservations = res.map { doc ->
+                val deserializedDoc = FirePlaygroundReservation.deserialize(doc.id, doc.data)
+
+                if (deserializedDoc == null) {
+                    // deserialization error
+                    Log.e("deserialization error", "Error: an error occurred deserializing playground reservation $doc in FireRepository.getStaticPlaygroundReservationsOfUserAsParticipant(${user.id})")
+                    fireCallback(DefaultGetFireError.default(
+                        "Error: an error occurred retrieving user reservations"
+                    ))
+                    return@addOnSuccessListener
+                }
+
+                deserializedDoc
+            }
+
+            fireCallback(Success(userReservations))
+        }
+        .addOnFailureListener {
+            // generic error
+            Log.e("generic error", "Error: a generic error occurred retrieving all the user playground reservations, for user $user, in FireRepository.getStaticPlaygroundReservationsOfUserAsParticipant(). Message: ${it.message}")
+            fireCallback(DefaultGetFireError.default(
+                "Error: a generic error occurred retrieving user reservations"
+            ))
+            return@addOnFailureListener
+        }
+}
+
+internal fun FireRepository.getStaticPlaygroundReservationsOfUserAsOwner(
+    userId: String,
+    fireCallback: (FireResult<List<FirePlaygroundReservation>, DefaultGetFireError>) -> Unit
+) {
+    db.collection("playgroundReservations")
+        .whereEqualTo("user.id", userId)
+        .get()
+        .addOnSuccessListener { res ->
+            if (res == null) {
+                // generic error
+                Log.e("generic error", "Error: a generic error occurred retrieving all the user playground reservations as owner, for user $userId, in FireRepository.getStaticPlaygroundReservationsOfUserAsOwner()")
+                fireCallback(DefaultGetFireError.default(
+                    "Error: a generic error occurred retrieving user reservations as owner"
+                ))
+                return@addOnSuccessListener
+            }
+
+            val userReservations = res.map { doc ->
+                val deserializedDoc = FirePlaygroundReservation.deserialize(doc.id, doc.data)
+
+                if (deserializedDoc == null) {
+                    // deserialization error
+                    Log.e("deserialization error", "Error: an error occurred deserializing playground reservation $doc in FireRepository.getStaticPlaygroundReservationsOfUserAsOwner(${userId})")
+                    fireCallback(DefaultGetFireError.default(
+                        "Error: an error occurred retrieving user reservations"
+                    ))
+                    return@addOnSuccessListener
+                }
+
+                deserializedDoc
+            }
+
+            // * return reservations successfully *
+            fireCallback(Success(userReservations))
+        }
+        .addOnFailureListener {
+            // generic error
+            Log.e("generic error", "Error: a generic error occurred retrieving all the user playground reservations as owner, for user $userId, in FireRepository.getStaticPlaygroundReservationsOfUserAsOwner(). Message: ${it.message}")
+            fireCallback(DefaultGetFireError.default(
+                "Error: a generic error occurred retrieving user reservations as owner"
+            ))
+            return@addOnFailureListener
+        }
 }
 
 internal fun FireRepository.getPlaygroundReservationsByIds(

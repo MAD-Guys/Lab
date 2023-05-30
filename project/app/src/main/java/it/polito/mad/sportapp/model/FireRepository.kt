@@ -315,7 +315,6 @@ class FireRepository : IRepository {
             }
     }
 
-    // TODO
     /** Update an existing user */
     override fun updateUser(
         user: User,
@@ -340,173 +339,103 @@ class FireRepository : IRepository {
 
         // * user id is not null *
 
-        // serialize it
-        val serializedUser = fireUser.serialize()
+        // Saving user reviews ids
+        this.getUserReviewsIds(fireUser.id) { fireResult ->
+            if(fireResult.isError()) {
+                fireCallback(DefaultInsertFireError.default(
+                    "Error: an error occurred updating user"
+                ))
+                return@getUserReviewsIds
+            }
 
-        // Getting user reviews
-        db.collection("reviews").whereEqualTo("userId", fireUser.id).get()
-            .addOnSuccessListener { res ->
+            val userReviewsIds = fireResult.unwrap()
 
-                if (res == null) {
-                    Log.e(
-                        "default error",
-                        "Error: a generic error occurred retrieving user reviews in FireRepository.updateUser()"
-                    )
-                    fireCallback(
-                        DefaultInsertFireError.default(
-                            "Error: a generic error occurred retrieving user reviews"
-                        )
-                    )
+            // Saving reservations ids where the user is a participant
+            val userMap =  FireUserForPlaygroundReservation.from(user)
+
+            this.getStaticPlaygroundReservationsOfUserAsParticipant(userMap) { fireResult2 ->
+                if(fireResult2.isError()) {
+                    fireCallback(DefaultInsertFireError.default(
+                        "Error: an error occurred updating user"
+                    ))
+                    return@getStaticPlaygroundReservationsOfUserAsParticipant
                 }
-                // Saving reviews ids
-                val reviewIds = res.documents.map { it.id }
 
-                // Saving reservations ids where the user is a participant
-                db.collection("playgroundReservations").whereArrayContains(
-                    "participants",
-                    mapOf("id" to fireUser.id, "username" to fireUser.username)
-                ).get().addOnSuccessListener { res3 ->
-                    if (res3 == null) {
-                        Log.e(
-                            "default error",
-                            "Error: a generic error occurred retrieving reservations in FireRepository.updateUser()"
-                        )
-                        fireCallback(
-                            DefaultInsertFireError.default(
-                                "Error: a generic error occurred retrieving user reviews"
-                            )
-                        )
+                val userParticipantReservationsIds = fireResult2.unwrap().map { it.id!! }
+
+                // Saving reservations ids where the user is the owner
+                this.getStaticPlaygroundReservationsOfUserAsOwner(fireUser.id) { fireResult3 ->
+                    if(fireResult3.isError()) {
+                        fireCallback(DefaultInsertFireError.default(
+                            "Error: an error occurred updating user"
+                        ))
+                        return@getStaticPlaygroundReservationsOfUserAsOwner
                     }
-                    val participantReservationIds = res3.documents.map { it.id }
 
-                    // Saving reservations ids where the user is the owner
-                    db.collection("playgroundReservations").whereEqualTo("user.id", fireUser.id)
-                        .get().addOnSuccessListener { res2 ->
-                            if (res2 == null) {
-                                Log.e(
-                                    "default error",
-                                    "Error: a generic error occurred retrieving reservations in FireRepository.updateUser()"
-                                )
-                                fireCallback(
-                                    DefaultInsertFireError.default(
-                                        "Error: a generic error occurred retrieving user reviews"
-                                    )
-                                )
-                            }
-                            val ownerReservationIds = res2.documents.map { it.id }
+                    val userOwnerReservationsIds = fireResult3.unwrap().map { it.id!! }
 
-                            // Running transaction
-                            db.runTransaction { transaction ->
-                                if (fireUser.id == null) {
-                                    // serialization error: cannot update a user with id null
-                                    Log.e(
-                                        "serialization error",
-                                        "Error: tyring to update user with id null ($user) in FireRepository.updateUser()"
-                                    )
-                                    fireCallback(
-                                        DefaultInsertFireError.duringSerialization(
-                                            "Error: an error occurred updating user"
-                                        )
-                                    )
-                                }
+                    // start transaction
+                    db.runTransaction { transaction ->
+                        // update user document
+                        val serializedUser = fireUser.serialize()
 
-                                // Update user
-                                transaction.update(
-                                    db.collection("users").document(fireUser.id!!),
-                                    serializedUser
-                                )
+                        transaction.update(
+                            db.collection("users").document(fireUser.id),
+                            serializedUser
+                        )
 
-                                // Update reviews
-                                reviewIds.forEach {
-                                    transaction.update(
-                                        db.collection("reviews").document(it),
-                                        "username",
-                                        fireUser.username
-                                    )
-                                }
-
-                                // Update reservations where the user is a participant:
-                                // 1. Remove the old user from the participants array
-                                participantReservationIds.forEach {
-                                    transaction.update(
-                                        db.collection("playgroundReservations").document(it),
-                                        "participants",
-                                        FieldValue.arrayRemove(
-                                            mapOf(
-                                                "id" to fireUser.id,
-                                                "username" to fireUser.username
-                                            )
-                                        )
-                                    )
-                                }
-                                // 2. Add the new user to the participants array
-                                participantReservationIds.forEach {
-                                    transaction.update(
-                                        db.collection("playgroundReservations").document(it),
-                                        "participants",
-                                        FieldValue.arrayUnion(
-                                            mapOf(
-                                                "id" to fireUser.id,
-                                                "username" to fireUser.username
-                                            )
-                                        )
-                                    )
-                                }
-
-                                // Update reservations where the user is the owner
-                                ownerReservationIds.forEach {
-                                    transaction.update(
-                                        db.collection("playgroundReservations").document(it),
-                                        "user.username",
-                                        fireUser.username
-                                    )
-                                }
-
-                            }
-
-                        }
-                        .addOnFailureListener {
-                            Log.e(
-                                "default error",
-                                "Error: a generic error occurred retrieving reservations in FireRepository.updateUser()"
-                            )
-                            fireCallback(
-                                DefaultInsertFireError.default(
-                                    "Error: a generic error occurred retrieving user reviews"
-                                )
+                        // update reviews' usernames
+                        userReviewsIds.forEach {
+                            transaction.update(
+                                db.collection("reviews").document(it),
+                                "username",
+                                fireUser.username
                             )
                         }
 
+                        // update reservations where the user is a participant:
+                        // 1. Remove the old user from the participants array
+                        userParticipantReservationsIds.forEach {
+                            transaction.update(
+                                db.collection("playgroundReservations").document(it),
+                                "participants",
+                                FieldValue.arrayRemove(userMap)
+                            )
+                        }
 
-                }
+                        // 2. Add the new user to the participants array
+                        userParticipantReservationsIds.forEach {
+                            transaction.update(
+                                db.collection("playgroundReservations").document(it),
+                                "participants",
+                                FieldValue.arrayUnion(userMap)
+                            )
+                        }
+
+                        // Update reservations where the user is the owner
+                        userOwnerReservationsIds.forEach {
+                            transaction.update(
+                                db.collection("playgroundReservations").document(it),
+                                "user.username",
+                                fireUser.username
+                            )
+                        }
+                    }
+                    .addOnSuccessListener {
+                        // * transaction successfully executed *
+                        fireCallback(Success(Unit))
+                    }
                     .addOnFailureListener {
-                        Log.e(
-                            "default error",
-                            "Error: a generic error occurred retrieving reservations in FireRepository.updateUser(). Message: ${it.message}"
-                        )
-                        fireCallback(
-                            DefaultInsertFireError.default(
-                                "Error: a generic error occurred retrieving user reviews"
-                            )
-                        )
+                        // transaction error
+                        Log.d("transaction error", "Error: a generic error occurred executing transaction to update the user ${user.id}, in FireRepository.updateUser(). Message: ${it.message}")
+                        fireCallback(DefaultInsertFireError.default(
+                            "Error: an error occurred updating user"
+                        ))
+                        return@addOnFailureListener
                     }
-
-
+                }
             }
-            .addOnFailureListener {
-
-                Log.e(
-                    "default error",
-                    "Error: a generic error occurred retrieving user reviews in FireRepository.updateUser(). Message: ${it.message}"
-                )
-
-                fireCallback(
-                    DefaultInsertFireError.default(
-                        "Error: a generic error occurred updating user $user"
-                    )
-                )
-            }
-
+        }
     }
 
     /** Update the notifications token used by the user */
@@ -528,13 +457,13 @@ class FireRepository : IRepository {
                 )
                 fireCallback(
                     DefaultFireError.withMessage(
-                        "Error: a generic error occurred updating user $userId token"
+                        "Error: a generic error occurred updating user"
                     )
                 )
             }
     }
 
-    /** Update the profile url of the user */
+    /** Update the user image profile url */
     override fun updateUserImageUrl(
         userId: String,
         newImageUrl: String,
@@ -553,7 +482,7 @@ class FireRepository : IRepository {
                 )
                 fireCallback(
                     DefaultFireError.withMessage(
-                        "Error: a generic error occurred updating user $userId image url"
+                        "Error: a generic error occurred updating user image"
                     )
                 )
             }
@@ -1460,10 +1389,10 @@ class FireRepository : IRepository {
             val userShortDoc = FireUserForPlaygroundReservation.from(user)
 
             // * dynamically retrieve all the reservations having the user as one of the participants *
-            val listener = this.getPlaygroundReservationsOfUser(userShortDoc) { fireResult2 ->
+            val listener = this.getDynamicPlaygroundReservationsOfUserAsParticipant(userShortDoc) { fireResult2 ->
                 if (fireResult2.isError()) {
                     fireCallback(Error(fireResult2.errorType()))
-                    return@getPlaygroundReservationsOfUser
+                    return@getDynamicPlaygroundReservationsOfUserAsParticipant
                 }
 
                 val userPlaygroundReservations = fireResult2.unwrap()
@@ -2033,7 +1962,6 @@ class FireRepository : IRepository {
         }
     }
 
-    // TODO: REVIEW
     /**
      * Retrieve from the db all the available playgrounds, for a given sport,
      * in each slot of a given month
@@ -2108,7 +2036,7 @@ class FireRepository : IRepository {
 
                 // convert result to a map having date as key, each having a map with slot as key
                 val availablePlaygroundsPerDateAndSlot =
-                    availablePlaygroundsPerSlot.toList().groupBy { (slot, availablePlaygrounds) ->
+                    availablePlaygroundsPerSlot.toList().groupBy { (slot, _) ->
                         slot.toLocalDate()
                     }.mapValues { (_, pairList) ->
                         pairList.toMap().toMutableMap()
