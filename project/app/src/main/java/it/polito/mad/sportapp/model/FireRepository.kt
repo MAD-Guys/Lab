@@ -2,6 +2,7 @@ package it.polito.mad.sportapp.model
 
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -1101,7 +1102,128 @@ class FireRepository : IRepository {
         reservation: DetailedReservation,
         fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
     ) {
-        TODO("Not yet implemented")
+
+        // (1) Get all reservationSlots with reservationId and save the indexes
+        // (2) Get all equipmentReservationSlots with reservationId and save the indexes
+        // (3) Get all notifications with reservationId and save the indexes
+        // (4) Delete all reservationSlots collected
+        // (5) Delete all equipmentReservationSlot collected
+        // (6) Update all notifications collected
+        // (7) Delete the reservation
+
+        // (1) Get all reservationSlots with reservationId and save the indexes
+        db.collection("reservationSlots")
+            .whereEqualTo("reservationId", reservation.id)
+            .get()
+            .addOnSuccessListener { reservationSlotsResult ->
+
+                if(reservationSlotsResult == null){
+                    // generic error
+                    Log.d("generic error", "Error: a generic error occurred retrieving all reservationSlots with reservationId ${reservation.id} in FireRepository.deleteReservation(). Message: reservationSlots list is null")
+                    fireCallback(DefaultFireError.withMessage(
+                        "Error: a generic error occurred retrieving reservationSlots"
+                    ))
+                    return@addOnSuccessListener
+                }
+
+                // save the documents' indexes
+                val reservationSlotsIdList = reservationSlotsResult.documents.map { it.id }
+
+                // (2) Get all equipmentReservationSlots with reservationId and save the indexes
+                db.collection("equipmentReservationSlots")
+                    .whereEqualTo("reservationId", reservation.id)
+                    .get()
+                    .addOnSuccessListener addOnSuccessListener2@ { equipmentReservationSlotsResult ->
+                        if(equipmentReservationSlotsResult == null){
+                            // generic error
+                            Log.d("generic error", "Error: a generic error occurred retrieving all equipmentReservationSlots with reservationId ${reservation.id} in FireRepository.deleteReservation(). Message: equipmentReservationSlots list is null")
+                            fireCallback(DefaultFireError.withMessage(
+                                "Error: a generic error occurred retrieving reservationSlots"
+                            ))
+                            return@addOnSuccessListener2
+                        }
+
+                        // save the documents' indexes
+                        val equipmentRservationSlotsIdList = equipmentReservationSlotsResult.documents.map { it.id }
+
+                        // (3) Get all notifications with reservationId and save the indexes
+                        db.collection("notifications")
+                            .whereEqualTo("reservationId", reservation.id)
+                            .get()
+                            .addOnSuccessListener addOnSuccessListener3@ { notificationsResult ->
+                                if(notificationsResult == null){
+                                    // generic error
+                                    Log.d("generic error", "Error: a generic error occurred retrieving all notificatrions with reservationId ${reservation.id} in FireRepository.deleteReservation(). Message: notifications list is null")
+                                    fireCallback(DefaultFireError.withMessage(
+                                        "Error: a generic error occurred retrieving notifications"
+                                    ))
+                                    return@addOnSuccessListener3
+                                }
+
+                                // save the documents' indexes
+                                val notificationsIdList = notificationsResult.documents.map { it.id }
+
+                                // * all data collected -> now the transaction can start
+                                db.runTransaction { transaction ->
+
+                                    // (4) Delete all reservationSlots collected
+                                    for(resSlotId in reservationSlotsIdList){
+                                        transaction.delete(db.document(resSlotId))
+                                    }
+
+                                    // (5) Delete all equipmentReservationSlot collected
+                                    for(eqResSlotId in equipmentRservationSlotsIdList){
+                                        transaction.delete(db.document(eqResSlotId))
+                                    }
+
+                                    // (6) Update all notifications collected
+                                    for(notificationId in notificationsIdList){
+                                        transaction.update(db.document(notificationId), "status", NotificationStatus.CANCELED.ordinal.toLong())
+                                    }
+
+                                    // (7) Delete the reservation
+                                    transaction.delete(db.document(reservation.id))
+
+                                }
+                                    .addOnSuccessListener addOnSuccessListener4@ {
+                                        fireCallback(Success(Unit))
+                                        return@addOnSuccessListener4
+                                    }
+                                    .addOnFailureListener addOnFailureListener4@ {
+                                        // generic error
+                                        Log.d("generic error", "Error: a generic error occurred during the transaction to delete all documents that contained reservationId ${reservation.id} in FireRepository.deleteReservation(). Message: ${it.message}")
+                                        fireCallback(DefaultFireError.withMessage(
+                                            "Error: a generic error occurred during the delete transaction"
+                                        ))
+                                        return@addOnFailureListener4
+                                    }
+                            }
+                            .addOnFailureListener addOnFailureListener3@ {
+                                // generic error
+                                Log.d("generic error", "Error: a generic error occurred retrieving all notifications with reservationId ${reservation.id} in FireRepository.deleteReservation(). Message: ${it.message}")
+                                fireCallback(DefaultFireError.withMessage(
+                                    "Error: a generic error occurred retrieving notifications"
+                                ))
+                                return@addOnFailureListener3
+                            }
+                    }
+                    .addOnFailureListener addOnFailureListener2@ {
+                        // generic error
+                        Log.d("generic error", "Error: a generic error occurred retrieving all equipmentReservationSlots with reservationId ${reservation.id} in FireRepository.deleteReservation(). Message: ${it.message}")
+                        fireCallback(DefaultFireError.withMessage(
+                            "Error: a generic error occurred retrieving equipmentReservationSlots"
+                        ))
+                        return@addOnFailureListener2
+                    }
+            }
+            .addOnFailureListener {
+                // generic error
+                Log.d("generic error", "Error: a generic error occurred retrieving all reservationSlots with reservationId ${reservation.id} in FireRepository.deleteReservation(). Message: ${it.message}")
+                fireCallback(DefaultFireError.withMessage(
+                    "Error: a generic error occurred retrieving reservationSlots"
+                ))
+                return@addOnFailureListener
+            }
     }
 
     // * Equipments methods *
