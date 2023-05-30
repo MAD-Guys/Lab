@@ -162,7 +162,6 @@ internal fun PlaygroundDetailsFragment.initReviewList() {
 
 internal fun PlaygroundDetailsFragment.handleQualityRatingBar(rating: Float) {
     viewModel.updateQualityRating(rating)
-    showToasty("success", requireContext(), "New quality rating saved!")
 
     //if the user is editing, save the current status
     if(viewModel.isEditMode()){
@@ -172,7 +171,6 @@ internal fun PlaygroundDetailsFragment.handleQualityRatingBar(rating: Float) {
 
 internal fun PlaygroundDetailsFragment.handleFacilitiesRatingBar(rating: Float) {
     viewModel.updateFacilitiesRating(rating)
-    showToasty("success", requireContext(), "New facilities rating saved!")
 
     //if the user is editing, save the current status
     if(viewModel.isEditMode()){
@@ -199,12 +197,6 @@ internal fun PlaygroundDetailsFragment.handleDeleteReviewButton() {
         .setPositiveButton("YES") { _, _ ->
             // delete the review
             viewModel.deleteReview()
-
-            showToasty(
-                "success",
-                requireContext(),
-                "Review correctly deleted"
-            )
         }
         .setNegativeButton("NO") { d, _ -> d.cancel() }
         .create()
@@ -237,6 +229,4 @@ internal fun PlaygroundDetailsFragment.handleSaveReviewButton() {
     )
 
     viewModel.setEditMode(false)
-
-    showToasty("success", requireContext(), "Review correctly saved!")
 }

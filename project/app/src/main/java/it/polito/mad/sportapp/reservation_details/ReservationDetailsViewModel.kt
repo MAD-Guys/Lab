@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.DetailedReservation
+import it.polito.mad.sportapp.entities.firestore.utilities.DefaultFireError
+import it.polito.mad.sportapp.entities.firestore.utilities.DefaultGetFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.model.IRepository
@@ -28,11 +30,21 @@ class ReservationDetailsViewModel @Inject constructor(
 
     val userId = FirebaseAuth.getInstance().currentUser?.uid
 
+    private var _getError = MutableLiveData<DefaultGetFireError?>()
+    val getError: LiveData<DefaultGetFireError?> = _getError
+
+    private var _deleteError = MutableLiveData<DefaultFireError?>()
+    val deleteError: LiveData<DefaultFireError?> = _deleteError
+
+    private var _deleteSuccess = MutableLiveData<Boolean?>()
+    val deleteSuccess: LiveData<Boolean?> = _deleteSuccess
+
     fun getReservationFromDb(reservationId: String) : FireListener {
         return repository.getDetailedReservationById(reservationId){ fireResult ->
             when(fireResult){
                 is FireResult.Error -> {
-                    println(fireResult.errorMessage())
+                    Log.e(fireResult.type.message(), fireResult.errorMessage())
+                    _getError.postValue(fireResult.type)
                 }
                 is FireResult.Success -> {
                     this._reservation.postValue(fireResult.value)
@@ -41,13 +53,17 @@ class ReservationDetailsViewModel @Inject constructor(
         }
     }
 
-    fun deleteReservation(): Boolean {
+    fun deleteReservation() {
         repository.deleteReservation(_reservation.value!!){fireResult ->
             when(fireResult){
-                is FireResult.Error -> Log.d(fireResult.type.message(), fireResult.errorMessage())
-                is FireResult.Success -> {}
+                is FireResult.Error -> {
+                    Log.e(fireResult.type.message(), fireResult.errorMessage())
+                    _deleteError.postValue(fireResult.type)
+                }
+                is FireResult.Success -> {
+                    _deleteSuccess.postValue(true)
+                }
             }
         }
-        return true
     }
 }

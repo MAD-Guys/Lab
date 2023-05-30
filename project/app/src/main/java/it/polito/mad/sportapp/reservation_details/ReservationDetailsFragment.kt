@@ -92,7 +92,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         eventId = arguments?.getInt("id_event") ?: -1
 
         if (eventId != -1) {
-            fireListener = viewModel.getReservationFromDb(/*eventId "8kE1VxbGM1AOIB02WjQF"*/ "VmPmrEYpoNiZorNJ3P8U") //TODO: replace with the correct reservationId
+            fireListener = viewModel.getReservationFromDb(/*eventId "8kE1VxbGM1AOIB02WjQF"*/ "n3ZSo5zNDSDakGACa1yP") //TODO: replace with the correct reservationId
         }
 
         // Generate QR code
@@ -158,10 +158,51 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                     leaveReviewButton.visibility = Button.VISIBLE
                 }
 
+                //DEBUG:
+                inviteButton.visibility = Button.VISIBLE
+                //DEBUG: deleteButton.visibility = Button.VISIBLE
+
                 progressBar.visibility = View.GONE
                 card.visibility = View.VISIBLE
             }
         }
+
+        viewModel.deleteSuccess.observe(viewLifecycleOwner) {
+            if(it == true){
+                showToasty(
+                    "success",
+                    requireContext(),
+                    "Reservation correctly deleted"
+                )
+
+                // find and navigate to the previous (caller) fragment
+                navController.popBackStack()
+            }
+        }
+
+        viewModel.deleteError.observe(viewLifecycleOwner) {
+            if(it != null){
+                showToasty(
+                    "error",
+                    requireContext(),
+                    it.message()
+                )
+            }
+        }
+
+        viewModel.getError.observe(viewLifecycleOwner) {
+            if(it != null){
+                showToasty(
+                    "error",
+                    requireContext(),
+                    it.message()
+                )
+
+                // go back
+                navController.popBackStack()
+            }
+        }
+
     }
 
     override fun onDestroy() {
@@ -330,23 +371,9 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
     private fun startDialog() {
         AlertDialog.Builder(requireContext())
             .setMessage("Are you sure to delete this reservation?")
-            .setPositiveButton("YES") { _, _ ->
-                if (viewModel.deleteReservation()) {
-                    // find and navigate to the previous (caller) fragment
-                    navController.popBackStack()
-
-                    showToasty(
-                        "success",
-                        requireContext(),
-                        "Reservation correctly deleted"
-                    )
-                } else {
-                    showToasty(
-                        "error",
-                        requireContext(),
-                        "An unexpected error occurred during delete reservation"
-                    )
-                }
+            .setPositiveButton("YES") { d, _ ->
+                viewModel.deleteReservation()
+                d.dismiss()
             }
             .setNegativeButton("NO") { d, _ -> d.cancel() }
             .create()
