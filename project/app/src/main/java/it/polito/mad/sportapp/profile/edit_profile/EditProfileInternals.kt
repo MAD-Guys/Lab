@@ -335,6 +335,8 @@ internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatche
 
                     if (s.toString() == "") {
                         firstName.error = getString(R.string.first_name_empty_error)
+                    } else {
+                        firstName.error = null
                     }
                 }
 
@@ -343,6 +345,8 @@ internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatche
 
                     if (s.toString() == "") {
                         lastName.error = getString(R.string.last_name_empty_error)
+                    } else {
+                        lastName.error = null
                     }
                 }
 
@@ -354,6 +358,8 @@ internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatche
                         username.error = getString(R.string.username_empty_error)
                     } else if (s.toString().contains(' ')) {
                         username.error = getString(R.string.username_space_error)
+                    } else {
+                        username.error = null
                     }
                 }
 
@@ -362,6 +368,8 @@ internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatche
 
                     if (s.toString() == "") {
                         age.error = getString(R.string.age_empty_error)
+                    } else {
+                        age.error = null
                     }
                 }
 
@@ -370,6 +378,8 @@ internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatche
 
                     if (s.toString() == "") {
                         location.error = getString(R.string.location_empty_error)
+                    } else {
+                        location.error = null
                     }
                 }
             }

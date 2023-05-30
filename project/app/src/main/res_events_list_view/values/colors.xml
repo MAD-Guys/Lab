@@ -3,5 +3,6 @@
 <resources>
 
     <color name="current_item_highlighted">#D6D6D6</color>
+    <color name="no_available_reservations_text_color">@color/black</color>
 
 </resources>

@@ -15,7 +15,7 @@ internal fun manageNotification(activityIntent: Intent?, navController: NavContr
     if (activityIntent != null) {
         if (activityIntent.action?.lowercase() == "invitation") {
             // get information from intent
-            val reservationId = activityIntent.getIntExtra("id_reservation", -1)
+            val reservationId = activityIntent.getStringExtra("id_reservation")
             val notificationStatus = activityIntent.getStringExtra("status") ?: "CANCELED"
             val notificationTimestamp = activityIntent.getStringExtra("timestamp") ?: ""
 

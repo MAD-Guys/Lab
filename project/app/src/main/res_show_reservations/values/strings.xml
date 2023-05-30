@@ -7,6 +7,8 @@
     <string name="previous_month_button_description">go to previous month</string>
     <string name="next_month_button_description">go to next month</string>
 
+    <string name="no_available_reservations_alert">Make your first reservation and start playing! 🚀</string>
+
     <!-- Event tag -->
     <string name="event_tag_content_description">event tag content description</string>
 

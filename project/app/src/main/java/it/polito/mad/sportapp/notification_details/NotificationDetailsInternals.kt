@@ -11,8 +11,8 @@ import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.room.RoomNotificationStatus
 import it.polito.mad.sportapp.application_utilities.showToasty
+import it.polito.mad.sportapp.entities.NotificationStatus
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -131,7 +131,7 @@ internal fun NotificationDetailsFragment.initRejectInvitationDialog() {
 internal fun NotificationDetailsFragment.manageNotificationState() {
 
     when (notificationStatus) {
-        RoomNotificationStatus.ACCEPTED -> {
+        NotificationStatus.ACCEPTED -> {
             notificationDetailsScrollView.visibility = View.VISIBLE
             notificationDetailsCanceledMessage.visibility = View.GONE
             notificationDetailsRejectedMessage.visibility = View.GONE
@@ -141,7 +141,7 @@ internal fun NotificationDetailsFragment.manageNotificationState() {
             rejectInvitationButton.visibility = View.VISIBLE
         }
 
-        RoomNotificationStatus.REJECTED -> {
+        NotificationStatus.REJECTED -> {
             notificationDetailsScrollView.visibility = View.VISIBLE
             notificationDetailsCanceledMessage.visibility = View.GONE
             notificationDetailsRejectedMessage.visibility = View.VISIBLE
@@ -151,7 +151,7 @@ internal fun NotificationDetailsFragment.manageNotificationState() {
             rejectInvitationButton.visibility = View.GONE
         }
 
-        RoomNotificationStatus.CANCELED -> {
+        NotificationStatus.CANCELED -> {
             menuInit(false)
             notificationDetailsScrollView.visibility = View.GONE
             notificationDetailsCanceledMessage.visibility = View.VISIBLE

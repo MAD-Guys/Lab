@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.RelativeLayout
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
@@ -72,12 +73,24 @@ class EventsListFragment : Fragment(R.layout.fragment_events_list) {
         }
 
         vm.userEvents.observe(viewLifecycleOwner) {
-            eventsListAdapter.events.clear()
 
-            // add events to the adapter
-            eventsListAdapter.events.addAll(it.values.flatten())
-            eventsListAdapter.notifyDataSetChanged()
-            scrollToCurrentDate(currentDate)
+            val noAvailableReservationsBox = view.findViewById<RelativeLayout>(R.id.no_available_reservations_box)
+
+            if (it == null || it.isEmpty()) {
+                noAvailableReservationsBox.visibility = View.VISIBLE
+                eventsListView.visibility = View.GONE
+            } else {
+
+                noAvailableReservationsBox.visibility = View.GONE
+                eventsListView.visibility = View.VISIBLE
+
+                eventsListAdapter.events.clear()
+
+                // add events to the adapter
+                eventsListAdapter.events.addAll(it.values.flatten())
+                eventsListAdapter.notifyDataSetChanged()
+                scrollToCurrentDate(currentDate)
+            }
         }
     }
 
