@@ -11,20 +11,14 @@ import it.polito.mad.sportapp.entities.PlaygroundInfo
 import it.polito.mad.sportapp.entities.Review
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
-import it.polito.mad.sportapp.entities.room.RoomEquipment
-import it.polito.mad.sportapp.entities.room.RoomPlaygroundInfo
-import it.polito.mad.sportapp.entities.room.RoomReview
-import it.polito.mad.sportapp.model.FireRepository
-import it.polito.mad.sportapp.model.LocalRepository
+import it.polito.mad.sportapp.model.IRepository
 import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class PlaygroundDetailsViewModel @Inject constructor(
-    private val repository: LocalRepository
+    private val repository: IRepository
 ) : ViewModel() {
-
-    private val iRepository = FireRepository()
 
     val userId = FirebaseAuth.getInstance().currentUser?.uid
 
@@ -45,7 +39,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
 
     fun getPlaygroundFromDb(id: String): FireListener {
 
-        return iRepository.getPlaygroundInfoById(id) { fireResult ->
+        return repository.getPlaygroundInfoById(id) { fireResult ->
             when (fireResult) {
                 is FireResult.Error -> Log.d(fireResult.type.message(), fireResult.errorMessage())
                 is FireResult.Success -> {
@@ -55,10 +49,6 @@ class PlaygroundDetailsViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    fun clearPlayground() {
-        _playground.postValue(null)
     }
 
     fun setYourReview() {
@@ -85,7 +75,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
             _yourReview.value?.lastUpdate ?: ""
         )
 
-        iRepository.insertOrUpdateReview(updatedReview) {
+        repository.insertOrUpdateReview(updatedReview) {
             when (it) {
                 is FireResult.Error -> Log.d(it.errorType().message(), it.errorMessage())
                 is FireResult.Success -> {/* Nothing to do */
@@ -107,7 +97,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
             _yourReview.value?.lastUpdate ?: ""
         )
 
-        iRepository.insertOrUpdateReview(updatedReview) {
+        repository.insertOrUpdateReview(updatedReview) {
             when (it) {
                 is FireResult.Error -> Log.d(it.errorType().message(), it.errorMessage())
                 is FireResult.Success -> {/* Nothing to do */
@@ -129,7 +119,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
             _yourReview.value?.lastUpdate ?: ""
         )
 
-        iRepository.insertOrUpdateReview(updatedReview) {
+        repository.insertOrUpdateReview(updatedReview) {
             when (it) {
                 is FireResult.Error -> Log.d(it.errorType().message(), it.errorMessage())
                 is FireResult.Success -> {/* Nothing to do */
@@ -139,7 +129,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
     }
 
     fun deleteReview() {
-        iRepository.deleteReview(_yourReview.value!!) {
+        repository.deleteReview(_yourReview.value!!) {
             when (it) {
                 is FireResult.Error -> Log.d(it.errorType().message(), it.errorMessage())
                 is FireResult.Success -> {/* Nothing to do */
@@ -173,7 +163,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
 
     fun loadEquipmentsFromDb() {
         _playground.value?.let {
-            iRepository.getAllEquipmentsBySportCenterIdAndSportId(
+            repository.getAllEquipmentsBySportCenterIdAndSportId(
                 it.sportCenterId,
                 it.sportId
             ) { fireResult ->

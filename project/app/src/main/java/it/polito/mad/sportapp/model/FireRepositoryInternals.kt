@@ -15,7 +15,6 @@ import it.polito.mad.sportapp.entities.firestore.FirePlaygroundReservation
 import it.polito.mad.sportapp.entities.firestore.FirePlaygroundSport
 import it.polito.mad.sportapp.entities.firestore.FireReservationSlot
 import it.polito.mad.sportapp.entities.firestore.FireReview
-import it.polito.mad.sportapp.entities.firestore.FireUser
 import it.polito.mad.sportapp.entities.firestore.FireUserForPlaygroundReservation
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultGetFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultInsertFireError
@@ -39,70 +38,7 @@ import java.time.LocalTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
-
 /* user */
-
-internal fun FireRepository.getStaticUser(
-    userId: String,
-    fireCallback: (FireResult<User, DefaultGetFireError>) -> Unit
-) {
-    db.collection("users")
-        .document(userId)
-        .get()
-        .addOnSuccessListener { document ->
-            if (document == null || !document.exists()) {
-                // no data exists
-                fireCallback(
-                    DefaultGetFireError.notFound(
-                        "Error: User has not been found"
-                    ))
-                return@addOnSuccessListener
-            }
-
-            // * user exists *
-
-            // deserialize data from db
-            val fireUser = FireUser.deserialize(document.id, document.data)
-
-            if (fireUser == null) {
-                // deserialization error
-                Log.e("deserialization error", "Error: a generic error occurred deserializing user with id $userId in FireRepository.getUser()")
-
-                fireCallback(
-                    DefaultGetFireError.duringDeserialization(
-                    "Error: a generic error occurred retrieving user"
-                ))
-                return@addOnSuccessListener
-            }
-
-            // * user correctly retrieved *
-
-            // transform to user entity
-            val user = fireUser.toUser()
-
-            // compute user achievements (statically)
-            this.buildAchievements(userId, user.username) { result ->
-                when (result) {
-                    is Success -> {
-                        // attach user achievements and return successfully
-                        user.achievements = result.unwrap()
-                        fireCallback(Success(user))
-                    }
-                    is Error -> {
-                        fireCallback(Error(result.errorType()))
-                    }
-                }
-            }
-        }
-        .addOnFailureListener {
-            Log.e("default error", "Error: a generic error occurred retrieving user with id $userId in FireRepository.getStaticUser(). Message: ${it.message}")
-            fireCallback(
-                DefaultGetFireError.default(
-                "Error: a generic error occurred retrieving user",
-            ))
-            return@addOnFailureListener
-        }
-}
 
 internal fun FireRepository.buildAchievements(
     userId: String,

@@ -11,26 +11,14 @@ import it.polito.mad.sportapp.entities.NotificationStatus
 import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
-import it.polito.mad.sportapp.model.FireRepository
 import it.polito.mad.sportapp.model.IRepository
-import it.polito.mad.sportapp.model.LocalRepository
-import it.polito.mad.sportapp.model.getStaticUser
 import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class InvitationViewModel @Inject constructor(
-    private val repository: LocalRepository,
-    //private val iRepository: FireRepository
+    private val repository: IRepository
 ) : ViewModel() {
-
-    /**
-     * TODO:
-     * (1) insert iRepository in the constructor: now it raises Dagger/Hilt exceptions...
-     * **/
-
-
-    private var iRepository = FireRepository()
 
     val userId = FirebaseAuth.getInstance().currentUser?.uid
     private var _loggedUser : User? = null
@@ -57,7 +45,7 @@ class InvitationViewModel @Inject constructor(
 
         // set current user
         if (userId != null) {
-            iRepository.getStaticUser(userId){
+            repository.getStaticUser(userId){
                 when (it) {
                     is FireResult.Error -> Log.d(it.type.message(), it.errorMessage())
                     is FireResult.Success -> {
@@ -71,7 +59,7 @@ class InvitationViewModel @Inject constructor(
         this.sportId = sportId
         this.sportName = sportName
 
-        return iRepository.getAllUsersToSendInvitationTo(
+        return repository.getAllUsersToSendInvitationTo(
             userId!!,
             reservationId,
         ) { fireResult ->
@@ -143,7 +131,7 @@ class InvitationViewModel @Inject constructor(
 
     fun sendInvitation(receiverId: String, reservationId: String) {
 
-        iRepository.saveAndSendInvitation(
+        repository.saveAndSendInvitation(
             Notification(
                 null,
                 "INVITATION",

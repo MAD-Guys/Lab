@@ -7,21 +7,16 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.PlaygroundInfo
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
-import it.polito.mad.sportapp.entities.room.RoomPlaygroundInfo
-import it.polito.mad.sportapp.model.FireRepository
-import it.polito.mad.sportapp.model.LocalRepository
+import it.polito.mad.sportapp.model.IRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class PlaygroundsViewModel @Inject constructor(
-    val repository: LocalRepository
-) : ViewModel()
-{
-
-    private val iRepository = FireRepository()
+    private val repository: IRepository
+) : ViewModel() {
 
     private val _playgrounds = MutableLiveData<List<PlaygroundInfo>>(listOf()).also {
-        iRepository.getAllPlaygroundsInfo { fireResult ->
+        repository.getAllPlaygroundsInfo { fireResult ->
             when (fireResult) {
                 is FireResult.Error -> Log.d(fireResult.type.message(), fireResult.errorMessage())
                 is FireResult.Success -> {
@@ -37,7 +32,7 @@ class PlaygroundsViewModel @Inject constructor(
     }
 
     /** return actual viewModel playgrounds value ordered by sport */
-    fun getPlaygroundsOrderedBySport() : List<PlaygroundInfo?> {
+    fun getPlaygroundsOrderedBySport(): List<PlaygroundInfo?> {
         val allPlaygrounds = _playgrounds.value!!
 
         //  order them
@@ -45,7 +40,7 @@ class PlaygroundsViewModel @Inject constructor(
     }
 
     /** return actual viewModel playgrounds value ordered by center */
-    fun getPlaygroundsOrderedByCenter() : List<PlaygroundInfo?> {
+    fun getPlaygroundsOrderedByCenter(): List<PlaygroundInfo?> {
         val allPlaygrounds = _playgrounds.value!!
 
         //  order them
@@ -53,12 +48,15 @@ class PlaygroundsViewModel @Inject constructor(
     }
 
     /**
-     * Order the input playgrounds list by the specified key ("sport" or "center") alphabetically and
-     * insert an empty entry before each key group of playgrounds.
-     * E.g.: [null, Basket Playground1, Basket Playground2, null, Tennis Playground1,
-     * Tennis Playground2, Tennis Playground3, null, Volleyball Playground1, etc.])
+     * Order the input playgrounds list by the specified key ("sport" or
+     * "center") alphabetically and insert an empty entry before each key group
+     * of playgrounds. E.g.:
+     * [null, Basket Playground1, Basket Playground2, null, Tennis Playground1, Tennis Playground2, Tennis Playground3, null, Volleyball Playground1, etc.])
      */
-    fun separateAndOrderPlaygroundsBy(key: PlaygroundOrderKey, playgrounds: List<PlaygroundInfo>): List<PlaygroundInfo?> {
+    fun separateAndOrderPlaygroundsBy(
+        key: PlaygroundOrderKey,
+        playgrounds: List<PlaygroundInfo>
+    ): List<PlaygroundInfo?> {
         if (playgrounds.isEmpty())
             return playgrounds
 
@@ -91,6 +89,7 @@ class PlaygroundsViewModel @Inject constructor(
 
                 orderedPlaygrounds
             }
+
             PlaygroundOrderKey.CENTER -> {
                 // order playgrounds by sport center
                 val orderedPlaygrounds = playgrounds.asSequence()
