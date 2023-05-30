@@ -66,7 +66,7 @@ internal fun FireRepository.getStaticUser(
 
             if (fireUser == null) {
                 // deserialization error
-                Log.d("deserialization error", "Error: a generic error occurred deserializing user with id $userId in FireRepository.getUser()")
+                Log.e("deserialization error", "Error: a generic error occurred deserializing user with id $userId in FireRepository.getUser()")
 
                 fireCallback(
                     DefaultGetFireError.duringDeserialization(
@@ -95,7 +95,7 @@ internal fun FireRepository.getStaticUser(
             }
         }
         .addOnFailureListener {
-            Log.d("default error", "Error: a generic error occurred retrieving user with id $userId in FireRepository.getStaticUser(). Message: ${it.message}")
+            Log.e("default error", "Error: a generic error occurred retrieving user with id $userId in FireRepository.getStaticUser(). Message: ${it.message}")
             fireCallback(
                 DefaultGetFireError.default(
                 "Error: a generic error occurred retrieving user",
@@ -172,7 +172,7 @@ internal fun FireRepository.getAllReviewsByPlaygroundId(
         .addOnSuccessListener { res ->
             if(res == null) {
                 // generic error
-                Log.d("generic error", "Error: a generic error occurred retrieving all the reviews in FireRepository.getAllReviewsByPlaygroundId()")
+                Log.e("generic error", "Error: a generic error occurred retrieving all the reviews in FireRepository.getAllReviewsByPlaygroundId()")
                 fireCallback(DefaultGetFireError.default(
                     "Error: a generic error occurred retrieving all the reviews"
                 ))
@@ -184,7 +184,7 @@ internal fun FireRepository.getAllReviewsByPlaygroundId(
 
                 if (deserializedDoc == null) {
                     // deserialization error
-                    Log.d("deserialization error", "Error: an error occurred deserializing review doc ${doc.id} in FireRepository.getAllReviewsByPlaygroundId()")
+                    Log.e("deserialization error", "Error: an error occurred deserializing review doc ${doc.id} in FireRepository.getAllReviewsByPlaygroundId()")
                     fireCallback(DefaultGetFireError.duringDeserialization(
                         "Error: an error occurred retrieving all the reviews"
                     ))
@@ -201,7 +201,7 @@ internal fun FireRepository.getAllReviewsByPlaygroundId(
         }
         .addOnFailureListener {
             // generic error
-            Log.d("generic error", "Error: a generic error occurred retrieving all the reviews in FireRepository.getAllReviews(). Message: ${it.message}")
+            Log.e("generic error", "Error: a generic error occurred retrieving all the reviews in FireRepository.getAllReviews(). Message: ${it.message}")
             fireCallback(DefaultGetFireError.default(
                 "Error: a generic error occurred retrieving all the reviews"
             ))
@@ -226,7 +226,7 @@ internal fun FireRepository.getReservationSlotsDocumentsReferences(
         .addOnSuccessListener { res ->
             if (res == null) {
                 // generic error
-                Log.d("generic error", "Error: a generic error occurred retrieving reservation slots references in FireRepository.getReservationSlotsDocumentsReferences()")
+                Log.e("generic error", "Error: a generic error occurred retrieving reservation slots references in FireRepository.getReservationSlotsDocumentsReferences()")
                 fireCallback(NewReservationError.unexpected())
                 return@addOnSuccessListener
             }
@@ -236,7 +236,7 @@ internal fun FireRepository.getReservationSlotsDocumentsReferences(
         }
         .addOnFailureListener {
             // generic error
-            Log.d("generic error", "Error: a generic error occurred retrieving reservation slots references in FireRepository.getReservationSlotsDocumentsReferences(). Message: ${it.message}")
+            Log.e("generic error", "Error: a generic error occurred retrieving reservation slots references in FireRepository.getReservationSlotsDocumentsReferences(). Message: ${it.message}")
             fireCallback(NewReservationError.unexpected())
         }
 }
@@ -256,7 +256,7 @@ internal fun FireRepository.getEquipmentReservationSlotsDocumentsReferences(
         .addOnSuccessListener { res ->
             if (res == null) {
                 // generic error
-                Log.d("generic error", "Error: a generic error occurred retrieving equipment reservation slots references in FireRepository.getEquipmentReservationSlotsDocumentsReferences()")
+                Log.e("generic error", "Error: a generic error occurred retrieving equipment reservation slots references in FireRepository.getEquipmentReservationSlotsDocumentsReferences()")
                 fireCallback(NewReservationError.unexpected())
                 return@addOnSuccessListener
             }
@@ -266,7 +266,7 @@ internal fun FireRepository.getEquipmentReservationSlotsDocumentsReferences(
         }
         .addOnFailureListener {
             // generic error
-            Log.d("generic error", "Error: a generic error occurred retrieving equipment reservation slots references in FireRepository.getEquipmentReservationSlotsDocumentsReferences(). Message: ${it.message}")
+            Log.e("generic error", "Error: a generic error occurred retrieving equipment reservation slots references in FireRepository.getEquipmentReservationSlotsDocumentsReferences(). Message: ${it.message}")
             fireCallback(NewReservationError.unexpected())
         }
 }
@@ -286,7 +286,7 @@ internal fun FireRepository.checkSlotsAvailabilities(
         .addOnSuccessListener { res ->
             if (res == null) {
                 // generic error
-                Log.d(
+                Log.e(
                     "generic error",
                     "Error: a generic error occurred retrieving reservationSlots in FireRepository.checkSlotsAvailabilities()"
                 )
@@ -301,7 +301,7 @@ internal fun FireRepository.checkSlotsAvailabilities(
 
                 if (deserializedDocument == null) {
                     // deserialization error
-                    Log.d(
+                    Log.e(
                         "deserialization error",
                         "Error: an error occurred deserializing reservation slot $rawDocument in FireRepository.checkSlotsAvailabilities()"
                     )
@@ -320,7 +320,7 @@ internal fun FireRepository.checkSlotsAvailabilities(
             // if any slots exists, they are *busy*, so there is a conflict in the reservation booking
             if (reservationSlotsDocuments.isNotEmpty()) {
                 // slots conflict: the slots you are trying to reserve are already busy!
-                Log.d(
+                Log.e(
                     "conflict error",
                     "A conflict emerged checking available slots, in FireRepository.overrideNewReservation()"
                 )
@@ -334,7 +334,7 @@ internal fun FireRepository.checkSlotsAvailabilities(
         }
         .addOnFailureListener {
             // generic error
-            Log.d("generic error", "Error: a generic error occurred retrieving reservationSlots in FireRepository.checkSlotsAvailabilities(). Message: ${it.message}")
+            Log.e("generic error", "Error: a generic error occurred retrieving reservationSlots in FireRepository.checkSlotsAvailabilities(). Message: ${it.message}")
             fireCallback(NewReservationError.unexpected())
             return@addOnFailureListener
         }
@@ -357,7 +357,7 @@ internal fun FireRepository.checkEquipmentsAvailabilities(
         .addOnSuccessListener { result ->
             if (result == null) {
                 // generic error
-                Log.d("generic error", "Error: a generic error occurred retrieving equipment reservation slots in FireRepository.checkEquipmentsAvailabilities()")
+                Log.e("generic error", "Error: a generic error occurred retrieving equipment reservation slots in FireRepository.checkEquipmentsAvailabilities()")
                 fireCallback(NewReservationError.unexpected())
                 return@addOnSuccessListener
             }
@@ -368,7 +368,7 @@ internal fun FireRepository.checkEquipmentsAvailabilities(
 
                 if(equipmentReservationSlotDoc == null) {
                     // deserialization error
-                    Log.d("deserialization error", "Error: an error occurred deserializing equipment reservation slot $doc in FireRepository.checkEquipmentsAvailabilities()")
+                    Log.e("deserialization error", "Error: an error occurred deserializing equipment reservation slot $doc in FireRepository.checkEquipmentsAvailabilities()")
                     fireCallback(NewReservationError.unexpected())
                     return@addOnSuccessListener
                 }
@@ -406,7 +406,7 @@ internal fun FireRepository.checkEquipmentsAvailabilities(
 
                     if(selectedQty > availableQty) {
                         // selected qty for this reservation *exceeds* the available one -> equipment conflict
-                        Log.d("equipment conflict", "Error: selected qty $selectedQty exceeds available qty $availableQty for equipment $equipmentId, in FireRepository.checkEquipmentsAvailabilities()")
+                        Log.e("equipment conflict", "Error: selected qty $selectedQty exceeds available qty $availableQty for equipment $equipmentId, in FireRepository.checkEquipmentsAvailabilities()")
                         fireCallback(NewReservationError.equipmentConflict())
                         return@addOnSuccessListener
                     }
@@ -420,7 +420,7 @@ internal fun FireRepository.checkEquipmentsAvailabilities(
         }
         .addOnFailureListener {
             // generic error
-            Log.d("generic error", "Error: a generic error occurred retrieving equipment reservation slots in FireRepository.checkEquipmentsAvailabilities(). Message: ${it.message}")
+            Log.e("generic error", "Error: a generic error occurred retrieving equipment reservation slots in FireRepository.checkEquipmentsAvailabilities(). Message: ${it.message}")
             fireCallback(NewReservationError.unexpected())
             return@addOnFailureListener
         }
@@ -515,7 +515,7 @@ internal fun FireRepository.saveNewReservationDataInBatch(
         fireCallback(Success(newReservationId))
     }.addOnFailureListener {
         // generic error
-        Log.d("generic error", "Error: a generic error occurred saving new reservation data in FireRepository.saveNewReservationDataInBatch(). Message: ${it.message}")
+        Log.e("generic error", "Error: a generic error occurred saving new reservation data in FireRepository.saveNewReservationDataInBatch(). Message: ${it.message}")
         fireCallback(
             DefaultInsertFireError.default(
             "Error: an unexpected error occurred saving the reservation"
@@ -535,7 +535,7 @@ internal fun FireRepository.getReservationEquipmentsById(
         .addOnSuccessListener { res ->
             if(res == null) {
                 // generic error
-                Log.d("generic error", "Error: a generic error occurred retrieving equipments in FireRepository.getReservationEquipmentsById()")
+                Log.e("generic error", "Error: a generic error occurred retrieving equipments in FireRepository.getReservationEquipmentsById()")
                 fireCallback(DefaultGetFireError.default(
                     "Error: a generic error occurred retrieving equipments"
                 ))
@@ -547,7 +547,7 @@ internal fun FireRepository.getReservationEquipmentsById(
 
                 if(deserializedDoc == null) {
                     // deserialization error
-                    Log.d("deserialization error", "Error: an error occurred deserializing equipment $doc in FireRepository.getReservationEquipmentsById()")
+                    Log.e("deserialization error", "Error: an error occurred deserializing equipment $doc in FireRepository.getReservationEquipmentsById()")
                     fireCallback(DefaultGetFireError.duringDeserialization(
                         "Error: an error occurred retrieving equipments"
                     ))
@@ -568,7 +568,7 @@ internal fun FireRepository.getReservationEquipmentsById(
         }
         .addOnFailureListener {
             // generic error
-            Log.d("generic error", "Error: a generic error occurred retrieving equipments in FireRepository.getReservationEquipmentsById(). Message: ${it.message}")
+            Log.e("generic error", "Error: a generic error occurred retrieving equipments in FireRepository.getReservationEquipmentsById(). Message: ${it.message}")
             fireCallback(DefaultGetFireError.default(
                 "Error: a generic error occurred retrieving equipments"
             ))
@@ -585,7 +585,7 @@ internal fun FireRepository.getPlaygroundReservationsOfUser(
         .addSnapshotListener { value, error ->
             if (error != null || value == null) {
                 // generic error
-                Log.d("generic error", "Error: a generic error occurred retrieving all the user playground reservations, for user $user, in FireRepository.getPlaygroundReservationsOfUser()")
+                Log.e("generic error", "Error: a generic error occurred retrieving all the user playground reservations, for user $user, in FireRepository.getPlaygroundReservationsOfUser()")
                 fireCallback(DefaultGetFireError.default(
                     "Error: a generic error occurred retrieving user reservations"
                 ))
@@ -597,7 +597,7 @@ internal fun FireRepository.getPlaygroundReservationsOfUser(
 
                 if (deserializedDoc == null) {
                     // deserialization error
-                    Log.d("deserialization error", "Error: an error occurred deserializing playground reservation $doc in FireRepository.getPlaygroundReservationsOfUser(${user.id})")
+                    Log.e("deserialization error", "Error: an error occurred deserializing playground reservation $doc in FireRepository.getPlaygroundReservationsOfUser(${user.id})")
                     fireCallback(DefaultGetFireError.default(
                         "Error: an error occurred retrieving user reservations"
                     ))
@@ -623,7 +623,7 @@ internal fun FireRepository.getPlaygroundReservationsByIds(
         .addOnSuccessListener { documents ->
             if (documents == null) {
                 // generic error
-                Log.d(
+                Log.e(
                     "generic error",
                     "Error: retrieved null reservations in FireRepository.getPlaygroundReservationsByIds()"
                 )
@@ -640,7 +640,7 @@ internal fun FireRepository.getPlaygroundReservationsByIds(
 
                 if (reservation == null) {
                     // deserialization error
-                    Log.d(
+                    Log.e(
                         "deserialization error",
                         "Error: deserialization error for reservation $it in FireRepository.getPlaygroundReservationsByIds()"
                     )
@@ -660,7 +660,7 @@ internal fun FireRepository.getPlaygroundReservationsByIds(
         }
         .addOnFailureListener {
             // generic error
-            Log.d(
+            Log.e(
                 "generic error",
                 "Error: a generic error occurred in FireRepository.getPlaygroundReservationsByIds(). Message: ${it.message}"
             )
@@ -690,7 +690,7 @@ internal fun FireRepository.getDynamicReservationSlots(
         .addSnapshotListener { value, error ->
             if(error != null || value == null) {
                 // generic error
-                Log.d("generic error", "Error: a generic error occurred adding a snapshot to reservation slots in FireRepository.getDynamicReservationSlots()")
+                Log.e("generic error", "Error: a generic error occurred adding a snapshot to reservation slots in FireRepository.getDynamicReservationSlots()")
                 fireCallback(DefaultGetFireError.default(
                     "Error: a generic error occurred retrieving reservations slots"
                 ))
@@ -702,7 +702,7 @@ internal fun FireRepository.getDynamicReservationSlots(
 
                 if(deserializedDoc == null) {
                     // deserialization error
-                    Log.d("deserialization error", "Error: an error occurred deserializing fire reservation slot $doc in FireRepository.getDynamicReservationSlots()")
+                    Log.e("deserialization error", "Error: an error occurred deserializing fire reservation slot $doc in FireRepository.getDynamicReservationSlots()")
                     fireCallback(DefaultGetFireError.duringDeserialization(
                         "Error: an error occurred retrieving reservations slots "
                     ))
@@ -733,7 +733,7 @@ internal fun FireRepository.getStaticAllEquipmentsBySportCenterIdAndSportId(
         .addOnSuccessListener { res ->
             if(res == null) {
                 // generic error
-                Log.d("generic error", "Error: a generic error occurred retrieving all the equipments in FireRepository.getStaticAllEquipmentsBySportCenterIdAndSportId($sportCenterId, $sportId)")
+                Log.e("generic error", "Error: a generic error occurred retrieving all the equipments in FireRepository.getStaticAllEquipmentsBySportCenterIdAndSportId($sportCenterId, $sportId)")
                 fireCallback(DefaultGetFireError.default(
                     "Error: a generic error occurred retrieving the equipments"
                 ))
@@ -745,7 +745,7 @@ internal fun FireRepository.getStaticAllEquipmentsBySportCenterIdAndSportId(
 
                 if(deserializedDoc == null) {
                     // deserialization error
-                    Log.d("deserialization error", "Error: an error occurred deserializing an equipment (${doc.id}) in FireRepository.getStaticAllEquipmentsBySportCenterIdAndSportId($sportCenterId, $sportId)")
+                    Log.e("deserialization error", "Error: an error occurred deserializing an equipment (${doc.id}) in FireRepository.getStaticAllEquipmentsBySportCenterIdAndSportId($sportCenterId, $sportId)")
                     fireCallback(DefaultGetFireError.duringDeserialization(
                         "Error: an error occurred retrieving the equipments"
                     ))
@@ -760,7 +760,7 @@ internal fun FireRepository.getStaticAllEquipmentsBySportCenterIdAndSportId(
         }
         .addOnFailureListener {
             // generic error
-            Log.d("generic error", "Error: a generic error occurred retrieving all the equipments in FireRepository.getStaticAllEquipmentsBySportCenterIdAndSportId($sportCenterId, $sportId). Message: ${it.message}")
+            Log.e("generic error", "Error: a generic error occurred retrieving all the equipments in FireRepository.getStaticAllEquipmentsBySportCenterIdAndSportId($sportCenterId, $sportId). Message: ${it.message}")
             fireCallback(DefaultGetFireError.default(
                 "Error: a generic error occurred retrieving the equipments"
             ))
@@ -784,7 +784,7 @@ internal fun FireRepository.getDynamicEquipmentReservationSlots(
         .addSnapshotListener { value, error ->
             if(error != null || value == null) {
                 // generic error
-                Log.d("generic error", "Error: a generic error occurred retrieving all the equipment reservation slots in FireRepository.getDynamicEquipmentReservationSlots(). Message: ${error?.message}")
+                Log.e("generic error", "Error: a generic error occurred retrieving all the equipment reservation slots in FireRepository.getDynamicEquipmentReservationSlots(). Message: ${error?.message}")
                 fireCallback(DefaultGetFireError.default(
                     "Error: a generic error occurred retrieving the equipment reservations"
                 ))
@@ -800,7 +800,7 @@ internal fun FireRepository.getDynamicEquipmentReservationSlots(
 
                 if(deserializedSlotDoc == null){
                     // deserialization error
-                    Log.d("deserialization error", "Error: an error occurred deserializing equipment reservation slot $rawDoc in FireRepository.getDynamicEquipmentReservationSlots()")
+                    Log.e("deserialization error", "Error: an error occurred deserializing equipment reservation slot $rawDoc in FireRepository.getDynamicEquipmentReservationSlots()")
                     fireCallback(DefaultGetFireError.duringDeserialization(
                         "Error: an error occurred retrieving the equipments availabilities"
                     ))
@@ -836,7 +836,7 @@ internal fun FireRepository.getPlaygroundsBySportId(
         .addOnSuccessListener { res ->
             if (res == null) {
                 // generic error
-                Log.d("generic error", "Error: generic error occurred retrieving playground sports with sport id $sportId in FireRepository.getPlaygroundsBySportId()")
+                Log.e("generic error", "Error: generic error occurred retrieving playground sports with sport id $sportId in FireRepository.getPlaygroundsBySportId()")
                 fireCallback(DefaultGetFireError.default(
                     "Error: a generic error occurred retrieving playgrounds"
                 ))
@@ -848,7 +848,7 @@ internal fun FireRepository.getPlaygroundsBySportId(
 
                 if(deserializedDoc == null) {
                     // deserialization error
-                    Log.d("deserialization error", "Error: deserialization error occurred deserializing playground sport $it in FireRepository.getPlaygroundsBySportId()")
+                    Log.e("deserialization error", "Error: deserialization error occurred deserializing playground sport $it in FireRepository.getPlaygroundsBySportId()")
                     fireCallback(DefaultGetFireError.default(
                         "Error: a generic error occurred retrieving playgrounds"
                     ))
@@ -862,7 +862,7 @@ internal fun FireRepository.getPlaygroundsBySportId(
         }
         .addOnFailureListener {
             // generic error
-            Log.d("generic error", "Error: generic error occurred retrieving playground sports with sport id $sportId in FireRepository.getPlaygroundsBySportId(). Message: ${it.message}")
+            Log.e("generic error", "Error: generic error occurred retrieving playground sports with sport id $sportId in FireRepository.getPlaygroundsBySportId(). Message: ${it.message}")
             fireCallback(DefaultGetFireError.default(
                 "Error: a generic error occurred retrieving playgrounds"
             ))
@@ -879,7 +879,7 @@ internal fun FireRepository.getPlaygroundsByIds(
         .addOnSuccessListener { res ->
             if(res == null) {
                 // generic error
-                Log.d("generic error", "Error: a generic error occurred retrieving all the reservations playgrounds with ids:$ids, in FireRepository.getPlaygroundsBySportId()")
+                Log.e("generic error", "Error: a generic error occurred retrieving all the reservations playgrounds with ids:$ids, in FireRepository.getPlaygroundsBySportId()")
                 fireCallback(DefaultGetFireError.default(
                     "Error: an error occurred retrieving playgrounds info"
                 ))
@@ -891,7 +891,7 @@ internal fun FireRepository.getPlaygroundsByIds(
 
                 if (deserializedDoc == null) {
                     // deserialization error
-                    Log.d("deserialization error", "Error: an error occurred deserializing playground sport $doc in FireRepository.getPlaygroundsByIds()")
+                    Log.e("deserialization error", "Error: an error occurred deserializing playground sport $doc in FireRepository.getPlaygroundsByIds()")
                     fireCallback(DefaultGetFireError.duringDeserialization(
                         "Error: an error occurred retrieving playgrounds info"
                     ))
@@ -905,7 +905,7 @@ internal fun FireRepository.getPlaygroundsByIds(
         }
         .addOnFailureListener {
             // generic error
-            Log.d("generic error", "Error: a generic error occurred retrieving all the reservations playgrounds with ids:$ids, in FireRepository.getPlaygroundsBySportId(). Message: ${it.message}")
+            Log.e("generic error", "Error: a generic error occurred retrieving all the reservations playgrounds with ids:$ids, in FireRepository.getPlaygroundsBySportId(). Message: ${it.message}")
             fireCallback(DefaultGetFireError.default(
                 "Error: an error occurred retrieving playgrounds info"
             ))
@@ -922,7 +922,7 @@ internal fun FireRepository.getAllPlaygrounds(
         .addOnSuccessListener { documents ->
             if (documents == null) {
                 // generic error
-                Log.d("generic error", "Error: retrieved null playgroundSports list in FireRepository.getAllPlaygroundsInfo()")
+                Log.e("generic error", "Error: retrieved null playgroundSports list in FireRepository.getAllPlaygroundsInfo()")
                 fireCallback(
                     DefaultGetFireError.default(
                     "Error: playgrounds not found"
@@ -938,7 +938,7 @@ internal fun FireRepository.getAllPlaygrounds(
 
                 if(playgroundSport == null){
                     // deserialization error
-                    Log.d("deserialization error", "Error: deserialization error occurred for playground with id ${document.id} in FireRepository.getAllPlaygroundInfo()")
+                    Log.e("deserialization error", "Error: deserialization error occurred for playground with id ${document.id} in FireRepository.getAllPlaygroundInfo()")
                     fireCallback(
                         DefaultGetFireError.duringDeserialization(
                         "Error: an error occurred retrieving playgrounds"
@@ -954,7 +954,7 @@ internal fun FireRepository.getAllPlaygrounds(
         }
         .addOnFailureListener {
             // generic error
-            Log.d("generic error", "Error: a generic error occurred retrieving playgrounds in FireRepository.getAllPlaygroundInfo(). Message: ${it.message}")
+            Log.e("generic error", "Error: a generic error occurred retrieving playgrounds in FireRepository.getAllPlaygroundInfo(). Message: ${it.message}")
             fireCallback(
                 DefaultGetFireError.default(
                 "Error: a generic error occurred retrieving playgrounds"
@@ -976,7 +976,7 @@ internal fun FireRepository.getDynamicAllUserNotifications(
         .addSnapshotListener { notificationsDocuments, error ->
             if (error != null || notificationsDocuments == null) {
                 // firebase error
-                Log.d(
+                Log.e(
                     "generic error",
                     "Error: a generic error occurred in FireRepository.getDynamicAllUserNotifications($userId). Message: ${error?.message}"
                 )
@@ -996,7 +996,7 @@ internal fun FireRepository.getDynamicAllUserNotifications(
 
                 if (fireNotification == null) {
                     // deserialization error
-                    Log.d(
+                    Log.e(
                         "deserialization error",
                         "Error: deserialization error for document ($document) in FireRepository.getDynamicAllUserNotifications($userId)"
                     )
@@ -1028,7 +1028,7 @@ internal fun FireRepository.saveInvitation(
 
     if(fireNotification == null) {
         // conversion error
-        Log.d("conversion error", "Error: an error occurred converting a notification entity in a fireNotification, in FireRepository.saveInvitation()")
+        Log.e("conversion error", "Error: an error occurred converting a notification entity in a fireNotification, in FireRepository.saveInvitation()")
         fireCallback(SaveAndSendInvitationFireError.beforeSaveAndSendPush(
             "Error: an error occurred saving the invitation"))
         return
@@ -1044,7 +1044,7 @@ internal fun FireRepository.saveInvitation(
         }
         .addOnFailureListener {
             // generic error
-            Log.d("generic error", "Error: a generic error occurred saving invitation $notification in FireRepository.saveInvitation(). Message: ${it.message}")
+            Log.e("generic error", "Error: a generic error occurred saving invitation $notification in FireRepository.saveInvitation(). Message: ${it.message}")
             fireCallback(SaveAndSendInvitationFireError.beforeSaveAndSendPush(
                 "Error: a generic error occurred saving the invitation"))
             return@addOnFailureListener
@@ -1080,7 +1080,7 @@ internal fun createInvitationNotification(
     } catch (e: JSONException) {
         Log.e(tag, "createInvitationNotification function: " + e.message)
 
-        Log.d("serialization error", "Error: a generic error occurred serializing notification JSON in FireRepository.createInvitationNotification()")
+        Log.e("serialization error", "Error: a generic error occurred serializing notification JSON in FireRepository.createInvitationNotification()")
         fireCallback(SaveAndSendInvitationFireError.beforeSendPush(
             "Error: an error occurred sending the notification"
         ))

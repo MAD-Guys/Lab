@@ -3,8 +3,10 @@ package it.polito.mad.sportapp.show_reservations
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.room.RoomDetailedReservation
+import it.polito.mad.sportapp.model.IRepository
 import it.polito.mad.sportapp.model.LocalRepository
 import java.time.LocalDate
 import java.time.YearMonth
@@ -14,12 +16,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ShowReservationsViewModel @Inject constructor(
-    private val repository: LocalRepository
+    private val repository: LocalRepository,
+    private val iRepository: IRepository
 ) : ViewModel() {
 
     // mutable live data for the user events
     private var _userEvents =
         MutableLiveData<Map<LocalDate, List<RoomDetailedReservation>>>().also {
+
+            // get user id
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
+
             this.loadEventsFromDb()
         }
     val userEvents: LiveData<Map<LocalDate, List<RoomDetailedReservation>>> = _userEvents
