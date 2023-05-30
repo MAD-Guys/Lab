@@ -14,9 +14,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.Chip
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.SportAppViewModel
 import it.polito.mad.sportapp.entities.room.RoomAchievement
 import it.polito.mad.sportapp.entities.room.RoomSportLevel
 import it.polito.mad.sportapp.application_utilities.logOut
@@ -78,11 +80,19 @@ internal fun ShowProfileFragment.exitDialogInit() {
     exitDialog = AlertDialog.Builder(requireContext())
         .setMessage("Do you want logout?")
         .setPositiveButton("YES") { _, _ ->
+
+            // get activity view model instance
+            val activityViewModel =
+                ViewModelProvider(requireActivity())[SportAppViewModel::class.java]
+
+            // set user logged out
+            activityViewModel.setUserLoggedIn(false)
+
             // logout and navigate back to the login fragment
             logOut(
                 requireContext(),
                 navController,
-                R.id.action_showProfileFragment_to_loginFragment
+                R.id.action_showProfileFragment_to_loginFragment,
             )
         }
         .setNegativeButton("NO") { d, _ -> d.cancel() }

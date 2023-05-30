@@ -23,10 +23,25 @@ class SportAppViewModel @Inject constructor(
 
     private val iRepository = FireRepository()
 
+    private val _isUserLoggedIn = MutableLiveData<Boolean>().also { it.value = false }
+    val isUserLoggedIn: LiveData<Boolean> = _isUserLoggedIn
+
+    internal var areVmInstancesCreated: Boolean = false
+
     /* notifications */
     private val _notifications =
         MutableLiveData<MutableList<RoomNotification>>().also { it.value = mutableListOf() }
     val notifications: LiveData<MutableList<RoomNotification>> = _notifications
+
+    // set user logged in
+    fun setUserLoggedIn(value: Boolean) {
+        _isUserLoggedIn.value = value
+    }
+
+    // set vm instances created
+    fun setVmInstancesCreated() {
+        areVmInstancesCreated = true
+    }
 
     /* user */
     fun checkIfUserAlreadyExists(uid: String, token: String?) {
