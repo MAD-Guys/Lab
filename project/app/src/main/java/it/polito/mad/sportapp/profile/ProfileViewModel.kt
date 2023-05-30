@@ -28,7 +28,7 @@ class ProfileViewModel @Inject constructor(
 ) : ViewModel() {
 
     /* user fire listener */
-    private var userFireListener: FireListener? = null
+    private var userFireListener: FireListener = FireListener()
 
     /* firebase storage */
     private val storageRef = Firebase.storage("gs://sportapp-project.appspot.com/").reference
@@ -353,7 +353,7 @@ class ProfileViewModel @Inject constructor(
         super.onCleared()
 
         // unregister from user listener
-        userFireListener?.unregister()
+        userFireListener.unregister()
     }
 
 }

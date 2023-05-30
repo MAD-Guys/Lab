@@ -22,7 +22,7 @@ class SportAppViewModel @Inject constructor(
 ) : ViewModel() {
 
     // notifications fire listener
-    private var notificationsFireListener: FireListener? = null
+    private var notificationsFireListener: FireListener = FireListener()
 
     private val _isUserLoggedIn = MutableLiveData<Boolean>().also { it.value = false }
     val isUserLoggedIn: LiveData<Boolean> = _isUserLoggedIn
@@ -155,7 +155,7 @@ class SportAppViewModel @Inject constructor(
         super.onCleared()
 
         // unregister notifications fire listener
-        notificationsFireListener?.unregister()
+        notificationsFireListener.unregister()
     }
 
 }

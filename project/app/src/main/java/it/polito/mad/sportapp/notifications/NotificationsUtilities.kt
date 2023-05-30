@@ -15,12 +15,14 @@ internal fun manageNotification(activityIntent: Intent?, navController: NavContr
     if (activityIntent != null) {
         if (activityIntent.action?.lowercase() == "invitation") {
             // get information from intent
-            val reservationId = activityIntent.getStringExtra("id_reservation")
+            val notificationId = activityIntent.getStringExtra("notification_id")
+            val reservationId = activityIntent.getStringExtra("reservation_id")
             val notificationStatus = activityIntent.getStringExtra("status") ?: "CANCELED"
             val notificationTimestamp = activityIntent.getStringExtra("timestamp") ?: ""
 
             val bundle = bundleOf(
-                "id_reservation" to reservationId,
+                "notification_id" to notificationId,
+                "reservation_id" to reservationId,
                 "status" to notificationStatus,
                 "timestamp" to notificationTimestamp
             )

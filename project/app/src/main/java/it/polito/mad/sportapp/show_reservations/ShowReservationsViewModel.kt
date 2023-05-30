@@ -1,13 +1,11 @@
 package it.polito.mad.sportapp.show_reservations
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.sportapp.application_utilities.showToasty
 import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
@@ -24,7 +22,7 @@ class ShowReservationsViewModel @Inject constructor(
 ) : ViewModel() {
 
     // user reservations fire listener
-    private var userReservationsFireListener: FireListener? = null
+    private var userReservationsFireListener: FireListener = FireListener()
 
     // mutable live data for the user events
     private var _userEvents =
@@ -91,7 +89,7 @@ class ShowReservationsViewModel @Inject constructor(
         super.onCleared()
 
         // remove user reservations fire listener
-        userReservationsFireListener?.unregister()
+        userReservationsFireListener.unregister()
     }
 
 }

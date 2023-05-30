@@ -89,7 +89,8 @@ class MyFirebaseMessagingService @Inject constructor(
         // create notification intent and put extras
         val notificationIntent = Intent(this, SportAppActivity::class.java).apply {
             action = remoteMessage.data["action"]
-            putExtra("id_reservation", remoteMessage.data["id_reservation"])
+            putExtra("notification_id", remoteMessage.data["notification_id"])
+            putExtra("reservation_id", remoteMessage.data["reservation_id"])
             putExtra("status", remoteMessage.data["status"])
             putExtra("timestamp", remoteMessage.data["timestamp"])
         }

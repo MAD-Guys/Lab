@@ -59,7 +59,8 @@ internal class NotificationsViewHolder(view: View) : RecyclerView.ViewHolder(vie
         notificationContainer.setOnClickListener {
 
             val bundle = bundleOf(
-                "id_reservation" to notification.reservationId,
+                "notification_id" to notification.id,
+                "reservation_id" to notification.reservationId,
                 "status" to notification.status.name,
                 "timestamp" to notification.timestamp
             )

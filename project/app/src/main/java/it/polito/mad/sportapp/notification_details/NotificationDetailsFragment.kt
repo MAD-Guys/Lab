@@ -30,7 +30,8 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
     // navigation controller
     internal lateinit var navController: NavController
 
-    private var reservationId: String? = null
+    internal var notificationId: String? = null
+    internal var reservationId: String? = null
     internal lateinit var notificationStatus: NotificationStatus
     private lateinit var notificationTimestamp: String
 
@@ -81,8 +82,11 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
         // initialize navigation controller
         navController = findNavController()
 
+        // retrieve notification id
+        notificationId = arguments?.getString("notification_id")
+
         // retrieve reservation id
-        reservationId = arguments?.getString("id_reservation")
+        reservationId = arguments?.getString("reservation_id")
 
         // retrieve notification status
         notificationStatus =

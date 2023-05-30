@@ -2497,6 +2497,7 @@ class FireRepository : IRepository {
 
                     createInvitationNotification(
                         receiverUser.notificationsToken,
+                        notification.id!!,
                         notification.reservationId,
                         notification.description,
                         notification.timestamp

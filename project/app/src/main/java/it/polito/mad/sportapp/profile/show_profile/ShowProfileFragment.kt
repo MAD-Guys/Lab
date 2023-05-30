@@ -97,9 +97,6 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
     override fun onResume() {
         super.onResume()
 
-        /*  The information is retrieved and showed in onResume() because  *
-         *  it has to be refreshed after resuming the fragment */
-
         // set sports inflated flag to false
         vm.setSportsInflated(false)
     }

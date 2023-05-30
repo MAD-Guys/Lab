@@ -83,7 +83,7 @@ internal fun NotificationDetailsFragment.initAcceptInvitationDialog() {
         .setPositiveButton("YES") { _, _ ->
             showToasty("success", requireContext(), "Invitation correctly accepted!")
 
-            //TODO: update firestore db
+            vm.updateInvitationStatus(notificationId!!, NotificationStatus.PENDING ,NotificationStatus.ACCEPTED, reservationId!!)
 
             // navigate back
             navController.popBackStack()
@@ -100,7 +100,7 @@ internal fun NotificationDetailsFragment.initDeclineInvitationDialog() {
 
             showToasty("success", requireContext(), "Invitation correctly declined!")
 
-            //TODO: update firestore db
+            vm.updateInvitationStatus(notificationId!!, NotificationStatus.PENDING ,NotificationStatus.REJECTED, reservationId!!)
 
             // navigate back
             navController.popBackStack()
@@ -117,7 +117,7 @@ internal fun NotificationDetailsFragment.initRejectInvitationDialog() {
 
             showToasty("success", requireContext(), "Invitation correctly rejected!")
 
-            //TODO: update firestore db
+            vm.updateInvitationStatus(notificationId!!, NotificationStatus.ACCEPTED ,NotificationStatus.REJECTED, reservationId!!)
 
             // navigate back
             navController.popBackStack()

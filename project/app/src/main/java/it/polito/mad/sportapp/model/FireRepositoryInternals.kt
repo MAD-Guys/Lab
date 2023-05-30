@@ -1148,6 +1148,7 @@ internal fun FireRepository.saveInvitation(
 
 internal fun createInvitationNotification(
     receiverToken: String,
+    notificationId: String,
     reservationId: String,
     notificationDescription: String,
     notificationTimestamp: String,
@@ -1165,7 +1166,8 @@ internal fun createInvitationNotification(
         notificationBody.put("action", "invitation")
         notificationBody.put("title", notificationTitle)
         notificationBody.put("message", notificationDescription)
-        notificationBody.put("id_reservation", reservationId)
+        notificationBody.put("notification_id", notificationId)
+        notificationBody.put("reservation_id", reservationId)
         notificationBody.put("status", "PENDING")
         notificationBody.put("timestamp", notificationTimestamp)
 
