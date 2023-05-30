@@ -78,6 +78,16 @@ data class FirePlaygroundSport(
         return playgroundInfo
     }
 
+    fun clone(): FirePlaygroundSport {
+        return FirePlaygroundSport(
+            id,
+            playgroundName,
+            pricePerHour,
+            sport.clone(),
+            sportCenter.clone()
+        )
+    }
+
     companion object {
         /**
          * Create a FirePlaygroundSport object from raw Map<String,Any> data coming from Firestore

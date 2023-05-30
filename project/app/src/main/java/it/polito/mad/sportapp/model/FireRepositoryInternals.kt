@@ -3,6 +3,7 @@ package it.polito.mad.sportapp.model
 import android.util.Log
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldPath
+import com.kizitonwose.calendar.core.atStartOfMonth
 import it.polito.mad.sportapp.entities.Achievement
 import it.polito.mad.sportapp.entities.NewReservation
 import it.polito.mad.sportapp.entities.Notification
@@ -35,6 +36,7 @@ import org.json.JSONObject
 import java.io.IOException
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
 
@@ -668,6 +670,53 @@ internal fun FireRepository.getPlaygroundReservationsByIds(
                 )
             )
         }
+}
+
+internal fun FireRepository.getDynamicReservationSlots(
+    playgroundsIds: List<String>,
+    month: YearMonth,
+    fireCallback: (FireResult<List<FireReservationSlot>, DefaultGetFireError>) -> Unit
+): FireListener
+{
+    // month boundaries
+    val monthLowBoundary  = month.atStartOfMonth().atStartOfDay().format(DateTimeFormatter.ISO_DATE_TIME)   // >=
+    val monthHighBoundary = month.plusMonths(1).atStartOfMonth().atStartOfDay().format(DateTimeFormatter.ISO_DATE_TIME) // <
+
+    // retrieve and listen to reservation slots related to the given playground, in the given month
+    val listener = db.collection("reservationSlots")
+        .whereIn("playgroundId", playgroundsIds)
+        .whereGreaterThanOrEqualTo("startSlot", monthLowBoundary)
+        .whereLessThan("startSlot", monthHighBoundary)
+        .addSnapshotListener { value, error ->
+            if(error != null || value == null) {
+                // generic error
+                Log.d("generic error", "Error: a generic error occurred adding a snapshot to reservation slots in FireRepository.getDynamicReservationSlots()")
+                fireCallback(DefaultGetFireError.default(
+                    "Error: a generic error occurred retrieving reservations slots"
+                ))
+                return@addSnapshotListener
+            }
+
+            val reservationSlots = value.map { doc ->
+                val deserializedDoc = FireReservationSlot.deserialize(doc.id, doc.data)
+
+                if(deserializedDoc == null) {
+                    // deserialization error
+                    Log.d("deserialization error", "Error: an error occurred deserializing fire reservation slot $doc in FireRepository.getDynamicReservationSlots()")
+                    fireCallback(DefaultGetFireError.duringDeserialization(
+                        "Error: an error occurred retrieving reservations slots "
+                    ))
+                    return@addSnapshotListener
+                }
+
+                deserializedDoc
+            }
+
+            // * return slots successfully *
+            fireCallback(Success(reservationSlots))
+        }
+
+    return FireListener(listener)
 }
 
 /* equipments */

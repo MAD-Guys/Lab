@@ -168,6 +168,9 @@ interface IRepository {
     ) : FireListener
 
     // TODO
+    /**
+     * Delete a reservation from the db
+     */
     fun deleteReservation(
         reservation: DetailedReservation,
         fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
@@ -204,12 +207,15 @@ interface IRepository {
         fireCallback: (FireResult<PlaygroundInfo, DefaultGetFireError>) -> Unit
     ) : FireListener
 
-    // TODO
+    // TODO: to review
+    /**
+     * Retrieve from the db all the available playgrounds, for a given sport, in each slot of a given month
+     */
     fun getAvailablePlaygroundsPerSlot(
         month: YearMonth, sport: Sport?, fireCallback: (
             FireResult<
                     MutableMap<LocalDate, MutableMap<LocalDateTime, MutableList<DetailedPlaygroundSport>>>,
-                    DefaultFireError>
+                    DefaultGetFireError>
         ) -> Unit
     ) : FireListener
 

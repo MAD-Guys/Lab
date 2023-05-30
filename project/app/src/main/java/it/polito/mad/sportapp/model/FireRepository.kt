@@ -1096,6 +1096,19 @@ class FireRepository : IRepository {
     }
 
     // TODO
+    /**
+     * Delete a reservation from the Firestore cloud db
+     * 1. retrieve all the reservationSlots documents associated to this reservation, and save their ids
+     * 2. retrieve all the equipmentReservationSlots documents associated to this reservation, and save their ids
+     * 3. retrieve all the notifications documents associated to this reservation, and save their ids
+     * 4. start a transaction to:
+     *      - delete the associated playground reservation document
+     *      - delete all the retrieved reservationSlots
+     *      - delete all the retrieved equipmentReservationSlots
+     *      - update all the retrieved notifications' status to CANCELED
+     *
+     *      (manage errors)
+     */
     override fun deleteReservation(
         reservation: DetailedReservation,
         fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
@@ -1382,13 +1395,85 @@ class FireRepository : IRepository {
         }
     }
 
-    // TODO
+    /**
+     * Retrieve from the db all the available playgrounds, for a given sport, in each slot of a given month
+     */
     override fun getAvailablePlaygroundsPerSlot(
         month: YearMonth,
         sport: Sport?,
-        fireCallback: (FireResult<MutableMap<LocalDate, MutableMap<LocalDateTime, MutableList<DetailedPlaygroundSport>>>, DefaultFireError>) -> Unit
+        fireCallback: (FireResult<MutableMap<LocalDate, MutableMap<LocalDateTime, MutableList<DetailedPlaygroundSport>>>, DefaultGetFireError>) -> Unit
     ): FireListener {
-        TODO("Not yet implemented")
+        val fireListener = FireListener()
+
+        if(sport == null) {
+            fireCallback(Success(mutableMapOf()))
+            return fireListener
+        }
+
+        this.getPlaygroundsBySportId(sport.id) { fireResult ->
+            if(fireResult.isError()) {
+                fireCallback(Error(fireResult.errorType()))
+                return@getPlaygroundsBySportId
+            }
+
+            val sportPlaygrounds = fireResult.unwrap()
+            val sportPlaygroundsMap = sportPlaygrounds.associateBy { it.id }
+            val playgroundsIds = sportPlaygrounds.map { it.id }
+
+            val listener = this.getDynamicReservationSlots(playgroundsIds, month) { fireResult2 ->
+                if(fireResult2.isError()) {
+                    fireCallback(Error(fireResult2.errorType()))
+                    return@getDynamicReservationSlots
+                }
+
+                val reservationSlots = fireResult2.unwrap()
+
+                val availablePlaygroundsPerSlot = reservationSlots.groupBy { reservationSlot ->
+                    try {
+                        LocalDateTime.parse(reservationSlot.startSlot)
+                    }
+                    catch (e: Exception) {
+                        // parsing error
+                        Log.d("parsing error", "Error: an error occurred parsing a slot in FireRepository.getAvailablePlaygroundsPerSlot()")
+                        fireCallback(DefaultGetFireError.duringDeserialization(
+                            "Error: an error occurred retrieving playground availabilities"))
+                        return@getDynamicReservationSlots
+                    }
+                }.mapValues { (_, reservationSlots) ->
+                    // extract busy playgrounds, per each slot
+                    val busyPlaygroundsIdsInSlot = reservationSlots.map { rs ->
+                        rs.playgroundId
+                    }.toSet()
+                    // extract open playgrounds, per each slot
+                    val openPlaygroundsIdsInSlot = reservationSlots[0].openPlaygroundsIds.toSet()
+
+                    // compute available playgrounds (ids) as the set difference of them
+                    val availablePlaygroundsIdsInSlot = openPlaygroundsIdsInSlot - busyPlaygroundsIdsInSlot
+                    val sortedAvailablePlaygroundsIdsInSlot = availablePlaygroundsIdsInSlot.toMutableList().sorted()
+
+                    val sortedAvailablePlaygroundsInSlot = sortedAvailablePlaygroundsIdsInSlot.map { id ->
+                        sportPlaygroundsMap[id]!!.clone().toDetailedPlaygroundSport()
+                    }.toMutableList()
+
+                    sortedAvailablePlaygroundsInSlot
+                }
+
+                // convert result to a map having date as key, each having a map with slot as key
+                val availablePlaygroundsPerDateAndSlot = availablePlaygroundsPerSlot.toList().groupBy {
+                        (slot, availablePlaygrounds) ->
+                    slot.toLocalDate()
+                }.mapValues { (_, pairList) ->
+                    pairList.toMap().toMutableMap()
+                }.toMutableMap()
+
+                // * return successfully *
+                fireCallback(Success(availablePlaygroundsPerDateAndSlot))
+            }
+
+            fireListener.add(listener)
+        }
+
+        return fireListener
     }
 
     /**
