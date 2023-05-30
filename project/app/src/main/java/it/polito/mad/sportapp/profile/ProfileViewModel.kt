@@ -76,11 +76,13 @@ class ProfileViewModel @Inject constructor(
 
     // user profile pictures
     private val _userProfilePicture =
-        MutableLiveData<Bitmap>().also { this.loadProfilePictureFromFirebaseStorage("profile_picture.jpeg") }
+        MutableLiveData<Bitmap>().also {
+            this.loadProfilePictureFromFirebaseStorage("profile_picture.jpeg") }
     val userProfilePicture: LiveData<Bitmap> = _userProfilePicture
 
     private val _userBackgroundProfilePicture =
-        MutableLiveData<Bitmap>().also { this.loadProfilePictureFromFirebaseStorage("background_profile_picture.jpeg") }
+        MutableLiveData<Bitmap>().also {
+            this.loadProfilePictureFromFirebaseStorage("background_profile_picture.jpeg") }
     val userBackgroundProfilePicture: LiveData<Bitmap> = _userBackgroundProfilePicture
 
     private val _userAchievements =
@@ -102,6 +104,15 @@ class ProfileViewModel @Inject constructor(
 
         userId.value?.let { uid ->
             pictureBitmap?.let {
+
+                // set new profile picture bitmap
+                when (pictureLabel) {
+                    "profile_picture.jpeg" -> _userProfilePicture.postValue(pictureBitmap)
+                    "background_profile_picture.jpeg" -> _userBackgroundProfilePicture.postValue(
+                        pictureBitmap
+                    )
+                }
+
                 val pictureRef = storageRef.child("profile_pictures/$uid/$pictureLabel")
 
                 // convert bitmap to byte array
@@ -117,14 +128,6 @@ class ProfileViewModel @Inject constructor(
                 }.addOnSuccessListener {
                     // upload of user profile picture succeeded
                     Log.d("ProfileViewModel", "Upload of user profile picture succeeded!")
-
-                    // set new profile picture bitmap
-                    when (pictureLabel) {
-                        "profile_picture.jpeg" -> _userProfilePicture.postValue(pictureBitmap)
-                        "background_profile_picture.jpeg" -> _userBackgroundProfilePicture.postValue(
-                            pictureBitmap
-                        )
-                    }
 
                     // get picture url
                     pictureRef.downloadUrl.addOnSuccessListener { uri ->

@@ -110,7 +110,8 @@ internal fun LoginFragment.onSignInResult(result: FirebaseAuthUIAuthenticationRe
         val user = FirebaseAuth.getInstance().currentUser
 
         user?.let {
-            // update UI
+            // update UI and application states
+            vm.setUserLoggedIn(true)
             updateUI(it)
             onUserLoggedIn(user.uid)
         }
