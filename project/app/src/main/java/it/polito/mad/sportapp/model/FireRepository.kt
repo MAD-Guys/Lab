@@ -2,6 +2,7 @@ package it.polito.mad.sportapp.model
 
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -233,7 +234,6 @@ class FireRepository : IRepository {
                     "Error: an error occurred updating user"
                 )
             )
-            return
         }
 
         // * user id is not null *
@@ -241,24 +241,93 @@ class FireRepository : IRepository {
         // serialize it
         val serializedUser = fireUser.serialize()
 
-        // TODO: replace with a transaction to first set the user in the Users collection and then
-        //  update username in PlaygroundReservations and Reviews collections too
+        // Getting user reviews
+        db.collection("reviews").whereEqualTo("userId", fireUser.id).get().addOnSuccessListener { res ->
 
-        // * No check about username uniqueness *
-
-        db.collection("users")
-            .document(fireUser.id)
-            .set(serializedUser)
-            .addOnSuccessListener {
-                fireCallback(Success(Unit))
-            }
-            .addOnFailureListener {
-                // default error occurred
-                Log.d("default error", "Error: a generic error occurred updating user $user in FireRepository.updateUser(). Message: ${it.message}")
+            if (res == null){
+                Log.d("default error", "Error: a generic error occurred retrieving user reviews in FireRepository.updateUser()")
                 fireCallback(DefaultInsertFireError.default(
-                    "Error: a generic error occurred updating user $user"
+                    "Error: a generic error occurred retrieving user reviews"
                 ))
             }
+            // Saving reviews ids
+            val reviewIds = res.documents.map { it.id }
+
+            // Saving reservations ids where the user is a participant
+            db.collection("playgroundReservations").whereArrayContains("participants", mapOf("id" to fireUser.id, "username" to fireUser.username)).get().addOnSuccessListener { res ->
+                if (res == null){
+                    Log.d("default error", "Error: a generic error occurred retrieving reservations in FireRepository.updateUser()")
+                    fireCallback(DefaultInsertFireError.default(
+                        "Error: a generic error occurred retrieving user reviews"
+                    ))
+                }
+                val participantReservationIds = res.documents.map { it.id }
+
+                // Saving reservations ids where the user is the owner
+                db.collection("playgroundReservations").whereEqualTo("user.id", fireUser.id).get().addOnSuccessListener { res ->
+                    if (res == null){
+                        Log.d("default error", "Error: a generic error occurred retrieving reservations in FireRepository.updateUser()")
+                        fireCallback(DefaultInsertFireError.default(
+                            "Error: a generic error occurred retrieving user reviews"
+                        ))
+                    }
+                    val ownerReservationIds = res.documents.map { it.id }
+
+                    // Running transaction
+                    db.runTransaction { transaction ->
+                        if (fireUser.id == null) {
+                            // serialization error: cannot update a user with id null
+                            Log.d("serialization error", "Error: tyring to update user with id null ($user) in FireRepository.updateUser()")
+                            fireCallback(
+                                DefaultInsertFireError.duringSerialization(
+                                    "Error: an error occurred updating user"
+                                )
+                            )
+                        }
+
+                        // Update user
+                        transaction.update(db.collection("users").document(fireUser.id!!), serializedUser)
+
+                        // Update reviews
+                        reviewIds.forEach { transaction.update(db.collection("reviews").document(it), "username", fireUser.username) }
+
+                        // Update reservations where the user is a participant:
+                        // 1. Remove the old user from the participants array
+                        participantReservationIds.forEach { transaction.update(db.collection("playgroundReservations").document(it), "participants", FieldValue.arrayRemove(mapOf("id" to fireUser.id, "username" to fireUser.username))) }
+                        // 2. Add the new user to the participants array
+                        participantReservationIds.forEach { transaction.update(db.collection("playgroundReservations").document(it), "participants", FieldValue.arrayUnion(mapOf("id" to fireUser.id, "username" to fireUser.username))) }
+
+                        // Update reservations where the user is the owner
+                        ownerReservationIds.forEach { transaction.update(db.collection("playgroundReservations").document(it), "user.username", fireUser.username) }
+
+                    }
+
+                }
+                    .addOnFailureListener {
+                    Log.d("default error", "Error: a generic error occurred retrieving reservations in FireRepository.updateUser()")
+                    fireCallback(DefaultInsertFireError.default(
+                        "Error: a generic error occurred retrieving user reviews"
+                    ))
+                }
+
+
+            }
+                .addOnFailureListener {
+                    Log.d("default error", "Error: a generic error occurred retrieving reservations in FireRepository.updateUser(). Message: ${it.message}")
+                    fireCallback(DefaultInsertFireError.default(
+                        "Error: a generic error occurred retrieving user reviews"
+                    ))
+                }
+
+
+        }
+            .addOnFailureListener {
+                Log.d("default error", "Error: a generic error occurred retrieving user reviews in FireRepository.updateUser(). Message: ${it.message}")
+                fireCallback(DefaultInsertFireError.default(
+                    "Error: a generic error occurred retrieving user reviews"
+                ))
+            }
+
     }
 
     /**
