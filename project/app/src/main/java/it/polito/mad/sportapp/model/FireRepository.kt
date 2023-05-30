@@ -146,7 +146,6 @@ class FireRepository : IRepository {
     }
 
     /**
-     * This method statically retrieve the user given its id from the Firestore cloud db
      * **Note**: the result is *static* (i.e. the fireCallback gets called just once)
      */
     override fun getStaticUser(
