@@ -62,7 +62,6 @@ interface IRepository {
     /** Insert a new user in the db */
     fun insertNewUser(user: User, fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit)
 
-    // TODO
     /** Update an existing user */
     fun updateUser(user: User, fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit)
 
@@ -211,7 +210,6 @@ interface IRepository {
         fireCallback: (FireResult<PlaygroundInfo, DefaultGetFireError>) -> Unit
     ): FireListener
 
-    // TODO: to review
     /**
      * Retrieve from the db all the available playgrounds, for a given sport,
      * in each slot of a given month
