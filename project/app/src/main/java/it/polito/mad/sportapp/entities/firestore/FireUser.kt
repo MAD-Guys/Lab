@@ -69,6 +69,7 @@ data class FireUser(
             bio,
             notificationsToken
         )
+        // * ignore *
 
         // add user sport levels
         entity.sportLevels = sportLevels.map { it.toSportLevel() }

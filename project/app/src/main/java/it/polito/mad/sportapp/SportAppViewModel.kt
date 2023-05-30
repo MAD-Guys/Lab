@@ -65,7 +65,7 @@ class SportAppViewModel @Inject constructor(
                             val displayName = user.displayName!!.split(" ")
                             val userFirstName = displayName[0]
                             val userLastName = displayName[displayName.size - 1]
-                            val userUsername = user.email!!
+                            val userUsername = user.email!!.split("@")[0]
 
                             // create new user
                             val newUser = User(

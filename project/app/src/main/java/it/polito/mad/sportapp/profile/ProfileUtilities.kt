@@ -2,17 +2,17 @@ package it.polito.mad.sportapp.profile
 
 import com.google.android.material.chip.Chip
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.room.RoomSportLevel
+import it.polito.mad.sportapp.entities.SportLevel
 
 /* FireSport utilities */
 
-internal data class Sport(val id: Int, val name: String, val displayName: String, var selected: Boolean, var level: Level) {
+internal data class ProfileSport(val id: String, val name: String, val displayName: String, var selected: Boolean, var level: Level) {
     companion object {
-        fun from(id: Int, name: String, displayName: String, level: String): Sport =
-            Sport(id, name, displayName, true, Level.valueOf(level.uppercase()))
+        fun from(id: String, name: String, displayName: String, level: String): ProfileSport =
+            ProfileSport(id, name, displayName, true, Level.valueOf(level.uppercase()))
     }
 
-    fun toSportLevel(): RoomSportLevel = RoomSportLevel(id, name, level.name)
+    fun toSportLevel(): SportLevel = SportLevel(id, name, level.name)
 }
 
 internal class SportChips(

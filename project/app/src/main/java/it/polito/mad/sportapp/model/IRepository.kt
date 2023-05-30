@@ -26,19 +26,18 @@ interface IRepository {
     // * User methods *
 
     /**
-     * This method gets the user given its uid **Note**: the result is
-     * **dynamic**: the fireCallback gets called each time the user changes.
-     * Remember to **unregister** the listener once you don't need it anymore
+     * This method gets the user with its achievements given its uid Note: the result is *dynamic*,
+     * i.e. the fireCallback gets called each time the user changes (but the
+     * achievements are static)
      */
-    fun getUser(
+    fun getUserWithAchievements(
         userId: String,
         fireCallback: (FireResult<User, DefaultGetFireError>) -> Unit
     ): FireListener
 
     /**
-     * This method gets the user given its uid
-     * Note: the result is *static*,
-     * i.e. the fireCallback gets called just once
+     * Retrieve the user given its id from the db
+     * Note: the result is *static* (i.e. the fireCallback gets called just once)
      */
     fun getStaticUser(
         userId: String,
@@ -63,7 +62,6 @@ interface IRepository {
     /** Insert a new user in the db */
     fun insertNewUser(user: User, fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit)
 
-    // TODO
     /** Update an existing user */
     fun updateUser(user: User, fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit)
 
@@ -92,7 +90,7 @@ interface IRepository {
         fireCallback: (FireResult<List<User>, DefaultGetFireError>) -> Unit
     ): FireListener
 
-    // * Sport methods *
+    // * ProfileSport methods *
 
     /**
      * Retrieve all the sports Note: the result is retrieved as **static**
@@ -177,7 +175,6 @@ interface IRepository {
         fireCallback: (FireResult<Map<LocalDate, List<DetailedReservation>>, DefaultGetFireError>) -> Unit
     ): FireListener
 
-    // TODO
     /** Delete a reservation from the db */
     fun deleteReservation(
         reservation: DetailedReservation,
@@ -213,7 +210,6 @@ interface IRepository {
         fireCallback: (FireResult<PlaygroundInfo, DefaultGetFireError>) -> Unit
     ): FireListener
 
-    // TODO: to review
     /**
      * Retrieve from the db all the available playgrounds, for a given sport,
      * in each slot of a given month
