@@ -95,11 +95,11 @@ internal fun PlaygroundDetailsFragment.initEquipments() {
             val row = layoutInflater.inflate(R.layout.equipment_list_item, equipments, false)
             row.id = index
             val equipmentName = row.findViewById<TextView>(R.id.equipment_name)
-            val equipmentQuantity = row.findViewById<TextView>(R.id.equipment_quantity)
+            // val equipmentQuantity = row.findViewById<TextView>(R.id.equipment_quantity)
             val equipmentPrice = row.findViewById<TextView>(R.id.equipment_unit_price)
 
             equipmentName.text = e.name
-            equipmentQuantity.text = String.format("%d", e.availability)
+            // equipmentQuantity.text = String.format("%d", e.availability)
             equipmentPrice.text = String.format("%.2f", e.unitPrice)
 
             equipments.addView(row, index)
