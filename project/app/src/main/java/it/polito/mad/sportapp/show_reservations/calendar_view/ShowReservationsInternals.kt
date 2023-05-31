@@ -173,9 +173,7 @@ internal fun ShowReservationsFragment.calendarInit() {
     // initialize user events live data variable
     vm.userEvents.observe(viewLifecycleOwner) {
 
-        if (it == null) {
-            showProgressBar(progressBar, recyclerView)
-        } else {
+        if (it != null) {
             hideProgressBar(progressBar, recyclerView)
 
             // show events for the selected date if any
