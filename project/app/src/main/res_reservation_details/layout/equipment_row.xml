@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_medium"
         android:includeFontPadding="false"
-        android:text="  n. "
+        android:text=" n. "
         android:textSize="17sp" />
 
     <TextView

@@ -6,6 +6,7 @@ import it.polito.mad.sportapp.entities.NewReservation
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.math.roundToLong
 
 data class FirePlaygroundReservation(
     val id: String?,
@@ -86,6 +87,9 @@ data class FirePlaygroundReservation(
             for (equipment in reservation.selectedEquipments) {
                 totalPrice += equipment.unitPrice.toDouble() * equipment.selectedQuantity.toDouble()
             }
+
+            // round total price
+            totalPrice = (totalPrice * 100.0).roundToLong().toDouble() / 100.0
 
             // create participants list with the owner only, even if this is an existing reservation
             val participants = mutableListOf<FireUserForPlaygroundReservation>().also {

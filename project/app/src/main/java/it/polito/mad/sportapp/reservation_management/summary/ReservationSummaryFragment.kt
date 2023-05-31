@@ -425,7 +425,8 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
         }
 
         // get additional requests from db if any
-        viewModel.getReservationAdditionalRequest(reservationId!!)
+        if(reservationId != null)
+            viewModel.getReservationAdditionalRequest(reservationId)
 
         // * all data are available here *
         val startTime = LocalDateTime.parse(startSlotStr)
