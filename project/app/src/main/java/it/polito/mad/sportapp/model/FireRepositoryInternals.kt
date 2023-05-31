@@ -298,7 +298,7 @@ internal fun FireRepository.checkSlotsAvailabilities(
             reservationSlotsDocuments = reservationSlotsDocuments.filter { doc ->
                 doc.reservationId != reservation.id &&
                 LocalDateTime.parse(doc.startSlot, DateTimeFormatter.ISO_DATE_TIME) >= reservation.startTime &&
-                LocalDateTime.parse(doc.endSlot, DateTimeFormatter.ISO_DATE_TIME) < reservation.endTime
+                LocalDateTime.parse(doc.endSlot, DateTimeFormatter.ISO_DATE_TIME) <= reservation.endTime
             }
 
             // if any slots exists, they are *busy*, so there is a conflict in the reservation booking
@@ -370,7 +370,7 @@ internal fun FireRepository.checkEquipmentsAvailabilities(
             equipmentReservationSlotsDocs = equipmentReservationSlotsDocs.filter { doc ->
                 doc.playgroundReservationId != reservation.id &&
                 LocalDateTime.parse(doc.startSlot, DateTimeFormatter.ISO_DATE_TIME) >= reservation.startTime &&
-                LocalDateTime.parse(doc.endSlot, DateTimeFormatter.ISO_DATE_TIME) < reservation.endTime
+                LocalDateTime.parse(doc.endSlot, DateTimeFormatter.ISO_DATE_TIME) <= reservation.endTime
             }
 
             val selectedEquipmentsQuantities = reservation.selectedEquipments.associate {
@@ -873,8 +873,8 @@ internal fun FireRepository.getDynamicEquipmentReservationSlots(
     fireCallback: (FireResult<List<FireEquipmentReservationSlot>, DefaultGetFireError>) -> Unit
 ): FireListener {
     val listener = db.collection("equipmentReservationSlots")
-        .whereEqualTo("sportCenterId", sportCenterId)
-        .whereEqualTo("sportId", sportId)
+        .whereEqualTo("equipment.sportCenterId", sportCenterId)
+        .whereEqualTo("equipment.sportId", sportId)
         .whereEqualTo("date", date)     // filter just the slots of the interesting date
         .addSnapshotListener { value, error ->
             if(error != null || value == null) {
