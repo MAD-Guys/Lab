@@ -1632,7 +1632,7 @@ class FireRepository : IRepository {
     override fun getAvailableEquipmentsBySportCenterIdAndSportId(
         sportCenterId: String,
         sportId: String,
-        reservationId: String,
+        reservationId: String?,
         startDateTime: LocalDateTime,
         endDateTime: LocalDateTime,
         fireCallback: (FireResult<MutableMap<String, Equipment>, DefaultGetFireError>) -> Unit
@@ -2552,6 +2552,8 @@ class FireRepository : IRepository {
                     return@saveInvitation
                 }
 
+                val newNotificationAssignedId = fireResult2.unwrap()
+
                 // * notification saved successfully here *
 
                 // retrieve receiver user
@@ -2574,11 +2576,11 @@ class FireRepository : IRepository {
                         return@getUser2
                     }
 
-                    // * create and send push notification to the receiver *
+                    // * send push notification to the receiver *
 
                     createInvitationNotification(
                         receiverUser.notificationsToken,
-                        notification.id!!,
+                        newNotificationAssignedId,
                         notification.reservationId,
                         notification.description,
                         notification.timestamp

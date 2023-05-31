@@ -16,9 +16,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import es.dmoral.toasty.Toasty
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.room.RoomDetailedEquipmentReservation
-import it.polito.mad.sportapp.entities.room.RoomEquipment
 import it.polito.mad.sportapp.application_utilities.showToasty
+import it.polito.mad.sportapp.entities.DetailedEquipmentReservation
+import it.polito.mad.sportapp.entities.Equipment
 
 internal fun ManageEquipmentsFragment.initAppBar() {
     val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
@@ -59,6 +59,12 @@ internal fun ManageEquipmentsFragment.initFloatingButton() {
     }
 }
 
+internal fun ManageEquipmentsFragment.initErrorMessageObserver() {
+    viewModel.toastErrorMessage.observe(viewLifecycleOwner) { newErrorMessage ->
+        showToasty("error", requireContext(), newErrorMessage, Toasty.LENGTH_LONG)
+    }
+}
+
 private fun ManageEquipmentsFragment.navigateToReservationSummary() {
     // create a bundle containing all the selected equipments and the relative qty
     val params = bundleOf(
@@ -71,11 +77,11 @@ private fun ManageEquipmentsFragment.navigateToReservationSummary() {
     findNavController().navigate(R.id.action_manageEquipmentsFragment_to_reservationSummaryFragment, params)
 }
 
-private fun createEquipmentsBundleFrom(selectedEquipments: Map<Int, RoomDetailedEquipmentReservation>): Bundle {
+private fun createEquipmentsBundleFrom(selectedEquipments: Map<String, DetailedEquipmentReservation>): Bundle {
     val equipmentsBundle = Bundle()
 
     selectedEquipments.map { (equipmentId, selectedEquipment) ->
-        Pair(equipmentId.toString(), bundleOf(
+        Pair(equipmentId, bundleOf(
             "equipment_id" to selectedEquipment.equipmentId,
             "equipment_name" to selectedEquipment.equipmentName,
             "selected_quantity" to selectedEquipment.selectedQuantity,
@@ -168,12 +174,25 @@ internal fun ManageEquipmentsFragment.initEquipmentsObservers() {
             // check if there is at least one available equipment left
             this.checkAtLeastOneAvailableEquipment(newAvailableEquipments, selectedEquipments)
         }
+
+        // save equipments indexes
+        viewModel.availableEquipmentsIndexesById =
+            newAvailableEquipments.toList().sortedBy { (id, _) ->
+                id
+            }.mapIndexed { index, (id, _) ->
+                Pair(id, index)
+            }.toMap()
+
+        viewModel.availableEquipmentsIdsByIndexes =
+            viewModel.availableEquipmentsIndexesById!!.map { (id, index) ->
+                Pair(index, id)
+            }.toMap()
     }
 
     // selected equipments observer
     viewModel.selectedEquipments.observe(viewLifecycleOwner) { newSelectedEquipments ->
         val availableEquipments = viewModel.availableEquipments.value
-        val equipmentsToRemove = mutableListOf<Int>()
+        val equipmentsToRemove = mutableListOf<String>()
 
         for ((_, selectedEquipment) in newSelectedEquipments) {
             val selectedQty = selectedEquipment.selectedQuantity
@@ -308,8 +327,8 @@ internal fun ManageEquipmentsFragment.initEquipmentsObservers() {
 }
 
 internal fun ManageEquipmentsFragment.checkAtLeastOneAvailableEquipment(
-    availableEquipments: Map<Int, RoomEquipment>,
-    newSelectedEquipments: Map<Int, RoomDetailedEquipmentReservation>
+    availableEquipments: Map<String, Equipment>,
+    newSelectedEquipments: Map<String, DetailedEquipmentReservation>
 ) {
     var atLeastOneAvailableEquipmentFlag = false
 

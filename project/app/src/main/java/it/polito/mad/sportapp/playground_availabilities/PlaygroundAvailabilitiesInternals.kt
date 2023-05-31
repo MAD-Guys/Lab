@@ -400,13 +400,14 @@ internal fun PlaygroundAvailabilitiesFragment.initMonthAndDateObservers() {
                 DateTimeFormatter.ofPattern("EEEE, d MMMM y", Locale.ENGLISH))
         }
 
-        if (it < LocalDate.now()) {
-            // set date label as grey
-            selectedDateLabelBox.setBackgroundResource(R.color.time_slot_unavailable_background_color)
-        }
-        else {
-            // set date label as orange
-            selectedDateLabelBox.setBackgroundResource(R.drawable.time_slot_bg)
+        if (reservationVM.reservationManagementModeWrapper.mode == null) {
+            if (it < LocalDate.now()) {
+                // set date label as grey
+                selectedDateLabelBox.setBackgroundResource(R.color.time_slot_unavailable_background_color)
+            } else {
+                // set date label as orange
+                selectedDateLabelBox.setBackgroundResource(R.drawable.time_slot_bg)
+            }
         }
 
         // update recycler view data

@@ -25,9 +25,9 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.reservation_management.ReservationManagementUtilities
 import it.polito.mad.sportapp.application_utilities.showToasty
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
+import it.polito.mad.sportapp.reservation_management.ReservationManagementUtilities
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -66,7 +66,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
 
     private val viewModel by viewModels<ReservationDetailsViewModel>()
 
-    private var eventId: Int = -1
+    private var eventId: String? = null
 
     private lateinit var fireListener: FireListener
 
@@ -89,10 +89,10 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         navController = Navigation.findNavController(view)
 
         // Retrieve event id
-        eventId = arguments?.getInt("id_event") ?: -1
+        eventId = arguments?.getString("id_event")
 
-        if (eventId != -1) {
-            fireListener = viewModel.getReservationFromDb(/*eventId "8kE1VxbGM1AOIB02WjQF"*/ "n3ZSo5zNDSDakGACa1yP") //TODO: replace with the correct reservationId
+        if (eventId != null) {
+            fireListener = viewModel.getReservationFromDb(eventId!!)
         }
 
         // Generate QR code
@@ -361,8 +361,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         val slotDuration = Duration.ofMinutes(30)
 
         val params = bundleOf(
-            //TODO: Change parameter 'reservation' type of function 'createBundleFrom' to DetailedReservation
-            //"reservation" to ReservationManagementUtilities.createBundleFrom(reservation, slotDuration)
+            "reservation" to ReservationManagementUtilities.createBundleFrom(reservation, slotDuration)
         )
 
         navController.navigate(R.id.action_reservationDetailsFragment_to_playgroundAvailabilitiesFragment, params)

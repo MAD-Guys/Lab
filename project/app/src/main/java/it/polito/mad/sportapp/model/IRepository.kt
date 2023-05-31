@@ -194,7 +194,7 @@ interface IRepository {
     fun getAvailableEquipmentsBySportCenterIdAndSportId(
         sportCenterId: String,
         sportId: String,
-        reservationId: String,
+        reservationId: String?,
         startDateTime: LocalDateTime,
         endDateTime: LocalDateTime,
         fireCallback: (FireResult<MutableMap<String, Equipment>, DefaultGetFireError>) -> Unit

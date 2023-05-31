@@ -860,7 +860,7 @@ internal fun FireRepository.getStaticAllEquipmentsBySportCenterIdAndSportId(
 internal fun FireRepository.getDynamicEquipmentReservationSlots(
     sportCenterId: String,
     sportId: String,
-    reservationId: String,
+    reservationId: String?,
     date: String,
     startDateTime: String,
     endDateTime: String,
@@ -1114,9 +1114,12 @@ internal fun FireRepository.getDynamicAllUserNotifications(
     return fireListener
 }
 
+/**
+ * It returns the new assigned id to the notification
+ */
 internal fun FireRepository.saveInvitation(
     notification: Notification,
-    fireCallback: (FireResult<Unit, SaveAndSendInvitationFireError>) -> Unit
+    fireCallback: (FireResult<String, SaveAndSendInvitationFireError>) -> Unit
 ) {
     // convert notification entity to fireNotification
     val fireNotification = FireNotification.from(notification)
@@ -1129,13 +1132,15 @@ internal fun FireRepository.saveInvitation(
         return
     }
 
+    val newDocumentReference = db.collection("notifications").document()
+    val newNotificationId = newDocumentReference.id
+
     // save notification document in the collection
-    db.collection("notifications")
-        .document()
+    newDocumentReference
         .set(fireNotification.serialize())
         .addOnSuccessListener {
             // * save was successful *
-            fireCallback(Success(Unit))
+            fireCallback(Success(newNotificationId))
         }
         .addOnFailureListener {
             // generic error

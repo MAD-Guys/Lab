@@ -14,8 +14,8 @@ import androidx.fragment.app.viewModels
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.room.RoomDetailedEquipmentReservation
-import it.polito.mad.sportapp.entities.room.RoomEquipment
+import it.polito.mad.sportapp.entities.DetailedEquipmentReservation
+import it.polito.mad.sportapp.entities.Equipment
 
 @AndroidEntryPoint
 class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
@@ -25,7 +25,7 @@ class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
     internal lateinit var equipmentsContainer: LinearLayout
 
     // contains all the equipments views, associated to the corresponding equipment id
-    internal val equipmentsRowsById = mutableMapOf<Int, LinearLayout>()
+    internal val equipmentsRowsById = mutableMapOf<String, LinearLayout>()
     internal val equipmentsRows = mutableListOf<LinearLayout>()     // ordered as appearing in the view
 
     internal lateinit var addEquipmentButtonMessage: TextView
@@ -41,6 +41,9 @@ class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
         this.initAppBar()
         this.initMenu()
         this.initFloatingButton()
+
+        /* init error message toast */
+        this.initErrorMessageObserver()
 
         /* retrieve reservation data passed after slots selection */
         this.initReservationBundle()
@@ -67,7 +70,7 @@ class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
                 val selectedEquipments = viewModel.selectedEquipments.value!!
 
                 // compute available equipments' quantities to show
-                val availableEquipmentsOptions = mutableMapOf<Int, RoomEquipment>()
+                val availableEquipmentsOptions = mutableMapOf<String, Equipment>()
 
                 for ((equipmentId, equipment) in viewModel.availableEquipments.value!!) {
                     val actualSelectedQuantity = selectedEquipments[equipmentId]?.selectedQuantity ?: 0
@@ -86,7 +89,7 @@ class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
                 // show menu options
                 availableEquipmentsOptions.forEach{(id, equipment) ->
                     val optionText = "+   ${equipment.name} €${String.format("%.2f", equipment.unitPrice)}  (${equipment.availability} left)"
-                    val optionId = Menu.FIRST + id
+                    val optionId = Menu.FIRST + viewModel.availableEquipmentsIndexesById?.get(id)!!
                     menu.add(ContextMenu.NONE, optionId, ContextMenu.NONE, optionText)
                 }
 
@@ -96,7 +99,8 @@ class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        val selectedEquipmentId = item.itemId - Menu.FIRST
+        val selectedEquipmentIdIndex = item.itemId - Menu.FIRST
+        val selectedEquipmentId = viewModel.availableEquipmentsIdsByIndexes?.get(selectedEquipmentIdIndex)!!
         Log.d("tapped item", item.title.toString())
 
         synchronized(viewModel.selectedEquipments) {
@@ -107,8 +111,8 @@ class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
                     val newQty = (selectedEquipment?.selectedQuantity ?: 0) + 1
 
                     // add new equipment with qty 1
-                    val newEquipmentReservation = RoomDetailedEquipmentReservation(
-                        viewModel.reservationBundle.getInt("reservation_id"),
+                    val newEquipmentReservation = DetailedEquipmentReservation(
+                        viewModel.reservationBundle.getString("reservation_id"),
                         selectedEquipmentId,
                         equipment.name,
                         newQty,
@@ -135,5 +139,11 @@ class ManageEquipmentsFragment : Fragment(R.layout.manage_equipments_view) {
         // clear equipments rows
         this.equipmentsRows.clear()
         this.equipmentsRowsById.clear()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        viewModel.fireListener.unregister()
     }
 }
