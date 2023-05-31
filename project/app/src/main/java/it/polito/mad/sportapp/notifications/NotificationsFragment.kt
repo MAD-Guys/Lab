@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.SportAppViewModel
+import it.polito.mad.sportapp.application_utilities.showToasty
 import it.polito.mad.sportapp.entities.Notification
 import it.polito.mad.sportapp.notifications.recyclerView.NotificationsAdapter
 
@@ -50,6 +51,13 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
 
         // initialize navigation controller
         navController = findNavController()
+
+        // since the SportAppViewModel was instanced before this fragment, an error about the
+        // notifications could be already present. In that case show a toast and go back.
+        // Note: no other repository errors are possible here.
+        if(vm.getNotificationsError.value != null){
+            showToasty("error", requireContext(), vm.getNotificationsError.value!!.message())
+        }
 
         // initialize menu
         menuInit()

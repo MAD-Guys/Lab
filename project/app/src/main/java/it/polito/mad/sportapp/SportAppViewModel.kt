@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.Notification
 import it.polito.mad.sportapp.entities.User
+import it.polito.mad.sportapp.entities.firestore.utilities.DefaultGetFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.model.IRepository
@@ -30,6 +31,11 @@ class SportAppViewModel @Inject constructor(
     internal var areVmInstancesCreated: Boolean = false
 
     /* notifications */
+
+    // eventual error getting the notifications
+    private val _getNotificationsError = MutableLiveData<DefaultGetFireError?>()
+    val getNotificationsError: LiveData<DefaultGetFireError?> = _getNotificationsError
+
     private val _notifications =
         MutableLiveData<MutableList<Notification>>().also {
 
@@ -44,6 +50,7 @@ class SportAppViewModel @Inject constructor(
                                     "getNotifications",
                                     "Error: ${notificationsResult.errorMessage()}"
                                 )
+                                _getNotificationsError.postValue(notificationsResult.type)
                                 return@getNotificationsByUserId
                             }
 

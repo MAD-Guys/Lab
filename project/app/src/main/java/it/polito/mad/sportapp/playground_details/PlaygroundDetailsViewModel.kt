@@ -188,13 +188,6 @@ class PlaygroundDetailsViewModel @Inject constructor(
     fun getTempTitle() = _tempTitle
     fun getTempText() = _tempText
 
-    /*
-    fun loggedUserCanReviewThisPlayground(): Boolean {
-        return _loggedUserCanReviewThisPlayground
-    }
-
-     */
-
     fun loadEquipmentsFromDb() {
         _playground.value?.let {
             repository.getAllEquipmentsBySportCenterIdAndSportId(
@@ -220,12 +213,9 @@ class PlaygroundDetailsViewModel @Inject constructor(
 
     fun setLoggedUserCanReviewThisPlayground() {
 
-        _loggedUserCanReviewThisPlayground.postValue(true)
-
-        /*
         // ask if the current user can review
         playground.value?.let {
-            iRepository.loggedUserCanReviewPlayground(
+            repository.loggedUserCanReviewPlayground(
                 userId!!,
                 it.playgroundId
             ) { it ->
@@ -241,7 +231,6 @@ class PlaygroundDetailsViewModel @Inject constructor(
             }
         }
 
-         */
     }
 
     fun clearSuccess(){

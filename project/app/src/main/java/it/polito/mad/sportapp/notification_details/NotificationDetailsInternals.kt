@@ -67,11 +67,37 @@ internal fun NotificationDetailsFragment.setupObservers() {
             reservationStartTime.text = it.startTime.toString()
             reservationEndTime.text = it.endTime.toString()
             reservationPricePerHour.text = String.format("%.2f", it.playgroundPricePerHour)
-        }
-        //TODO: manage the case where the db returns an error
-        else {
+        } else {
             progressBar.visibility = View.VISIBLE
             notificationDetailsScrollView.visibility = View.GONE
+        }
+    }
+
+    // error/success observers
+
+    // error during the GET: can't load this page, go back!
+    vm.getError.observe(viewLifecycleOwner){
+        if(it != null){ // it can be the Error or null
+            showToasty("error", requireContext(), it.message())
+
+            // go back
+            navController.popBackStack()
+        }
+    }
+
+    // error during the update: show a toast and stay here
+    vm.updateError.observe(viewLifecycleOwner){
+        if(it != null){ // it can be the Error or null
+            showToasty("error", requireContext(), it.message())
+        }
+    }
+
+    // update successfully completed: show a toast and navigate back
+    vm.updateSuccess.observe(viewLifecycleOwner){
+        if(it != null){ // it can be "accepted", "declined" or "rejected" (or null)
+            showToasty("success", requireContext(), "Invitation correctly $it!")
+            // navigate back
+            navController.popBackStack()
         }
     }
 }
@@ -81,12 +107,7 @@ internal fun NotificationDetailsFragment.initAcceptInvitationDialog() {
     acceptInvitationDialog = AlertDialog.Builder(requireContext())
         .setMessage("Do you want to accept this invitation?")
         .setPositiveButton("YES") { _, _ ->
-            showToasty("success", requireContext(), "Invitation correctly accepted!")
-
             vm.updateInvitationStatus(notificationId!!, NotificationStatus.PENDING ,NotificationStatus.ACCEPTED, reservationId!!)
-
-            // navigate back
-            navController.popBackStack()
         }
         .setNegativeButton("NO") { d, _ -> d.cancel() }
         .create()
@@ -97,13 +118,7 @@ internal fun NotificationDetailsFragment.initDeclineInvitationDialog() {
     declineInvitationDialog = AlertDialog.Builder(requireContext())
         .setMessage("Do you want to decline this invitation?")
         .setPositiveButton("YES") { _, _ ->
-
-            showToasty("success", requireContext(), "Invitation correctly declined!")
-
             vm.updateInvitationStatus(notificationId!!, NotificationStatus.PENDING ,NotificationStatus.REJECTED, reservationId!!)
-
-            // navigate back
-            navController.popBackStack()
         }
         .setNegativeButton("NO") { d, _ -> d.cancel() }
         .create()
@@ -114,13 +129,7 @@ internal fun NotificationDetailsFragment.initRejectInvitationDialog() {
     rejectInvitationDialog = AlertDialog.Builder(requireContext())
         .setMessage("Do you want to reject the previously accepted invitation?")
         .setPositiveButton("YES") { _, _ ->
-
-            showToasty("success", requireContext(), "Invitation correctly rejected!")
-
             vm.updateInvitationStatus(notificationId!!, NotificationStatus.ACCEPTED ,NotificationStatus.REJECTED, reservationId!!)
-
-            // navigate back
-            navController.popBackStack()
         }
         .setNegativeButton("NO") { d, _ -> d.cancel() }
         .create()

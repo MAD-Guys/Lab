@@ -14,6 +14,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.Achievement
 import it.polito.mad.sportapp.entities.SportLevel
 import it.polito.mad.sportapp.entities.User
+import it.polito.mad.sportapp.entities.firestore.utilities.DefaultGetFireError
+import it.polito.mad.sportapp.entities.firestore.utilities.DefaultInsertFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.model.IRepository
@@ -112,11 +114,23 @@ class ProfileViewModel @Inject constructor(
 
                 is FireResult.Error -> {
                     Log.e("ProfileViewModel", "Error while loading sports list!")
+                    _getUserError.postValue(newSportsResult.type)
                 }
             }
         }
     }
     val sportsList: LiveData<List<Sport>> = _sportsList
+
+    /* error/success management */
+    private val _getUserError = MutableLiveData<DefaultGetFireError?>()
+    val getUserError: LiveData<DefaultGetFireError?> = _getUserError
+
+    private val _updateUserError = MutableLiveData<DefaultInsertFireError?>()
+    val updateUserError: LiveData<DefaultInsertFireError?> = _updateUserError
+
+    private val _updateUserSuccess = MutableLiveData(false)
+    val updateUserSuccess: LiveData<Boolean> = _updateUserSuccess
+    fun clearSuccess() { _updateUserSuccess.postValue(false) }
 
     // init block
     init {
@@ -268,7 +282,7 @@ class ProfileViewModel @Inject constructor(
                 is FireResult.Error -> {
                     // error while loading user information
                     Log.e("ProfileViewModel", "Error while loading user information!")
-                    //showToasty("error", context, newUser.errorMessage())
+                    _getUserError.postValue(newUser.type)
                 }
             }
         }
@@ -299,13 +313,13 @@ class ProfileViewModel @Inject constructor(
                     is FireResult.Success -> {
                         // user information successfully updated
                         Log.d("ProfileViewModel", "User information successfully updated!")
-                        //showToasty("success", context, "Information successfully updated!")
+                        _updateUserSuccess.postValue(true)
                     }
 
                     is FireResult.Error -> {
                         // error while updating user information
                         Log.e("ProfileViewModel", "Error while updating user information!")
-                        //showToasty("error", context, it.errorMessage())
+                        _updateUserError.postValue(it.type)
                     }
                 }
             }

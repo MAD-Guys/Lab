@@ -146,6 +146,32 @@ internal fun EditProfileFragment.observersSetup() {
     vm.userBio.observe(viewLifecycleOwner) {
         bio.setText(it)
     }
+
+    // * error/success observers *
+
+    // repository error getting user information -> show an error toast
+    vm.getUserError.observe(viewLifecycleOwner) {
+        if(it != null){ // it can be an Error, or null
+            showToasty("error", requireContext(), it.message())
+        }
+    }
+
+    // repository error saving new user information -> show an error toast and stay here
+    vm.updateUserError.observe(viewLifecycleOwner) {
+        if(it != null){ // it can be an Error, or null
+            showToasty("error", requireContext(), it.message())
+        }
+    }
+
+    // information saved successfully -> show a success toast
+    vm.updateUserSuccess.observe(viewLifecycleOwner) {
+        if(it){
+            // showing feedback information
+            showToasty("success", requireContext(), "Information correctly saved!")
+            vm.clearSuccess()
+        }
+    }
+
 }
 
 internal fun EditProfileFragment.setupTemporarySports(sportsList: List<SportEntity>) {
@@ -260,12 +286,8 @@ internal fun EditProfileFragment.saveInformationOnStorage() {
     vm.setUserSports(sportsTemp.filter { it.value.selected }.map { it.value.toSportLevel() })
 
     if (isErrorFree()) {
-
         // update db user information
         vm.updateDbUserInformation()
-
-        // showing feedback information
-        showToasty("success", requireContext(), "Information correctly saved!")
     }
 }
 

@@ -104,10 +104,6 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         card.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
 
-        // Initialize values
-        // initializeValues()
-        // initializeEquipment()
-
         // add link to Playground Details
         playgroundButton.setOnClickListener {
             viewModel.reservation.value?.let {
@@ -158,8 +154,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                     leaveReviewButton.visibility = Button.VISIBLE
                 }
 
-                //DEBUG:
-                inviteButton.visibility = Button.VISIBLE
+                //DEBUG: inviteButton.visibility = Button.VISIBLE
                 //DEBUG: deleteButton.visibility = Button.VISIBLE
 
                 progressBar.visibility = View.GONE

@@ -19,12 +19,6 @@ class ReservationDetailsViewModel @Inject constructor(
     private val repository: IRepository
 ) : ViewModel() {
 
-    /**
-     * TODO:
-     * (1) Get the correct reservationId:String from showReservations view
-     * (2) fix ReservationManagementUtilities.createBundleFrom in order to make it accept a DetailedReservation object
-     * */
-
     private var _reservation = MutableLiveData<DetailedReservation>()
     val reservation: LiveData<DetailedReservation> = _reservation
 
