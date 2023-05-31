@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.User
 
-class UserAdapter(private val buttonListener: (String, String) -> Unit) : RecyclerView.Adapter<UserViewHolder>() {
+class UserAdapter(
+    private val buttonListener: (String, String) -> Unit,
+    val sportId: String
+) : RecyclerView.Adapter<UserViewHolder>() {
 
     val users = mutableListOf<User>()
     var reservationId : Int = -1
@@ -15,7 +18,7 @@ class UserAdapter(private val buttonListener: (String, String) -> Unit) : Recycl
         val v = LayoutInflater.from(parent.context)
             .inflate(R.layout.user_row, parent, false)
 
-        return UserViewHolder(v)
+        return UserViewHolder(v, sportId)
     }
 
     override fun getItemCount(): Int = users.size

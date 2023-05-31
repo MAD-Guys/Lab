@@ -26,6 +26,20 @@
             android:paddingVertical="16dp">
 
             <TextView
+                android:id="@+id/invitation_box_sport_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_semibold"
+                android:includeFontPadding="false"
+                android:text="Basketball  🏀"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="13dp"
+                android:layout_gravity="center"
+                />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_semibold"

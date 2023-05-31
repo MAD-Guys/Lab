@@ -1,10 +1,12 @@
 package it.polito.mad.sportapp.invitation
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
@@ -21,15 +23,18 @@ import it.polito.mad.sportapp.invitation.users_recycler_view.UserAdapter
 class InvitationFragment : Fragment(R.layout.fragment_invitation) {
 
     internal val viewModel by viewModels<InvitationViewModel>()
+
     internal var reservationId: String = ""
-    internal var reservationSportId: String = ""
-    internal var reservationSportName: String = ""
+    private var reservationSportId: String = ""
+    private var reservationSportName: String = ""
+
+    private lateinit var sportLabel: TextView
 
     internal lateinit var levelSpinner: Spinner
     internal lateinit var usernameSearch: EditText
 
     internal lateinit var usersRecyclerView: RecyclerView
-    internal val userAdapter = UserAdapter(inviteButtonListener)
+    internal lateinit var userAdapter: UserAdapter
 
     // action bar
     internal var actionBar: ActionBar? = null
@@ -39,6 +44,7 @@ class InvitationFragment : Fragment(R.layout.fragment_invitation) {
 
     private lateinit var fireListener: FireListener
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -56,10 +62,15 @@ class InvitationFragment : Fragment(R.layout.fragment_invitation) {
         // initialize navigation controller
         navController = Navigation.findNavController(view)
 
+        sportLabel = view.findViewById(R.id.invitation_box_sport_label)
+
         // Retrieve event id
         reservationId = arguments?.getString("id_reservation") ?: ""
         reservationSportId = arguments?.getString("id_sport") ?: ""
         reservationSportName = arguments?.getString("sport_name") ?: ""
+
+        val reservationSportEmoji = arguments?.getString("sport_emoji") ?: ""
+        sportLabel.text = "$reservationSportName  $reservationSportEmoji"
 
         // Initialize fireListener
         fireListener = viewModel.getUsersFromDb(reservationId, reservationSportId, reservationSportName)
@@ -71,6 +82,9 @@ class InvitationFragment : Fragment(R.layout.fragment_invitation) {
         // Init views
         initLevelSpinner()
         usernameSearch.addTextChangedListener(textListenerInit())
+
+        // init users recycler view adapter
+        userAdapter = UserAdapter(inviteButtonListener, reservationSportId)
 
         //set observers
         viewModel.users.observe(viewLifecycleOwner) {

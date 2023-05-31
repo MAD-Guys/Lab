@@ -114,7 +114,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
 
         inviteButton.setOnClickListener {
             viewModel.reservation.value?.let {
-                handleInviteButton(it.id, it.sportId, it.sportName)
+                handleInviteButton(it.id, it.sportId, it.sportName, it.sportEmoji)
             }
         }
 
@@ -376,11 +376,12 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         )
     }
 
-    private fun handleInviteButton(reservationId: String, sportId: String, sportName: String) {
+    private fun handleInviteButton(reservationId: String, sportId: String, sportName: String, sportEmoji: String) {
         val bundle = bundleOf(
             "id_reservation" to reservationId,
             "id_sport" to sportId,
-            "sport_name" to sportName
+            "sport_name" to sportName,
+            "sport_emoji" to sportEmoji
         )
         navController.navigate(R.id.action_reservationDetailsFragment_to_invitationFragment, bundle)
     }
