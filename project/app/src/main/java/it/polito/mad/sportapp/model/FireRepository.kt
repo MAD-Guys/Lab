@@ -1372,7 +1372,8 @@ class FireRepository : IRepository {
 
     /**
      * Retrieve from the Firestore cloud db all the reservations in which the
-     * user is involved as a participant
+     * user is involved as a participant: in each slot, reservations are in start time
+     * chronological order; and
      */
     override fun getReservationsPerDateByUserId(
         userId: String,
@@ -1444,9 +1445,12 @@ class FireRepository : IRepository {
                             detailedReservation
                         }
 
-                    // group reservations by date
-                    val userDetailedReservationsByDate =
-                        userDetailedReservations.groupBy { reservation ->
+                    // sort and group reservations by date
+                    val userDetailedReservationsByDate = userDetailedReservations
+                        .sortedBy { reservation ->
+                            "${reservation.startDateTime}${reservation.endDateTime}"
+                        }
+                        .groupBy { reservation ->
                             reservation.date
                         }
 
