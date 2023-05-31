@@ -1466,6 +1466,18 @@ class FireRepository : IRepository {
     }
 
     /**
+     * Retrieve from the Firestore cloud db the additional requests of the given reservation (if any)
+     *
+     * **Note**: the result is static (the fireCallback is executed just once)
+     */
+    override fun getReservationAdditionalRequests(
+        reservationId: String,
+        fireCallback: (FireResult<String?,DefaultGetFireError>) -> Unit
+    ) {
+
+    }
+
+    /**
      * Delete a reservation from the Firestore cloud db
      */
     override fun deleteReservation(

@@ -183,6 +183,16 @@ interface IRepository {
         fireCallback: (FireResult<Map<LocalDate, List<DetailedReservation>>, DefaultGetFireError>) -> Unit
     ): FireListener
 
+    /**
+     * Retrieve from the db the additional requests of the given reservation (if any)
+     *
+     * **Note**: the result is static (the fireCallback is executed just once)
+     */
+    fun getReservationAdditionalRequests(
+        reservationId: String,
+        fireCallback: (FireResult<String?,DefaultGetFireError>) -> Unit
+    )
+
     /** Delete a reservation from the db */
     fun deleteReservation(
         reservation: DetailedReservation,
