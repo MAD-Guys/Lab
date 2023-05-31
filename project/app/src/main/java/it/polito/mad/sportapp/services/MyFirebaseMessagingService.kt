@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.SportAppActivity
 import it.polito.mad.sportapp.application_utilities.checkIfUserIsLoggedIn
@@ -25,9 +26,11 @@ import it.polito.mad.sportapp.model.IRepository
 import java.util.Random
 import javax.inject.Inject
 
-class MyFirebaseMessagingService @Inject constructor(
-    private val repository: IRepository
-) : FirebaseMessagingService() {
+@AndroidEntryPoint
+class MyFirebaseMessagingService : FirebaseMessagingService() {
+
+    @Inject
+    lateinit var repository: IRepository
 
     private val channelId = "ezsport_channel"
     private val tag = "MyFirebaseMessagingService"
