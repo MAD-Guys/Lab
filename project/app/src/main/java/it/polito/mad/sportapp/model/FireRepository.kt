@@ -61,7 +61,7 @@ class FireRepository : IRepository {
     internal val db = FirebaseFirestore.getInstance()
 
     // hardcoded values
-    private val slotDuration = Duration.ofMinutes(30)
+    internal val slotDuration = Duration.ofMinutes(30)
 
     /* users */
 

@@ -5,6 +5,7 @@ import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.entities.NewReservation
 import java.time.Duration
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 data class FirePlaygroundReservation(
     val id: String?,
@@ -95,11 +96,11 @@ data class FirePlaygroundReservation(
                 reservation.playgroundId,
                 user,
                 participants,
-                reservation.startTime.toString(),
-                reservation.endTime.toString(),
+                reservation.startTime.format(DateTimeFormatter.ISO_DATE_TIME),
+                reservation.endTime.format(DateTimeFormatter.ISO_DATE_TIME),
                 totalPrice,
                 reservation.additionalRequests,
-                LocalDateTime.now().toString()
+                LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
             )
         }
 
