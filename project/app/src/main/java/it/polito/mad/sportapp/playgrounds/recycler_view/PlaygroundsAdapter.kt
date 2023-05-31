@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.PlaygroundInfo
-import it.polito.mad.sportapp.entities.room.RoomPlaygroundInfo
 import it.polito.mad.sportapp.playgrounds.PlaygroundsViewModel
 
 class PlaygroundsAdapter(

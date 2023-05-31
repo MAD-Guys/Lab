@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.User
-import it.polito.mad.sportapp.entities.room.RoomUser
 
 class UserAdapter(private val buttonListener: (String, String) -> Unit) : RecyclerView.Adapter<UserViewHolder>() {
 

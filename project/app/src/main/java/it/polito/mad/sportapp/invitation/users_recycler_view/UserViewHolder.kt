@@ -8,9 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.application_utilities.CircleTransform
 import it.polito.mad.sportapp.entities.User
-import it.polito.mad.sportapp.entities.room.RoomUser
 
 class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val profilePicture = view.findViewById<ImageView>(R.id.profile_picture)

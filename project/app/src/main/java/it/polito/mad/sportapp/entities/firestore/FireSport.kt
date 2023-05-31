@@ -2,7 +2,6 @@ package it.polito.mad.sportapp.entities.firestore
 
 import android.util.Log
 import it.polito.mad.sportapp.entities.Sport
-import it.polito.mad.sportapp.entities.room.RoomSport
 
 data class FireSport(
     val id: String,
@@ -91,19 +90,6 @@ data class FireSport(
                 name,
                 emoji,
                 maxParticipants
-            )
-        }
-
-        /**
-         * Convert a ProfileSport entity in a FireSport object compliant to Firestore
-         * collection
-         */
-        fun from(sport: RoomSport): FireSport {
-            return FireSport(
-                sport.id.toString(), // TODO
-                sport.name,
-                sport.emoji,
-                sport.maxPlayers.toLong()
             )
         }
     }

@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.PlaygroundInfo
-import it.polito.mad.sportapp.entities.room.RoomPlaygroundInfo
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
