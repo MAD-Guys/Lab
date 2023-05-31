@@ -61,7 +61,7 @@ class FireRepository : IRepository {
     internal val db = FirebaseFirestore.getInstance()
 
     // hardcoded values
-    internal val slotDuration = Duration.ofMinutes(30)
+    private val slotDuration = Duration.ofMinutes(30)
 
     /* users */
 
@@ -2609,6 +2609,64 @@ class FireRepository : IRepository {
                 }
             }
         }
+    }
+
+    /**
+     * Retrieve a (live) notification given its id from the Firestore cloud db
+     */
+    override fun getNotificationById(
+        notificationId: String,
+        fireCallback: (FireResult<Notification, DefaultGetFireError>) -> Unit
+    ): FireListener {
+        val listener = db.collection("notifications")
+            .document(notificationId)
+            .addSnapshotListener { value, error ->
+                if(error != null) {
+                    // generic error
+                    Log.e("generic error", "Error: a generic error occurred retrieving notification with id $notificationId in FireRepository.getNotificationById(). Message: ${error.message}")
+                    fireCallback(DefaultGetFireError.default(
+                        "Error: a generic error occurred retrieving the notification"
+                    ))
+                    return@addSnapshotListener
+                }
+
+                if (value == null) {
+                    // notification not found
+                    Log.e("not found error", "Error: notification with id $notificationId not found")
+                    fireCallback(DefaultGetFireError.notFound(
+                        "Error: notification not found"
+                    ))
+                    return@addSnapshotListener
+                }
+
+                val notificationDoc = FireNotification.deserialize(value.id, value.data)
+
+                if (notificationDoc == null) {
+                    // deserialization error
+                    Log.e("deserialization error", "Error: an error occurred deserializing notification $value in FireRepository.getNotificationById($notificationId)")
+                    fireCallback(DefaultGetFireError.duringDeserialization(
+                        "Error: an error occurred retrieving the notification"
+                    ))
+                    return@addSnapshotListener
+                }
+
+                // * notification retrieved *
+                val notification = notificationDoc.toNotification()
+
+                if (notification == null) {
+                    // parsing error
+                    Log.e("parsing error", "Error: a parsing error occurred converting fireNotification to notification entity in FireRepository.getNotificationById($notificationId)")
+                    fireCallback(DefaultGetFireError.duringDeserialization(
+                        "Error: an error occurred retrieving the notification"
+                    ))
+                    return@addSnapshotListener
+                }
+
+                // * return notification successfully *
+                fireCallback(Success(notification))
+            }
+
+        return FireListener(listener)
     }
 }
     

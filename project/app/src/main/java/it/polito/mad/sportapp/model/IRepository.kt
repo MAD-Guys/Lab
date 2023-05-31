@@ -280,4 +280,15 @@ interface IRepository {
         notification: Notification,
         fireCallback: (FireResult<Unit, SaveAndSendInvitationFireError>) -> Unit
     )
+
+    /**
+     * Retrieve a notification given its id from the db
+     *
+     * **Note**: the result is **dynamic** (the fireCallback is executed each time the notification
+     * changes). Remember to unregister the listener once you don't need the data anymore
+     */
+    fun getNotificationById(
+        notificationId: String,
+        fireCallback: (FireResult<Notification, DefaultGetFireError>) -> Unit
+    ): FireListener
 }

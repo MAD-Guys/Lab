@@ -151,7 +151,7 @@ internal fun LoginFragment.updateUI(currentUser: FirebaseUser?) {
     } else {
         // user is not logged in
         // show error message
-        showToasty("error", requireContext(), "Something went wrong,\nplease try again!")
+        showToasty("error", requireContext(), "Something went wrong,\nplease check your internet connection and try again!")
     }
 }
 
