@@ -23,4 +23,6 @@
     <color name="event_tag_color">@color/event_color</color>
     <color name="past_event_color">#E0E0E0</color>
 
+    <color name="no_available_reservations_border_color">#A0A0A0</color>
+
 </resources>

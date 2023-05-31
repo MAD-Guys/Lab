@@ -13,6 +13,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.application_utilities.showToasty
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.invitation.users_recycler_view.UserAdapter
 
@@ -75,6 +76,31 @@ class InvitationFragment : Fragment(R.layout.fragment_invitation) {
         viewModel.users.observe(viewLifecycleOwner) {
             if (viewModel.users.value != null) {
                 initUserList()
+            }
+        }
+
+        viewModel.getError.observe(viewLifecycleOwner) {
+            if(it != null){
+                // show error toast
+                showToasty("error", requireContext(), it.message())
+
+                // go back
+                navController.popBackStack()
+            }
+        }
+
+        viewModel.invitationError.observe(viewLifecycleOwner) {
+            if(it != null){
+                // show error toast
+                showToasty("error", requireContext(), it.message())
+            }
+        }
+
+        viewModel.invitationSuccess.observe(viewLifecycleOwner) {
+            if(it != null){ // it is null or the username of the invited user
+                // show success toast
+                showToasty("success", requireContext(), "Invitation successfully sent to $it!")
+                viewModel.clearInvitationSuccess()
             }
         }
     }

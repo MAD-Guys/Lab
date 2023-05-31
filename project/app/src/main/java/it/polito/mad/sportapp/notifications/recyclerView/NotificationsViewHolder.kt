@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.application_utilities.CircleTransform
-import it.polito.mad.sportapp.entities.room.RoomNotification
+import it.polito.mad.sportapp.entities.Notification
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -28,7 +28,7 @@ internal class NotificationsViewHolder(view: View) : RecyclerView.ViewHolder(vie
     private val notificationDescription = view.findViewById<TextView>(R.id.notification_description)
     private val notificationTimestamp = view.findViewById<TextView>(R.id.notification_timestamp)
 
-    fun bind(notification: RoomNotification) {
+    fun bind(notification: Notification) {
 
         // get display width
         val displayMetrics = itemView.context.resources.displayMetrics
@@ -59,7 +59,8 @@ internal class NotificationsViewHolder(view: View) : RecyclerView.ViewHolder(vie
         notificationContainer.setOnClickListener {
 
             val bundle = bundleOf(
-                "id_reservation" to notification.reservationId,
+                "notification_id" to notification.id,
+                "reservation_id" to notification.reservationId,
                 "status" to notification.status.name,
                 "timestamp" to notification.timestamp
             )

@@ -17,8 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.view.CalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.application_utilities.hideProgressBar
-import it.polito.mad.sportapp.application_utilities.showProgressBar
 import it.polito.mad.sportapp.show_reservations.ShowReservationsViewModel
 import it.polito.mad.sportapp.show_reservations.calendar_view.events_recycler_view.EventsAdapter
 
@@ -27,7 +25,7 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
 
     internal val eventsAdapter = EventsAdapter()
 
-    private lateinit var recyclerView: RecyclerView
+    internal lateinit var recyclerView: RecyclerView
 
     // fragment dialog
     internal lateinit var exitDialog: AlertDialog
@@ -41,7 +39,7 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
     internal var actionBar: ActionBar? = null
 
     // progress bar (Steph Curry GIF)
-    private lateinit var progressBar: View
+    internal lateinit var progressBar: View
 
     // navigation controller
     internal lateinit var navController: NavController
@@ -91,7 +89,6 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
 
         /* show progress bar */
         progressBar = view.findViewById(R.id.progressBar)
-        showProgressBar(progressBar, recyclerView)
 
         recyclerView.apply {
             layoutManager =
@@ -101,22 +98,6 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
 
         /* bottom bar */
         setupBottomBar()
-
-        requireView().viewTreeObserver?.addOnGlobalLayoutListener {
-
-            if (vm.userEvents.value?.isNotEmpty() == true)
-            // task completed: hide progress bar
-                hideProgressBar(progressBar, recyclerView)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        // update events list
-        // the invocation is in the onResume method because the list of events
-        // should be refreshed each time this activity is resumed
-        vm.loadEventsFromDb()
     }
 
 }

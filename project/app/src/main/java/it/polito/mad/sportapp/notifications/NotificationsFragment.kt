@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.SportAppViewModel
-import it.polito.mad.sportapp.entities.room.RoomNotification
+import it.polito.mad.sportapp.entities.Notification
 import it.polito.mad.sportapp.notifications.recyclerView.NotificationsAdapter
 
 @AndroidEntryPoint
@@ -21,7 +21,7 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
     // view model
     internal lateinit var vm: SportAppViewModel
 
-    internal var notifications = mutableListOf<RoomNotification>()
+    internal var notifications = mutableListOf<Notification>()
 
     // notifications recycler view
     internal lateinit var notificationsRecyclerView: RecyclerView

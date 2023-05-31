@@ -9,8 +9,8 @@ import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.room.RoomDetailedReservation
 import it.polito.mad.sportapp.application_utilities.formatDuration
+import it.polito.mad.sportapp.entities.DetailedReservation
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -33,7 +33,7 @@ internal class EventsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val eventMoreInfo = view.findViewById<TextView>(R.id.event_more_info)
     private val eventDuration = view.findViewById<TextView>(R.id.event_duration)
 
-    fun bind(event: RoomDetailedReservation) {
+    fun bind(event: DetailedReservation) {
 
         // set item background color
         if (event.startLocalDateTime.isBefore(LocalDateTime.now())) {

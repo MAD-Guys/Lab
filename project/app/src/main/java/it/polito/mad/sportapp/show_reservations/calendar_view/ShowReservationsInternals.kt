@@ -20,8 +20,9 @@ import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.view.MonthDayBinder
-import it.polito.mad.sportapp.application_utilities.logOut
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.application_utilities.hideProgressBar
+import it.polito.mad.sportapp.application_utilities.showProgressBar
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -172,16 +173,22 @@ internal fun ShowReservationsFragment.calendarInit() {
     // initialize user events live data variable
     vm.userEvents.observe(viewLifecycleOwner) {
 
-        // show events for the selected date if any
-        vm.selectedDate.value?.let { date ->
-            if (date != currentDate) {
-                updateAdapterForDate(date)
-            } else {
-                updateAdapterForDate(currentDate)
-            }
-        }
+        if (it == null) {
+            showProgressBar(progressBar, recyclerView)
+        } else {
+            hideProgressBar(progressBar, recyclerView)
 
-        calendarView.notifyMonthChanged(vm.currentMonth.value!!)
+            // show events for the selected date if any
+            vm.selectedDate.value?.let { date ->
+                if (date != currentDate) {
+                    updateAdapterForDate(date)
+                } else {
+                    updateAdapterForDate(currentDate)
+                }
+            }
+
+            calendarView.notifyMonthChanged(vm.currentMonth.value!!)
+        }
     }
 
     // initialize current month live data variable

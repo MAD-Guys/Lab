@@ -9,8 +9,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.Notification
 import it.polito.mad.sportapp.entities.NotificationStatus
 import it.polito.mad.sportapp.entities.User
+import it.polito.mad.sportapp.entities.firestore.utilities.DefaultGetFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
+import it.polito.mad.sportapp.entities.firestore.utilities.SaveAndSendInvitationFireError
 import it.polito.mad.sportapp.model.IRepository
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -22,6 +24,13 @@ class InvitationViewModel @Inject constructor(
 
     val userId = FirebaseAuth.getInstance().currentUser?.uid
     private var _loggedUser : User? = null
+
+    private var _getError = MutableLiveData<DefaultGetFireError?>()
+    val getError: LiveData<DefaultGetFireError?> = _getError
+    private var _invitationError = MutableLiveData<SaveAndSendInvitationFireError?>()
+    val invitationError: LiveData<SaveAndSendInvitationFireError?> = _invitationError
+    private var _invitationSuccess = MutableLiveData<String?>()
+    val invitationSuccess: LiveData<String?> = _invitationSuccess
 
     private val _allUsers = MutableLiveData<MutableList<User>>()
     private val _beginnerUsers = mutableListOf<User>()
@@ -47,7 +56,10 @@ class InvitationViewModel @Inject constructor(
         if (userId != null) {
             repository.getStaticUser(userId){
                 when (it) {
-                    is FireResult.Error -> Log.d(it.type.message(), it.errorMessage())
+                    is FireResult.Error -> {
+                        Log.e(it.type.message(), it.errorMessage())
+                        _getError.postValue(it.type)
+                    }
                     is FireResult.Success -> {
                         _loggedUser = it.value
                     }
@@ -72,7 +84,8 @@ class InvitationViewModel @Inject constructor(
                 }
 
                 is FireResult.Error -> {
-
+                    Log.e(fireResult.type.message(), fireResult.errorMessage())
+                    _getError.postValue(fireResult.type)
                 }
             }
         }
@@ -129,7 +142,7 @@ class InvitationViewModel @Inject constructor(
         searchUsersByUsername(tempPartialUsername)
     }
 
-    fun sendInvitation(receiverId: String, reservationId: String) {
+    fun sendInvitation(receiverId: String, reservationId: String, receiverUsername: String) {
 
         repository.saveAndSendInvitation(
             Notification(
@@ -145,10 +158,29 @@ class InvitationViewModel @Inject constructor(
             )
         ) {
             when (it) {
-                is FireResult.Error -> Log.d(it.type.message(), it.errorMessage())
-                is FireResult.Success -> {/* Nothing to do */}
+                is FireResult.Error -> {
+                    Log.d(it.type.message(), it.errorMessage())
+                    when(it.errorType()){
+                        SaveAndSendInvitationFireError.NO_SAVE_AND_NO_PUSH_ERROR -> {
+                            // the invitation was not saved
+                            _invitationError.postValue(it.type)
+                        }
+                        SaveAndSendInvitationFireError.NO_PUSH_ERROR -> {
+                            // the invitation was saved, but something went wrong during the sending
+                            // of the push notification. Anyway, the task to invite another user was
+                            // succeeded, so it could be considered as success
+                            _invitationSuccess.postValue(receiverUsername)
+                        }
+                    }
+                }
+                is FireResult.Success -> {
+                    _invitationSuccess.postValue(receiverUsername)
+                }
             }
         }
+    }
 
+    fun clearInvitationSuccess(){
+        _invitationSuccess.postValue(null)
     }
 }

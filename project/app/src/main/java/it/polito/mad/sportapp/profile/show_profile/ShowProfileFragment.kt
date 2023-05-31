@@ -17,7 +17,7 @@ import com.google.android.material.chip.ChipGroup
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.profile.ProfileViewModel
-import it.polito.mad.sportapp.profile.Sport
+import it.polito.mad.sportapp.profile.ProfileSport
 
 @AndroidEntryPoint
 class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
@@ -48,7 +48,7 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
     internal var sportChips: MutableMap<String, Chip> = HashMap()
 
     // sport data
-    internal var sportData: MutableMap<String, Sport> = HashMap()
+    internal var sportData: MutableMap<String, ProfileSport> = HashMap()
 
     // action bar
     internal var actionBar: ActionBar? = null
@@ -97,16 +97,7 @@ class ShowProfileFragment : Fragment(R.layout.fragment_show_profile) {
     override fun onResume() {
         super.onResume()
 
-        /*  The information is retrieved and showed in onResume() because  *
-         *  it has to be refreshed after resuming the fragment */
-
         // set sports inflated flag to false
         vm.setSportsInflated(false)
-
-        // retrieve user information from db
-        vm.loadUserInformationFromDb(1)
-
-        // get all sports from db
-        vm.loadSportsFromDb()
     }
 }

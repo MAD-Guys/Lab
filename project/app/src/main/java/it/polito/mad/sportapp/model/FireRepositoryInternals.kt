@@ -324,6 +324,12 @@ internal fun FireRepository.checkEquipmentsAvailabilities(
     reservation: NewReservation,
     fireCallback: (FireResult<Unit, NewReservationError>) -> Unit
 ) {
+    if(reservation.selectedEquipments.isEmpty()) {
+        // no equipments selected, so they are all available
+        fireCallback(Success(Unit))
+        return
+    }
+
     // check for equipments availability: retrieve all the equipments slots
     // in [reservation.startTime, reservation.endTime] related to the requested equipments,
     // excluding the slots of this reservation (if any); then, for each slot and equipments
@@ -686,6 +692,13 @@ internal fun FireRepository.getPlaygroundReservationsByIds(
     reservationsIds: List<String>,
     fireCallback: (FireResult<List<FirePlaygroundReservation>, DefaultGetFireError>) -> Unit
 ) {
+
+    // check first if the reservations ids list is empty, because where in clause doesn't work with empty lists
+    if(reservationsIds.isEmpty()){
+        fireCallback(Success(listOf()))
+        return
+    }
+
     db.collection("playgroundReservations")
         .whereIn(FieldPath.documentId(), reservationsIds)
         .get()
@@ -747,6 +760,13 @@ internal fun FireRepository.getDynamicReservationSlots(
     fireCallback: (FireResult<List<FireReservationSlot>, DefaultGetFireError>) -> Unit
 ): FireListener
 {
+    // check first if the playground ids list is empty, because where in clause doesn't work with empty lists
+    if(playgroundsIds.isEmpty()){
+        fireCallback(Success(emptyList()))
+        Log.e("empty playgroundsIds", "Error: empty playgroundsIds in FireRepository.getDynamicReservationSlots()")
+        return FireListener()
+    }
+
     // month boundaries
     val monthLowBoundary  = month.atStartOfMonth().atStartOfDay().format(DateTimeFormatter.ISO_DATE_TIME)   // >=
     val monthHighBoundary = month.plusMonths(1).atStartOfMonth().atStartOfDay().format(DateTimeFormatter.ISO_DATE_TIME) // <
@@ -942,6 +962,12 @@ internal fun FireRepository.getPlaygroundsByIds(
     ids: List<String>,
     fireCallback: (FireResult<List<FirePlaygroundSport>, DefaultGetFireError>) -> Unit
 ) {
+    // check first if the playground ids list is empty, because where in clause doesn't work with empty lists
+    if(ids.isEmpty()) {
+        fireCallback(Success(listOf()))
+        return
+    }
+
     db.collection("playgroundSports")
         .whereIn(FieldPath.documentId(), ids)
         .get()
@@ -1122,6 +1148,7 @@ internal fun FireRepository.saveInvitation(
 
 internal fun createInvitationNotification(
     receiverToken: String,
+    notificationId: String,
     reservationId: String,
     notificationDescription: String,
     notificationTimestamp: String,
@@ -1139,7 +1166,8 @@ internal fun createInvitationNotification(
         notificationBody.put("action", "invitation")
         notificationBody.put("title", notificationTitle)
         notificationBody.put("message", notificationDescription)
-        notificationBody.put("id_reservation", reservationId)
+        notificationBody.put("notification_id", notificationId)
+        notificationBody.put("reservation_id", reservationId)
         notificationBody.put("status", "PENDING")
         notificationBody.put("timestamp", notificationTimestamp)
 

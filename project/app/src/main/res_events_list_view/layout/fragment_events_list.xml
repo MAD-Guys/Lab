@@ -5,6 +5,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!-- No available reservations box -->
+    <include
+        layout="@layout/no_available_reservations_box" />
+
     <!-- Events list view -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/events_list_recycler_view"

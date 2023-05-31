@@ -10,7 +10,7 @@ data class FireSport(
     val emoji: String,
     val maxParticipants: Long
 ) {
-    /** convert Firestore sport document to Sport entity */
+    /** convert Firestore sport document to ProfileSport entity */
     fun toSport(): Sport {
         return Sport(
             id,
@@ -95,7 +95,7 @@ data class FireSport(
         }
 
         /**
-         * Convert a Sport entity in a FireSport object compliant to Firestore
+         * Convert a ProfileSport entity in a FireSport object compliant to Firestore
          * collection
          */
         fun from(sport: RoomSport): FireSport {

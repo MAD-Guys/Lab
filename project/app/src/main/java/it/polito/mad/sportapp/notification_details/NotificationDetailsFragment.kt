@@ -10,12 +10,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.room.RoomNotificationStatus
+import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
+import it.polito.mad.sportapp.entities.NotificationStatus
 
 @AndroidEntryPoint
 class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_details) {
@@ -29,8 +30,9 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
     // navigation controller
     internal lateinit var navController: NavController
 
-    private var reservationId: Int = -1
-    internal lateinit var notificationStatus: RoomNotificationStatus
+    internal var notificationId: String? = null
+    internal var reservationId: String? = null
+    internal lateinit var notificationStatus: NotificationStatus
     private lateinit var notificationTimestamp: String
 
     // dialogs
@@ -39,7 +41,10 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
     internal lateinit var rejectInvitationDialog: AlertDialog
 
     // notification details view model
-    internal val vm by activityViewModels<NotificationDetailsViewModel>()
+    internal val vm by viewModels<NotificationDetailsViewModel>()
+
+    // user reservations fire listener
+    private lateinit var userReservationFireListener: FireListener
 
     // notification details main views
     internal lateinit var notificationDetailsScrollView: ScrollView
@@ -77,21 +82,24 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
         // initialize navigation controller
         navController = findNavController()
 
+        // retrieve notification id
+        notificationId = arguments?.getString("notification_id")
+
         // retrieve reservation id
-        reservationId = arguments?.getInt("id_reservation") ?: -1
+        reservationId = arguments?.getString("reservation_id")
 
         // retrieve notification status
         notificationStatus =
-            RoomNotificationStatus.from(arguments?.getString("status") ?: "CANCELED")
+            NotificationStatus.from(arguments?.getString("status") ?: "CANCELED")
 
         // retrieve notification timestamp
         notificationTimestamp = arguments?.getString("timestamp") ?: ""
 
         // retrieve reservation from db or set notification status to canceled
-        if (reservationId != -1) {
-            vm.getReservationFromDb(reservationId)
+        if (reservationId != null) {
+            userReservationFireListener = vm.getReservationFromDb(reservationId!!)
         } else {
-            notificationStatus = RoomNotificationStatus.CANCELED
+            notificationStatus = NotificationStatus.CANCELED
         }
 
         // initialize views
@@ -138,6 +146,13 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
 
         // setup bottom bar
         setupBottomBar()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        // remove user reservation listener
+        userReservationFireListener.unregister()
     }
 
 }

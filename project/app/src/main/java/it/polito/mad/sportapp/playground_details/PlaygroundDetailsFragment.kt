@@ -19,6 +19,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.application_utilities.showToasty
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.playground_details.reviews_recycler_view.ReviewAdapter
 
@@ -165,6 +166,52 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
         viewModel.loggedUserCanReviewThisPlayground.observe(viewLifecycleOwner) {
             if(viewModel.loggedUserCanReviewThisPlayground.value == true){
                 initYourReview()
+            }
+        }
+
+        viewModel.getError.observe(viewLifecycleOwner) {
+            if(it != null){
+                showToasty(
+                    "error",
+                    requireContext(),
+                    it.message()
+                )
+
+                // go back
+                navController.popBackStack()
+            }
+        }
+
+        viewModel.reviewError.observe(viewLifecycleOwner) {
+            if(it != null){
+                showToasty(
+                    "error",
+                    requireContext(),
+                    it.message()
+                )
+            }
+        }
+
+        viewModel.deleteReviewError.observe(viewLifecycleOwner) {
+            if(it != null){
+                showToasty(
+                    "error",
+                    requireContext(),
+                    it.message()
+                )
+            }
+        }
+
+        viewModel.reviewUpdateSuccess.observe(viewLifecycleOwner) {
+            if(it != null){
+                when (it){
+                    "update" -> showToasty("success", requireContext(), "Review correctly saved!")
+                    "quality" -> showToasty("success", requireContext(), "New quality rating saved!")
+                    "facilities" -> showToasty("success", requireContext(), "New facilities rating saved!")
+                    "delete" -> showToasty("success", requireContext(), "Review correctly deleted")
+                }
+
+                viewModel.clearSuccess()
             }
         }
     }

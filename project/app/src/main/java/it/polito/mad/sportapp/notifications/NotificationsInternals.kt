@@ -11,8 +11,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.room.RoomNotification
-import it.polito.mad.sportapp.entities.room.RoomNotificationStatus
+import it.polito.mad.sportapp.entities.Notification
+import it.polito.mad.sportapp.entities.NotificationStatus
 
 // manage menu item selection
 internal fun NotificationsFragment.menuInit() {
@@ -51,9 +51,13 @@ internal fun NotificationsFragment.recyclerViewInit() {
     // setup notifications observer
     vm.notifications.observe(viewLifecycleOwner) { notificationList ->
 
-        if (notificationList.isEmpty()) {
+        if (notificationList == null) {
             // show progress bar and hide notifications
             progressBar.visibility = View.VISIBLE
+            notificationsRecyclerView.visibility = View.GONE
+        } else if (notificationList.isEmpty()) {
+            // hide progress bar and hide notifications
+            progressBar.visibility = View.GONE
             notificationsRecyclerView.visibility = View.GONE
         } else if (notificationList.isNotEmpty()) {
 
@@ -65,9 +69,9 @@ internal fun NotificationsFragment.recyclerViewInit() {
             notificationsAdapter.notifications.clear()
             notificationsAdapter.notifications.addAll(notificationList
                 .filter {
-                    it.status == RoomNotificationStatus.PENDING || it.status == RoomNotificationStatus.ACCEPTED
+                    it.status == NotificationStatus.PENDING || it.status == NotificationStatus.ACCEPTED
                 }
-                .sortedWith(compareByDescending<RoomNotification> { it.publicationDate }.thenByDescending { it.publicationTime })
+                .sortedWith(compareByDescending<Notification> { it.publicationDate }.thenByDescending { it.publicationTime })
             )
         }
 

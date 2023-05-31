@@ -24,9 +24,9 @@ import com.google.android.material.chip.ChipGroup
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.profile.Gender
 import it.polito.mad.sportapp.profile.Level
-import it.polito.mad.sportapp.profile.Sport
+import it.polito.mad.sportapp.profile.ProfileSport
 import it.polito.mad.sportapp.profile.SportChips
-import it.polito.mad.sportapp.entities.room.RoomSport as SportEntity
+import it.polito.mad.sportapp.entities.Sport as SportEntity
 import it.polito.mad.sportapp.application_utilities.setProfilePictureSize
 import it.polito.mad.sportapp.application_utilities.showToasty
 import java.io.File
@@ -161,7 +161,7 @@ internal fun EditProfileFragment.setupTemporarySports(sportsList: List<SportEnti
 
             if (userSport != null) {
                 sportsTemp[tempSport.name] =
-                    Sport(
+                    ProfileSport(
                         tempSport.id,
                         tempSport.name,
                         tempSport.toString(),
@@ -170,12 +170,12 @@ internal fun EditProfileFragment.setupTemporarySports(sportsList: List<SportEnti
                     )
             } else {
                 sportsTemp[tempSport.name] =
-                    Sport(tempSport.id, tempSport.name, tempSport.toString(), false, Level.NO_LEVEL)
+                    ProfileSport(tempSport.id, tempSport.name, tempSport.toString(), false, Level.NO_LEVEL)
             }
 
         } else {
             sportsTemp[tempSport.name] =
-                Sport(tempSport.id, tempSport.name, tempSport.toString(), false, Level.NO_LEVEL)
+                ProfileSport(tempSport.id, tempSport.name, tempSport.toString(), false, Level.NO_LEVEL)
         }
     }
 
@@ -260,8 +260,9 @@ internal fun EditProfileFragment.saveInformationOnStorage() {
     vm.setUserSports(sportsTemp.filter { it.value.selected }.map { it.value.toSportLevel() })
 
     if (isErrorFree()) {
+
         // update db user information
-        vm.updateDbUserInformation(1)
+        vm.updateDbUserInformation()
 
         // showing feedback information
         showToasty("success", requireContext(), "Information correctly saved!")
@@ -334,6 +335,8 @@ internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatche
 
                     if (s.toString() == "") {
                         firstName.error = getString(R.string.first_name_empty_error)
+                    } else {
+                        firstName.error = null
                     }
                 }
 
@@ -342,6 +345,8 @@ internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatche
 
                     if (s.toString() == "") {
                         lastName.error = getString(R.string.last_name_empty_error)
+                    } else {
+                        lastName.error = null
                     }
                 }
 
@@ -353,6 +358,8 @@ internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatche
                         username.error = getString(R.string.username_empty_error)
                     } else if (s.toString().contains(' ')) {
                         username.error = getString(R.string.username_space_error)
+                    } else {
+                        username.error = null
                     }
                 }
 
@@ -361,6 +368,8 @@ internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatche
 
                     if (s.toString() == "") {
                         age.error = getString(R.string.age_empty_error)
+                    } else {
+                        age.error = null
                     }
                 }
 
@@ -369,6 +378,8 @@ internal fun EditProfileFragment.textListenerInit(fieldName: String): TextWatche
 
                     if (s.toString() == "") {
                         location.error = getString(R.string.location_empty_error)
+                    } else {
+                        location.error = null
                     }
                 }
             }
@@ -536,7 +547,7 @@ internal fun EditProfileFragment.changeSportLevel(sportName: String, level: Leve
 }
 
 // Set sports Edit fields and temporary values
-private fun EditProfileFragment.setEditSportsField(sport: Sport) {
+private fun EditProfileFragment.setEditSportsField(sport: ProfileSport) {
     if (sport.selected) {
 
         // manage sport views

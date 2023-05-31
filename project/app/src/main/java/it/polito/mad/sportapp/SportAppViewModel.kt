@@ -6,11 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.sportapp.entities.room.RoomNotification
+import it.polito.mad.sportapp.entities.Notification
 import it.polito.mad.sportapp.entities.User
+import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
-import it.polito.mad.sportapp.model.FireRepository
-import it.polito.mad.sportapp.model.LocalRepository
+import it.polito.mad.sportapp.model.IRepository
 import it.polito.mad.sportapp.profile.Gender
 import javax.inject.Inject
 
@@ -18,10 +18,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SportAppViewModel @Inject constructor(
-    private val repository: LocalRepository
+    private val repository: IRepository
 ) : ViewModel() {
 
-    private val iRepository = FireRepository()
+    // notifications fire listener
+    private var notificationsFireListener: FireListener = FireListener()
 
     private val _isUserLoggedIn = MutableLiveData<Boolean>().also { it.value = false }
     val isUserLoggedIn: LiveData<Boolean> = _isUserLoggedIn
@@ -30,8 +31,30 @@ class SportAppViewModel @Inject constructor(
 
     /* notifications */
     private val _notifications =
-        MutableLiveData<MutableList<RoomNotification>>().also { it.value = mutableListOf() }
-    val notifications: LiveData<MutableList<RoomNotification>> = _notifications
+        MutableLiveData<MutableList<Notification>>().also {
+
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+            userId?.let { uid ->
+                notificationsFireListener =
+                    repository.getNotificationsByUserId(uid) { notificationsResult ->
+                        when (notificationsResult) {
+                            is FireResult.Error -> {
+                                Log.e(
+                                    "getNotifications",
+                                    "Error: ${notificationsResult.errorMessage()}"
+                                )
+                                return@getNotificationsByUserId
+                            }
+
+                            is FireResult.Success -> {
+                                it.postValue(notificationsResult.value)
+                            }
+                        }
+                    }
+            }
+        }
+    val notifications: LiveData<MutableList<Notification>> = _notifications
 
     // set user logged in
     fun setUserLoggedIn(value: Boolean) {
@@ -46,7 +69,7 @@ class SportAppViewModel @Inject constructor(
     /* user */
     fun checkIfUserAlreadyExists(uid: String, token: String?) {
 
-        iRepository.userAlreadyExists(uid) {
+        repository.userAlreadyExists(uid) {
             when (it) {
                 is FireResult.Error -> {
                     Log.e("checkIfUserAlreadyExists", "Error: ${it.errorMessage()}")
@@ -65,7 +88,7 @@ class SportAppViewModel @Inject constructor(
                             val displayName = user.displayName!!.split(" ")
                             val userFirstName = displayName[0]
                             val userLastName = displayName[displayName.size - 1]
-                            val userUsername = user.email!!
+                            val userUsername = user.email!!.split("@")[0]
 
                             // create new user
                             val newUser = User(
@@ -82,7 +105,7 @@ class SportAppViewModel @Inject constructor(
                             )
 
                             // insert user on db
-                            iRepository.insertNewUser(newUser) { insertResult ->
+                            repository.insertNewUser(newUser) { insertResult ->
                                 when (insertResult) {
                                     is FireResult.Error -> {
                                         Log.e(
@@ -103,7 +126,7 @@ class SportAppViewModel @Inject constructor(
 
                         // update user token
                         token?.let {
-                            iRepository.updateUserToken(uid, token) { updateResult ->
+                            repository.updateUserToken(uid, token) { updateResult ->
                                 when (updateResult) {
                                     is FireResult.Error -> {
                                         Log.e(
@@ -127,4 +150,12 @@ class SportAppViewModel @Inject constructor(
             }
         }
     }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        // unregister notifications fire listener
+        notificationsFireListener.unregister()
+    }
+
 }

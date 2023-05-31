@@ -1,13 +1,15 @@
 package it.polito.mad.sportapp.show_reservations
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.sportapp.entities.room.RoomDetailedReservation
+import it.polito.mad.sportapp.entities.DetailedReservation
+import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
+import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.model.IRepository
-import it.polito.mad.sportapp.model.LocalRepository
 import java.time.LocalDate
 import java.time.YearMonth
 import javax.inject.Inject
@@ -16,20 +18,26 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ShowReservationsViewModel @Inject constructor(
-    private val repository: LocalRepository,
-    private val iRepository: IRepository
+    private val repository: IRepository
 ) : ViewModel() {
+
+    // user reservations fire listener
+    private var userReservationsFireListener: FireListener = FireListener()
 
     // mutable live data for the user events
     private var _userEvents =
-        MutableLiveData<Map<LocalDate, List<RoomDetailedReservation>>>().also {
+        MutableLiveData<Map<LocalDate, List<DetailedReservation>>>().also {
 
             // get user id
             val userId = FirebaseAuth.getInstance().currentUser?.uid
 
-            this.loadEventsFromDb()
+            userId?.let {
+                // load user events from database
+                userReservationsFireListener = loadEventsFromDb(userId)
+            }
         }
-    val userEvents: LiveData<Map<LocalDate, List<RoomDetailedReservation>>> = _userEvents
+
+    val userEvents: LiveData<Map<LocalDate, List<DetailedReservation>>> = _userEvents
 
     // mutable live data for the current month, the selected date and the previous selected date
     private val _currentMonth = MutableLiveData<YearMonth>().also { it.value = YearMonth.now() }
@@ -41,16 +49,23 @@ class ShowReservationsViewModel @Inject constructor(
     val selectedDate: LiveData<LocalDate> = _selectedDate
     val previousSelectedDate: LiveData<LocalDate> = _previousSelectedDate
 
-    fun loadEventsFromDb() {
+    private fun loadEventsFromDb(uid: String): FireListener {
 
         // get user events from database
-        val dbThread = Thread {
-            val userReservations = repository.getReservationsPerDateByUserId(1)
-            this._userEvents.postValue(userReservations)
-        }
+        return repository.getReservationsPerDateByUserId(uid) {
+            when (it) {
+                is FireResult.Error -> {
+                    Log.e("ShowReservationsViewModel", it.errorMessage())
+                    //showToasty("error", context, it.errorMessage())
+                }
 
-        // start db thread
-        dbThread.start()
+                is FireResult.Success -> {
+                    // update user events
+                    _userEvents.postValue(it.value)
+                    Log.d("ShowReservationsViewModel", "User events updated successfully!")
+                }
+            }
+        }
     }
 
     // add a month to the current month
@@ -68,6 +83,13 @@ class ShowReservationsViewModel @Inject constructor(
         this._selectedDate.value = date ?: LocalDate.now()
         // update previous selected date
         this._previousSelectedDate.value = tempPreviousSelectedDate
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        // remove user reservations fire listener
+        userReservationsFireListener.unregister()
     }
 
 }

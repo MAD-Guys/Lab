@@ -3,6 +3,7 @@ package it.polito.mad.sportapp.profile
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import it.polito.mad.sportapp.entities.Sport
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,13 +11,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import it.polito.mad.sportapp.entities.Achievement
+import it.polito.mad.sportapp.entities.SportLevel
+import it.polito.mad.sportapp.entities.User
+import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
-import it.polito.mad.sportapp.entities.room.RoomAchievement
-import it.polito.mad.sportapp.entities.room.RoomSport
-import it.polito.mad.sportapp.entities.room.RoomSportLevel
-import it.polito.mad.sportapp.entities.room.RoomUser
-import it.polito.mad.sportapp.model.FireRepository
-import it.polito.mad.sportapp.model.LocalRepository
+import it.polito.mad.sportapp.model.IRepository
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
@@ -24,10 +24,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val repository: LocalRepository
+    private val repository: IRepository
 ) : ViewModel() {
 
-    private val iRepository = FireRepository()
+    /* user fire listener */
+    private var userFireListener: FireListener = FireListener()
 
     /* firebase storage */
     private val storageRef = Firebase.storage("gs://sportapp-project.appspot.com/").reference
@@ -44,8 +45,7 @@ class ProfileViewModel @Inject constructor(
 
     /* user information */
 
-    private val userId =
-        MutableLiveData<String>().also { it.value = FirebaseAuth.getInstance().currentUser?.uid }
+    val userId = FirebaseAuth.getInstance().currentUser?.uid
 
     private val _usernameAlreadyExists = MutableLiveData<Boolean>().also { it.value = false }
     val usernameAlreadyExists: LiveData<Boolean> = _usernameAlreadyExists
@@ -74,27 +74,58 @@ class ProfileViewModel @Inject constructor(
     }
     val userBio: LiveData<String> = _userBio
 
+    private var userNotificationsToken: String? = null
+    private var userImageUrl: String? = null
+
     // user profile pictures
     private val _userProfilePicture =
         MutableLiveData<Bitmap>().also {
-            this.loadProfilePictureFromFirebaseStorage("profile_picture.jpeg") }
+            this.loadProfilePictureFromFirebaseStorage("profile_picture.jpeg")
+        }
     val userProfilePicture: LiveData<Bitmap> = _userProfilePicture
 
     private val _userBackgroundProfilePicture =
         MutableLiveData<Bitmap>().also {
-            this.loadProfilePictureFromFirebaseStorage("background_profile_picture.jpeg") }
+            this.loadProfilePictureFromFirebaseStorage("background_profile_picture.jpeg")
+        }
     val userBackgroundProfilePicture: LiveData<Bitmap> = _userBackgroundProfilePicture
 
     private val _userAchievements =
-        MutableLiveData<Map<RoomAchievement, Boolean>>().also { it.value = mapOf() }
-    val userAchievements: LiveData<Map<RoomAchievement, Boolean>> = _userAchievements
+        MutableLiveData<Map<Achievement, Boolean>>().also { it.value = mapOf() }
+    val userAchievements: LiveData<Map<Achievement, Boolean>> = _userAchievements
 
-    private val _userSports = MutableLiveData<List<RoomSportLevel>>().also { it.value = listOf() }
-    val userSports: LiveData<List<RoomSportLevel>> = _userSports
+    private val _userSports = MutableLiveData<List<SportLevel>>().also { it.value = listOf() }
+    val userSports: LiveData<List<SportLevel>> = _userSports
 
     /* sports information */
-    private val _sportsList = MutableLiveData<List<RoomSport>>()
-    val sportsList: LiveData<List<RoomSport>> = _sportsList
+    private val _sportsList = MutableLiveData<List<Sport>>().also { list ->
+        repository.getAllSports { newSportsResult ->
+            when (newSportsResult) {
+                is FireResult.Success -> {
+                    list.postValue(newSportsResult.value)
+
+                    Log.d("ProfileViewModel", "Sports list successfully loaded!")
+
+                    // update db flag
+                    _sportsListLoaded.postValue(true)
+                }
+
+                is FireResult.Error -> {
+                    Log.e("ProfileViewModel", "Error while loading sports list!")
+                }
+            }
+        }
+    }
+    val sportsList: LiveData<List<Sport>> = _sportsList
+
+    // init block
+    init {
+
+        // load user information from firestore db
+        userId?.let { uid ->
+            userFireListener = loadUserInformationFromDb(uid)
+        }
+    }
 
     // save profile picture on firebase storage
     fun saveProfilePictureOnFirebaseStorage(
@@ -102,7 +133,7 @@ class ProfileViewModel @Inject constructor(
         pictureLabel: String
     ) {
 
-        userId.value?.let { uid ->
+        userId?.let { uid ->
             pictureBitmap?.let {
 
                 // set new profile picture bitmap
@@ -150,7 +181,7 @@ class ProfileViewModel @Inject constructor(
     // load profile picture from firebase storage
     private fun loadProfilePictureFromFirebaseStorage(pictureLabel: String) {
 
-        userId.value?.let { uid ->
+        userId?.let { uid ->
             val pictureRef = storageRef.child("profile_pictures/$uid/$pictureLabel")
             val maxDownloadSize: Long = 1024 * 1024 * 10 // 10MB
 
@@ -171,10 +202,11 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    // update url of the user profile picture
     private fun updateUserProfileUrl(pictureUrl: String) {
 
-        userId.value?.let { uid ->
-            iRepository.updateUserImageUrl(uid, pictureUrl) {
+        userId?.let { uid ->
+            repository.updateUserImageUrl(uid, pictureUrl) {
                 when (it) {
                     is FireResult.Error -> {
                         Log.e("ProfileViewModel", "Error updating user profile picture url!")
@@ -189,60 +221,64 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun loadSportsFromDb() {
-        // get list of sports from database
-        val dbThread = Thread {
-            val sports = repository.getAllSports()
-            _sportsList.postValue(sports)
-
-            // update db flag
-            _sportsListLoaded.postValue(true)
-        }
-
-        // start db thread
-        dbThread.start()
-    }
-
     // check if username is unique
     fun checkUsername(username: String) {
-        val dbThread = Thread {
-            val usernameAlreadyExists = repository.usernameAlreadyExists(username)
-            _usernameAlreadyExists.postValue(usernameAlreadyExists)
+
+        repository.usernameAlreadyExists(username) {
+            when (it) {
+                is FireResult.Success -> {
+                    _usernameAlreadyExists.postValue(it.value)
+                }
+
+                is FireResult.Error -> {
+                    Log.e("ProfileViewModel", "Error while checking username!")
+                }
+            }
         }
-        dbThread.start()
     }
 
     // load user information from database
-    fun loadUserInformationFromDb(userId: Int) {
+    private fun loadUserInformationFromDb(uid: String): FireListener {
 
         // get user information from database
-        val dbThread = Thread {
-            val user = repository.getUser(userId)
+        return repository.getUserWithAchievements(uid) { newUser ->
+            when (newUser) {
+                is FireResult.Success -> {
+                    // user information successfully loaded
+                    Log.d("ProfileViewModel", "User information successfully loaded!")
 
-            // update user information
-            _userFirstName.postValue(user.firstName)
-            _userLastName.postValue(user.lastName)
-            _userUsername.postValue(user.username)
-            _userGender.postValue(user.gender)
-            _userAge.postValue(user.age.toString())
-            _userLocation.postValue(user.location)
-            _userBio.postValue(user.bio)
-            _userAchievements.postValue(user.achievements)
-            _userSports.postValue(user.sportLevel)
+                    // update user information
+                    _userFirstName.postValue(newUser.value.firstName)
+                    _userLastName.postValue(newUser.value.lastName)
+                    _userUsername.postValue(newUser.value.username)
+                    _userGender.postValue(newUser.value.gender)
+                    _userAge.postValue(newUser.value.age.toString())
+                    _userLocation.postValue(newUser.value.location)
+                    _userBio.postValue(newUser.value.bio)
+                    _userAchievements.postValue(newUser.value.achievements)
+                    _userSports.postValue(newUser.value.sportLevels)
 
-            // update db flag
-            _userSportsLoaded.postValue(true)
+                    userImageUrl = newUser.value.imageURL
+                    userNotificationsToken = newUser.value.notificationsToken
+
+                    // update db flag
+                    _userSportsLoaded.postValue(true)
+                }
+
+                is FireResult.Error -> {
+                    // error while loading user information
+                    Log.e("ProfileViewModel", "Error while loading user information!")
+                    //showToasty("error", context, newUser.errorMessage())
+                }
+            }
         }
-
-        // start db thread
-        dbThread.start()
     }
 
     // update user information in database
-    fun updateDbUserInformation(userId: Int) {
+    fun updateDbUserInformation() {
 
         // set user information
-        val user = RoomUser(
+        val user = User(
             userId,
             _userFirstName.value!!,
             _userLastName.value!!,
@@ -250,18 +286,30 @@ class ProfileViewModel @Inject constructor(
             _userGender.value!!,
             _userAge.value?.toInt()!!,
             _userLocation.value!!,
-            _userBio.value!!
+            userImageUrl,
+            _userBio.value!!,
+            userNotificationsToken
         )
 
-        user.sportLevel = _userSports.value!!
+        user.sportLevels = _userSports.value!!
 
-        // update user information in database
-        val dbThread = Thread {
-            repository.updateUser(user)
+        userId?.let {
+            repository.updateUser(user) {
+                when (it) {
+                    is FireResult.Success -> {
+                        // user information successfully updated
+                        Log.d("ProfileViewModel", "User information successfully updated!")
+                        //showToasty("success", context, "Information successfully updated!")
+                    }
+
+                    is FireResult.Error -> {
+                        // error while updating user information
+                        Log.e("ProfileViewModel", "Error while updating user information!")
+                        //showToasty("error", context, it.errorMessage())
+                    }
+                }
+            }
         }
-
-        // start db thread
-        dbThread.start()
     }
 
     /* user information setters */
@@ -293,12 +341,19 @@ class ProfileViewModel @Inject constructor(
         _userBio.value = bio
     }
 
-    fun setUserSports(sports: List<RoomSportLevel>) {
+    fun setUserSports(sports: List<SportLevel>) {
         _userSports.value = sports
     }
 
     fun setSportsInflated(value: Boolean) {
         _sportsInflated.value = value
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        // unregister from user listener
+        userFireListener.unregister()
     }
 
 }

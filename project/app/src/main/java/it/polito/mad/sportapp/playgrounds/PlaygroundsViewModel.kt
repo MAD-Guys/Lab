@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.PlaygroundInfo
+import it.polito.mad.sportapp.entities.firestore.utilities.DefaultGetFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.model.IRepository
 import javax.inject.Inject
@@ -15,10 +16,16 @@ class PlaygroundsViewModel @Inject constructor(
     private val repository: IRepository
 ) : ViewModel() {
 
+    private var _getError = MutableLiveData<DefaultGetFireError?>()
+    val getError: LiveData<DefaultGetFireError?> = _getError
+
     private val _playgrounds = MutableLiveData<List<PlaygroundInfo>>(listOf()).also {
         repository.getAllPlaygroundsInfo { fireResult ->
             when (fireResult) {
-                is FireResult.Error -> Log.d(fireResult.type.message(), fireResult.errorMessage())
+                is FireResult.Error -> {
+                    Log.e(fireResult.type.message(), fireResult.errorMessage())
+                    _getError.postValue(fireResult.type)
+                }
                 is FireResult.Success -> {
                     it.postValue(fireResult.value)
                 }

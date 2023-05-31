@@ -95,7 +95,7 @@ interface IRepository {
         fireCallback: (FireResult<List<User>, DefaultGetFireError>) -> Unit
     ): FireListener
 
-    // * Sport methods *
+    // * ProfileSport methods *
 
     /**
      * Retrieve all the sports

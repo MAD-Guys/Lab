@@ -21,14 +21,16 @@ import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.SportAppActivity
 import it.polito.mad.sportapp.application_utilities.checkIfUserIsLoggedIn
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
-import it.polito.mad.sportapp.model.FireRepository
+import it.polito.mad.sportapp.model.IRepository
 import java.util.Random
+import javax.inject.Inject
 
-class MyFirebaseMessagingService : FirebaseMessagingService() {
+class MyFirebaseMessagingService @Inject constructor(
+    private val repository: IRepository
+) : FirebaseMessagingService() {
 
     private val channelId = "ezsport_channel"
     private val tag = "MyFirebaseMessagingService"
-    private val iRepository = FireRepository()
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
@@ -44,7 +46,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     ) ==
                     PackageManager.PERMISSION_GRANTED
                 ) {
-                    iRepository.updateUserToken(user, token) {
+                    repository.updateUserToken(user, token) {
                         when (it) {
                             is FireResult.Error -> {
                                 Log.e(tag, "Error updating user token: ${it.errorMessage()}")
@@ -61,7 +63,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     }
                 }
             } else {
-                iRepository.updateUserToken(user, token) {
+                repository.updateUserToken(user, token) {
                     when (it) {
                         is FireResult.Error -> {
                             Log.e(tag, "Error updating user token: ${it.errorMessage()}")
@@ -87,7 +89,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // create notification intent and put extras
         val notificationIntent = Intent(this, SportAppActivity::class.java).apply {
             action = remoteMessage.data["action"]
-            putExtra("id_reservation", remoteMessage.data["id_reservation"]?.toInt())
+            putExtra("notification_id", remoteMessage.data["notification_id"])
+            putExtra("reservation_id", remoteMessage.data["reservation_id"])
             putExtra("status", remoteMessage.data["status"])
             putExtra("timestamp", remoteMessage.data["timestamp"])
         }
