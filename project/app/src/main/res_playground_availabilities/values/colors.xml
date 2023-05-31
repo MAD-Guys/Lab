@@ -10,6 +10,9 @@
     <!-- variant -->
     <color name="current_month_background_color_variant">@color/primary_blue</color>
 
+    <!-- calendar days -->
+    <color name="busy_date_background_color">#FFF9F2</color>
+
 
     <!-- time slots -->
     <color name="time_slot_text">@color/white</color>

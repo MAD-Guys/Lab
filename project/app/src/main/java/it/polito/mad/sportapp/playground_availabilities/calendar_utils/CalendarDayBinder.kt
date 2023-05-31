@@ -1,7 +1,6 @@
 package it.polito.mad.sportapp.playground_availabilities.calendar_utils
 
 import android.content.Context
-import android.graphics.Color
 import android.view.View
 import androidx.lifecycle.LiveData
 import com.kizitonwose.calendar.core.CalendarDay
@@ -39,13 +38,14 @@ class CalendarDayBinder(
                 else -> container.setAsUnselectedDate()
             }
 
-            // compute the availability percentage on that date to color it properly
-            val availabilityPercentage = getAvailabilityPercentageOf(data.date)
+            if (data.date != today && data.date != selectedDate.value) {
+                // compute the availability percentage on that date to color it properly
+                val availabilityPercentage = getAvailabilityPercentageOf(data.date)
 
-            // if this day is completely full (no existing available playgrounds), show a red dot
-            if (isAvailablePlaygroundsLoaded() && availabilityPercentage == 0.0f) {
-                val notAvailableColor = Color.rgb(205, 70, 49)    // jasper red
-                container.setAvailabilityTagColor(notAvailableColor)
+                // if this day is completely full (no existing available playgrounds), show tag
+                if (isAvailablePlaygroundsLoaded() && availabilityPercentage == 0.0f) {
+                    container.showTag()
+                }
             }
         }
     }
