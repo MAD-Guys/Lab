@@ -19,6 +19,10 @@ class PlaygroundsViewModel @Inject constructor(
     private var _getError = MutableLiveData<DefaultGetFireError?>()
     val getError: LiveData<DefaultGetFireError?> = _getError
 
+    fun clearError() {
+        _getError = MutableLiveData<DefaultGetFireError?>()
+    }
+
     private val _playgrounds = MutableLiveData<List<PlaygroundInfo>>(listOf()).also {
         repository.getAllPlaygroundsInfo { fireResult ->
             when (fireResult) {

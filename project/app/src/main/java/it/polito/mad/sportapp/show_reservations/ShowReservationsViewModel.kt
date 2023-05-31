@@ -51,8 +51,12 @@ class ShowReservationsViewModel @Inject constructor(
     val previousSelectedDate: LiveData<LocalDate> = _previousSelectedDate
 
     /* error management */
-    private val _getReservationsError = MutableLiveData<DefaultGetFireError?>()
+    private var _getReservationsError = MutableLiveData<DefaultGetFireError?>()
     val getReservationsError: LiveData<DefaultGetFireError?> = _getReservationsError
+
+    fun clearReservationsError() {
+        _getReservationsError = MutableLiveData<DefaultGetFireError?>()
+    }
 
     private fun loadEventsFromDb(uid: String): FireListener {
 

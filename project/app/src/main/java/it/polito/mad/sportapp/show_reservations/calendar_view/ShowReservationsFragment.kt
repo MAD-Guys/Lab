@@ -85,6 +85,9 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
 
         calendarInit()
 
+        // clear reservations error
+        vm.clearReservationsError()
+
         // setup error observer
         vm.getReservationsError.observe(viewLifecycleOwner) {
             if (it != null) {

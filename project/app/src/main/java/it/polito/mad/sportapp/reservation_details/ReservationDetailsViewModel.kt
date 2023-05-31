@@ -30,6 +30,11 @@ class ReservationDetailsViewModel @Inject constructor(
     private var _deleteError = MutableLiveData<DefaultFireError?>()
     val deleteError: LiveData<DefaultFireError?> = _deleteError
 
+    fun clearReservationDetailsErrors() {
+        _getError = MutableLiveData<DefaultGetFireError?>()
+        _deleteError = MutableLiveData<DefaultFireError?>()
+    }
+
     private var _deleteSuccess = MutableLiveData<Boolean?>()
     val deleteSuccess: LiveData<Boolean?> = _deleteSuccess
 

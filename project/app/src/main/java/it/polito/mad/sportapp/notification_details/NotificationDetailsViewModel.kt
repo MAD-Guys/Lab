@@ -30,14 +30,19 @@ class NotificationDetailsViewModel @Inject constructor(
     private val _notification = MutableLiveData<Notification>()
     val notification: LiveData<Notification> = _notification
 
-    private val _getError = MutableLiveData<DefaultGetFireError?>()
+    private var _getError = MutableLiveData<DefaultGetFireError?>()
     val getError: LiveData<DefaultGetFireError?> = _getError
 
-    private val _updateError = MutableLiveData<DefaultFireError?>()
+    private var _updateError = MutableLiveData<DefaultFireError?>()
     val updateError: LiveData<DefaultFireError?> = _updateError
 
     private val _updateSuccess = MutableLiveData<String?>()
     val updateSuccess: LiveData<String?> = _updateSuccess
+
+    fun clearErrors() {
+        _getError = MutableLiveData<DefaultGetFireError?>()
+        _updateError = MutableLiveData<DefaultFireError?>()
+    }
 
     fun getNotificationFromDb(notificationId: String): FireListener {
         return repository.getNotificationById(notificationId) {

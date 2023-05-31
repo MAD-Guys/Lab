@@ -70,6 +70,9 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
         this.initAppBar()
         this.initMenu()
 
+        // clear errors
+        viewModel.clearReservationAdditionalRequestsError()
+
         // setup error observers
         viewModel.getReservationAdditionalRequestError.observe(viewLifecycleOwner) {
             if (it != null) {

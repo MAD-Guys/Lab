@@ -33,34 +33,14 @@ class SportAppViewModel @Inject constructor(
     /* notifications */
 
     // eventual error getting the notifications
-    private val _getNotificationsError = MutableLiveData<DefaultGetFireError?>()
+    private var _getNotificationsError = MutableLiveData<DefaultGetFireError?>()
     val getNotificationsError: LiveData<DefaultGetFireError?> = _getNotificationsError
 
-    private val _notifications =
-        MutableLiveData<MutableList<Notification>>().also {
+    fun clearGetNotificationsError() {
+        _getNotificationsError = MutableLiveData<DefaultGetFireError?>()
+    }
 
-            val userId = FirebaseAuth.getInstance().currentUser?.uid
-
-            userId?.let { uid ->
-                notificationsFireListener =
-                    repository.getNotificationsByUserId(uid) { notificationsResult ->
-                        when (notificationsResult) {
-                            is FireResult.Error -> {
-                                Log.e(
-                                    "getNotifications",
-                                    "Error: ${notificationsResult.errorMessage()}"
-                                )
-                                _getNotificationsError.postValue(notificationsResult.type)
-                                return@getNotificationsByUserId
-                            }
-
-                            is FireResult.Success -> {
-                                it.postValue(notificationsResult.value)
-                            }
-                        }
-                    }
-            }
-        }
+    private val _notifications = MutableLiveData<MutableList<Notification>>()
     val notifications: LiveData<MutableList<Notification>> = _notifications
 
     // set user logged in
@@ -71,6 +51,31 @@ class SportAppViewModel @Inject constructor(
     // set vm instances created
     fun setVmInstancesCreated() {
         areVmInstancesCreated = true
+    }
+
+    fun getUserNotifications() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+        userId?.let { uid ->
+            notificationsFireListener =
+                repository.getNotificationsByUserId(uid) { notificationsResult ->
+                    when (notificationsResult) {
+                        is FireResult.Error -> {
+                            Log.e(
+                                "getNotifications",
+                                "Error: ${notificationsResult.errorMessage()}"
+                            )
+                            _getNotificationsError.postValue(notificationsResult.type)
+                            return@getNotificationsByUserId
+                        }
+
+                        is FireResult.Success -> {
+                            val result = notificationsResult.value
+                            _notifications.postValue(result)
+                        }
+                    }
+                }
+        }
     }
 
     /* user */

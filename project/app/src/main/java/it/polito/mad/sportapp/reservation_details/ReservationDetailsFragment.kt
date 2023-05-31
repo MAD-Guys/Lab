@@ -151,7 +151,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                 if (currentDateTime.isBefore(reservation.startLocalDateTime) && reservation.userId == viewModel.userId) {
                     deleteButton.visibility = Button.VISIBLE
                     inviteButton.visibility = Button.VISIBLE
-                }else{
+                } else {
                     leaveReviewButton.visibility = Button.VISIBLE
                 }
 
@@ -164,7 +164,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         }
 
         viewModel.deleteSuccess.observe(viewLifecycleOwner) {
-            if(it == true){
+            if (it == true) {
                 showToasty(
                     "success",
                     requireContext(),
@@ -176,8 +176,11 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
             }
         }
 
+        // clear errors
+        viewModel.clearReservationDetailsErrors()
+
         viewModel.deleteError.observe(viewLifecycleOwner) {
-            if(it != null){
+            if (it != null) {
                 showToasty(
                     "error",
                     requireContext(),
@@ -187,7 +190,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         }
 
         viewModel.getError.observe(viewLifecycleOwner) {
-            if(it != null){
+            if (it != null) {
                 showToasty(
                     "error",
                     requireContext(),
@@ -271,7 +274,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
     private fun initializeValues() {
         reservationNumber.text =
             "Reservation number: ${viewModel.reservation.value?.id}"
-        reservationDate.text = when(viewModel.reservation.value?.date) {
+        reservationDate.text = when (viewModel.reservation.value?.date) {
             LocalDate.now() -> "Today"
             LocalDate.now().plusDays(1) -> "Tomorrow"
             LocalDate.now().minusDays(1) -> "Yesterday"
@@ -297,10 +300,12 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
 
         // setup additional requests
         val additionalRequests: String? = viewModel.reservation.value?.additionalRequests
-        val additionalRequestsDivider = requireView().findViewById<View>(R.id.additional_requests_divider)
-        val additionalRequestsContainer = requireView().findViewById<LinearLayout>(R.id.additional_requests_container)
+        val additionalRequestsDivider =
+            requireView().findViewById<View>(R.id.additional_requests_divider)
+        val additionalRequestsContainer =
+            requireView().findViewById<LinearLayout>(R.id.additional_requests_container)
 
-        if(additionalRequests != null) {
+        if (additionalRequests != null) {
             additionalRequestsDivider.visibility = View.VISIBLE
             additionalRequestsContainer.visibility = View.VISIBLE
 
@@ -340,12 +345,12 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         }
     }
 
-    private fun initializeParticipants(){
+    private fun initializeParticipants() {
         participants.removeAllViewsInLayout()
 
-        if(viewModel.reservation.value?.participants != null && viewModel.reservation.value?.participants!!.isNotEmpty()){
+        if (viewModel.reservation.value?.participants != null && viewModel.reservation.value?.participants!!.isNotEmpty()) {
 
-            for((index, p) in viewModel.reservation.value!!.participants.withIndex()) {
+            for ((index, p) in viewModel.reservation.value!!.participants.withIndex()) {
                 val row = layoutInflater.inflate(R.layout.participant_row, participants, false)
                 row.id = index
                 val username = row.findViewById<TextView>(R.id.username)
@@ -355,18 +360,28 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         }
     }
 
-    private fun handlePlaygroundButton(playgroundId: String){
+    private fun handlePlaygroundButton(playgroundId: String) {
         val bundle = bundleOf("id_playground" to playgroundId)
-        navController.navigate(R.id.action_reservationDetailsFragment_to_PlaygroundDetailsFragment, bundle)
+        navController.navigate(
+            R.id.action_reservationDetailsFragment_to_PlaygroundDetailsFragment,
+            bundle
+        )
     }
 
-    private fun handleLeaveReviewButton(playgroundId: String){
+    private fun handleLeaveReviewButton(playgroundId: String) {
         val bundle = bundleOf("id_playground" to playgroundId, "scroll_to_review" to true)
-        navController.navigate(R.id.action_reservationDetailsFragment_to_PlaygroundDetailsFragment, bundle)
+        navController.navigate(
+            R.id.action_reservationDetailsFragment_to_PlaygroundDetailsFragment,
+            bundle
+        )
     }
 
-    private fun handleInviteButton(reservationId: String, sportId: String, sportName: String){
-        val bundle = bundleOf("id_reservation" to reservationId, "id_sport" to sportId, "sport_name" to sportName)
+    private fun handleInviteButton(reservationId: String, sportId: String, sportName: String) {
+        val bundle = bundleOf(
+            "id_reservation" to reservationId,
+            "id_sport" to sportId,
+            "sport_name" to sportName
+        )
         navController.navigate(R.id.action_reservationDetailsFragment_to_invitationFragment, bundle)
     }
 
@@ -375,10 +390,16 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         val slotDuration = Duration.ofMinutes(30)
 
         val params = bundleOf(
-            "reservation" to ReservationManagementUtilities.createBundleFrom(reservation, slotDuration)
+            "reservation" to ReservationManagementUtilities.createBundleFrom(
+                reservation,
+                slotDuration
+            )
         )
 
-        navController.navigate(R.id.action_reservationDetailsFragment_to_playgroundAvailabilitiesFragment, params)
+        navController.navigate(
+            R.id.action_reservationDetailsFragment_to_playgroundAvailabilitiesFragment,
+            params
+        )
     }
 
     private fun startDialog() {

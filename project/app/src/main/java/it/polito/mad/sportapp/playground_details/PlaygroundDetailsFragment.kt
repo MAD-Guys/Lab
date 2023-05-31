@@ -167,6 +167,9 @@ class PlaygroundDetailsFragment : Fragment(R.layout.fragment_playground_details)
             }
         }
 
+        // clear errors
+        viewModel.clearErrors()
+
         viewModel.getError.observe(viewLifecycleOwner) {
             if(it != null){
                 showToasty(

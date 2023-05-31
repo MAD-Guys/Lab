@@ -52,11 +52,16 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
         // initialize navigation controller
         navController = findNavController()
 
+        // clear notifications error
+        vm.clearGetNotificationsError()
+
         // since the SportAppViewModel was instanced before this fragment, an error about the
         // notifications could be already present. In that case show a toast and go back.
         // Note: no other repository errors are possible here.
-        if(vm.getNotificationsError.value != null){
-            showToasty("error", requireContext(), vm.getNotificationsError.value!!.message())
+        vm.getNotificationsError.observe(viewLifecycleOwner) {
+            if (it != null) {
+                showToasty("error", requireContext(), it.message())
+            }
         }
 
         // initialize menu

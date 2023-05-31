@@ -60,6 +60,10 @@ internal fun ManageEquipmentsFragment.initFloatingButton() {
 }
 
 internal fun ManageEquipmentsFragment.initErrorMessageObserver() {
+
+    // clear error
+    viewModel.clearToastErrorMessage()
+
     viewModel.toastErrorMessage.observe(viewLifecycleOwner) { newErrorMessage ->
         showToasty("error", requireContext(), newErrorMessage, Toasty.LENGTH_LONG)
     }

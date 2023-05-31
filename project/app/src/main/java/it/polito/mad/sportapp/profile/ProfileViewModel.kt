@@ -118,15 +118,22 @@ class ProfileViewModel @Inject constructor(
     val sportsList: LiveData<List<Sport>> = _sportsList
 
     /* error/success management */
-    private val _getUserError = MutableLiveData<DefaultGetFireError?>()
+    private var _getUserError = MutableLiveData<DefaultGetFireError?>()
     val getUserError: LiveData<DefaultGetFireError?> = _getUserError
 
-    private val _updateUserError = MutableLiveData<DefaultInsertFireError?>()
+    private var _updateUserError = MutableLiveData<DefaultInsertFireError?>()
     val updateUserError: LiveData<DefaultInsertFireError?> = _updateUserError
+
+    fun clearProfileErrors() {
+        _getUserError = MutableLiveData<DefaultGetFireError?>()
+        _updateUserError = MutableLiveData<DefaultInsertFireError?>()
+    }
 
     private val _updateUserSuccess = MutableLiveData(false)
     val updateUserSuccess: LiveData<Boolean> = _updateUserSuccess
-    fun clearSuccess() { _updateUserSuccess.postValue(false) }
+    fun clearSuccess() {
+        _updateUserSuccess.postValue(false)
+    }
 
     // init block
     init {

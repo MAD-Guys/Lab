@@ -86,6 +86,9 @@ internal fun NotificationDetailsFragment.setupObservers() {
 
     // error/success observers
 
+    // clear errors
+    vm.clearErrors()
+
     // error during the GET: can't load this page, go back!
     vm.getError.observe(viewLifecycleOwner) {
         if (it != null) { // it can be the Error or null

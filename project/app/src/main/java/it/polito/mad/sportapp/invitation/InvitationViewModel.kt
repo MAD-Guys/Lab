@@ -50,6 +50,11 @@ class InvitationViewModel @Inject constructor(
     private var sportId = "x7f9jrM9BTiMoIFoyVFq"
     private var sportName = ""
 
+    fun clearErrors() {
+        _getError = MutableLiveData<DefaultGetFireError?>()
+        _invitationError = MutableLiveData<SaveAndSendInvitationFireError?>()
+    }
+
     fun getUsersFromDb(reservationId: String, sportId: String, sportName: String): FireListener {
 
         // set current user

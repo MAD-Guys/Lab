@@ -33,9 +33,12 @@ class ManageEquipmentsViewModel @Inject constructor(
 
     internal val fireListener = FireListener()
 
-    private val _toastErrorMessage = MutableLiveData<String>()
+    private var _toastErrorMessage = MutableLiveData<String>()
     internal val toastErrorMessage: LiveData<String> = _toastErrorMessage
 
+    fun clearToastErrorMessage() {
+        _toastErrorMessage = MutableLiveData<String>()
+    }
 
     internal fun loadEquipmentsQuantitiesAsync() {
         val sportCenterId = reservationBundle.getString("sport_center_id")!!

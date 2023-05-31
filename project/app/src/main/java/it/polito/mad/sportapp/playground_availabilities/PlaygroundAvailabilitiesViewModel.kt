@@ -59,8 +59,12 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
             LiveData<MutableMap<LocalDate, Map<LocalDateTime, List<DetailedPlaygroundSport>>>?> = _availablePlaygroundsPerSlot
 
     // error message to show in a red toast in case of app errors
-    private val _toastErrorMessage = MutableLiveData<String>()
+    private var _toastErrorMessage = MutableLiveData<String>()
     internal val toastErrorMessage: LiveData<String> = _toastErrorMessage
+
+    fun clearToastErrorMessages() {
+        _toastErrorMessage = MutableLiveData<String>()
+    }
 
     internal var listener = FireListener()
 

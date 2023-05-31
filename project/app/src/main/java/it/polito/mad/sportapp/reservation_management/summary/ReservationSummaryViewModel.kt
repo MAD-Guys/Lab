@@ -26,9 +26,13 @@ class ReservationSummaryViewModel @Inject constructor(
     internal val reservationAdditionalRequests: LiveData<String?> = _reservationAdditionalRequests
 
     /* error management */
-    private val _getReservationAdditionalRequestsError = MutableLiveData<DefaultGetFireError?>()
+    private var _getReservationAdditionalRequestsError = MutableLiveData<DefaultGetFireError?>()
     val getReservationAdditionalRequestError: LiveData<DefaultGetFireError?> =
         _getReservationAdditionalRequestsError
+
+    fun clearReservationAdditionalRequestsError() {
+        _getReservationAdditionalRequestsError = MutableLiveData<DefaultGetFireError?>()
+    }
 
     /** return null if everything went well, an error enum otherwise */
     fun permanentlySaveReservation(

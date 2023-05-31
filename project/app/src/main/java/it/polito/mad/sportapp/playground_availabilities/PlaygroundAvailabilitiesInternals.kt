@@ -146,6 +146,10 @@ internal fun PlaygroundAvailabilitiesFragment.initFloatingButton() {
 }
 
 internal fun PlaygroundAvailabilitiesFragment.initErrorMessageObserver() {
+
+    // clear error messages
+    playgroundsVM.clearToastErrorMessages()
+
     playgroundsVM.toastErrorMessage.observe(viewLifecycleOwner) { newErrorMessage ->
         // if a new error message comes, show it in a red toast
         showToasty("error", requireContext(), newErrorMessage, Toasty.LENGTH_LONG)

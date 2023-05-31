@@ -73,6 +73,9 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
                 playgroundsVm = ViewModelProvider(this)[PlaygroundsViewModel::class.java]
                 showReservationVm = ViewModelProvider(this)[ShowReservationsViewModel::class.java]
 
+                // initialize notification list
+                activityVm.getUserNotifications()
+
                 activityVm.setVmInstancesCreated()
             }
         }

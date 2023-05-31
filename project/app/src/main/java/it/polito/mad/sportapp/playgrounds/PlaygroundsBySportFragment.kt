@@ -108,6 +108,9 @@ class PlaygroundsBySportFragment : Fragment(R.layout.playgrounds_view)
             }
         }
 
+        // clear error
+        viewModel.clearError()
+
         // error observer
         viewModel.getError.observe(viewLifecycleOwner) {
             if(it != null){

@@ -34,6 +34,12 @@ class PlaygroundDetailsViewModel @Inject constructor(
     private var _deleteReviewError = MutableLiveData<DefaultFireError?>()
     val deleteReviewError: LiveData<DefaultFireError?> = _deleteReviewError
 
+    fun clearErrors() {
+        _getError = MutableLiveData<DefaultGetFireError?>()
+        _reviewError = MutableLiveData<DefaultInsertFireError?>()
+        _deleteReviewError = MutableLiveData<DefaultFireError?>()
+    }
+
     private var _reviewUpdateSuccess = MutableLiveData<String?>()
     val reviewUpdateSuccess: LiveData<String?> = _reviewUpdateSuccess
 
@@ -60,6 +66,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
                     Log.e(fireResult.type.message(), fireResult.errorMessage())
                     _getError.postValue(fireResult.type)
                 }
+
                 is FireResult.Success -> {
 
                     // get playground from database
@@ -99,6 +106,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
                     Log.e(it.errorType().message(), it.errorMessage())
                     _reviewError.postValue(it.type)
                 }
+
                 is FireResult.Success -> {
                     _reviewUpdateSuccess.postValue("update")
                 }
@@ -125,6 +133,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
                     Log.e(it.errorType().message(), it.errorMessage())
                     _reviewError.postValue(it.type)
                 }
+
                 is FireResult.Success -> {
                     _reviewUpdateSuccess.postValue("quality")
                 }
@@ -151,6 +160,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
                     Log.e(it.errorType().message(), it.errorMessage())
                     _reviewError.postValue(it.type)
                 }
+
                 is FireResult.Success -> {
                     _reviewUpdateSuccess.postValue("facilities")
                 }
@@ -165,6 +175,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
                     Log.e(it.errorType().message(), it.errorMessage())
                     _deleteReviewError.postValue(it.type)
                 }
+
                 is FireResult.Success -> {
                     _reviewUpdateSuccess.postValue("delete")
                 }
@@ -233,7 +244,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
 
     }
 
-    fun clearSuccess(){
+    fun clearSuccess() {
         _reviewUpdateSuccess.postValue(null)
     }
 

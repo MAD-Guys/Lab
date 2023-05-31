@@ -79,6 +79,9 @@ class InvitationFragment : Fragment(R.layout.fragment_invitation) {
             }
         }
 
+        // clear errors
+        viewModel.clearErrors()
+
         viewModel.getError.observe(viewLifecycleOwner) {
             if(it != null){
                 // show error toast

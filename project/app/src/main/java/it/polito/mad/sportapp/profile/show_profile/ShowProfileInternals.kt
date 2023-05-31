@@ -210,6 +210,8 @@ internal fun ShowProfileFragment.observersSetup() {
 
     // * error/success observers *
 
+    vm.clearProfileErrors()
+
     // repository error getting user information -> show an error toast
     vm.getUserError.observe(viewLifecycleOwner) {
         if(it != null){ // it can be an Error, or null
