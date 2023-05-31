@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.view.CalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.application_utilities.showToasty
 import it.polito.mad.sportapp.show_reservations.ShowReservationsViewModel
 import it.polito.mad.sportapp.show_reservations.calendar_view.events_recycler_view.EventsAdapter
 
@@ -83,6 +84,13 @@ class ShowReservationsFragment : Fragment(R.layout.fragment_show_reservations) {
         monthLabel = requireView().findViewById(R.id.month_label)
 
         calendarInit()
+
+        // setup error observer
+        vm.getReservationsError.observe(viewLifecycleOwner) {
+            if (it != null) {
+                showToasty("error", requireContext(), it.message())
+            }
+        }
 
         // initialize RecyclerView from layout
         recyclerView = requireView().findViewById(R.id.calendar_recycler_view)

@@ -16,7 +16,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.application_utilities.showToasty
 
 internal fun InvitationFragment.menuInit() {
     val menuHost: MenuHost = requireActivity()
@@ -44,12 +43,10 @@ internal fun InvitationFragment.textListenerInit(): TextWatcher {
 
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             viewModel.searchUsersByUsername(usernameSearch.text.toString())
-            showToasty("info", requireContext(), "Search ${usernameSearch.text}")
         }
 
         override fun afterTextChanged(p0: Editable?) {
             viewModel.searchUsersByUsername(usernameSearch.text.toString())
-            showToasty("info", requireContext(), "Search ${usernameSearch.text}")
         }
 
     }

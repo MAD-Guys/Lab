@@ -1,6 +1,8 @@
 package it.polito.mad.sportapp.reservation_management.summary
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.Menu
@@ -8,6 +10,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -48,6 +51,7 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
     private lateinit var summaryStartTime: TextView
     private lateinit var summaryEndTime: TextView
     private lateinit var pricePerHour: TextView
+    private lateinit var summaryAdditionalRequests: EditText
     private lateinit var summaryTotalPlaygroundPrice: TextView
     private lateinit var summaryTotalEquipmentPrice: TextView
     private lateinit var summaryTotalPrice: TextView
@@ -65,6 +69,13 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
         /* app bar and menu */
         this.initAppBar()
         this.initMenu()
+
+        // setup error observers
+        viewModel.getReservationAdditionalRequestError.observe(viewLifecycleOwner) {
+            if (it != null) {
+                showToasty("error", requireContext(), it.message())
+            }
+        }
 
         this.checkAndInitReservationData()
 
@@ -125,6 +136,7 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
         summaryEndTime = requireView().findViewById(R.id.reservation_summary_end_time)
         pricePerHour =
             requireView().findViewById(R.id.reservation_summary_playground_price_per_hour)
+        summaryAdditionalRequests = requireView().findViewById(R.id.edit_additional_requests)
         summaryTotalPlaygroundPrice =
             requireView().findViewById(R.id.reservation_summary_playground_total_price)
         summaryTotalEquipmentPrice =
@@ -180,6 +192,14 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
             viewModel.reservation.value?.endTime
         ).toMinutes()
 
+        // setup additional requests text listener
+        summaryAdditionalRequests.addTextChangedListener(textListenerInit())
+
+        // setup additional requests observer
+        viewModel.reservationAdditionalRequests.observe(viewLifecycleOwner) { result ->
+            summaryAdditionalRequests.setText(result)
+        }
+
         val totalPlaygroundPrice =
             duration * viewModel.reservation.value?.playgroundPricePerHour!! / 60
 
@@ -201,6 +221,25 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
 
     }
 
+    private fun textListenerInit(): TextWatcher {
+
+        return object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val additionalRequests = summaryAdditionalRequests.text.toString()
+
+                if (additionalRequests != "") {
+                    viewModel.setReservationAdditionalRequests(additionalRequests)
+                } else {
+                    viewModel.setReservationAdditionalRequests(null)
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {}
+        }
+    }
+
     /* equipment list */
     private fun inflateEquipmentList(
         equipmentList: List<NewReservationEquipment>,
@@ -209,7 +248,7 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
 
         equipmentList.forEach {
             val equipmentView = layoutInflater.inflate(
-                R.layout.equipment_list_item,
+                R.layout.equipment_list_item_reservation_summary,
                 container,
                 false
             )
@@ -249,7 +288,7 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
             .setMessage("Do you want to confirm this reservation?")
             .setPositiveButton("YES") { _, _ ->
                 viewModel.permanentlySaveReservation { saveResult ->
-                    when(saveResult) {
+                    when (saveResult) {
                         is Error -> {
                             // an error occurred during reservation update
                             Log.e("unexpected error", "an error occurred during reservation update")
@@ -261,6 +300,7 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
                                 Toasty.LENGTH_LONG
                             )
                         }
+
                         is Success -> {
                             val newReservationId = saveResult.value
 
@@ -384,6 +424,9 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
             return
         }
 
+        // get additional requests from db if any
+        viewModel.getReservationAdditionalRequest(reservationId!!)
+
         // * all data are available here *
         val startTime = LocalDateTime.parse(startSlotStr)
         val endTime =
@@ -399,7 +442,8 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
             val newEquipmentUnitPrice = equipment.getFloat("unit_price")
 
             if (newEquipmentEquipmentId == null || newEquipmentEquipmentName == null ||
-                newEquipmentSelectedQuantity == 0 || newEquipmentUnitPrice == 0f) {
+                newEquipmentSelectedQuantity == 0 || newEquipmentUnitPrice == 0f
+            ) {
                 showToasty("error", requireContext(), "Error in fields for an equipment")
                 return
             }

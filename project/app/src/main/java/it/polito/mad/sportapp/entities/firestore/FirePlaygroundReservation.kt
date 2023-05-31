@@ -60,6 +60,7 @@ data class FirePlaygroundReservation(
             firePlaygroundSport.id,
             firePlaygroundSport.playgroundName,
             firePlaygroundSport.pricePerHour.toFloat(),
+            additionalRequests,
             totalPrice.toFloat(),
             participants.map { it.username }
         )

@@ -40,6 +40,9 @@
     <string name="total_equipments_price_title">Equipments: </string>
     <string name="reservation_summary_price_text">25.00</string>
 
+    <string name="additional_requests_title">Additional requests</string>
+    <string name="additional_requests_hint">Write here any additional request</string>
+
     <string name="total_price_title">Total: </string>
 
     <string name="cancel_button_content_description">Cancel button</string>

@@ -36,8 +36,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none"
-        >
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -62,8 +61,7 @@
                     android:orientation="vertical"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:paddingBottom="16dp"
-                    >
+                    android:paddingBottom="16dp">
 
                     <ImageView
                         android:id="@+id/QR_code"
@@ -78,71 +76,71 @@
                         android:id="@+id/reservationNumber"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="8sp"
                         android:fontFamily="@font/poppins_medium"
                         android:gravity="center_horizontal"
+                        android:includeFontPadding="false"
                         android:text="Reservation number: 123456"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                         android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:includeFontPadding="false"
-                        android:layout_marginBottom="8sp"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/reservationDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="3sp"
                         android:fontFamily="@font/poppins_medium"
                         android:gravity="center_horizontal"
-                        android:text="18/04/2023"
-                        android:textSize="20sp"
                         android:includeFontPadding="false"
-                        android:layout_marginBottom="3sp"/>
+                        android:text="18/04/2023"
+                        android:textSize="20sp" />
 
                     <LinearLayout
                         android:id="@+id/reservationTime"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginBottom="5sp"
                         android:gravity="center_horizontal"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="5sp">
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
                             android:text="From "
                             android:textColor="@color/black"
-                            android:textSize="20sp"
-                            android:includeFontPadding="false"/>
+                            android:textSize="20sp" />
 
                         <TextView
                             android:id="@+id/reservationStartTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_semibold"
+                            android:includeFontPadding="false"
                             android:text="10:00"
                             android:textColor="@color/black"
-                            android:textSize="20sp"
-                            android:includeFontPadding="false"/>
+                            android:textSize="20sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
                             android:text=" to "
                             android:textColor="@color/black"
-                            android:textSize="20sp"
-                            android:includeFontPadding="false"/>
+                            android:textSize="20sp" />
 
                         <TextView
                             android:id="@+id/reservationEndTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_semibold"
+                            android:includeFontPadding="false"
                             android:text="12:00"
                             android:textColor="@color/black"
-                            android:textSize="20sp"
-                            android:includeFontPadding="false"/>
+                            android:textSize="20sp" />
 
                     </LinearLayout>
 
@@ -151,15 +149,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="5sp"
                         android:layout_weight="1"
                         android:fontFamily="@font/poppins_medium"
+                        android:includeFontPadding="false"
                         android:text="Basket"
                         android:textColor="@color/black"
                         android:textSize="24sp"
-                        android:textStyle="bold"
-                        android:includeFontPadding="false"
-                        android:layout_marginBottom="5sp"
-                        />
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -171,17 +168,18 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
                             android:text="By @"
-                            android:textSize="17sp"
-                            android:includeFontPadding="false"/>
+                            android:textSize="17sp" />
+
                         <TextView
                             android:id="@+id/reservationUsername"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
                             android:text="johndoe"
-                            android:textSize="17sp"
-                            android:includeFontPadding="false"/>
+                            android:textSize="17sp" />
 
                     </LinearLayout>
 
@@ -189,10 +187,9 @@
                         android:id="@+id/divider2"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_weight="1"
-                        android:background="?android:attr/listDivider"
                         android:layout_marginVertical="13dp"
-                        />
+                        android:layout_weight="1"
+                        android:background="?android:attr/listDivider" />
 
                     <TextView
                         android:id="@+id/reservationPlaygroundName"
@@ -200,24 +197,22 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_semibold"
                         android:gravity="center_horizontal"
+                        android:includeFontPadding="false"
                         android:text="Campo 1"
                         android:textColor="@color/black"
-                        android:textSize="24sp"
-                        android:includeFontPadding="false"
-                        />
+                        android:textSize="24sp" />
 
                     <TextView
                         android:id="@+id/reservationSportCenter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_medium"
-                        android:text="POLI Sport"
-                        android:textSize="20sp"
-                        android:textColor="@color/black"
                         android:layout_gravity="center_horizontal"
-                        android:includeFontPadding="false"
                         android:layout_marginBottom="5sp"
-                        />
+                        android:fontFamily="@font/poppins_medium"
+                        android:includeFontPadding="false"
+                        android:text="POLI Sport"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
 
                     <TextView
                         android:id="@+id/reservationAddress"
@@ -227,123 +222,113 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/poppins_medium"
                         android:gravity="center_horizontal"
-                        android:text="Corso Castelfidardo 24, Torino (TO)"
-                        android:textSize="18sp"
                         android:includeFontPadding="false"
-                        />
+                        android:text="Corso Castelfidardo 24, Torino (TO)"
+                        android:textSize="18sp" />
 
                     <Button
                         android:id="@+id/button_playground_details"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="8dp"
+                        android:layout_gravity="center_horizontal"
                         android:layout_marginHorizontal="16dp"
+                        android:layout_marginVertical="8dp"
                         android:backgroundTint="@color/background_blue"
+                        android:contentDescription="Go to playground details"
                         android:fontFamily="@font/poppins_bold"
+                        android:includeFontPadding="false"
                         android:paddingTop="10.5dp"
                         android:paddingBottom="10.5dp"
                         android:text="Playground details"
+                        android:textAlignment="center"
                         android:textAllCaps="false"
                         android:textAppearance="@style/TextAppearance.AppCompat.Button"
                         android:textColor="@color/button_text_color"
                         android:textSize="20sp"
-                        android:includeFontPadding="false"
-                        android:textAlignment="center"
                         app:icon="@drawable/baseline_stadium_24"
-                        android:contentDescription="Go to playground details"
                         app:iconGravity="textStart"
-                        app:iconTint="@color/button_text_color"
-                        android:layout_gravity="center_horizontal"
-                        />
+                        app:iconTint="@color/button_text_color" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="?android:attr/listDivider"
                         android:layout_marginVertical="12dp"
-                        />
+                        android:background="?android:attr/listDivider" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Participants"
                         android:fontFamily="@font/poppins_medium"
                         android:gravity="center_horizontal"
-                        android:textColor="@color/black"
-                        android:textSize="24sp"
                         android:includeFontPadding="false"
-                        />
+                        android:text="Participants"
+                        android:textColor="@color/black"
+                        android:textSize="24sp" />
 
                     <LinearLayout
                         android:id="@+id/participantsContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:layout_gravity="center_horizontal"
-                        />
+                        android:orientation="vertical" />
 
                     <Button
                         android:id="@+id/button_invite"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="8dp"
+                        android:layout_gravity="center_horizontal"
                         android:layout_marginHorizontal="16dp"
+                        android:layout_marginVertical="8dp"
                         android:backgroundTint="@color/background_blue"
+                        android:contentDescription="Go to invitation page"
                         android:fontFamily="@font/poppins_bold"
+                        android:includeFontPadding="false"
                         android:paddingTop="10.5dp"
                         android:paddingBottom="10.5dp"
                         android:text="Invite people"
+                        android:textAlignment="center"
                         android:textAllCaps="false"
                         android:textAppearance="@style/TextAppearance.AppCompat.Button"
                         android:textColor="@color/button_text_color"
                         android:textSize="20sp"
-                        android:includeFontPadding="false"
-                        android:textAlignment="center"
-                        app:icon="@drawable/baseline_person_add_24"
-                        android:contentDescription="Go to invitation page"
-                        app:iconGravity="textStart"
-                        app:iconTint="@color/button_text_color"
-                        android:layout_gravity="center_horizontal"
                         android:visibility="gone"
-                        />
+                        app:icon="@drawable/baseline_person_add_24"
+                        app:iconGravity="textStart"
+                        app:iconTint="@color/button_text_color" />
 
                     <View
                         android:id="@+id/divider3"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="?android:attr/listDivider"
                         android:layout_marginVertical="12dp"
-                        />
+                        android:background="?android:attr/listDivider" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Equipments"
                         android:fontFamily="@font/poppins_medium"
                         android:gravity="center_horizontal"
-                        android:textColor="@color/black"
-                        android:textSize="24sp"
                         android:includeFontPadding="false"
-                        />
+                        android:text="Equipments"
+                        android:textColor="@color/black"
+                        android:textSize="24sp" />
 
                     <LinearLayout
                         android:id="@+id/equipmentContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:layout_gravity="center_horizontal"
-                        />
+                        android:orientation="vertical" />
 
                     <TextView
                         android:id="@+id/noEquipmentMessage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="No equipment selected"
                         android:fontFamily="@font/poppins_medium"
                         android:gravity="center_horizontal"
+                        android:text="No equipment selected"
                         android:textSize="16sp"
-                        android:visibility="gone"
-                        />
+                        android:visibility="gone" />
 
 
                     <LinearLayout
@@ -355,62 +340,96 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Add new Equipment or \n update the quantity"
+                            android:layout_gravity="center_vertical"
                             android:fontFamily="@font/poppins_medium"
                             android:gravity="center_horizontal"
+                            android:text="Add new Equipment or \n update the quantity"
                             android:textSize="16sp"
-                            android:textStyle="italic"
-                            android:layout_gravity="center_vertical"
-                            />
+                            android:textStyle="italic" />
 
                         <ImageButton
                             android:id="@+id/editButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
                             android:background="#FFFFFF"
                             android:backgroundTint="#00FFFFFF"
                             android:paddingStart="8dp"
                             android:src="@drawable/baseline_edit_32"
-                            android:layout_gravity="center_vertical"
                             app:tint="@color/button_text_color" />
 
                     </LinearLayout>
 
                     <View
-                        android:id="@+id/divider4"
+                        android:id="@+id/additional_requests_divider"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="?android:attr/listDivider"
+                        android:layout_marginVertical="12dp"
+                        android:background="?android:attr/listDivider" />
+
+                    <LinearLayout
+                        android:id="@+id/additional_requests_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:gravity="center_horizontal"
+                            android:includeFontPadding="false"
+                            android:text="Additional requests"
+                            android:textColor="@color/black"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/additional_requests_tv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:gravity="center"
+                            android:includeFontPadding="false"
+                            android:text="I want to two water bottles"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/divider5"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
                         android:layout_marginVertical="16dp"
-                        />
+                        android:background="?android:attr/listDivider" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginVertical="5sp"
                         android:gravity="center_horizontal"
-                        android:orientation="horizontal"
-                        android:layout_marginVertical="5sp">
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
                             android:text="Total price: "
                             android:textColor="@color/black"
-                            android:textSize="24sp"
-                            android:includeFontPadding="false"
-                            />
+                            android:textSize="24sp" />
 
                         <TextView
                             android:id="@+id/reservationPrice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_semibold"
+                            android:includeFontPadding="false"
                             android:text="€ 15,50"
                             android:textColor="@color/black"
-                            android:textSize="24sp"
-                            android:includeFontPadding="false"
-                            />
+                            android:textSize="24sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -420,51 +439,49 @@
                 android:id="@+id/button_delete_reservation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="8dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
                 android:backgroundTint="@color/primary_orange"
+                android:contentDescription="@string/add_friend_button_description"
                 android:fontFamily="@font/poppins_bold"
+                android:includeFontPadding="false"
                 android:paddingTop="10.5dp"
                 android:paddingBottom="10.5dp"
                 android:text="Delete reservation"
+                android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/button_text_color"
                 android:textSize="20sp"
-                android:includeFontPadding="false"
-                android:textAlignment="center"
-                app:icon="@drawable/baseline_delete_24"
-                android:contentDescription="@string/add_friend_button_description"
-                app:iconGravity="textStart"
-                app:iconTint="@color/button_text_color"
-                android:layout_gravity="center_horizontal"
                 android:visibility="gone"
-                />
+                app:icon="@drawable/baseline_delete_24"
+                app:iconGravity="textStart"
+                app:iconTint="@color/button_text_color" />
 
             <Button
                 android:id="@+id/button_leave_review"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="8dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
                 android:backgroundTint="@color/primary_orange"
+                android:contentDescription="Leave a review"
                 android:fontFamily="@font/poppins_bold"
+                android:includeFontPadding="false"
                 android:paddingTop="10.5dp"
                 android:paddingBottom="10.5dp"
                 android:text="Leave a review"
+                android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/button_text_color"
                 android:textSize="20sp"
-                android:includeFontPadding="false"
-                android:textAlignment="center"
-                app:icon="@drawable/baseline_add_comment_24"
-                android:contentDescription="Leave a review"
-                app:iconGravity="textStart"
-                app:iconTint="@color/button_text_color"
-                android:layout_gravity="center_horizontal"
                 android:visibility="gone"
-                />
+                app:icon="@drawable/baseline_add_comment_24"
+                app:iconGravity="textStart"
+                app:iconTint="@color/button_text_color" />
         </LinearLayout>
     </ScrollView>
 

@@ -295,6 +295,43 @@
                 android:layout_marginVertical="16dp"
                 android:background="?android:attr/listDivider" />
 
+            <!-- Additional requests -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="12dp"
+                android:fontFamily="@font/poppins_semibold"
+                android:includeFontPadding="false"
+                android:text="@string/additional_requests_title"
+                android:textColor="@color/black"
+                android:textSize="21sp" />
+
+            <!-- Additional requests edit text -->
+            <EditText
+                android:id="@+id/edit_additional_requests"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/edit_text_margin"
+                android:layout_marginRight="@dimen/edit_text_margin"
+                android:fontFamily="@font/poppins_medium"
+                android:hint="@string/additional_requests_hint"
+                android:includeFontPadding="false"
+                android:inputType="textMultiLine"
+                android:paddingTop="@dimen/edit_text_padding_top"
+                android:paddingBottom="@dimen/edit_text_padding_bottom"
+                android:textColor="@color/edit_text_text_color"
+                android:textColorHint="@color/edit_text_text_color_hint"
+                android:textSize="@dimen/default_text_size"
+                tools:ignore="Autofill,VisualLintTextFieldSize" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="16dp"
+                android:background="?android:attr/listDivider" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

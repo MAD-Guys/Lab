@@ -20,5 +20,5 @@ data class NewReservation (
     val sportCenterName: String,
     val sportCenterAddress: String,
     val selectedEquipments: List<NewReservationEquipment>,
-    val additionalRequests : String?
+    var additionalRequests : String?
 )

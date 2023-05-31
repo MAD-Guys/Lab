@@ -1,7 +1,5 @@
 package it.polito.mad.sportapp.entities
 
-import it.polito.mad.sportapp.entities.firestore.FirePlaygroundReservation
-import it.polito.mad.sportapp.entities.firestore.FirePlaygroundSport
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -22,6 +20,7 @@ data class DetailedReservation (
     val playgroundId: String,
     val playgroundName: String,
     val playgroundPricePerHour: Float,
+    val additionalRequests: String?,
     val totalPrice: Float,
     val participants: List<String>   // usernames
 ) {

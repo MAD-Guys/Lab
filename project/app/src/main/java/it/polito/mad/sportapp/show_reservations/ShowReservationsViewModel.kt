@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.DetailedReservation
+import it.polito.mad.sportapp.entities.firestore.utilities.DefaultGetFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.model.IRepository
@@ -49,6 +50,10 @@ class ShowReservationsViewModel @Inject constructor(
     val selectedDate: LiveData<LocalDate> = _selectedDate
     val previousSelectedDate: LiveData<LocalDate> = _previousSelectedDate
 
+    /* error management */
+    private val _getReservationsError = MutableLiveData<DefaultGetFireError?>()
+    val getReservationsError: LiveData<DefaultGetFireError?> = _getReservationsError
+
     private fun loadEventsFromDb(uid: String): FireListener {
 
         // get user events from database
@@ -56,7 +61,7 @@ class ShowReservationsViewModel @Inject constructor(
             when (it) {
                 is FireResult.Error -> {
                     Log.e("ShowReservationsViewModel", it.errorMessage())
-                    //showToasty("error", context, it.errorMessage())
+                    _getReservationsError.postValue(it.type)
                 }
 
                 is FireResult.Success -> {

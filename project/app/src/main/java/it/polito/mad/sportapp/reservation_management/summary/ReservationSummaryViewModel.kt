@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.NewReservation
+import it.polito.mad.sportapp.entities.firestore.utilities.DefaultGetFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.entities.firestore.utilities.NewReservationError
 import it.polito.mad.sportapp.model.IRepository
@@ -15,21 +16,27 @@ import javax.inject.Inject
 @HiltViewModel
 class ReservationSummaryViewModel @Inject constructor(
     val repository: IRepository
-) : ViewModel()
-{
+) : ViewModel() {
     // contains the reservation data to save in the db
     private val _reservation = MutableLiveData<NewReservation>()
     internal val reservation: LiveData<NewReservation> = _reservation
 
-    /**
-     * return null if everything went well, an error enum otherwise
-     */
+    // contains the additionalRequests for the reservation
+    private val _reservationAdditionalRequests = MutableLiveData<String?>()
+    internal val reservationAdditionalRequests: LiveData<String?> = _reservationAdditionalRequests
+
+    /* error management */
+    private val _getReservationAdditionalRequestsError = MutableLiveData<DefaultGetFireError?>()
+    val getReservationAdditionalRequestError: LiveData<DefaultGetFireError?> =
+        _getReservationAdditionalRequestsError
+
+    /** return null if everything went well, an error enum otherwise */
     fun permanentlySaveReservation(
         returnCallback: (FireResult<String, NewReservationError>) -> Unit
     ) {
         val reservationToSave = reservation.value
 
-        if(reservationToSave == null) {
+        if (reservationToSave == null) {
             Log.d("permanentlySaveReservation_error", "trying to save a null reservation")
             returnCallback(NewReservationError.unexpected("trying to save a null reservation"))
             return
@@ -46,4 +53,28 @@ class ReservationSummaryViewModel @Inject constructor(
     fun setReservation(newReservation: NewReservation) {
         _reservation.value = newReservation
     }
+
+    fun setReservationAdditionalRequests(additionalRequests: String?) {
+        _reservation.value?.additionalRequests = additionalRequests
+    }
+
+    fun getReservationAdditionalRequest(reservationId: String) {
+        repository.getReservationAdditionalRequests(reservationId) {
+            when (it) {
+                is FireResult.Error -> {
+                    Log.e("getReservationAdditionalRequest", it.errorMessage())
+                    _getReservationAdditionalRequestsError.postValue(it.type)
+                }
+
+                is FireResult.Success -> {
+                    Log.d(
+                        "getReservationAdditionalRequest",
+                        "Reservation additional requests successfully retrieved"
+                    )
+                    _reservationAdditionalRequests.postValue(it.value)
+                }
+            }
+        }
+    }
+
 }

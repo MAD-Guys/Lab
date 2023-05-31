@@ -48,6 +48,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
     private lateinit var reservationPlayground: TextView
     private lateinit var reservationSportCenter: TextView
     private lateinit var reservationSportCenterAddress: TextView
+    private lateinit var reservationAdditionalRequests: TextView
     private lateinit var playgroundButton: Button
     private lateinit var participants: LinearLayout
     private lateinit var inviteButton: Button
@@ -254,6 +255,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         reservationPlayground = requireView().findViewById(R.id.reservationPlaygroundName)
         reservationSportCenter = requireView().findViewById(R.id.reservationSportCenter)
         reservationSportCenterAddress = requireView().findViewById(R.id.reservationAddress)
+        reservationAdditionalRequests = requireView().findViewById(R.id.additional_requests_tv)
         playgroundButton = requireView().findViewById(R.id.button_playground_details)
         participants = requireView().findViewById(R.id.participantsContainer)
         inviteButton = requireView().findViewById(R.id.button_invite)
@@ -292,6 +294,23 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         reservationPlayground.text = viewModel.reservation.value?.playgroundName
         reservationSportCenter.text = viewModel.reservation.value?.sportCenterName
         reservationSportCenterAddress.text = viewModel.reservation.value?.address
+
+        // setup additional requests
+        val additionalRequests: String? = viewModel.reservation.value?.additionalRequests
+        val additionalRequestsDivider = requireView().findViewById<View>(R.id.additional_requests_divider)
+        val additionalRequestsContainer = requireView().findViewById<LinearLayout>(R.id.additional_requests_container)
+
+        if(additionalRequests != null) {
+            additionalRequestsDivider.visibility = View.VISIBLE
+            additionalRequestsContainer.visibility = View.VISIBLE
+
+            reservationAdditionalRequests.text = additionalRequests
+        } else {
+            additionalRequestsDivider.visibility = View.GONE
+            additionalRequestsContainer.visibility = View.GONE
+        }
+
+
         reservationTotalPrice.text =
             "€ " + String.format("%.2f", viewModel.reservation.value?.totalPrice)
     }
