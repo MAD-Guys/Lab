@@ -35,15 +35,11 @@ class ProfileViewModel @Inject constructor(
     /* firebase storage */
     private val storageRef = Firebase.storage("gs://sportapp-project.appspot.com/").reference
 
-    /* sports flags */
-    private val _userSportsLoaded = MutableLiveData<Boolean>().also { it.value = false }
-    val userSportsLoaded: LiveData<Boolean> = _userSportsLoaded
-
-    private val _sportsListLoaded = MutableLiveData<Boolean>().also { it.value = false }
-    val sportsListLoaded: LiveData<Boolean> = _sportsListLoaded
-
-    private val _sportsInflated = MutableLiveData<Boolean>().also { it.value = false }
-    val sportsInflated: LiveData<Boolean> = _sportsInflated
+    /* profile flags */
+    internal var userSportsLoaded = false
+    internal var sportsListLoaded = false
+    internal var sportsInflated = false
+    internal var isCroppingImage = false
 
     /* user information */
 
@@ -109,7 +105,7 @@ class ProfileViewModel @Inject constructor(
                     Log.d("ProfileViewModel", "Sports list successfully loaded!")
 
                     // update db flag
-                    _sportsListLoaded.postValue(true)
+                    sportsListLoaded = true
                 }
 
                 is FireResult.Error -> {
@@ -134,7 +130,6 @@ class ProfileViewModel @Inject constructor(
 
     // init block
     init {
-
         // load user information from firestore db
         userId?.let { uid ->
             userFireListener = loadUserInformationFromDb(uid)
@@ -276,7 +271,7 @@ class ProfileViewModel @Inject constructor(
                     userNotificationsToken = newUser.value.notificationsToken
 
                     // update db flag
-                    _userSportsLoaded.postValue(true)
+                    userSportsLoaded = true
                 }
 
                 is FireResult.Error -> {
@@ -360,7 +355,11 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun setSportsInflated(value: Boolean) {
-        _sportsInflated.value = value
+        sportsInflated = value
+    }
+
+    fun setIsCroppingImage(value: Boolean) {
+        isCroppingImage = value
     }
 
     override fun onCleared() {

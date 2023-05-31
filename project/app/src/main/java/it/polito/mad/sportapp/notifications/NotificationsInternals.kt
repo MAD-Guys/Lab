@@ -59,7 +59,7 @@ internal fun NotificationsFragment.recyclerViewInit() {
             // hide progress bar and hide notifications
             progressBar.visibility = View.GONE
             notificationsRecyclerView.visibility = View.GONE
-        } else if (notificationList.isNotEmpty()) {
+        } else {
 
             // hide progress bar and show notifications
             progressBar.visibility = View.GONE

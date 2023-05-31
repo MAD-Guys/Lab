@@ -16,7 +16,6 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
-import it.polito.mad.sportapp.entities.NotificationStatus
 
 @AndroidEntryPoint
 class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_details) {
@@ -32,8 +31,6 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
 
     internal var notificationId: String? = null
     internal var reservationId: String? = null
-    internal lateinit var notificationStatus: NotificationStatus
-    private lateinit var notificationTimestamp: String
 
     // dialogs
     internal lateinit var acceptInvitationDialog: AlertDialog
@@ -44,7 +41,10 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
     internal val vm by viewModels<NotificationDetailsViewModel>()
 
     // user reservations fire listener
-    private lateinit var userReservationFireListener: FireListener
+    internal var userReservationFireListener: FireListener = FireListener()
+
+    // notification fire listener
+    private var notificationFireListener: FireListener = FireListener()
 
     // notification details main views
     internal lateinit var notificationDetailsScrollView: ScrollView
@@ -88,18 +88,11 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
         // retrieve reservation id
         reservationId = arguments?.getString("reservation_id")
 
-        // retrieve notification status
-        notificationStatus =
-            NotificationStatus.from(arguments?.getString("status") ?: "CANCELED")
+        // retrieve notification
 
-        // retrieve notification timestamp
-        notificationTimestamp = arguments?.getString("timestamp") ?: ""
-
-        // retrieve reservation from db or set notification status to canceled
-        if (reservationId != null) {
-            userReservationFireListener = vm.getReservationFromDb(reservationId!!)
-        } else {
-            notificationStatus = NotificationStatus.CANCELED
+        // retrieve notification from db
+        if(notificationId != null) {
+            notificationFireListener = vm.getNotificationFromDb(notificationId!!)
         }
 
         // initialize views
@@ -146,6 +139,7 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
 
         // setup bottom bar
         setupBottomBar()
+
     }
 
     override fun onDestroy() {
@@ -153,6 +147,9 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
 
         // remove user reservation listener
         userReservationFireListener.unregister()
+
+        // remove notification listener
+        notificationFireListener.unregister()
     }
 
 }

@@ -73,11 +73,18 @@ internal fun NotificationDetailsFragment.setupObservers() {
         }
     }
 
+    vm.notification.observe(viewLifecycleOwner) {
+        // retrieve notification from db
+        if (reservationId != null && it.status != NotificationStatus.CANCELED) {
+            userReservationFireListener = vm.getReservationFromDb(reservationId!!)
+        }
+    }
+
     // error/success observers
 
     // error during the GET: can't load this page, go back!
-    vm.getError.observe(viewLifecycleOwner){
-        if(it != null){ // it can be the Error or null
+    vm.getError.observe(viewLifecycleOwner) {
+        if (it != null) { // it can be the Error or null
             showToasty("error", requireContext(), it.message())
 
             // go back
@@ -86,15 +93,15 @@ internal fun NotificationDetailsFragment.setupObservers() {
     }
 
     // error during the update: show a toast and stay here
-    vm.updateError.observe(viewLifecycleOwner){
-        if(it != null){ // it can be the Error or null
+    vm.updateError.observe(viewLifecycleOwner) {
+        if (it != null) { // it can be the Error or null
             showToasty("error", requireContext(), it.message())
         }
     }
 
     // update successfully completed: show a toast and navigate back
-    vm.updateSuccess.observe(viewLifecycleOwner){
-        if(it != null){ // it can be "accepted", "declined" or "rejected" (or null)
+    vm.updateSuccess.observe(viewLifecycleOwner) {
+        if (it != null) { // it can be "accepted", "declined" or "rejected" (or null)
             showToasty("success", requireContext(), "Invitation correctly $it!")
             // navigate back
             navController.popBackStack()
@@ -107,7 +114,12 @@ internal fun NotificationDetailsFragment.initAcceptInvitationDialog() {
     acceptInvitationDialog = AlertDialog.Builder(requireContext())
         .setMessage("Do you want to accept this invitation?")
         .setPositiveButton("YES") { _, _ ->
-            vm.updateInvitationStatus(notificationId!!, NotificationStatus.PENDING ,NotificationStatus.ACCEPTED, reservationId!!)
+            vm.updateInvitationStatus(
+                notificationId!!,
+                NotificationStatus.PENDING,
+                NotificationStatus.ACCEPTED,
+                reservationId!!
+            )
         }
         .setNegativeButton("NO") { d, _ -> d.cancel() }
         .create()
@@ -118,7 +130,12 @@ internal fun NotificationDetailsFragment.initDeclineInvitationDialog() {
     declineInvitationDialog = AlertDialog.Builder(requireContext())
         .setMessage("Do you want to decline this invitation?")
         .setPositiveButton("YES") { _, _ ->
-            vm.updateInvitationStatus(notificationId!!, NotificationStatus.PENDING ,NotificationStatus.REJECTED, reservationId!!)
+            vm.updateInvitationStatus(
+                notificationId!!,
+                NotificationStatus.PENDING,
+                NotificationStatus.REJECTED,
+                reservationId!!
+            )
         }
         .setNegativeButton("NO") { d, _ -> d.cancel() }
         .create()
@@ -129,7 +146,12 @@ internal fun NotificationDetailsFragment.initRejectInvitationDialog() {
     rejectInvitationDialog = AlertDialog.Builder(requireContext())
         .setMessage("Do you want to reject the previously accepted invitation?")
         .setPositiveButton("YES") { _, _ ->
-            vm.updateInvitationStatus(notificationId!!, NotificationStatus.ACCEPTED ,NotificationStatus.REJECTED, reservationId!!)
+            vm.updateInvitationStatus(
+                notificationId!!,
+                NotificationStatus.ACCEPTED,
+                NotificationStatus.REJECTED,
+                reservationId!!
+            )
         }
         .setNegativeButton("NO") { d, _ -> d.cancel() }
         .create()
@@ -139,41 +161,43 @@ internal fun NotificationDetailsFragment.initRejectInvitationDialog() {
 @SuppressLint("SetTextI18n")
 internal fun NotificationDetailsFragment.manageNotificationState() {
 
-    when (notificationStatus) {
-        NotificationStatus.ACCEPTED -> {
-            notificationDetailsScrollView.visibility = View.VISIBLE
-            notificationDetailsCanceledMessage.visibility = View.GONE
-            notificationDetailsRejectedMessage.visibility = View.GONE
-            notificationDetailsJoinQuestion.text = "Do you want to reject this invitation?"
-            acceptInvitationButton.visibility = View.GONE
-            declineInvitationButton.visibility = View.GONE
-            rejectInvitationButton.visibility = View.VISIBLE
-        }
+    vm.notification.value?.let {
+        when (it.status) {
+            NotificationStatus.ACCEPTED -> {
+                notificationDetailsScrollView.visibility = View.VISIBLE
+                notificationDetailsCanceledMessage.visibility = View.GONE
+                notificationDetailsRejectedMessage.visibility = View.GONE
+                notificationDetailsJoinQuestion.text = "Do you want to reject this invitation?"
+                acceptInvitationButton.visibility = View.GONE
+                declineInvitationButton.visibility = View.GONE
+                rejectInvitationButton.visibility = View.VISIBLE
+            }
 
-        NotificationStatus.REJECTED -> {
-            notificationDetailsScrollView.visibility = View.VISIBLE
-            notificationDetailsCanceledMessage.visibility = View.GONE
-            notificationDetailsRejectedMessage.visibility = View.VISIBLE
-            notificationDetailsJoinQuestion.visibility = View.GONE
-            acceptInvitationButton.visibility = View.GONE
-            declineInvitationButton.visibility = View.GONE
-            rejectInvitationButton.visibility = View.GONE
-        }
+            NotificationStatus.REJECTED -> {
+                notificationDetailsScrollView.visibility = View.VISIBLE
+                notificationDetailsCanceledMessage.visibility = View.GONE
+                notificationDetailsRejectedMessage.visibility = View.VISIBLE
+                notificationDetailsJoinQuestion.visibility = View.GONE
+                acceptInvitationButton.visibility = View.GONE
+                declineInvitationButton.visibility = View.GONE
+                rejectInvitationButton.visibility = View.GONE
+            }
 
-        NotificationStatus.CANCELED -> {
-            menuInit(false)
-            notificationDetailsScrollView.visibility = View.GONE
-            notificationDetailsCanceledMessage.visibility = View.VISIBLE
-        }
+            NotificationStatus.CANCELED -> {
+                menuInit(false)
+                notificationDetailsScrollView.visibility = View.GONE
+                notificationDetailsCanceledMessage.visibility = View.VISIBLE
+            }
 
-        else -> {
-            notificationDetailsScrollView.visibility = View.VISIBLE
-            notificationDetailsCanceledMessage.visibility = View.GONE
-            notificationDetailsRejectedMessage.visibility = View.GONE
-            notificationDetailsJoinQuestion.visibility = View.VISIBLE
-            acceptInvitationButton.visibility = View.VISIBLE
-            declineInvitationButton.visibility = View.VISIBLE
-            rejectInvitationButton.visibility = View.GONE
+            else -> {
+                notificationDetailsScrollView.visibility = View.VISIBLE
+                notificationDetailsCanceledMessage.visibility = View.GONE
+                notificationDetailsRejectedMessage.visibility = View.GONE
+                notificationDetailsJoinQuestion.visibility = View.VISIBLE
+                acceptInvitationButton.visibility = View.VISIBLE
+                declineInvitationButton.visibility = View.VISIBLE
+                rejectInvitationButton.visibility = View.GONE
+            }
         }
     }
 }

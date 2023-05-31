@@ -179,7 +179,7 @@ internal fun ShowProfileFragment.observersSetup() {
     }
 
     vm.sportsList.observe(viewLifecycleOwner) {
-        if (vm.sportsInflated.value == false && vm.userSportsLoaded.value == true) {
+        if (!vm.sportsInflated && vm.userSportsLoaded) {
             if (vm.userSports.value!!.isNotEmpty()) {
                 noSportsTextView.visibility = View.GONE
                 setupSports(vm.userSports.value!!)
@@ -191,7 +191,7 @@ internal fun ShowProfileFragment.observersSetup() {
     }
 
     vm.userSports.observe(viewLifecycleOwner) {
-        if (vm.sportsInflated.value == false && vm.sportsListLoaded.value == true) {
+        if (!vm.sportsInflated && vm.sportsListLoaded) {
             if (it.isNotEmpty()) {
                 noSportsTextView.visibility = View.GONE
                 setupSports(it)

@@ -115,6 +115,8 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
                         cropImageOptions
                     )
                 )
+
+                vm.setIsCroppingImage(true)
             }
         }
 
@@ -173,8 +175,13 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
                 backgroundProfilePicture.setImageBitmap(backgroundProfilePictureBitmap)
 
                 // save background profile picture on firebase storage
-                vm.saveProfilePictureOnFirebaseStorage(backgroundProfilePictureBitmap, "background_profile_picture.jpeg")
+                vm.saveProfilePictureOnFirebaseStorage(
+                    backgroundProfilePictureBitmap,
+                    "background_profile_picture.jpeg"
+                )
             }
+
+            vm.setIsCroppingImage(false)
 
         } else {
             Log.d("CROP", "Cropping failed: ${it.error}")
@@ -274,8 +281,10 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
     override fun onPause() {
         super.onPause()
 
-        // save the user information on internal storage
-        saveInformationOnStorage()
+        if (!vm.isCroppingImage) {
+            // save the user information on internal storage
+            saveInformationOnStorage()
+        }
     }
 
     override fun onDestroy() {
