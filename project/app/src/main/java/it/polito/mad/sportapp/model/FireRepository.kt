@@ -1474,7 +1474,43 @@ class FireRepository : IRepository {
         reservationId: String,
         fireCallback: (FireResult<String?,DefaultGetFireError>) -> Unit
     ) {
+        db.collection("playgroundReservations")
+            .document(reservationId)
+            .get()
+            .addOnSuccessListener { res ->
+                if (res == null || !res.exists()) {
+                    // reservation not found
+                    Log.e("not found error", "Error: reservation with id $reservationId is not found in FireRepository.getReservationAdditionalRequests()")
+                    fireCallback(DefaultGetFireError.notFound(
+                        "Error: reservation not found"
+                    ))
+                    return@addOnSuccessListener
+                }
 
+                // retrieve now the additional requests string (if any)
+                val reservationDoc = FirePlaygroundReservation.deserialize(res.id, res.data)
+
+                if (reservationDoc == null) {
+                    // deserialization error
+                    Log.e("deserialization error", "Error: a deserialization error occurred with playground reservation $reservationId in FireRepository.getReservationAdditionalRequests()")
+                    fireCallback(DefaultGetFireError.duringDeserialization(
+                        "Error: an error occurred retrieving reservation additional requests"
+                    ))
+                    return@addOnSuccessListener
+                }
+
+                // * reservation retrieved *  ->
+                // return successfully additional requests (if any)
+                fireCallback(Success(reservationDoc.additionalRequests))
+            }
+            .addOnFailureListener {
+                // generic error
+                Log.e("generic error", "Error: a generic error occurred retrieving additional requests for reservation $reservationId, in FireRepository.getReservationAdditionalRequests(). Message: ${it.message}")
+                fireCallback(DefaultGetFireError.default(
+                    "Error: a generic error occurred retrieving reservation additional requests"
+                ))
+                return@addOnFailureListener
+            }
     }
 
     /**
@@ -2646,9 +2682,9 @@ class FireRepository : IRepository {
                     return@addSnapshotListener
                 }
 
-                if (value == null) {
+                if (value == null || !value.exists()) {
                     // notification not found
-                    Log.e("not found error", "Error: notification with id $notificationId not found")
+                    Log.e("not found error", "Error: notification with id $notificationId not found in FireRepository.getNotificationById()")
                     fireCallback(DefaultGetFireError.notFound(
                         "Error: notification not found"
                     ))
