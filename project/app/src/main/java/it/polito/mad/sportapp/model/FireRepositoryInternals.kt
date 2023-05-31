@@ -52,13 +52,15 @@ internal fun FireRepository.buildAchievements(
             return@getDynamicPlaygroundReservationsOfUserAsParticipant
         }
 
-        val userReservations = fireResult.unwrap()
+        var userReservations = fireResult.unwrap()
 
         // Now I consider only the past reservations (*already ended*)
-        val playedGames = userReservations.filter {
+        userReservations = userReservations.filter {
             val endDateTime = LocalDateTime.parse(it.endDateTime, DateTimeFormatter.ISO_DATE_TIME)
             endDateTime.isBefore(LocalDateTime.now())
-        }.size
+        }
+
+        val playedGames = userReservations.size
 
         val playgroundIds = userReservations.map { it.playgroundId }.distinct().toMutableList()
 
