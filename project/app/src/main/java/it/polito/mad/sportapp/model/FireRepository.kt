@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.kizitonwose.calendar.core.atStartOfMonth
 import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
 import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.entities.Equipment
@@ -34,8 +35,10 @@ import it.polito.mad.sportapp.entities.firestore.utilities.DefaultInsertFireErro
 import it.polito.mad.sportapp.entities.firestore.utilities.NewReservationError
 import it.polito.mad.sportapp.entities.firestore.utilities.SaveAndSendInvitationFireError
 import java.lang.Exception
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
@@ -56,6 +59,9 @@ class FireRepository : IRepository {
     }
 
     internal val db = FirebaseFirestore.getInstance()
+
+    // hardcoded values
+    private val slotDuration = Duration.ofMinutes(30)
 
     /* users */
 
@@ -1955,14 +1961,16 @@ class FireRepository : IRepository {
     override fun getAvailablePlaygroundsPerSlot(
         month: YearMonth,
         sport: Sport?,
-        fireCallback: (FireResult<MutableMap<LocalDate, MutableMap<LocalDateTime, MutableList<DetailedPlaygroundSport>>>, DefaultGetFireError>) -> Unit
+        fireCallback: (FireResult<MutableMap<LocalDate, MutableMap<LocalDateTime, MutableList<DetailedPlaygroundSport>>>?, DefaultGetFireError>) -> Unit
     ): FireListener {
         val fireListener = FireListener()
 
         if (sport == null) {
-            fireCallback(Success(mutableMapOf()))
+            fireCallback(Success(null))
             return fireListener
         }
+
+        val now = LocalDateTime.now()
 
         this.getPlaygroundsBySportId(sport.id) { fireResult ->
             if (fireResult.isError()) {
@@ -1971,7 +1979,10 @@ class FireRepository : IRepository {
             }
 
             val sportPlaygrounds = fireResult.unwrap()
-            val sportPlaygroundsMap = sportPlaygrounds.associateBy { it.id }
+            val sportDetailedPlaygroundsMap = sportPlaygrounds
+                .map{it.toDetailedPlaygroundSport()}
+                .associateBy { it.playgroundId }
+
             val playgroundsIds = sportPlaygrounds.map { it.id }
 
             val listener = this.getDynamicReservationSlots(playgroundsIds, month) { fireResult2 ->
@@ -1982,6 +1993,8 @@ class FireRepository : IRepository {
 
                 val reservationSlots = fireResult2.unwrap()
 
+                // here we are considering just the slots where at least one reservation
+                // exists for the selected sport
                 val availablePlaygroundsPerSlot = reservationSlots.groupBy { reservationSlot ->
                     try {
                         LocalDateTime.parse(reservationSlot.startSlot)
@@ -1998,7 +2011,7 @@ class FireRepository : IRepository {
                         )
                         return@getDynamicReservationSlots
                     }
-                }.mapValues { (_, reservationSlots) ->
+                }.mapValues { (slot, reservationSlots) ->
                     // extract busy playgrounds, per each slot
                     val busyPlaygroundsIdsInSlot = reservationSlots.map { rs ->
                         rs.playgroundId
@@ -2009,15 +2022,83 @@ class FireRepository : IRepository {
                     // compute available playgrounds (ids) as the set difference of them
                     val availablePlaygroundsIdsInSlot =
                         openPlaygroundsIdsInSlot - busyPlaygroundsIdsInSlot
-                    val sortedAvailablePlaygroundsIdsInSlot =
-                        availablePlaygroundsIdsInSlot.toMutableList().sorted()
 
-                    val sortedAvailablePlaygroundsInSlot =
-                        sortedAvailablePlaygroundsIdsInSlot.map { id ->
-                            sportPlaygroundsMap[id]!!.clone().toDetailedPlaygroundSport()
-                        }.toMutableList()
+                    val allPlaygroundsWithCorrectAvailability =
+                        sportDetailedPlaygroundsMap.map { (id, detailedPlayground) ->
+                            val playgroundClone = detailedPlayground.clone()
 
-                    sortedAvailablePlaygroundsInSlot
+                            if (availablePlaygroundsIdsInSlot.contains(id))
+                                playgroundClone.available = slot > now
+
+                            playgroundClone
+                    }
+                    .sortedBy { it.playgroundName }
+                    .toMutableList()
+
+                    allPlaygroundsWithCorrectAvailability
+                }.toMutableMap()
+
+                // compute min opening hours and max closing hour among the ones of
+                // the selected sport's playgrounds
+                val minOpeningHours = try {
+                    sportPlaygrounds.minOf { firePlaygroundSport ->
+                        val playgroundOpeningHours = LocalTime.parse(firePlaygroundSport.sportCenter.openingHours)
+                        playgroundOpeningHours
+                    }
+                }
+                catch(e: NoSuchElementException) {
+                    LocalTime.of(9, 0)  // default opening hours
+                }
+
+                val maxClosingHours = try {
+                    sportPlaygrounds.maxOf { firePlaygroundSport ->
+                        val playgroundClosingHours = LocalTime.parse(firePlaygroundSport.sportCenter.closingHours)
+                        playgroundClosingHours
+                    }
+                }
+                catch(e: NoSuchElementException) {
+                    LocalTime.of(21, 0) // default closing hours
+                }
+
+                // add all the slots with no reservations for the selected sport
+                // (putting all the playgrounds, since they are all available in these slots)
+                val monthStartSlot = month.atStartOfMonth().atStartOfDay()
+                var monthSlot = monthStartSlot
+
+                // check if each sport playground is open
+                while (YearMonth.of(monthSlot.year, monthSlot.month) == month) {
+                    val slotTime = monthSlot.toLocalTime()
+
+                    if (availablePlaygroundsPerSlot.contains(monthSlot)     ||  // this slot has already been considered
+                        slotTime.isBefore(minOpeningHours)   ||  // this slot is before any opening hours
+                        slotTime.isAfter(maxClosingHours - slotDuration) // this slot is after any closing hours
+                    ) {
+                        monthSlot = monthSlot.plus(slotDuration)
+                        continue
+                    }
+
+                    // add this slot with all the **open** sport playgrounds as available
+                    val allAvailablePlaygroundsInThisSlot =
+                        sportPlaygrounds.map { playground ->
+                            val playgroundOpeningHours = LocalTime.parse(playground.sportCenter.openingHours)
+                            val playgroundClosingHours = LocalTime.parse(playground.sportCenter.closingHours)
+
+                            if (monthSlot > now &&
+                                slotTime >= playgroundOpeningHours &&
+                                slotTime <= (playgroundClosingHours - slotDuration)
+                            )
+                                // this playground is open in this slot time -> add it as available
+                                playground.toDetailedPlaygroundSport().apply { available = true }
+                            else
+                                playground.toDetailedPlaygroundSport()
+                        }
+                        .sortedBy { it.playgroundName }
+                        .toMutableList()
+
+                    // save new slot with associated available playgrounds
+                    availablePlaygroundsPerSlot[monthSlot] = allAvailablePlaygroundsInThisSlot
+
+                    monthSlot = monthSlot.plus(slotDuration)
                 }
 
                 // convert result to a map having date as key, each having a map with slot as key

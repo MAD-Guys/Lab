@@ -13,10 +13,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.kizitonwose.calendar.view.CalendarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.room.RoomSport
 import it.polito.mad.sportapp.application_utilities.hideProgressBar
 import it.polito.mad.sportapp.playground_availabilities.recycler_view.PlaygroundAvailabilitiesAdapter
 import it.polito.mad.sportapp.application_utilities.showProgressBar
+import it.polito.mad.sportapp.entities.Sport
 import it.polito.mad.sportapp.reservation_management.ReservationSlotSelectionViewModel
 
 
@@ -39,7 +39,7 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
 
     // spinner adapter
     internal lateinit var selectedSportSpinner : Spinner
-    internal lateinit var selectedSportSpinnerAdapter: ArrayAdapter<RoomSport>
+    internal lateinit var selectedSportSpinnerAdapter: ArrayAdapter<Sport>
 
     // recycler view
     internal var playgroundAvailabilitiesRecyclerView: RecyclerView? = null
@@ -49,7 +49,7 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
     private lateinit var progressBar: View
     private lateinit var slotAvailabilitiesSection: View
 
-    internal var sportIdToShow: Int? = null
+    internal var sportIdToShow: String? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -70,6 +70,9 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
 
         /* init floating action button */
         this.initFloatingButton()
+
+        /* error message toast observer */
+        this.initErrorMessageObserver()
 
         /* initialize calendar view */
         this.initCalendar()
@@ -127,7 +130,6 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
                     R.drawable.baseline_more_time_24_blurred
                 )
             }
-
         }
 
         /* (if necessary) switch to add/edit mode */
@@ -135,11 +137,9 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
             this.setupAddOrEditModeView()
         }
 
-        requireView().viewTreeObserver?.addOnGlobalLayoutListener {
-
-            if(playgroundsVM.availablePlaygroundsPerSlot.value?.isNotEmpty() == true)
-                // task completed: hide progress bar
-                hideProgressBar(progressBar, slotAvailabilitiesSection)
+        playgroundsVM.isAvailablePlaygroundsLoadedFlag.observe(viewLifecycleOwner) {
+            if (it) hideProgressBar(progressBar, slotAvailabilitiesSection)
+            else showProgressBar(progressBar, slotAvailabilitiesSection)
         }
     }
 
@@ -149,5 +149,11 @@ class PlaygroundAvailabilitiesFragment : Fragment(R.layout.playground_availabili
         // to not show red dot temporary state when coming back to this view:
         // clear available playgrounds data (and unset flag)
         playgroundsVM.clearAvailablePlaygroundsPerSlot()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        playgroundsVM.listener.unregister()
     }
 }

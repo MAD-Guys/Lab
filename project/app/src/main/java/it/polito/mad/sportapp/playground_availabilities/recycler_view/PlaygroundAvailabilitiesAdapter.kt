@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.room.RoomDetailedPlaygroundSport
+import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
 import it.polito.mad.sportapp.reservation_management.ReservationManagementModeWrapper
 import java.time.Duration
 import java.time.LocalDate
@@ -15,7 +15,7 @@ import kotlin.Exception
 
 class PlaygroundAvailabilitiesAdapter(
     // map containing all the slots and their corresponding available playgrounds
-    playgroundAvailabilities: Map<LocalDateTime, List<RoomDetailedPlaygroundSport>>,
+    playgroundAvailabilities: Map<LocalDateTime, List<DetailedPlaygroundSport>>,
     internal var selectedDate: LocalDate,
     private val slotDuration: Duration,
     internal var reservationManagementModeWrapper: ReservationManagementModeWrapper,
@@ -23,7 +23,7 @@ class PlaygroundAvailabilitiesAdapter(
     internal var reservationBundle: Bundle?,
     private val setReservationBundle: (Bundle) -> Unit,
     private val switchToAddMode: () -> Unit,
-    private val navigateToPlayground: (Int, LocalDateTime) -> Unit
+    private val navigateToPlayground: (String, LocalDateTime) -> Unit
 ) : RecyclerView.Adapter<AbstractTimeSlotVH>()
 {
     // list of all the interesting slots, chronologically ordered
@@ -44,18 +44,11 @@ class PlaygroundAvailabilitiesAdapter(
     private var playgroundAvailabilitiesSelections = computeSelectionsOf(playgroundAvailabilities)
 
     override fun getItemCount(): Int {
-        return if (timeSlots.isNotEmpty())
-            timeSlots.size
-        else 1
+        return timeSlots.size
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (playgroundAvailabilities.isEmpty())
-            // if there are no available playgrounds for the selected date, show a proper alert
-            R.layout.no_available_playgrounds_box
-        else
-            // otherwise show the playground availabilities
-            R.layout.time_slot_availabilities_container
+        return R.layout.time_slot_availabilities_container
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractTimeSlotVH {
@@ -67,7 +60,6 @@ class PlaygroundAvailabilitiesAdapter(
                 timeSlotView, navigateToPlayground, reservationManagementModeWrapper,
                 reservationBundle, setReservationBundle, switchToAddMode
             )
-            R.layout.no_available_playgrounds_box -> NoAvailablePlaygroundsVH(timeSlotView)
             else -> throw Exception("Unexpected view found in onCreateViewHolder")
         }
     }
@@ -83,20 +75,16 @@ class PlaygroundAvailabilitiesAdapter(
     }
 
     fun smartUpdatePlaygroundAvailabilities(
-        newPlaygroundAvailabilities: Map<LocalDateTime, List<RoomDetailedPlaygroundSport>>,
+        newPlaygroundAvailabilities: Map<LocalDateTime, List<DetailedPlaygroundSport>>,
         recreateAll:Boolean = false
     ) {
         val newPlaygroundAvailabilitiesSelections = this.computeSelectionsOf(newPlaygroundAvailabilities)
 
         // computing differences between previous and new playground availabilities (for the specified date)
         val diffs = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
-            override fun getOldListSize() =
-                if (playgroundAvailabilities.isEmpty()) 1
-                else playgroundAvailabilities.size
+            override fun getOldListSize() = playgroundAvailabilities.size
 
-            override fun getNewListSize() =
-                if (newPlaygroundAvailabilities.isEmpty()) 1
-                else newPlaygroundAvailabilities.size
+            override fun getNewListSize() = newPlaygroundAvailabilities.size
 
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
                 // from <no availabilities> to <no availabilities>
@@ -165,10 +153,10 @@ class PlaygroundAvailabilitiesAdapter(
     }
 
     private fun computeSelectionsOf(
-        playgroundAvailabilities: Map<LocalDateTime, List<RoomDetailedPlaygroundSport>>
-    ): Map<LocalDateTime, List<Pair<RoomDetailedPlaygroundSport, SelectionState>>>
+        playgroundAvailabilities: Map<LocalDateTime, List<DetailedPlaygroundSport>>
+    ): Map<LocalDateTime, List<Pair<DetailedPlaygroundSport, SelectionState>>>
     {
-        val selectedPlaygroundId = reservationBundle?.getInt("playground_id")
+        val selectedPlaygroundId = reservationBundle?.getString("playground_id")
         val selectedStartSlotStr = reservationBundle?.getString("start_slot")
         val selectedEndSlotStr = reservationBundle?.getString("end_slot")
 
@@ -181,7 +169,7 @@ class PlaygroundAvailabilitiesAdapter(
 
                 // set original reservation slots (which are actually busy) as *available* for the current user session
                 originalReservationBundle?.let {
-                    if (playground.playgroundId == it.getInt("playground_id") &&
+                    if (playground.playgroundId == it.getString("playground_id") &&
                         ((it.getString("end_slot") == null && LocalDateTime.parse(it.getString("start_slot")) == slot) ||
                          (it.getString("end_slot") != null && slot >= LocalDateTime.parse(it.getString("start_slot")) && slot <= LocalDateTime.parse(it.getString("end_slot")))))
                         playground.available = true

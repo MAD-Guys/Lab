@@ -35,7 +35,7 @@ class CalendarDayBinder(
 
             when (data.date) {
                 today -> container.setAsCurrentDate()
-                selectedDate.value -> container.setAsSelectedDate()
+                (selectedDate.value ?: LocalDate.now()) -> container.setAsSelectedDate()
                 else -> container.setAsUnselectedDate()
             }
 

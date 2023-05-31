@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/playgrounds_container_padding"
+    android:paddingHorizontal="@dimen/playgrounds_container_padding"
     android:background="@color/playgrounds_background_color"
     android:orientation="vertical">
 

@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.room.RoomDetailedPlaygroundSport
+import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
 import it.polito.mad.sportapp.reservation_management.ReservationManagementModeWrapper
 import java.time.Duration
 import java.time.LocalDateTime
@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter
 
 class TimeSlotVH(
     val view: View,
-    private val navigateToPlayground: (Int, LocalDateTime) -> Unit,
+    private val navigateToPlayground: (String, LocalDateTime) -> Unit,
     private val reservationManagementModeWrapper: ReservationManagementModeWrapper,
     private val reservationBundle: Bundle?,
     private val setReservationBundle: (Bundle) -> Unit,
@@ -58,7 +58,7 @@ class TimeSlotVH(
         }
     }
 
-    fun setAvailablePlaygrounds(availablePlaygrounds: List<Pair<RoomDetailedPlaygroundSport, PlaygroundAvailabilitiesAdapter.SelectionState>>) {
+    fun setAvailablePlaygrounds(availablePlaygrounds: List<Pair<DetailedPlaygroundSport, PlaygroundAvailabilitiesAdapter.SelectionState>>) {
         availablePlaygroundsContainer.removeAllViews()  // clear playgrounds
 
         // transform each available playground object in a box view
@@ -106,7 +106,7 @@ class TimeSlotVH(
     }
 
     private fun handlePlaygroundSlotSelection(
-        playground: RoomDetailedPlaygroundSport,
+        playground: DetailedPlaygroundSport,
         selectionState: PlaygroundAvailabilitiesAdapter.SelectionState
     ) {
         if (!playground.available) return
@@ -122,12 +122,12 @@ class TimeSlotVH(
             if (bundle.getString("start_slot") == null) {
                 bundle.putString("start_slot", slot.toString())
                 bundle.putInt("slot_duration_mins", slotDuration.toMinutes().toInt())
-                bundle.putInt("playground_id", playground.playgroundId)
+                bundle.putString("playground_id", playground.playgroundId)
                 bundle.putString("playground_name", playground.playgroundName)
-                bundle.putInt("sport_id", playground.sportId)
+                bundle.putString("sport_id", playground.sportId)
                 bundle.putString("sport_emoji", playground.sportEmoji)
                 bundle.putString("sport_name", playground.sportName)
-                bundle.putInt("sport_center_id", playground.sportCenterId)
+                bundle.putString("sport_center_id", playground.sportCenterId)
                 bundle.putString("sport_center_name", playground.sportCenterName)
                 bundle.putString("sport_center_address", playground.sportCenterAddress)
                 bundle.putFloat("playground_price_per_hour", playground.pricePerHour)
@@ -137,7 +137,7 @@ class TimeSlotVH(
             else if (bundle.getString("end_slot") == null) {
                 // if user re-click to the same slot (of the same playground), nothing happens
                 if (bundle.getString("start_slot") == slot.toString() &&
-                    bundle.getInt("playground_id") == playground.playgroundId
+                    bundle.getString("playground_id") == playground.playgroundId
                 )
                     return@let
 
@@ -149,12 +149,12 @@ class TimeSlotVH(
                     bundle.putString("start_slot", slot.toString())
                     bundle.remove("end_slot")
                     bundle.putInt("slot_duration_mins", slotDuration.toMinutes().toInt())
-                    bundle.putInt("playground_id", playground.playgroundId)
+                    bundle.putString("playground_id", playground.playgroundId)
                     bundle.putString("playground_name", playground.playgroundName)
-                    bundle.putInt("sport_id", playground.sportId)
+                    bundle.putString("sport_id", playground.sportId)
                     bundle.putString("sport_emoji", playground.sportEmoji)
                     bundle.putString("sport_name", playground.sportName)
-                    bundle.putInt("sport_center_id", playground.sportCenterId)
+                    bundle.putString("sport_center_id", playground.sportCenterId)
                     bundle.putString("sport_center_name", playground.sportCenterName)
                     bundle.putString("sport_center_address", playground.sportCenterAddress)
                     bundle.putFloat("playground_price_per_hour", playground.pricePerHour)
@@ -166,12 +166,12 @@ class TimeSlotVH(
                 bundle.putString("start_slot", slot.toString())
                 bundle.remove("end_slot")
                 bundle.putInt("slot_duration_mins", slotDuration.toMinutes().toInt())
-                bundle.putInt("playground_id", playground.playgroundId)
+                bundle.putString("playground_id", playground.playgroundId)
                 bundle.putString("playground_name", playground.playgroundName)
-                bundle.putInt("sport_id", playground.sportId)
+                bundle.putString("sport_id", playground.sportId)
                 bundle.putString("sport_emoji", playground.sportEmoji)
                 bundle.putString("sport_name", playground.sportName)
-                bundle.putInt("sport_center_id", playground.sportCenterId)
+                bundle.putString("sport_center_id", playground.sportCenterId)
                 bundle.putString("sport_center_name", playground.sportCenterName)
                 bundle.putString("sport_center_address", playground.sportCenterAddress)
                 bundle.putFloat("playground_price_per_hour", playground.pricePerHour)
@@ -183,7 +183,7 @@ class TimeSlotVH(
     }
 
     private fun handleSwitchToAddMode(
-        playground: RoomDetailedPlaygroundSport,
+        playground: DetailedPlaygroundSport,
     ): Boolean {
         // perform just in show mode (no add/edit mode)
         if (reservationManagementModeWrapper.mode != null) return false

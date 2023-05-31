@@ -1,12 +1,15 @@
 package it.polito.mad.sportapp.playground_availabilities
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.sportapp.entities.room.RoomSport
-import it.polito.mad.sportapp.entities.room.RoomDetailedPlaygroundSport
-import it.polito.mad.sportapp.model.LocalRepository
+import it.polito.mad.sportapp.entities.Sport
+import it.polito.mad.sportapp.entities.DetailedPlaygroundSport
+import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
+import it.polito.mad.sportapp.entities.firestore.utilities.FireResult.*
+import it.polito.mad.sportapp.model.IRepository
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -15,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlaygroundAvailabilitiesViewModel @Inject constructor(
-    private val repository: LocalRepository
+    private val repository: IRepository
 ) : ViewModel()
 {
     // default values
@@ -23,55 +26,69 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
     internal val defaultMonth = YearMonth.now()
 
     // all sports
-    private val _sports = MutableLiveData<List<RoomSport>>()
-    val sports: LiveData<List<RoomSport>> = _sports
+    private val _sports = MutableLiveData<List<Sport>>()
+    val sports: LiveData<List<Sport>> = _sports
 
     // selected sport
-    private val _selectedSport = MutableLiveData<RoomSport?>()
-    val selectedSport: LiveData<RoomSport?> = _selectedSport
+    private val _selectedSport = MutableLiveData<Sport?>()
+    val selectedSport: LiveData<Sport?> = _selectedSport
 
     // previous selected date
     private val _previousSelectedDate = MutableLiveData<LocalDate>()
     val previousSelectedDate: LiveData<LocalDate> = _previousSelectedDate
 
     // selected date
-    private val _selectedDate = MutableLiveData(defaultDate)
+    private val _selectedDate = MutableLiveData<LocalDate>()
     val selectedDate: LiveData<LocalDate> = _selectedDate
 
     // current month
-    private val _currentMonth = MutableLiveData(defaultMonth)
+    private val _currentMonth = MutableLiveData<YearMonth>()
     val currentMonth: LiveData<YearMonth> = _currentMonth
 
     // hardcoded slot duration
     internal val slotDuration: Duration = Duration.ofMinutes(30)
 
     private val _isAvailablePlaygroundsLoadedFlag = MutableLiveData(false)
-    private val isAvailablePlaygroundsLoadedFlag: LiveData<Boolean> = _isAvailablePlaygroundsLoadedFlag
+    internal val isAvailablePlaygroundsLoadedFlag: LiveData<Boolean> = _isAvailablePlaygroundsLoadedFlag
 
     // available playgrounds ***for current sport and month***
     private val _availablePlaygroundsPerSlot:
-            MutableLiveData<MutableMap<LocalDate, Map<LocalDateTime, List<RoomDetailedPlaygroundSport>>>> = MutableLiveData()
+            MutableLiveData<MutableMap<LocalDate, Map<LocalDateTime, List<DetailedPlaygroundSport>>>?> = MutableLiveData()
 
     internal val availablePlaygroundsPerSlot:
-            LiveData<MutableMap<LocalDate, Map<LocalDateTime, List<RoomDetailedPlaygroundSport>>>> = _availablePlaygroundsPerSlot
+            LiveData<MutableMap<LocalDate, Map<LocalDateTime, List<DetailedPlaygroundSport>>>?> = _availablePlaygroundsPerSlot
+
+    // error message to show in a red toast in case of app errors
+    private val _toastErrorMessage = MutableLiveData<String>()
+    internal val toastErrorMessage: LiveData<String> = _toastErrorMessage
+
+    internal var listener = FireListener()
 
 
-    internal fun loadAllSportsAsync(sportToShow: Int?) {
-        // call the db from a secondary thread
-        Thread {
-            var allSports = repository.getAllSports().sortedBy { it.name }
+    internal fun loadAllSportsAsync(sportToShow: String?) {
+        repository.getAllSports { fireResult ->
+            when(fireResult) {
+                is Error -> {
+                    Log.e("PlaygroundAvailabilitiesViewModel error", "repository.getAllSports() returned error")
+                    _toastErrorMessage.value = fireResult.errorMessage()
+                    return@getAllSports
+                }
+                is Success -> {
+                    var allSports = fireResult.value.sortedBy { it.name }
 
-            // restrict the loaded sports to one only
-            if(sportToShow != null)
-                allSports = allSports.filter { sport -> sport.id == sportToShow }
+                    // restrict the loaded sports to one only
+                    if(sportToShow != null)
+                        allSports = allSports.filter { sport -> sport.id == sportToShow }
 
-            _sports.postValue(allSports)
-        }.start()
+                    _sports.postValue(allSports)
+                }
+            }
+        }
     }
 
     fun setSelectedDate(selectedDate: LocalDate?) {
-        val tempPreviousSelectedDate = this.selectedDate.value
-        val newSelectedDate = selectedDate ?: LocalDate.now()
+        val tempPreviousSelectedDate = this.selectedDate.value ?: defaultDate
+        val newSelectedDate = selectedDate ?: defaultDate
 
         // default selected date is the current date
         this._selectedDate.value = newSelectedDate
@@ -83,52 +100,117 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
         _currentMonth.value = month
     }
 
-    fun getAvailablePlaygroundsOnSelectedDate(): Map<LocalDateTime, List<RoomDetailedPlaygroundSport>> {
+    fun getAvailablePlaygroundsOnSelectedDate(): Map<LocalDateTime, List<DetailedPlaygroundSport>> {
         val selectedDate = this.selectedDate.value ?: defaultDate
 
         return getAvailablePlaygroundsOn(selectedDate)
     }
 
-    fun getAvailablePlaygroundsOn(date: LocalDate): Map<LocalDateTime, List<RoomDetailedPlaygroundSport>> {
+    fun getAvailablePlaygroundsOn(date: LocalDate): Map<LocalDateTime, List<DetailedPlaygroundSport>> {
         return availablePlaygroundsPerSlot.value.orEmpty()[date] ?: mapOf()
     }
 
     fun updatePlaygroundAvailabilitiesForCurrentMonthAndSport() {
-        Thread {
-            val oldAvailabilities = this.availablePlaygroundsPerSlot.value ?: mutableMapOf()
-            val newAvailabilities = this.getPlaygroundAvailabilitiesForCurrentMonthAndSport().also {
-                // merge new months' availabilities with the previous one's
-                it.putAll(oldAvailabilities)
-            }
+        listener.unregister()
 
-            this._availablePlaygroundsPerSlot.postValue(newAvailabilities)
-        }.start()
-    }
+        val listener = this.getPlaygroundAvailabilitiesForCurrentMonthAndSport { newAvailabilities ->
+            // (this callback is executed only if no error occurred)
 
-    private fun getPlaygroundAvailabilitiesForCurrentMonthAndSport()
-        : MutableMap<LocalDate, Map<LocalDateTime, List<RoomDetailedPlaygroundSport>>> {
-        val currentMonthAvailabilities = repository.getAvailablePlaygroundsPerSlot(
-            currentMonth.value ?: defaultMonth,
-            selectedSport.value
-        )
+            // merge new months' availabilities with the previous one's
+            val oldAvailabilities = this.availablePlaygroundsPerSlot.value
 
-        val previousMonthAvailabilities = repository.getAvailablePlaygroundsPerSlot(
-            currentMonth.value?.minusMonths(1) ?: defaultMonth,
-            selectedSport.value
-        )
+            val mergedAvailabilities =
+                if(oldAvailabilities == null && newAvailabilities == null) null
+                else mutableMapOf<LocalDate, Map<LocalDateTime, List<DetailedPlaygroundSport>>>().also {
+                        it.putAll(oldAvailabilities ?: mutableMapOf())
+                        it.putAll(newAvailabilities ?: mutableMapOf())
+                    }
 
-        val nextMonthAvailabilities = repository.getAvailablePlaygroundsPerSlot(
-            currentMonth.value?.plusMonths(1) ?: defaultMonth,
-            selectedSport.value
-        )
-
-        val allAvailabilities = mutableMapOf<LocalDate, Map<LocalDateTime, List<RoomDetailedPlaygroundSport>>>().also {
-            it.putAll(currentMonthAvailabilities)
-            it.putAll(previousMonthAvailabilities)
-            it.putAll(nextMonthAvailabilities)
+            // save merged availabilities in the LiveData
+            this._availablePlaygroundsPerSlot.postValue(mergedAvailabilities)
         }
 
-        return allAvailabilities
+        this.listener.add(listener)
+    }
+
+    private fun getPlaygroundAvailabilitiesForCurrentMonthAndSport(
+        returnCallback: (MutableMap<LocalDate, Map<LocalDateTime, List<DetailedPlaygroundSport>>>?) -> Unit
+    ): FireListener {
+        val fireListener = FireListener()
+
+        // retrieve current month availabilities
+        val listener1 = repository.getAvailablePlaygroundsPerSlot(
+            currentMonth.value ?: defaultMonth,
+            selectedSport.value
+        ) getAvailablePlaygroundsPerSlot1@ { fireResult ->
+            when(fireResult) {
+                is Error -> {
+                    // show error message in a toast
+                    _toastErrorMessage.value = fireResult.errorMessage()
+                    return@getAvailablePlaygroundsPerSlot1
+                }
+                is Success -> {
+                    val currentMonthAvailabilities = fireResult.unwrap()
+
+                    // retrieve previous month availabilities
+                    val listener2 = repository.getAvailablePlaygroundsPerSlot(
+                        currentMonth.value?.minusMonths(1) ?: defaultMonth,
+                        selectedSport.value
+                    ) getAvailablePlaygroundsPerSlot2@ { fireResult2 ->
+                        when(fireResult2) {
+                            is Error -> {
+                                // show error message in a toast
+                                _toastErrorMessage.value = fireResult2.errorMessage()
+                                return@getAvailablePlaygroundsPerSlot2
+                            }
+                            is Success -> {
+                                val previousMonthAvailabilities = fireResult2.unwrap()
+
+                                // retrieve next month availabilities
+                                val listener3 = repository.getAvailablePlaygroundsPerSlot(
+                                    currentMonth.value?.plusMonths(1) ?: defaultMonth,
+                                    selectedSport.value
+                                ) getAvailablePlaygroundsPerSlot3@ { fireResult3 ->
+                                    when(fireResult3) {
+                                        is Error -> {
+                                            // show error message in a toast
+                                            _toastErrorMessage.value = fireResult3.errorMessage()
+                                            return@getAvailablePlaygroundsPerSlot3
+                                        }
+                                        is Success -> {
+                                            val nextMonthAvailabilities = fireResult3.unwrap()
+
+                                            val allAvailabilities = mutableMapOf<LocalDate, Map<LocalDateTime, List<DetailedPlaygroundSport>>>().also {
+                                                if(currentMonthAvailabilities != null)
+                                                    it.putAll(currentMonthAvailabilities)
+
+                                                if(previousMonthAvailabilities != null)
+                                                    it.putAll(previousMonthAvailabilities)
+
+                                                if(nextMonthAvailabilities != null)
+                                                    it.putAll(nextMonthAvailabilities)
+                                            }
+
+                                            if (currentMonthAvailabilities == null && previousMonthAvailabilities == null && nextMonthAvailabilities == null)
+                                                returnCallback(null)
+                                            else
+                                                returnCallback(allAvailabilities)
+                                        }
+                                    }
+                                }
+
+                                fireListener.add(listener3)
+                            }
+                        }
+                    }
+
+                    fireListener.add(listener2)
+                }
+            }
+        }
+
+        fireListener.add(listener1)
+        return fireListener
     }
 
     fun isAvailablePlaygroundsLoaded(): Boolean = isAvailablePlaygroundsLoadedFlag.value ?: false
@@ -137,11 +219,11 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
     }
 
     /* selected sport */
-    fun setSelectedSport(selectedSport: RoomSport?) {
+    fun setSelectedSport(selectedSport: Sport?) {
         this._selectedSport.value = selectedSport
     }
 
     fun clearAvailablePlaygroundsPerSlot() {
-        _availablePlaygroundsPerSlot.value = mutableMapOf()
+        _availablePlaygroundsPerSlot.value = null
     }
 }

@@ -68,13 +68,9 @@ internal fun PlaygroundAvailabilitiesFragment.manageAddOrEditModeParams() {
     }
 
     // restrict the sport to show (just the one of the reservation to be edited, if any)
-    sportIdToShow = reservationVM.originalReservationBundle?.getInt("sport_id")
-
-    if (sportIdToShow == null || sportIdToShow == 0) {
-        sportIdToShow = reservationVM.reservationBundle.value?.getInt("sport_id")
-
-        if (sportIdToShow == 0) sportIdToShow = null
-    }
+    sportIdToShow =
+        reservationVM.originalReservationBundle?.getString("sport_id") ?:
+        reservationVM.reservationBundle.value?.getString("sport_id")
 }
 
 
@@ -149,10 +145,19 @@ internal fun PlaygroundAvailabilitiesFragment.initFloatingButton() {
 
 }
 
+internal fun PlaygroundAvailabilitiesFragment.initErrorMessageObserver() {
+    playgroundsVM.toastErrorMessage.observe(viewLifecycleOwner) { newErrorMessage ->
+        // if a new error message comes, show it in a red toast
+        showToasty("error", requireContext(), newErrorMessage, Toasty.LENGTH_LONG)
+    }
+}
+
+/* navigation functions */
 private fun PlaygroundAvailabilitiesFragment.navigateToAddReservation() {
     // go to add/edit mode
     findNavController().navigate(R.id.action_playgroundAvailabilitiesFragment_self)
 }
+
 private fun PlaygroundAvailabilitiesFragment.navigateToManageEquipments() {
     val selectedReservationInfo = reservationVM.reservationBundle.value
 
@@ -166,12 +171,12 @@ private fun PlaygroundAvailabilitiesFragment.navigateToManageEquipments() {
     val bundleStartSlot = selectedReservationInfo.getString("start_slot")
     val bundleEndSlot = selectedReservationInfo.getString("end_slot")
     val bundleSlotDurationMins = selectedReservationInfo.getInt("slot_duration_mins").toLong()
-    val bundlePlaygroundId = selectedReservationInfo.getInt("playground_id")
+    val bundlePlaygroundId = selectedReservationInfo.getString("playground_id")
     val bundlePlaygroundName = selectedReservationInfo.getString("playground_name")
-    val bundleSportId = selectedReservationInfo.getInt("sport_id")
+    val bundleSportId = selectedReservationInfo.getString("sport_id")
     val bundleSportEmoji = selectedReservationInfo.getString("sport_emoji")
     val bundleSportName = selectedReservationInfo.getString("sport_name")
-    val bundleSportCenterId = selectedReservationInfo.getInt("sport_center_id")
+    val bundleSportCenterId = selectedReservationInfo.getString("sport_center_id")
     val bundleSportCenterName = selectedReservationInfo.getString("sport_center_name")
     val bundleSportCenterAddress = selectedReservationInfo.getString("sport_center_address")
     val bundlePlaygroundPricePerHour = selectedReservationInfo.getFloat("playground_price_per_hour")
@@ -184,13 +189,13 @@ private fun PlaygroundAvailabilitiesFragment.navigateToManageEquipments() {
     if (bundleSlotDurationMins == 0L)
         errors.add("the slot duration mins")
 
-    if (bundlePlaygroundId == 0)
+    if (bundlePlaygroundId == null)
         errors.add("a playground (id)")
 
     if(bundlePlaygroundName == null)
         errors.add("a playground (name)")
 
-    if (bundleSportId == 0)
+    if (bundleSportId == null)
         errors.add("a sport (id)")
 
     if (bundleSportEmoji == null)
@@ -199,7 +204,7 @@ private fun PlaygroundAvailabilitiesFragment.navigateToManageEquipments() {
     if (bundleSportName == null)
         errors.add("a sport (name)")
 
-    if(bundleSportCenterId == 0)
+    if(bundleSportCenterId == null)
         errors.add("a sport center (id)")
 
     if(bundleSportCenterName == null)
@@ -249,7 +254,7 @@ internal fun PlaygroundAvailabilitiesFragment.initCalendar() {
     this.initCalendarDays()
 
     /* setup calendar */
-    playgroundsVM.currentMonth.value?.let {
+    (playgroundsVM.currentMonth.value ?: playgroundsVM.defaultMonth).let {
         val startMonth = it.minusMonths(100)
         val endMonth = it.plusMonths(100)
 
@@ -371,8 +376,16 @@ internal fun PlaygroundAvailabilitiesFragment.initMonthAndDateObservers() {
     }
 
     /* dates view model observers */
-    val selectedDateLabel = requireView().findViewById<TextView>(R.id.selected_date_label)
     val selectedDateLabelBox = requireView().findViewById<View>(R.id.selected_date_label_box)
+    val selectedDateLabel = requireView().findViewById<TextView>(R.id.selected_date_label).also {
+        it.text = when(playgroundsVM.defaultDate) {
+            LocalDate.now() -> "Today"
+            LocalDate.now().plusDays(1) -> "Tomorrow"
+            LocalDate.now().minusDays(1) -> "Yesterday"
+            else -> playgroundsVM.defaultDate.format(
+                DateTimeFormatter.ofPattern("EEEE, d MMMM y", Locale.ENGLISH))
+        }
+    }
 
     playgroundsVM.selectedDate.observe(viewLifecycleOwner) {
         // update calendar selected date
@@ -412,7 +425,7 @@ internal fun PlaygroundAvailabilitiesFragment.initMonthAndDateObservers() {
 
 internal fun PlaygroundAvailabilitiesFragment.initAvailablePlaygroundsObserver() {
     /* playground availabilities observer to change dates' colors */
-    playgroundsVM.availablePlaygroundsPerSlot.observe(viewLifecycleOwner) {
+    playgroundsVM.availablePlaygroundsPerSlot.observe(viewLifecycleOwner) { newAvailabilities ->
         // * update calendar dates' dots *
 
         // update current, previous and next months
@@ -429,7 +442,7 @@ internal fun PlaygroundAvailabilitiesFragment.initAvailablePlaygroundsObserver()
             playgroundsVM.getAvailablePlaygroundsOnSelectedDate()
         )
 
-        if(it.isNotEmpty()) {
+        if(newAvailabilities != null) {
             playgroundsVM.setAvailablePlaygroundsLoaded(true)
         }
         else {

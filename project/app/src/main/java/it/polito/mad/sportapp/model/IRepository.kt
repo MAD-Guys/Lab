@@ -26,7 +26,9 @@ interface IRepository {
     // * User methods *
 
     /**
-     * This method gets the user with its achievements given its uid Note: the result is *dynamic*,
+     * This method gets the user with its achievements given its uid
+     *
+     * **Note**: the result is *dynamic*,
      * i.e. the fireCallback gets called each time the user changes (but the
      * achievements are static)
      */
@@ -37,7 +39,8 @@ interface IRepository {
 
     /**
      * Retrieve the user given its id from the db
-     * Note: the result is *static* (i.e. the fireCallback gets called just once)
+     *
+     * **Note**: the result is *static* (i.e. the fireCallback gets called just once)
      */
     fun getStaticUser(
         userId: String,
@@ -51,8 +54,9 @@ interface IRepository {
     )
 
     /**
-     * Check if a given username already exists or not Note: the result is
-     * retrieved as **static** (fireCallback is executed just once)
+     * Check if a given username already exists or not
+     *
+     * **Note**: the result is retrieved as **static** (fireCallback is executed just once)
      */
     fun usernameAlreadyExists(
         username: String,
@@ -81,8 +85,9 @@ interface IRepository {
 
     /**
      * Retrieve all users from db which the specified user can still send the
-     * notification to, for the specified reservation **Note**: the result
-     * is **dynamic** (fireCallback is executed each time the list changes)
+     * notification to, for the specified reservation
+     *
+     * **Note**: the result is **dynamic** (fireCallback is executed each time the list changes)
      */
     fun getAllUsersToSendInvitationTo(
         senderId: String,
@@ -93,8 +98,9 @@ interface IRepository {
     // * Sport methods *
 
     /**
-     * Retrieve all the sports Note: the result is retrieved as **static**
-     * (fireCallback is executed just once)
+     * Retrieve all the sports
+     *
+     * **Note**: the result is retrieved as **static** (fireCallback is executed just once)
      */
     fun getAllSports(fireCallback: (FireResult<List<Sport>, DefaultGetFireError>) -> Unit)
 
@@ -103,9 +109,10 @@ interface IRepository {
 
     /**
      * Retrieve a specific Review entity from the db, providing the related
-     * playground id and user id **Note**: the result is **dynamic**
-     * (fireCallback is executed each time the Review is updated); remember
-     * to **unregister** the returned listener once you don't need it anymore
+     * playground id and user id
+     *
+     * **Note**: the result is **dynamic** (fireCallback is executed each time the Review is updated);
+     * remember to **unregister** the returned listener once you don't need it anymore
      */
     fun getReviewByUserIdAndPlaygroundId(
         userId: String,
@@ -140,6 +147,7 @@ interface IRepository {
 
     /**
      * Retrieve a specific (detailed) reservation from the db, given its id
+     *
      * **Note**: the result is **dynamic** (fireCallback is called each time
      * the reservation changes) Remember to unregister the listener once you
      * don't need the reservation anymore
@@ -217,14 +225,15 @@ interface IRepository {
     fun getAvailablePlaygroundsPerSlot(
         month: YearMonth, sport: Sport?, fireCallback: (
             FireResult<
-                    MutableMap<LocalDate, MutableMap<LocalDateTime, MutableList<DetailedPlaygroundSport>>>,
+                    MutableMap<LocalDate, MutableMap<LocalDateTime, MutableList<DetailedPlaygroundSport>>>?,
                     DefaultGetFireError>
         ) -> Unit
     ): FireListener
 
     /**
-     * Retrieve all the Playground Info entities from the db Note: the result
-     * is **static** (the fireCallback is executed just once)
+     * Retrieve all the Playground Info entities from the db
+     *
+     * **Note**: the result is **static** (the fireCallback is executed just once)
      */
     fun getAllPlaygroundsInfo(
         fireCallback: (FireResult<List<PlaygroundInfo>, DefaultGetFireError>) -> Unit
@@ -233,8 +242,9 @@ interface IRepository {
     // * Notification methods *
 
     /**
-     * Return all the notifications related to future reservations for a given
-     * user **Note**: the result is **dynamic** (the fireCallback is called
+     * Return all the notifications related to future reservations for a given user
+     *
+     * **Note**: the result is **dynamic** (the fireCallback is called
      * every time a new notification is received)
      */
     fun getNotificationsByUserId(
