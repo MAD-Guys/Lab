@@ -151,7 +151,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                 if (currentDateTime.isBefore(reservation.startLocalDateTime) && reservation.userId == viewModel.userId) {
                     deleteButton.visibility = Button.VISIBLE
                     inviteButton.visibility = Button.VISIBLE
-                } else {
+                }else if(currentDateTime.isAfter(reservation.endLocalDateTime) && reservation.userId == viewModel.userId){
                     leaveReviewButton.visibility = Button.VISIBLE
                 }
 
@@ -273,8 +273,8 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
     @SuppressLint("SetTextI18n")
     private fun initializeValues() {
         reservationNumber.text =
-            "Reservation number: ${viewModel.reservation.value?.id}"
-        reservationDate.text = when (viewModel.reservation.value?.date) {
+            "Reservation code: ${viewModel.reservation.value?.id}"
+        reservationDate.text = when(viewModel.reservation.value?.date) {
             LocalDate.now() -> "Today"
             LocalDate.now().plusDays(1) -> "Tomorrow"
             LocalDate.now().minusDays(1) -> "Yesterday"

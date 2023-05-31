@@ -82,7 +82,7 @@
                         android:includeFontPadding="false"
                         android:text="Reservation number: 123456"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                        android:textSize="20sp"
+                        android:textSize="24sp"
                         android:textStyle="bold" />
 
                     <TextView
