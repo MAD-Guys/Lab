@@ -1269,6 +1269,18 @@ class FireRepository : IRepository {
             // * user exists *
             val user = fireResult.unwrap()
 
+            // check that the start time is after the current time
+            val now = LocalDateTime.now()
+
+            if (reservation.startTime <= now) {
+                // * it is not possible to book past slots *
+                Log.e("conflict error", "Error: trying to book past slots in FireRepository.overrideNewReservation()")
+                fireCallback(NewReservationError.slotConflict(
+                    "Error: it is not possible to book past slots!"
+                ))
+                return@getStaticUser
+            }
+
             // (0.2) retrieve reservation slots documents references, if any
             this.getReservationSlotsDocumentsReferences(reservation.id) { fireResult2 ->
                 if (fireResult2.isError()) {

@@ -1,6 +1,7 @@
 package it.polito.mad.sportapp.reservation_management.summary
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.Menu
 import android.view.MenuInflater
@@ -19,9 +20,10 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import it.polito.mad.sportapp.R
-import it.polito.mad.sportapp.entities.room.RoomNewReservation
-import it.polito.mad.sportapp.entities.room.RoomNewReservationEquipment
+import it.polito.mad.sportapp.entities.NewReservationEquipment
 import it.polito.mad.sportapp.application_utilities.showToasty
+import it.polito.mad.sportapp.entities.NewReservation
+import it.polito.mad.sportapp.entities.firestore.utilities.FireResult.*
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -201,7 +203,7 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
 
     /* equipment list */
     private fun inflateEquipmentList(
-        equipmentList: List<RoomNewReservationEquipment>,
+        equipmentList: List<NewReservationEquipment>,
         container: LinearLayout
     ) {
 
@@ -246,32 +248,39 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
         confirmReservationDialog = AlertDialog.Builder(requireContext())
             .setMessage("Do you want to confirm this reservation?")
             .setPositiveButton("YES") { _, _ ->
-                val (newReservationId, error) = viewModel.permanentlySaveReservation()
+                viewModel.permanentlySaveReservation { saveResult ->
+                    when(saveResult) {
+                        is Error -> {
+                            // an error occurred during reservation update
+                            Log.e("unexpected error", "an error occurred during reservation update")
 
-                if (error == null && newReservationId != null) {
-                    // * reservation correctly added/updated *
+                            showToasty(
+                                "error",
+                                requireContext(),
+                                saveResult.errorMessage(),
+                                Toasty.LENGTH_LONG
+                            )
+                        }
+                        is Success -> {
+                            val newReservationId = saveResult.value
 
-                    showToasty(
-                        "success",
-                        requireContext(),
-                        "Reservation correctly saved with ID $newReservationId",
-                        Toasty.LENGTH_LONG
-                    )
+                            // * reservation correctly added/updated *
 
-                    // navigate back to the home
-                    findNavController().popBackStack(R.id.showReservationsFragment, false)
+                            showToasty(
+                                "success",
+                                requireContext(),
+                                "Reservation correctly saved with ID $newReservationId",
+                                Toasty.LENGTH_LONG
+                            )
 
-                    // go to the new reservation detail
-                    val params = bundleOf("id_event" to newReservationId)
-                    findNavController().navigate(R.id.reservationDetailsFragment, params)
-                } else if (error != null && newReservationId == null) {
-                    // an error occurred during reservation update
-                    showToasty(
-                        "error",
-                        requireContext(),
-                        error.message,
-                        Toasty.LENGTH_LONG
-                    )
+                            // navigate back to the home
+                            findNavController().popBackStack(R.id.showReservationsFragment, false)
+
+                            // go to the new reservation detail
+                            val params = bundleOf("id_event" to newReservationId)
+                            findNavController().navigate(R.id.reservationDetailsFragment, params)
+                        }
+                    }
                 }
             }
             .setNegativeButton("NO") { d, _ -> d.cancel() }
@@ -305,16 +314,16 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
             return
         }
 
-        val reservationId = reservationBundle.getInt("reservation_id")
+        val reservationId = reservationBundle.getString("reservation_id")
         val startSlotStr = reservationBundle.getString("start_slot")
         val endSlotStr = reservationBundle.getString("end_slot")
         val slotDurationMins = reservationBundle.getInt("slot_duration_mins")
-        val playgroundId = reservationBundle.getInt("playground_id")
+        val playgroundId = reservationBundle.getString("playground_id")
         val playgroundName = reservationBundle.getString("playground_name")
-        val sportId = reservationBundle.getInt("sport_id")
+        val sportId = reservationBundle.getString("sport_id")
         val sportEmoji = reservationBundle.getString("sport_emoji")
         val sportName = reservationBundle.getString("sport_name")
-        val sportCenterId = reservationBundle.getInt("sport_center_id")
+        val sportCenterId = reservationBundle.getString("sport_center_id")
         val sportCenterName = reservationBundle.getString("sport_center_name")
         val sportCenterAddress = reservationBundle.getString("sport_center_address")
         val equipmentsBundle = reservationBundle.getBundle("equipments")
@@ -331,13 +340,13 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
         if (slotDurationMins == 0)
             inputErrors.add("slot_duration_mins")
 
-        if (playgroundId == 0)
+        if (playgroundId == null)
             inputErrors.add("playground_id")
 
         if (playgroundName == null)
             inputErrors.add("playground_name")
 
-        if (sportId == 0)
+        if (sportId == null)
             inputErrors.add("sport_id")
 
         if (sportEmoji == null)
@@ -346,7 +355,7 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
         if (sportName == null)
             inputErrors.add("sport_name")
 
-        if (sportCenterId == 0)
+        if (sportCenterId == null)
             inputErrors.add("sport_center_id")
 
         if (sportCenterName == null)
@@ -372,47 +381,55 @@ class ReservationSummaryFragment : Fragment(R.layout.reservation_summary_view) {
                 ),
                 Toasty.LENGTH_LONG
             )
+            return
         }
 
         // * all data are available here *
         val startTime = LocalDateTime.parse(startSlotStr)
         val endTime =
             LocalDateTime.parse(endSlotStr).plus(Duration.ofMinutes(slotDurationMins.toLong()))
-        val selectedEquipments = mutableListOf<RoomNewReservationEquipment>()
+        val selectedEquipments = mutableListOf<NewReservationEquipment>()
 
         equipmentsBundle!!.keySet().forEach { equipmentId ->
             val equipment = equipmentsBundle.getBundle(equipmentId)!!
 
-            val newEquipment = RoomNewReservationEquipment(
-                equipment.getInt("equipment_id"),
-                equipment.getString("equipment_name")!!,
-                equipment.getInt("selected_quantity"),
-                equipment.getFloat("unit_price")
-            )
+            val newEquipmentEquipmentId = equipment.getString("equipment_id")
+            val newEquipmentEquipmentName = equipment.getString("equipment_name")
+            val newEquipmentSelectedQuantity = equipment.getInt("selected_quantity")
+            val newEquipmentUnitPrice = equipment.getFloat("unit_price")
 
-            if (newEquipment.equipmentId == 0 || newEquipment.selectedQuantity == 0 || newEquipment.unitPrice == 0f) {
+            if (newEquipmentEquipmentId == null || newEquipmentEquipmentName == null ||
+                newEquipmentSelectedQuantity == 0 || newEquipmentUnitPrice == 0f) {
                 showToasty("error", requireContext(), "Error in fields for an equipment")
                 return
             }
+
+            val newEquipment = NewReservationEquipment(
+                newEquipmentEquipmentId,
+                newEquipmentEquipmentName,
+                newEquipmentSelectedQuantity,
+                newEquipmentUnitPrice
+            )
 
             selectedEquipments.add(newEquipment)
         }
 
         // create reservation object
-        val newReservation = RoomNewReservation(
+        val newReservation = NewReservation(
             reservationId,
             startTime,
             endTime,
-            playgroundId,
+            playgroundId!!,
             playgroundName!!,
             playgroundPricePerHour,
-            sportId,
+            sportId!!,
             sportEmoji!!,
             sportName!!,
-            sportCenterId,
+            sportCenterId!!,
             sportCenterName!!,
             sportCenterAddress!!,
-            selectedEquipments
+            selectedEquipments,
+            null
         )
 
         // save it

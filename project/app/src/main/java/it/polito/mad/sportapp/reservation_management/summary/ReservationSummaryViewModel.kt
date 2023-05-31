@@ -4,60 +4,46 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.polito.mad.sportapp.entities.room.RoomNewReservation
+import it.polito.mad.sportapp.entities.NewReservation
+import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.entities.firestore.utilities.NewReservationError
-import it.polito.mad.sportapp.model.LocalRepository
+import it.polito.mad.sportapp.model.IRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class ReservationSummaryViewModel @Inject constructor(
-    val repository: LocalRepository
+    val repository: IRepository
 ) : ViewModel()
 {
     // contains the reservation data to save in the db
-    private val _reservation = MutableLiveData<RoomNewReservation>()
-    internal val reservation: LiveData<RoomNewReservation> = _reservation
+    private val _reservation = MutableLiveData<NewReservation>()
+    internal val reservation: LiveData<NewReservation> = _reservation
 
     /**
      * return null if everything went well, an error enum otherwise
      */
-    fun permanentlySaveReservation(): Pair<Int?, NewReservationError?> {
-        var error: NewReservationError? = null
-        var id: Int? = null
+    fun permanentlySaveReservation(
+        returnCallback: (FireResult<String, NewReservationError>) -> Unit
+    ) {
+        val reservationToSave = reservation.value
 
-        val t = Thread {
-            val reservationToSave = reservation.value
-
-            if(reservationToSave == null) {
-                Log.d("permanentlySaveReservation_error", "trying to save a null reservation")
-                return@Thread
-            }
-
-            // save data into db
-            val (newReservationId, newReservationError) =
-                repository.overrideNewReservation(reservationToSave)
-
-            error = newReservationError
-            id = newReservationId
-        }
-        // start secondary thread to save reservation
-        t.start()
-
-        // wait for it
-        val timeout = 20000L // 20 sec
-        try {
-            t.join(timeout)
-        }
-        catch(e: InterruptedException) {
-            // waited for too long
-            error = NewReservationError.UNEXPECTED_ERROR
+        if(reservationToSave == null) {
+            Log.d("permanentlySaveReservation_error", "trying to save a null reservation")
+            returnCallback(NewReservationError.unexpected("trying to save a null reservation"))
+            return
         }
 
-        return Pair(id, error)
+        // save data into db
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid!!
+
+        repository.overrideNewReservation(currentUserId, reservationToSave) { x ->
+            returnCallback(x)   // manage it in the alert dialog
+        }
     }
 
-    fun setReservation(newReservation: RoomNewReservation) {
+    fun setReservation(newReservation: NewReservation) {
         _reservation.value = newReservation
     }
 }
