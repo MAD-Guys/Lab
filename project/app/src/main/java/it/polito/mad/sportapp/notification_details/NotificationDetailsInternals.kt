@@ -74,9 +74,13 @@ internal fun NotificationDetailsFragment.setupObservers() {
     }
 
     vm.notification.observe(viewLifecycleOwner) {
-        // retrieve notification from db
-        if (reservationId != null && it.status != NotificationStatus.CANCELED) {
-            userReservationFireListener = vm.getReservationFromDb(reservationId!!)
+
+        if (it != null) {
+            manageNotificationState()
+            // retrieve notification from db
+            if (reservationId != null && it.status != NotificationStatus.CANCELED) {
+                userReservationFireListener = vm.getReservationFromDb(reservationId!!)
+            }
         }
     }
 

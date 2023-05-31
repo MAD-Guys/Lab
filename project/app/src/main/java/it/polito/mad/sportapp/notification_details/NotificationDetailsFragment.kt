@@ -88,13 +88,6 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
         // retrieve reservation id
         reservationId = arguments?.getString("reservation_id")
 
-        // retrieve notification
-
-        // retrieve notification from db
-        if(notificationId != null) {
-            notificationFireListener = vm.getNotificationFromDb(notificationId!!)
-        }
-
         // initialize views
 
         notificationDetailsScrollView =
@@ -134,11 +127,13 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
         // initialize buttons
         initButtons()
 
-        // setup the right views
-        manageNotificationState()
-
         // setup bottom bar
         setupBottomBar()
+
+        // retrieve notification from db
+        if(notificationId != null) {
+            notificationFireListener = vm.getNotificationFromDb(notificationId!!)
+        }
 
     }
 
