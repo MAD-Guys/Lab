@@ -51,11 +51,7 @@ internal fun NotificationsFragment.recyclerViewInit() {
     // setup notifications observer
     vm.notifications.observe(viewLifecycleOwner) { notificationList ->
 
-        if (notificationList == null) {
-            // show progress bar and hide notifications
-            progressBar.visibility = View.VISIBLE
-            notificationsRecyclerView.visibility = View.GONE
-        } else if (notificationList.isEmpty()) {
+        if (notificationList.isEmpty()) {
             // hide progress bar and hide notifications
             progressBar.visibility = View.GONE
             notificationsRecyclerView.visibility = View.GONE

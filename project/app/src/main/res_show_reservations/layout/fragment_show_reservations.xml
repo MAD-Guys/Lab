@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- Layout related to the Show Reservations Activity -->
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -75,7 +74,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_chevron_right"
                     app:tint="@color/white"
-                    tools:ignore="ImageContrastCheck"/>
+                    tools:ignore="ImageContrastCheck" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -106,16 +105,18 @@
                 android:id="@+id/progressBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-10sp">
+                android:layout_marginTop="-10sp"
+                android:visibility="visible">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/loading_text"
                     android:layout_gravity="center"
                     android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp"
                     android:includeFontPadding="false"
+                    android:text="@string/loading_text"
+                    android:textSize="18sp"
+                    android:visibility="visible"
                     tools:ignore="VisualLintOverlap" />
 
                 <ProgressBar
@@ -123,7 +124,8 @@
                     android:layout_width="360dp"
                     android:layout_height="280dp"
                     android:layout_marginStart="80dp"
-                    android:indeterminateDrawable="@drawable/steph_curry_gif" />
+                    android:indeterminateDrawable="@drawable/steph_curry_gif"
+                    android:visibility="visible" />
             </FrameLayout>
 
             <!-- Calendar events -->
