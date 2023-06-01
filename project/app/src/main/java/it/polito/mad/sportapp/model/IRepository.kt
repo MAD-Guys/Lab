@@ -67,7 +67,7 @@ interface IRepository {
     fun insertNewUser(user: User, fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit)
 
     /** Update an existing user */
-    fun updateUser(user: User, fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit)
+    fun updateUser(user: User, oldUsername: String, fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit)
 
     /** Update the notifications token used by the user */
     fun updateUserToken(

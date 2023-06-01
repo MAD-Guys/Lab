@@ -56,6 +56,7 @@ class ProfileViewModel @Inject constructor(
 
     private val _userUsername = MutableLiveData<String>().also { it.value = "johndoe" }
     val userUsername: LiveData<String> = _userUsername
+    lateinit var originalUsername: String
 
     private val _userGender = MutableLiveData<String>().also { it.value = "Male" }
     val userGender: LiveData<String> = _userGender
@@ -270,6 +271,7 @@ class ProfileViewModel @Inject constructor(
                     _userFirstName.postValue(newUser.value.firstName)
                     _userLastName.postValue(newUser.value.lastName)
                     _userUsername.postValue(newUser.value.username)
+                    originalUsername = newUser.value.username
                     _userGender.postValue(newUser.value.gender)
                     _userAge.postValue(newUser.value.age.toString())
                     _userLocation.postValue(newUser.value.location)
@@ -313,7 +315,7 @@ class ProfileViewModel @Inject constructor(
         user.sportLevels = _userSports.value!!
 
         userId?.let {
-            repository.updateUser(user) {
+            repository.updateUser(user, originalUsername) {
                 when (it) {
                     is FireResult.Success -> {
                         // user information successfully updated

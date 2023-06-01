@@ -15,6 +15,7 @@ import it.polito.mad.sportapp.entities.firestore.FirePlaygroundReservation
 import it.polito.mad.sportapp.entities.firestore.FirePlaygroundSport
 import it.polito.mad.sportapp.entities.firestore.FireReservationSlot
 import it.polito.mad.sportapp.entities.firestore.FireReview
+import it.polito.mad.sportapp.entities.firestore.FireUser
 import it.polito.mad.sportapp.entities.firestore.FireUserForPlaygroundReservation
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultGetFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultInsertFireError
@@ -39,6 +40,67 @@ import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
 /* user */
+
+internal fun FireRepository.getDynamicUser(
+    userId: String,
+    fireCallback: (FireResult<User, DefaultGetFireError>) -> Unit
+): FireListener {
+    val listener = db.collection("users")
+        .document(userId)
+        .addSnapshotListener { value, error ->
+            if (error != null) {
+                Log.e(
+                    "default error",
+                    "Error: a generic error occurred retrieving user with id $userId in FireRepository.getDynamicUser(). Message: ${error.message}"
+                )
+                fireCallback(
+                    DefaultGetFireError.default(
+                        "Error: a generic error occurred retrieving user",
+                    )
+                )
+                return@addSnapshotListener
+            }
+
+            if(value == null || !value.exists()) {
+                // no data exists
+                fireCallback(
+                    DefaultGetFireError.notFound(
+                        "Error: User has not been found"
+                    )
+                )
+                return@addSnapshotListener
+            }
+
+            // * user exists *
+
+            // deserialize data from db
+            val fireUser = FireUser.deserialize(value.id, value.data)
+
+            if (fireUser == null) {
+                // deserialization error
+                Log.e(
+                    "deserialization error",
+                    "Error: a generic error occurred deserializing user with id $userId in FireRepository.getDynamicUser()"
+                )
+
+                fireCallback(
+                    DefaultGetFireError.duringDeserialization(
+                        "Error: a generic error occurred retrieving user"
+                    )
+                )
+                return@addSnapshotListener
+            }
+
+            // * user correctly retrieved *
+
+            // transform to user entity
+            val user = fireUser.toUser()
+
+            fireCallback(Success(user))
+        }
+
+    return FireListener(listener)
+}
 
 internal fun FireRepository.buildAchievements(
     userId: String,

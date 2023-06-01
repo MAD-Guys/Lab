@@ -310,6 +310,7 @@ class FireRepository : IRepository {
     /** Update an existing user */
     override fun updateUser(
         user: User,
+        oldUsername: String,
         fireCallback: (FireResult<Unit, DefaultInsertFireError>) -> Unit
     ) {
         // convert User entity into FireUser
@@ -342,10 +343,13 @@ class FireRepository : IRepository {
 
             val userReviewsIds = fireResult.unwrap()
 
-            // Saving reservations ids where the user is a participant
-            val userMap =  FireUserForPlaygroundReservation.from(user)
+            // Saving reservations ids where the user (*with old username*) is a participant
+            val userMapWithOldUsername =  FireUserForPlaygroundReservation(
+                user.id!! ,
+                oldUsername
+            )
 
-            this.getStaticPlaygroundReservationsOfUserAsParticipant(userMap) { fireResult2 ->
+            this.getStaticPlaygroundReservationsOfUserAsParticipant(userMapWithOldUsername) { fireResult2 ->
                 if(fireResult2.isError()) {
                     fireCallback(DefaultInsertFireError.default(
                         "Error: an error occurred updating user"
@@ -371,7 +375,7 @@ class FireRepository : IRepository {
                         // update user document
                         val serializedUser = fireUser.serialize()
 
-                        transaction.update(
+                        transaction.set(
                             db.collection("users").document(fireUser.id),
                             serializedUser
                         )
@@ -391,16 +395,18 @@ class FireRepository : IRepository {
                             transaction.update(
                                 db.collection("playgroundReservations").document(it),
                                 "participants",
-                                FieldValue.arrayRemove(userMap)
+                                FieldValue.arrayRemove(userMapWithOldUsername)
                             )
                         }
 
-                        // 2. Add the new user to the participants array
+                        // 2. Add the user with the *new username* to the participants array
+                        val userMapWithNewUsername = FireUserForPlaygroundReservation.from(user)
+
                         userParticipantReservationsIds.forEach {
                             transaction.update(
                                 db.collection("playgroundReservations").document(it),
                                 "participants",
-                                FieldValue.arrayUnion(userMap)
+                                FieldValue.arrayUnion(userMapWithNewUsername)
                             )
                         }
 
@@ -1058,6 +1064,7 @@ class FireRepository : IRepository {
 
         val equipmentsListener = FireListener()
         val equipmentsListenerLock = Unit
+        var internalListener: FireListener? = null
 
         // 1 - retrieving dynamic playgroundReservation document
         val listener = db.collection("playgroundReservations")
@@ -1153,9 +1160,9 @@ class FireRepository : IRepository {
                         // 3 - **dynamically** retrieve any equipments documents associated to this reservation
 
                         synchronized(equipmentsListenerLock) {
-                            equipmentsListener.unregister()
+                            internalListener?.unregister()
 
-                            val internalListener = db.collection("equipmentReservationSlots")
+                            val tempInternalListener = db.collection("equipmentReservationSlots")
                                 .whereEqualTo("playgroundReservationId", reservationId)
                                 // take just the first slot documents (the other slots' ones are the same)
                                 .whereEqualTo(
@@ -1220,7 +1227,8 @@ class FireRepository : IRepository {
                                     return@addSnapshotListenerInternal
                                 }
 
-                            equipmentsListener.add(FireListener(internalListener))
+                            internalListener = FireListener(tempInternalListener)
+                            equipmentsListener.add(internalListener)
                         }
                     }
                     .addOnFailureListener {
@@ -1380,88 +1388,95 @@ class FireRepository : IRepository {
         fireCallback: (FireResult<Map<LocalDate, List<DetailedReservation>>, DefaultGetFireError>) -> Unit
     ): FireListener {
         val fireListener = FireListener()
+        val internalListenerLock = Unit
+        var internalListener: FireListener? = null
 
         // first retrieve the user
-        this.getStaticUser(userId) { fireResult ->
+        val listener = this.getDynamicUser(userId) { fireResult ->
             if (fireResult.isError()) {
                 fireCallback(
                     DefaultGetFireError.default(
                         "Error: an error occurred retrieving the reservations"
                     )
                 )
-                return@getStaticUser
+                return@getDynamicUser
             }
 
             val user = fireResult.unwrap()
             val userShortDoc = FireUserForPlaygroundReservation.from(user)
 
-            // * dynamically retrieve all the reservations having the user as one of the participants *
-            val listener = this.getDynamicPlaygroundReservationsOfUserAsParticipant(userShortDoc) { fireResult2 ->
-                if (fireResult2.isError()) {
-                    fireCallback(Error(fireResult2.errorType()))
-                    return@getDynamicPlaygroundReservationsOfUserAsParticipant
-                }
+            synchronized(internalListenerLock) {
+                internalListener?.unregister()
 
-                val userPlaygroundReservations = fireResult2.unwrap()
-                val playgroundsIds = userPlaygroundReservations.map { it.playgroundId }
-
-                // * now retrieve all the playground sport documents associated to those reservations *
-                this.getPlaygroundsByIds(playgroundsIds) { fireResult3 ->
-                    if (fireResult3.isError()) {
-                        fireCallback(Error(fireResult3.errorType()))
-                        return@getPlaygroundsByIds
+                // * dynamically retrieve all the reservations having the user as one of the participants *
+                internalListener = this.getDynamicPlaygroundReservationsOfUserAsParticipant(userShortDoc) { fireResult2 ->
+                    if (fireResult2.isError()) {
+                        fireCallback(Error(fireResult2.errorType()))
+                        return@getDynamicPlaygroundReservationsOfUserAsParticipant
                     }
 
-                    val reservationPlaygroundSportsById = fireResult3.unwrap().associateBy { it.id }
+                    val userPlaygroundReservations = fireResult2.unwrap()
+                    val playgroundsIds = userPlaygroundReservations.map { it.playgroundId }
 
-                    // now combine each reservation with the corresponding playgroundSport,
-                    // to create a DetailedReservation entity
-                    // **Note**: here we ignore the equipments related to the reservation
+                    // * now retrieve all the playground sport documents associated to those reservations *
+                    this.getPlaygroundsByIds(playgroundsIds) { fireResult3 ->
+                        if (fireResult3.isError()) {
+                            fireCallback(Error(fireResult3.errorType()))
+                            return@getPlaygroundsByIds
+                        }
 
-                    val userDetailedReservations =
-                        userPlaygroundReservations.map { playgroundReservation ->
-                            val correspondingPlaygroundSport =
-                                reservationPlaygroundSportsById[playgroundReservation.playgroundId]
+                        val reservationPlaygroundSportsById = fireResult3.unwrap().associateBy { it.id }
 
-                            if (correspondingPlaygroundSport == null) {
-                                // db consistency error
-                                Log.e(
-                                    "consistency error",
-                                    "Error: reservation playground ${playgroundReservation.playgroundId} does not exist in playgroundSports collection, in FireRepository.getReservationsPerDateByUserId()"
-                                )
-                                fireCallback(
-                                    DefaultGetFireError.default(
-                                        "Error: an error occurred retrieving playgrounds info"
+                        // now combine each reservation with the corresponding playgroundSport,
+                        // to create a DetailedReservation entity
+                        // **Note**: here we ignore the equipments related to the reservation
+
+                        val userDetailedReservations =
+                            userPlaygroundReservations.map { playgroundReservation ->
+                                val correspondingPlaygroundSport =
+                                    reservationPlaygroundSportsById[playgroundReservation.playgroundId]
+
+                                if (correspondingPlaygroundSport == null) {
+                                    // db consistency error
+                                    Log.e(
+                                        "consistency error",
+                                        "Error: reservation playground ${playgroundReservation.playgroundId} does not exist in playgroundSports collection, in FireRepository.getReservationsPerDateByUserId()"
                                     )
+                                    fireCallback(
+                                        DefaultGetFireError.default(
+                                            "Error: an error occurred retrieving playgrounds info"
+                                        )
+                                    )
+                                    return@getPlaygroundsByIds
+                                }
+
+                                val detailedReservation = playgroundReservation.toDetailedReservation(
+                                    correspondingPlaygroundSport,
+                                    listOf()    // * ignore reservation equipments here *
                                 )
-                                return@getPlaygroundsByIds
+
+                                detailedReservation
                             }
 
-                            val detailedReservation = playgroundReservation.toDetailedReservation(
-                                correspondingPlaygroundSport,
-                                listOf()    // * ignore reservation equipments here *
-                            )
+                        // sort and group reservations by date
+                        val userDetailedReservationsByDate = userDetailedReservations
+                            .sortedBy { reservation ->
+                                "${reservation.startDateTime}${reservation.endDateTime}"
+                            }
+                            .groupBy { reservation ->
+                                reservation.date
+                            }
 
-                            detailedReservation
-                        }
-
-                    // sort and group reservations by date
-                    val userDetailedReservationsByDate = userDetailedReservations
-                        .sortedBy { reservation ->
-                            "${reservation.startDateTime}${reservation.endDateTime}"
-                        }
-                        .groupBy { reservation ->
-                            reservation.date
-                        }
-
-                    // * return successfully *
-                    fireCallback(Success(userDetailedReservationsByDate))
+                        // * return successfully *
+                        fireCallback(Success(userDetailedReservationsByDate))
+                    }
                 }
-            }
 
-            fireListener.add(listener)
+                fireListener.add(internalListener)
+            }
         }
 
+        fireListener.add(listener)
         return fireListener
     }
 
@@ -1888,6 +1903,7 @@ class FireRepository : IRepository {
 
         val reviewListener = FireListener()
         val reviewListenerLock = Unit
+        var internalListener: FireListener? = null
 
         // (1) retrieve the playgroundSports document **dynamic**
         val listener = db.collection("playgroundSports")
@@ -1942,9 +1958,9 @@ class FireRepository : IRepository {
 
                 // (2) retrieve the related reviews collection
                 synchronized(reviewListenerLock) {
-                    reviewListener.unregister()
+                    internalListener?.unregister()
 
-                    val internalListener = db.collection("reviews")
+                    val tempInternalListener = db.collection("reviews")
                         .whereEqualTo("playgroundId", playgroundId)
                         .addSnapshotListener addSnapshotListenerInternal@{ value, error ->
                             if (error != null || value == null) {
@@ -2011,7 +2027,8 @@ class FireRepository : IRepository {
                             fireCallback(Success(playgroundInfo))
                         }
 
-                    reviewListener.add(FireListener(internalListener))
+                    internalListener = FireListener(tempInternalListener)
+                    reviewListener.add(internalListener)
                 }
             }
 
