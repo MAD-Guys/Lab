@@ -1,7 +1,11 @@
 package it.polito.mad.sportapp.reservation_details
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.provider.CalendarContract
+import android.provider.CalendarContract.Events
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -33,6 +37,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.util.GregorianCalendar
 
 @AndroidEntryPoint
 class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_details) {
@@ -160,6 +165,61 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
 
                 progressBar.visibility = View.GONE
                 card.visibility = View.VISIBLE
+
+                // * add calendar event (if reservation is not started yet) *
+                val buttonAddCalendarEvent =
+                    view.findViewById<Button>(R.id.button_add_calendar_event)
+
+                if(reservation.startLocalDateTime > LocalDateTime.now()) {
+                    buttonAddCalendarEvent.visibility = View.VISIBLE
+                    buttonAddCalendarEvent.setOnClickListener {
+                        val tempReservation = viewModel.reservation.value!!
+                        val mIntent = Intent(Intent.ACTION_EDIT)
+
+                        mIntent.type = "vnd.android.cursor.item/event"
+                        mIntent.putExtra(
+                            Events.TITLE,
+                            "${tempReservation.sportEmoji} ${tempReservation.sportName} game"
+                        )
+                        mIntent.putExtra(Events.EVENT_LOCATION, tempReservation.address)
+                        mIntent.putExtra(
+                            Events.DESCRIPTION,
+                            "Playground \"${tempReservation.playgroundName}\" at ${tempReservation.sportCenterName}"
+                        )
+
+                        val year = tempReservation.date.year
+                        val month = tempReservation.date.monthValue - 1
+                        val dayOfMonth = tempReservation.date.dayOfMonth
+                        val startEvent = GregorianCalendar(
+                            year,
+                            month,
+                            dayOfMonth,
+                            tempReservation.startTime.hour,
+                            tempReservation.startTime.minute
+                        )
+                        val endEvent = GregorianCalendar(
+                            year,
+                            month,
+                            dayOfMonth,
+                            tempReservation.endTime.hour,
+                            tempReservation.endTime.minute
+                        )
+
+                        mIntent.putExtra(
+                            CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+                            startEvent.timeInMillis
+                        )
+                        mIntent.putExtra(
+                            CalendarContract.EXTRA_EVENT_END_TIME,
+                            endEvent.timeInMillis
+                        )
+
+                        startActivity(mIntent)
+                    }
+                }
+                else {
+                    buttonAddCalendarEvent.visibility = View.GONE
+                }
             }
         }
 
