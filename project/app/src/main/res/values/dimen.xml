@@ -47,7 +47,7 @@
     <dimen name="overlay_bar_button_label_padding_horizontal">5sp</dimen>
 
     <!-- bottom navigation bar -->
-    <dimen name="bottom_navigation_bar_height">65dp</dimen>
+    <dimen name="bottom_navigation_bar_height">67dp</dimen>
     <dimen name="bottom_navigation_bar_text_size">11.2dp</dimen>
     <dimen name="bottom_navigation_bar_icon_size">27dp</dimen>
 </resources>

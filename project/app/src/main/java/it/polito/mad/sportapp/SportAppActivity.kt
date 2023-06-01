@@ -21,6 +21,8 @@ import it.polito.mad.sportapp.application_utilities.checkIfUserIsLoggedIn
 import it.polito.mad.sportapp.application_utilities.setApplicationLocale
 import it.polito.mad.sportapp.application_utilities.showToasty
 import it.polito.mad.sportapp.application_utilities.toastyInit
+import it.polito.mad.sportapp.entities.Notification
+import it.polito.mad.sportapp.entities.NotificationStatus
 import it.polito.mad.sportapp.notifications.manageNotification
 import it.polito.mad.sportapp.playgrounds.PlaygroundsViewModel
 import it.polito.mad.sportapp.profile.ProfileViewModel
@@ -91,11 +93,30 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
                     .findFragmentById(R.id.fragment_container_view) as NavHostFragment
                 ).navController
 
+        activityVm.notifications.observe(this) {
+            // update bottom navigation view
+            updateBottomNavigation(it)
+        }
+
         // set bottom navigation bar listener
         bottomNavigationView.setOnItemSelectedListener(this)
 
         // configure toasts appearance
         toastyInit()
+    }
+
+    private fun updateBottomNavigation(notifications: MutableList<Notification>) {
+
+        val badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.notifications).apply {
+            number = notifications.count { it.status == NotificationStatus.PENDING }
+            isVisible = false
+        }
+
+        badgeDrawable.isVisible =
+            notifications.isNotEmpty() && notifications.any { it.status == NotificationStatus.PENDING }
+
+        badgeDrawable.backgroundColor =
+            ContextCompat.getColor(this, R.color.bottom_bar_notification_badge_color)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -124,7 +145,6 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
                 ) {
                     navController.navigate(R.id.playgroundsBySportFragment)
                 }
-
                 return true
             }
 

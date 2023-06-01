@@ -53,4 +53,7 @@
     <color name="overlay_bar_button_unselected_color">@color/white</color>
     <color name="overlay_bar_button_selected_color">@color/primary_orange</color>
 
+    <!-- bottom bar -->
+    <color name="bottom_bar_notification_badge_color">@color/toast_error</color>
+
 </resources>
