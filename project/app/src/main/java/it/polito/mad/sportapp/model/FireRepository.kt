@@ -467,23 +467,57 @@ class FireRepository : IRepository {
         newImageUrl: String,
         fireCallback: (FireResult<Unit, DefaultFireError>) -> Unit
     ) {
-        db.collection("users")
-            .document(userId)
-            .update("imageURL", newImageUrl)
-            .addOnSuccessListener {
-                fireCallback(Success(Unit))
-            }
-            .addOnFailureListener {
+        db.collection("notifications").whereEqualTo("senderId", userId).get()
+            .addOnSuccessListener { res ->
+            if(res == null){
                 Log.e(
                     "default error",
-                    "Error: a generic error occurred updating user $userId image url in FireRepository.updateUserImageUrl(). Message: ${it.message}"
+                    "Error: a generic error occurred updating user $userId image url in FireRepository.updateUserImageUrl(). Message: ${res}"
                 )
                 fireCallback(
                     DefaultFireError.withMessage(
-                        "Error: a generic error occurred updating user image"
+                        "Error: a generic error occurred updating user"
                     )
                 )
+                return@addOnSuccessListener
             }
+            // retrieving notifications ids related to the user
+            val notificationsIds = res.documents.map { it.id }
+
+            db.runTransaction { transaction ->
+                // user update
+                transaction.update(db.collection("users").document(userId), "imageURL", newImageUrl)
+
+                notificationsIds.forEach() {
+                    // updating image url in notifications
+                    transaction.update(db.collection("notifications").document(it), "profileUrl", newImageUrl)
+                }
+
+            }
+            .addOnSuccessListener {
+                fireCallback(Success(Unit))
+            }
+                .addOnFailureListener {
+                Log.e(
+                    "default error",
+                    "Error: a generic error occurred updating user $userId image url in FireRepository.updateUserImageUrl() (transaction). Message: ${it.message}"
+                )
+                }
+
+        }
+            .addOnFailureListener {
+            Log.e(
+                "default error",
+                "Error: a generic error occurred updating user $userId image url in FireRepository.updateUserImageUrl(). Message: ${it.message}"
+            )
+            fireCallback(
+                DefaultFireError.withMessage(
+                    "Error: a generic error occurred updating user"
+                )
+            )
+
+
+        }
     }
 
     /**
