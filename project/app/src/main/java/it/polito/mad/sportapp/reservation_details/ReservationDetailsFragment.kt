@@ -223,10 +223,13 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                     it.title = "Reservation Details"
                 }
 
-                // show edit reservation button only if the reservation starts in the future
+                // show edit reservation button only to the owner, if the reservation starts in the future
                 val currentDateTime = LocalDateTime.now()
                 if (viewModel.reservation.value != null) {
-                    if (currentDateTime.isAfter(viewModel.reservation.value?.startLocalDateTime)) {
+                    if (
+                        viewModel.reservation.value?.userId != viewModel.userId
+                        || currentDateTime.isAfter(viewModel.reservation.value?.startLocalDateTime)
+                    ) {
                         menu.getItem(0).isVisible = false
                     }
                 }
