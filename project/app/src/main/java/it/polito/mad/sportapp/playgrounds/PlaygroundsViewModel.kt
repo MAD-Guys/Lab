@@ -17,10 +17,11 @@ class PlaygroundsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var _getError = MutableLiveData<DefaultGetFireError?>()
-    val getError: LiveData<DefaultGetFireError?> = _getError
+    var getError: LiveData<DefaultGetFireError?> = _getError
 
     fun clearError() {
         _getError = MutableLiveData<DefaultGetFireError?>()
+        getError = _getError
     }
 
     private val _playgrounds = MutableLiveData<List<PlaygroundInfo>>(listOf()).also {

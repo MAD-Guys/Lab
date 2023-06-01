@@ -34,10 +34,11 @@ class ManageEquipmentsViewModel @Inject constructor(
     internal val fireListener = FireListener()
 
     private var _toastErrorMessage = MutableLiveData<String>()
-    internal val toastErrorMessage: LiveData<String> = _toastErrorMessage
+    internal var toastErrorMessage: LiveData<String> = _toastErrorMessage
 
     fun clearToastErrorMessage() {
         _toastErrorMessage = MutableLiveData<String>()
+        toastErrorMessage = _toastErrorMessage
     }
 
     internal fun loadEquipmentsQuantitiesAsync() {

@@ -34,10 +34,11 @@ class SportAppViewModel @Inject constructor(
 
     // eventual error getting the notifications
     private var _getNotificationsError = MutableLiveData<DefaultGetFireError?>()
-    val getNotificationsError: LiveData<DefaultGetFireError?> = _getNotificationsError
+    var getNotificationsError: LiveData<DefaultGetFireError?> = _getNotificationsError
 
     fun clearGetNotificationsError() {
         _getNotificationsError = MutableLiveData<DefaultGetFireError?>()
+        getNotificationsError = _getNotificationsError
     }
 
     private val _notifications = MutableLiveData<MutableList<Notification>>()

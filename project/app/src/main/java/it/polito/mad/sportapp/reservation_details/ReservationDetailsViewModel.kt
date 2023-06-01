@@ -25,14 +25,16 @@ class ReservationDetailsViewModel @Inject constructor(
     val userId = FirebaseAuth.getInstance().currentUser?.uid
 
     private var _getError = MutableLiveData<DefaultGetFireError?>()
-    val getError: LiveData<DefaultGetFireError?> = _getError
+    var getError: LiveData<DefaultGetFireError?> = _getError
 
     private var _deleteError = MutableLiveData<DefaultFireError?>()
-    val deleteError: LiveData<DefaultFireError?> = _deleteError
+    var deleteError: LiveData<DefaultFireError?> = _deleteError
 
     fun clearReservationDetailsErrors() {
         _getError = MutableLiveData<DefaultGetFireError?>()
+        getError = _getError
         _deleteError = MutableLiveData<DefaultFireError?>()
+        deleteError = _deleteError
     }
 
     private var _deleteSuccess = MutableLiveData<Boolean?>()

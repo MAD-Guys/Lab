@@ -26,22 +26,25 @@ class PlaygroundDetailsViewModel @Inject constructor(
     val userId = FirebaseAuth.getInstance().currentUser?.uid
 
     private var _getError = MutableLiveData<DefaultGetFireError?>()
-    val getError: LiveData<DefaultGetFireError?> = _getError
+    var getError: LiveData<DefaultGetFireError?> = _getError
 
     private var _reviewError = MutableLiveData<DefaultInsertFireError?>()
-    val reviewError: LiveData<DefaultInsertFireError?> = _reviewError
+    var reviewError: LiveData<DefaultInsertFireError?> = _reviewError
 
     private var _deleteReviewError = MutableLiveData<DefaultFireError?>()
-    val deleteReviewError: LiveData<DefaultFireError?> = _deleteReviewError
+    var deleteReviewError: LiveData<DefaultFireError?> = _deleteReviewError
 
     fun clearErrors() {
         _getError = MutableLiveData<DefaultGetFireError?>()
+        getError = _getError
         _reviewError = MutableLiveData<DefaultInsertFireError?>()
+        reviewError = _reviewError
         _deleteReviewError = MutableLiveData<DefaultFireError?>()
+        deleteReviewError = _deleteReviewError
     }
 
     private var _reviewUpdateSuccess = MutableLiveData<String?>()
-    val reviewUpdateSuccess: LiveData<String?> = _reviewUpdateSuccess
+    var reviewUpdateSuccess: LiveData<String?> = _reviewUpdateSuccess
 
     private val _playground = MutableLiveData<PlaygroundInfo?>()
     val playground: LiveData<PlaygroundInfo?> = _playground
@@ -246,6 +249,7 @@ class PlaygroundDetailsViewModel @Inject constructor(
 
     fun clearSuccess() {
         _reviewUpdateSuccess.postValue(null)
+        reviewUpdateSuccess = _reviewUpdateSuccess
     }
 
 }

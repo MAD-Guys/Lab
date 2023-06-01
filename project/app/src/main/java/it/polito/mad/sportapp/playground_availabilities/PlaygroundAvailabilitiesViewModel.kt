@@ -60,10 +60,11 @@ class PlaygroundAvailabilitiesViewModel @Inject constructor(
 
     // error message to show in a red toast in case of app errors
     private var _toastErrorMessage = MutableLiveData<String>()
-    internal val toastErrorMessage: LiveData<String> = _toastErrorMessage
+    internal var toastErrorMessage: LiveData<String> = _toastErrorMessage
 
     fun clearToastErrorMessages() {
         _toastErrorMessage = MutableLiveData<String>()
+        toastErrorMessage = _toastErrorMessage
     }
 
     internal var listener = FireListener()

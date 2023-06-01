@@ -119,20 +119,23 @@ class ProfileViewModel @Inject constructor(
 
     /* error/success management */
     private var _getUserError = MutableLiveData<DefaultGetFireError?>()
-    val getUserError: LiveData<DefaultGetFireError?> = _getUserError
+    var getUserError: LiveData<DefaultGetFireError?> = _getUserError
 
     private var _updateUserError = MutableLiveData<DefaultInsertFireError?>()
-    val updateUserError: LiveData<DefaultInsertFireError?> = _updateUserError
+    var updateUserError: LiveData<DefaultInsertFireError?> = _updateUserError
 
     fun clearProfileErrors() {
         _getUserError = MutableLiveData<DefaultGetFireError?>()
+        getUserError = _getUserError
         _updateUserError = MutableLiveData<DefaultInsertFireError?>()
+        updateUserError = _updateUserError
     }
 
     private val _updateUserSuccess = MutableLiveData(false)
-    val updateUserSuccess: LiveData<Boolean> = _updateUserSuccess
+    var updateUserSuccess: LiveData<Boolean> = _updateUserSuccess
     fun clearSuccess() {
         _updateUserSuccess.postValue(false)
+        updateUserSuccess = _updateUserSuccess
     }
 
     // init block

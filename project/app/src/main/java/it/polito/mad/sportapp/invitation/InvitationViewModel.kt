@@ -26,9 +26,9 @@ class InvitationViewModel @Inject constructor(
     private var _loggedUser : User? = null
 
     private var _getError = MutableLiveData<DefaultGetFireError?>()
-    val getError: LiveData<DefaultGetFireError?> = _getError
+    var getError: LiveData<DefaultGetFireError?> = _getError
     private var _invitationError = MutableLiveData<SaveAndSendInvitationFireError?>()
-    val invitationError: LiveData<SaveAndSendInvitationFireError?> = _invitationError
+    var invitationError: LiveData<SaveAndSendInvitationFireError?> = _invitationError
     private var _invitationSuccess = MutableLiveData<String?>()
     val invitationSuccess: LiveData<String?> = _invitationSuccess
 
@@ -52,7 +52,9 @@ class InvitationViewModel @Inject constructor(
 
     fun clearErrors() {
         _getError = MutableLiveData<DefaultGetFireError?>()
+        getError = _getError
         _invitationError = MutableLiveData<SaveAndSendInvitationFireError?>()
+        invitationError = _invitationError
     }
 
     fun getUsersFromDb(reservationId: String, sportId: String, sportName: String): FireListener {
