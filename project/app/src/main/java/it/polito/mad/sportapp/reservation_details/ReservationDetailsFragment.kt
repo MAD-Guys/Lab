@@ -27,11 +27,18 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.google.android.gms.pay.Pay
+import com.google.android.gms.pay.PayApiAvailabilityStatus
+import com.google.android.gms.pay.PayClient
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.application_utilities.showToasty
+import it.polito.mad.sportapp.entities.DetailedReservation
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.reservation_management.ReservationManagementUtilities
+import org.json.JSONArray
+import org.json.JSONObject
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -63,6 +70,10 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
     private lateinit var reservationTotalPrice: TextView
     private lateinit var deleteButton: Button
     private lateinit var leaveReviewButton: Button
+
+    private lateinit var buttonAddCalendarEvent: Button
+    private lateinit var addToGoogleWalletButton: ImageButton
+    private lateinit var walletClient: PayClient
 
     private lateinit var navController: NavController
     private lateinit var bottomNavigationBar: View
@@ -167,58 +178,19 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                 card.visibility = View.VISIBLE
 
                 // * add calendar event (if reservation is not started yet) *
-                val buttonAddCalendarEvent =
-                    view.findViewById<Button>(R.id.button_add_calendar_event)
+                buttonAddCalendarEvent = view.findViewById(R.id.button_add_calendar_event)
 
                 if(reservation.startLocalDateTime > LocalDateTime.now()) {
                     buttonAddCalendarEvent.visibility = View.VISIBLE
-                    buttonAddCalendarEvent.setOnClickListener {
-                        val tempReservation = viewModel.reservation.value!!
-                        val mIntent = Intent(Intent.ACTION_EDIT)
-
-                        mIntent.type = "vnd.android.cursor.item/event"
-                        mIntent.putExtra(
-                            Events.TITLE,
-                            "${tempReservation.sportEmoji} ${tempReservation.sportName} game"
-                        )
-                        mIntent.putExtra(Events.EVENT_LOCATION, tempReservation.address)
-                        mIntent.putExtra(
-                            Events.DESCRIPTION,
-                            "Playground \"${tempReservation.playgroundName}\" at ${tempReservation.sportCenterName}"
-                        )
-
-                        val year = tempReservation.date.year
-                        val month = tempReservation.date.monthValue - 1
-                        val dayOfMonth = tempReservation.date.dayOfMonth
-                        val startEvent = GregorianCalendar(
-                            year,
-                            month,
-                            dayOfMonth,
-                            tempReservation.startTime.hour,
-                            tempReservation.startTime.minute
-                        )
-                        val endEvent = GregorianCalendar(
-                            year,
-                            month,
-                            dayOfMonth,
-                            tempReservation.endTime.hour,
-                            tempReservation.endTime.minute
-                        )
-
-                        mIntent.putExtra(
-                            CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                            startEvent.timeInMillis
-                        )
-                        mIntent.putExtra(
-                            CalendarContract.EXTRA_EVENT_END_TIME,
-                            endEvent.timeInMillis
-                        )
-
-                        startActivity(mIntent)
-                    }
+                    this.setupAddCalendarEventButton()
                 }
                 else {
                     buttonAddCalendarEvent.visibility = View.GONE
+                }
+
+                // * init google wallet button *
+                if(reservation.startLocalDateTime > LocalDateTime.now()) {
+                    initWalletClient()
                 }
             }
         }
@@ -476,6 +448,139 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
             .setNegativeButton("NO") { d, _ -> d.cancel() }
             .create()
             .show()
+    }
+
+    private fun initWalletClient() {
+        walletClient = Pay.getClient(requireActivity())
+
+        walletClient
+            .getPayApiAvailabilityStatus(PayClient.RequestType.SAVE_PASSES)
+            .addOnSuccessListener { status ->
+                if (status == PayApiAvailabilityStatus.AVAILABLE) {
+                    // The API is available, show the button in your UI
+                    addToGoogleWalletButton.visibility = ImageButton.VISIBLE
+                } else {
+                    // The user or device is not eligible for using the Pay API
+                    addToGoogleWalletButton.visibility = ImageButton.GONE
+                }
+            }
+            .addOnFailureListener {
+                // Hide the button and show an error message
+                addToGoogleWalletButton.visibility = ImageButton.GONE
+                Log.e("Google Wallet error", "An error occurred verifying Google Pay API for Google Wallet")
+            }
+
+        val addToGoogleWalletRequestCode = 1000
+
+        addToGoogleWalletButton = requireView().findViewById(R.id.add_to_google_wallet_button)
+        addToGoogleWalletButton.setOnClickListener {
+            val newGoogleWalletPass = this.createPass(viewModel.reservation.value!!)
+
+            walletClient.savePassesJwt(newGoogleWalletPass.toString(), requireActivity(), addToGoogleWalletRequestCode)
+        }
+    }
+
+    private fun createPass(reservation: DetailedReservation): JSONObject {
+        val genericPassObjectJson = JSONObject()
+
+        val id = "3388000000022238618" + "." + reservation.id
+        genericPassObjectJson.put("id", id)
+        genericPassObjectJson.put("classId", "PlaygroundReservation")
+        genericPassObjectJson.put("genericType", "GENERIC_TYPE_UNSPECIFIED")
+
+        val cardTitle = JSONObject().also {
+            it.put("defaultValue", JSONObject().also { defaultValue ->
+                defaultValue.put("language", "en")
+                defaultValue.put("value", "Playground Reservation")
+            })
+        }
+        genericPassObjectJson.put("cardTitle", cardTitle)
+
+        val userId = FirebaseAuth.getInstance().currentUser!!.uid
+        val subHeader = JSONObject().also {
+            it.put("defaultValue", JSONObject().also { defaultValue ->
+                defaultValue.put("language", "en")
+                defaultValue.put("value", if(reservation.userId == userId) "Owner" else "Participant")
+            })
+        }
+        genericPassObjectJson.put("subHeader", subHeader)
+
+        val header = JSONObject().also {
+            it.put("defaultValue", JSONObject().also { defaultValue ->
+                defaultValue.put("language", "en")
+                defaultValue.put("value", reservation.username)
+            })
+        }
+        genericPassObjectJson.put("header", header)
+
+        // now wrap in a jwt
+        val jwt = JSONObject()
+        jwt.put("iss", "mariomastrandrea.mate@gmail.com")
+        jwt.put("aud", "google")
+        jwt.put("typ", "savetowallet")
+
+        val year = reservation.date.year
+        val month = reservation.date.monthValue-1
+        val day = reservation.date.dayOfMonth
+        val hour = reservation.startTime.hour
+        val minute = reservation.startTime.minute
+        jwt.put("iat", GregorianCalendar(year, month, day, hour, minute).timeInMillis.toString())
+
+        jwt.put("origins", JSONArray())
+        jwt.put("payload", JSONObject().also { payload ->
+            val genericObjects = JSONArray()
+            genericObjects.put(genericPassObjectJson)
+            payload.put("genericObjects", genericObjects)
+        })
+
+        return jwt
+    }
+
+    private fun setupAddCalendarEventButton() {
+        buttonAddCalendarEvent.setOnClickListener {
+            val tempReservation = viewModel.reservation.value!!
+            val mIntent = Intent(Intent.ACTION_EDIT)
+
+            mIntent.type = "vnd.android.cursor.item/event"
+            mIntent.putExtra(
+                Events.TITLE,
+                "${tempReservation.sportEmoji} ${tempReservation.sportName} game"
+            )
+            mIntent.putExtra(Events.EVENT_LOCATION, tempReservation.address)
+            mIntent.putExtra(
+                Events.DESCRIPTION,
+                "Playground \"${tempReservation.playgroundName}\" at ${tempReservation.sportCenterName}"
+            )
+
+            val year = tempReservation.date.year
+            val month = tempReservation.date.monthValue - 1
+            val dayOfMonth = tempReservation.date.dayOfMonth
+            val startEvent = GregorianCalendar(
+                year,
+                month,
+                dayOfMonth,
+                tempReservation.startTime.hour,
+                tempReservation.startTime.minute
+            )
+            val endEvent = GregorianCalendar(
+                year,
+                month,
+                dayOfMonth,
+                tempReservation.endTime.hour,
+                tempReservation.endTime.minute
+            )
+
+            mIntent.putExtra(
+                CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+                startEvent.timeInMillis
+            )
+            mIntent.putExtra(
+                CalendarContract.EXTRA_EVENT_END_TIME,
+                endEvent.timeInMillis
+            )
+
+            startActivity(mIntent)
+        }
     }
 
 }

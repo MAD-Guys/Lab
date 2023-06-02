@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import com.google.android.gms.pay.PayClient
 import com.google.android.material.navigation.NavigationBarView
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.application_utilities.checkIfUserIsLoggedIn
@@ -209,4 +211,37 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
             }
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        val addToGoogleWalletRequestCode = 1000
+
+        if (requestCode == addToGoogleWalletRequestCode) {
+            when (resultCode) {
+                RESULT_OK -> {
+                    // Pass saved successfully
+                    showToasty("success", this, "Pass successfully saved to Google Wallet")
+                }
+
+                RESULT_CANCELED -> {
+                    // Save operation canceled
+                    Log.e("Google Wallet error", "RESULT_CANCELED")
+                }
+
+                PayClient.SavePassesResult.SAVE_ERROR -> data?.let { intentData ->
+                    val errorMessage = intentData.getStringExtra(PayClient.EXTRA_API_ERROR_MESSAGE)
+                    // Handle error
+                    showToasty("error", this, errorMessage.toString())
+                    Log.e("Google Wallet error", "SAVE_ERROR")
+                }
+
+                else -> {
+                    // Handle unexpected (non-API) exception
+                    Log.e("Google Wallet error", "Unexpected non-API error")
+                }
+            }
+        }
+    }
+
 }
