@@ -133,6 +133,11 @@ internal fun createJsonPass(reservation: DetailedReservation, user: User): Strin
                                     \"user_id\": \"${user.id}\"
                                 }"
                             },
+                            "logo":{
+                                "sourceUri":{
+                                    "uri":"https://firebasestorage.googleapis.com/v0/b/sportapp-project.appspot.com/o/ic_launcher-playstore.png?alt=media&token=89aa35a6-3bbb-41a0-b104-f86f1f730ff6"
+                                }
+                            },
                             "textModulesData": [
                                 {
                                     "header": "Sport Center",
