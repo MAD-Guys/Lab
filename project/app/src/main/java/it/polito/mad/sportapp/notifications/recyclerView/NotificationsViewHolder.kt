@@ -16,6 +16,7 @@ import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 /* Notifications View Holder */
 
@@ -127,7 +128,9 @@ internal class NotificationsViewHolder(view: View) : RecyclerView.ViewHolder(vie
         val returnValue: String
 
         return when {
-            notificationTime <= currentTime -> {
+            notificationTime.format(DateTimeFormatter.ISO_TIME) <= currentTime.format(
+                DateTimeFormatter.ISO_TIME
+            ) -> {
                 val difference =
                     Duration.between(notificationTime, currentTime).toMillis() / 1000L / 60L
 
