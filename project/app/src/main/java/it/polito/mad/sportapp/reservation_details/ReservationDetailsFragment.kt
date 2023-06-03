@@ -159,11 +159,10 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                 // show delete reservation button only if the reservation starts in the future
                 val currentDateTime = LocalDateTime.now()
 
-
                 if (currentDateTime.isBefore(reservation.startLocalDateTime) && reservation.userId == viewModel.userId) {
                     deleteButton.visibility = Button.VISIBLE
                     inviteButton.visibility = Button.VISIBLE
-                }else if(currentDateTime.isAfter(reservation.endLocalDateTime) && reservation.userId == viewModel.userId){
+                }else if(currentDateTime.isAfter(reservation.endLocalDateTime)){
                     leaveReviewButton.visibility = Button.VISIBLE
                 }
 
