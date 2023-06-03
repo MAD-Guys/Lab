@@ -127,8 +127,9 @@ internal class NotificationsViewHolder(view: View) : RecyclerView.ViewHolder(vie
         val returnValue: String
 
         return when {
-            notificationTime.isBefore(currentTime) -> {
-                val difference = Duration.between(notificationTime, currentTime).toMinutes()
+            notificationTime <= currentTime -> {
+                val difference =
+                    Duration.between(notificationTime, currentTime).toMillis() / 1000L / 60L
 
                 returnValue = if (difference < 1L) {
                     "Now"

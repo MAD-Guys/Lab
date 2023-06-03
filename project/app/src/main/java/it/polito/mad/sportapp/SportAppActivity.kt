@@ -85,13 +85,13 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
                 }
 
                 // get events from db
-                showReservationVm!!.loadEventsFromDb()
+                showReservationVm?.loadEventsFromDb()
 
                 // get playgrounds from db
-                playgroundsVm!!.loadPlaygroundsFromDb()
+                playgroundsVm?.loadPlaygroundsFromDb()
 
                 // get user profile from db
-                profileVm!!.initializeProfile()
+                profileVm?.initializeProfile()
 
                 // initialize notification list
                 activityVm.getUserNotifications()
