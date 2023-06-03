@@ -6,6 +6,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.core.os.bundleOf
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
@@ -110,8 +111,23 @@ internal fun NotificationDetailsFragment.setupObservers() {
     vm.updateSuccess.observe(viewLifecycleOwner) {
         if (it != null) { // it can be "accepted", "declined" or "rejected" (or null)
             showToasty("success", requireContext(), "Invitation correctly $it!")
-            // navigate back
-            navController.popBackStack()
+
+            if (it == "accepted") {
+                // navigate back
+                navController.popBackStack()
+
+                val bundle = bundleOf("id_event" to vm.notification.value?.reservationId)
+
+                // navigate to the reservation details
+                navController.navigate(
+                    R.id.action_notificationsFragment_to_reservationDetailsFragment,
+                    bundle
+                )
+
+            } else {
+                // navigate back
+                navController.popBackStack()
+            }
         }
     }
 }
