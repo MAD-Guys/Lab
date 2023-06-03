@@ -16,6 +16,7 @@ import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.model.IRepository
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 /* View Model related to the Notification Details Fragment */
@@ -184,7 +185,7 @@ class NotificationDetailsViewModel @Inject constructor(
                 notification.value!!.profileUrl,
                 NotificationStatus.PENDING,
                 notificationDescription,
-                LocalDateTime.now().toString()
+                LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
             )
 
             repository.sendPushNotificationAnswer(notificationAnswer) {

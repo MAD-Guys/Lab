@@ -15,6 +15,7 @@ import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.entities.firestore.utilities.SaveAndSendNotificationFireError
 import it.polito.mad.sportapp.model.IRepository
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -163,7 +164,7 @@ class InvitationViewModel @Inject constructor(
                 null,
                 NotificationStatus.PENDING,
                 "@${_loggedUser?.username} has invited you to play a $sportName $sportEmoji match!",
-                LocalDateTime.now().toString()
+                LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
             )
         ) {
             when (it) {
