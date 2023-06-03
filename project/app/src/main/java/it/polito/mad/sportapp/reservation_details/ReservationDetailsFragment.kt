@@ -30,6 +30,7 @@ import androidx.navigation.Navigation
 import com.google.android.gms.pay.Pay
 import com.google.android.gms.pay.PayApiAvailabilityStatus
 import com.google.android.gms.pay.PayClient
+import com.google.common.hash.HashCode
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
@@ -45,6 +46,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Date
 import java.util.GregorianCalendar
+import java.util.UUID
 
 @AndroidEntryPoint
 class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_details) {
@@ -482,7 +484,52 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
         }
     }
 
+    private class PassReservationInfo(
+        val reservationId: String,
+        val userId: String,
+        val playgroundId: String,
+        val startTime: String,
+        val endTime: String
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as PassReservationInfo
+
+            if (reservationId != other.reservationId) return false
+            if (userId != other.userId) return false
+            if (playgroundId != other.playgroundId) return false
+            if (startTime != other.startTime) return false
+            if (endTime != other.endTime) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = reservationId.hashCode()
+            result = 31 * result + userId.hashCode()
+            result = 31 * result + playgroundId.hashCode()
+            result = 31 * result + startTime.hashCode()
+            result = 31 * result + endTime.hashCode()
+            return result
+        }
+
+        val hash: String
+            get() {
+                return hashCode().toString()
+            }
+    }
+
     private fun createPass(reservation: DetailedReservation, user: User): String {
+        val reservationId = reservation.id
+        val userId = user.id
+        val playgroundId = reservation.playgroundId
+        val startTime = reservation.startLocalDateTime.format(DateTimeFormatter.ISO_DATE_TIME)
+        val endTime = reservation.endLocalDateTime.format(DateTimeFormatter.ISO_DATE_TIME)
+
+        val passReservationInfo = PassReservationInfo(reservationId, userId!!, playgroundId, startTime, endTime)
+
         val pass = """
             {
                 "iss":"mariomastrandrea.mate@gmail.com",
@@ -493,31 +540,34 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                 "payload":{
                     "genericObjects":[
                         {
-                            "id":"3388000000022238618.${user.id}.${reservation.id}",
+                            "id":"3388000000022238618.${reservation.id}.${passReservationInfo.hash}",
                             "classId":"3388000000022238618.GenericReservation",
                             "genericType":"GENERIC_TYPE_UNSPECIFIED",
                             "cardTitle":{
                                 "defaultValue":{
                                     "language":"en",
-                                    "value":"Playground Reservation"
+                                    "value":"EzSport Reservation"
                                 }
                             },
                             "header": {
                                 "defaultValue":{
                                     "language":"en",
-                                    "value":"${user.username}"
+                                    "value":"${user.firstName} ${user.lastName}"
                                 }
                             },
                             "subHeader": {
                                 "defaultValue":{
                                     "language":"en",
-                                    "value":"${if(reservation.userId == user.id) "Owner" else "Participant"}"
+                                    "value":"${user.username}"
                                 }
                             },
                             "barcode": {
-                                  "alternateText": "${reservation.id}",
-                                  "type": "qrCode",
-                                  "value": "${reservation.id}"
+                                "alternateText": "${reservation.id}",
+                                "type": "qrCode",
+                                "value": "{
+                                    \"reservation_number\": \"${reservation.id}\",
+                                    \"user_id\": \"${user.id}\"
+                                }"
                             },
                             "textModulesData": [
                                 {

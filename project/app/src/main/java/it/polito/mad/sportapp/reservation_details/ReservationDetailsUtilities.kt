@@ -12,7 +12,12 @@ fun reservationQRCode(r: DetailedReservation): Bitmap {
     lateinit var bitmap: Bitmap
     lateinit var qrEncoder: QRGEncoder
 
-    val text = "Reservation number: ${r.id}\nUser: ${r.userId}"
+    val text = """
+        {
+            "reservation_number": "${r.id}",
+            "user_id": "${r.userId}"
+        }
+    """.trimIndent()
 
     qrEncoder = QRGEncoder(text, null, QRGContents.Type.TEXT, 512)
 
