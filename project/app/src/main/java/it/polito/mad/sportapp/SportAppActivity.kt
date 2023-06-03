@@ -234,6 +234,7 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
                     // Handle error
                     showToasty("error", this, errorMessage.toString())
                     Log.e("Google Wallet error", "SAVE_ERROR")
+                    Log.e("message", errorMessage.toString())
                 }
 
                 else -> {

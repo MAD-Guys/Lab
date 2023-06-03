@@ -35,15 +35,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.application_utilities.showToasty
 import it.polito.mad.sportapp.entities.DetailedReservation
+import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.reservation_management.ReservationManagementUtilities
-import org.json.JSONArray
-import org.json.JSONObject
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.util.Date
 import java.util.GregorianCalendar
 
 @AndroidEntryPoint
@@ -474,66 +474,84 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
 
         addToGoogleWalletButton = requireView().findViewById(R.id.add_to_google_wallet_button)
         addToGoogleWalletButton.setOnClickListener {
-            val newGoogleWalletPass = this.createPass(viewModel.reservation.value!!)
+            viewModel.getUserFromDb { user ->
+                val newGoogleWalletPass = this.createPass(viewModel.reservation.value!!, user)
 
-            walletClient.savePassesJwt(newGoogleWalletPass.toString(), requireActivity(), addToGoogleWalletRequestCode)
+                walletClient.savePasses(newGoogleWalletPass, requireActivity(), addToGoogleWalletRequestCode)
+            }
         }
     }
 
-    private fun createPass(reservation: DetailedReservation): JSONObject {
-        val genericPassObjectJson = JSONObject()
+    private fun createPass(reservation: DetailedReservation, user: User): String {
+        val pass = """
+            {
+                "iss":"mariomastrandrea.mate@gmail.com",
+                "aud":"google",
+                "typ":"savetowallet",
+                "iat":${Date().time / 1000L},
+                "origins":[],
+                "payload":{
+                    "genericObjects":[
+                        {
+                            "id":"3388000000022238618.${user.id}.${reservation.id}",
+                            "classId":"3388000000022238618.GenericReservation",
+                            "genericType":"GENERIC_TYPE_UNSPECIFIED",
+                            "cardTitle":{
+                                "defaultValue":{
+                                    "language":"en",
+                                    "value":"Playground Reservation"
+                                }
+                            },
+                            "header": {
+                                "defaultValue":{
+                                    "language":"en",
+                                    "value":"${user.username}"
+                                }
+                            },
+                            "subHeader": {
+                                "defaultValue":{
+                                    "language":"en",
+                                    "value":"${if(reservation.userId == user.id) "Owner" else "Participant"}"
+                                }
+                            },
+                            "barcode": {
+                                  "alternateText": "${reservation.id}",
+                                  "type": "qrCode",
+                                  "value": "${reservation.id}"
+                            },
+                            "textModulesData": [
+                                {
+                                    "header": "Sport Center",
+                                    "body": "${reservation.sportCenterName}"
+                                },
+                                {
+                                    "header": "Playground",
+                                    "body": "${reservation.playgroundName}"
+                                },
+                                {
+                                    "header": "Sport",
+                                    "body": "${reservation.sportName} ${reservation.sportEmoji}"
+                                },
+                                {
+                                    "header": "Date",
+                                    "body": "${reservation.date.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
+                                },
+                                {
+                                    "header": "Time",
+                                    "body": "${reservation.startTime}-${reservation.endTime}"
+                                },
+                                {
+                                    "header": "${if(reservation.userId == user.id) "Owner" else "Invited by"}",
+                                    "body": "${reservation.username}"
+                                }
+                            ]
+                        }  
+                    ]
+                }
+            }
+        """.trimIndent()
 
-        val id = "3388000000022238618" + "." + reservation.id
-        genericPassObjectJson.put("id", id)
-        genericPassObjectJson.put("classId", "PlaygroundReservation")
-        genericPassObjectJson.put("genericType", "GENERIC_TYPE_UNSPECIFIED")
-
-        val cardTitle = JSONObject().also {
-            it.put("defaultValue", JSONObject().also { defaultValue ->
-                defaultValue.put("language", "en")
-                defaultValue.put("value", "Playground Reservation")
-            })
-        }
-        genericPassObjectJson.put("cardTitle", cardTitle)
-
-        val userId = FirebaseAuth.getInstance().currentUser!!.uid
-        val subHeader = JSONObject().also {
-            it.put("defaultValue", JSONObject().also { defaultValue ->
-                defaultValue.put("language", "en")
-                defaultValue.put("value", if(reservation.userId == userId) "Owner" else "Participant")
-            })
-        }
-        genericPassObjectJson.put("subHeader", subHeader)
-
-        val header = JSONObject().also {
-            it.put("defaultValue", JSONObject().also { defaultValue ->
-                defaultValue.put("language", "en")
-                defaultValue.put("value", reservation.username)
-            })
-        }
-        genericPassObjectJson.put("header", header)
-
-        // now wrap in a jwt
-        val jwt = JSONObject()
-        jwt.put("iss", "mariomastrandrea.mate@gmail.com")
-        jwt.put("aud", "google")
-        jwt.put("typ", "savetowallet")
-
-        val year = reservation.date.year
-        val month = reservation.date.monthValue-1
-        val day = reservation.date.dayOfMonth
-        val hour = reservation.startTime.hour
-        val minute = reservation.startTime.minute
-        jwt.put("iat", GregorianCalendar(year, month, day, hour, minute).timeInMillis.toString())
-
-        jwt.put("origins", JSONArray())
-        jwt.put("payload", JSONObject().also { payload ->
-            val genericObjects = JSONArray()
-            genericObjects.put(genericPassObjectJson)
-            payload.put("genericObjects", genericObjects)
-        })
-
-        return jwt
+        return pass
     }
 
     private fun setupAddCalendarEventButton() {

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.polito.mad.sportapp.entities.DetailedReservation
+import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultGetFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
@@ -44,7 +45,7 @@ class ReservationDetailsViewModel @Inject constructor(
         return repository.getDetailedReservationById(reservationId){ fireResult ->
             when(fireResult){
                 is FireResult.Error -> {
-                    Log.e(fireResult.type.message(), fireResult.errorMessage())
+                    Log.e("Reservation details error", fireResult.errorMessage())
                     _getError.postValue(fireResult.type)
                 }
                 is FireResult.Success -> {
@@ -52,6 +53,21 @@ class ReservationDetailsViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun getUserFromDb(callback: (User) -> Unit) {
+        val userId = FirebaseAuth.getInstance().currentUser!!.uid
+        repository.getStaticUser(userId) { fireResult ->
+            when(fireResult){
+                is FireResult.Error -> {
+                    Log.e("Reservation details error", fireResult.errorMessage())
+                    _getError.postValue(fireResult.type)
+                }
+                is FireResult.Success -> {
+                    val user = fireResult.value
+                    callback(user)
+                }
+            }}
     }
 
     fun deleteReservation() {

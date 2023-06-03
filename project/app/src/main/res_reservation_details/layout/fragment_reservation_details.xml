@@ -95,7 +95,7 @@
                         android:src="@drawable/enus_add_to_google_wallet_add_wallet_badge"
                         android:focusable="true"
                         android:background="#00000000"
-                        android:visibility="visible"/>
+                        android:visibility="gone"/>
 
                     <View
                         android:id="@+id/divider4"
