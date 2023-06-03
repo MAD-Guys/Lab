@@ -30,13 +30,9 @@ import androidx.navigation.Navigation
 import com.google.android.gms.pay.Pay
 import com.google.android.gms.pay.PayApiAvailabilityStatus
 import com.google.android.gms.pay.PayClient
-import com.google.common.hash.HashCode
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.application_utilities.showToasty
-import it.polito.mad.sportapp.entities.DetailedReservation
-import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.reservation_management.ReservationManagementUtilities
 import java.time.Duration
@@ -44,9 +40,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.util.Date
 import java.util.GregorianCalendar
-import java.util.UUID
 
 @AndroidEntryPoint
 class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_details) {
@@ -452,15 +446,31 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
             .show()
     }
 
+    // init google wallet client API and google wallet button
     private fun initWalletClient() {
         walletClient = Pay.getClient(requireActivity())
 
+        // check if the user has Pay API available or not
         walletClient
             .getPayApiAvailabilityStatus(PayClient.RequestType.SAVE_PASSES)
             .addOnSuccessListener { status ->
                 if (status == PayApiAvailabilityStatus.AVAILABLE) {
                     // The API is available, show the button in your UI
                     addToGoogleWalletButton.visibility = ImageButton.VISIBLE
+
+                    // setup google wallet button click listener
+                    val addToGoogleWalletRequestCode = 1000
+
+                    addToGoogleWalletButton = requireView().findViewById(R.id.add_to_google_wallet_button)
+                    addToGoogleWalletButton.setOnClickListener {
+                        // retrieve current user info
+                        viewModel.getUserFromDb { user ->
+                            // create the google wallet pass as json string
+                            val newGoogleWalletJsonPass = createJsonPass(viewModel.reservation.value!!, user)
+
+                            walletClient.savePasses(newGoogleWalletJsonPass, requireActivity(), addToGoogleWalletRequestCode)
+                        }
+                    }
                 } else {
                     // The user or device is not eligible for using the Pay API
                     addToGoogleWalletButton.visibility = ImageButton.GONE
@@ -471,137 +481,6 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                 addToGoogleWalletButton.visibility = ImageButton.GONE
                 Log.e("Google Wallet error", "An error occurred verifying Google Pay API for Google Wallet")
             }
-
-        val addToGoogleWalletRequestCode = 1000
-
-        addToGoogleWalletButton = requireView().findViewById(R.id.add_to_google_wallet_button)
-        addToGoogleWalletButton.setOnClickListener {
-            viewModel.getUserFromDb { user ->
-                val newGoogleWalletPass = this.createPass(viewModel.reservation.value!!, user)
-
-                walletClient.savePasses(newGoogleWalletPass, requireActivity(), addToGoogleWalletRequestCode)
-            }
-        }
-    }
-
-    private class PassReservationInfo(
-        val reservationId: String,
-        val userId: String,
-        val playgroundId: String,
-        val startTime: String,
-        val endTime: String
-    ) {
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as PassReservationInfo
-
-            if (reservationId != other.reservationId) return false
-            if (userId != other.userId) return false
-            if (playgroundId != other.playgroundId) return false
-            if (startTime != other.startTime) return false
-            if (endTime != other.endTime) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            var result = reservationId.hashCode()
-            result = 31 * result + userId.hashCode()
-            result = 31 * result + playgroundId.hashCode()
-            result = 31 * result + startTime.hashCode()
-            result = 31 * result + endTime.hashCode()
-            return result
-        }
-
-        val hash: String
-            get() {
-                return hashCode().toString()
-            }
-    }
-
-    private fun createPass(reservation: DetailedReservation, user: User): String {
-        val reservationId = reservation.id
-        val userId = user.id
-        val playgroundId = reservation.playgroundId
-        val startTime = reservation.startLocalDateTime.format(DateTimeFormatter.ISO_DATE_TIME)
-        val endTime = reservation.endLocalDateTime.format(DateTimeFormatter.ISO_DATE_TIME)
-
-        val passReservationInfo = PassReservationInfo(reservationId, userId!!, playgroundId, startTime, endTime)
-
-        val pass = """
-            {
-                "iss":"mariomastrandrea.mate@gmail.com",
-                "aud":"google",
-                "typ":"savetowallet",
-                "iat":${Date().time / 1000L},
-                "origins":[],
-                "payload":{
-                    "genericObjects":[
-                        {
-                            "id":"3388000000022238618.${reservation.id}.${passReservationInfo.hash}",
-                            "classId":"3388000000022238618.GenericReservation",
-                            "genericType":"GENERIC_TYPE_UNSPECIFIED",
-                            "cardTitle":{
-                                "defaultValue":{
-                                    "language":"en",
-                                    "value":"EzSport Reservation"
-                                }
-                            },
-                            "header": {
-                                "defaultValue":{
-                                    "language":"en",
-                                    "value":"${user.firstName} ${user.lastName}"
-                                }
-                            },
-                            "subHeader": {
-                                "defaultValue":{
-                                    "language":"en",
-                                    "value":"${user.username}"
-                                }
-                            },
-                            "barcode": {
-                                "alternateText": "${reservation.id}",
-                                "type": "qrCode",
-                                "value": "{
-                                    \"reservation_number\": \"${reservation.id}\",
-                                    \"user_id\": \"${user.id}\"
-                                }"
-                            },
-                            "textModulesData": [
-                                {
-                                    "header": "Sport Center",
-                                    "body": "${reservation.sportCenterName}"
-                                },
-                                {
-                                    "header": "Playground",
-                                    "body": "${reservation.playgroundName}"
-                                },
-                                {
-                                    "header": "Sport",
-                                    "body": "${reservation.sportName} ${reservation.sportEmoji}"
-                                },
-                                {
-                                    "header": "Date",
-                                    "body": "${reservation.date.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
-                                },
-                                {
-                                    "header": "Time",
-                                    "body": "${reservation.startTime}-${reservation.endTime}"
-                                },
-                                {
-                                    "header": "${if(reservation.userId == user.id) "Owner" else "Invited by"}",
-                                    "body": "${reservation.username}"
-                                }
-                            ]
-                        }  
-                    ]
-                }
-            }
-        """.trimIndent()
-
-        return pass
     }
 
     private fun setupAddCalendarEventButton() {

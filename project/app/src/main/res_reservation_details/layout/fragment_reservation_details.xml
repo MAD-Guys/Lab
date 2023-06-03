@@ -213,7 +213,7 @@
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         android:paddingHorizontal="17dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="11dp"
                         android:backgroundTint="#45C1FA"
                         android:contentDescription="Add event to calendar"
                         android:fontFamily="@font/poppins_bold"
@@ -223,12 +223,12 @@
                         android:textAllCaps="false"
                         android:textAppearance="@style/TextAppearance.AppCompat.Button"
                         android:textColor="@color/button_text_color"
-                        android:textSize="16sp"
-                        android:visibility="visible"
+                        android:textSize="17sp"
+                        android:visibility="gone"
                         app:icon="@drawable/baseline_calendar_month_24_notification_details"
                         app:iconTint="@color/button_text_color"
-                        tools:insetBottom="1dp"
-                        tools:insetTop="1dp"
+                        tools:insetBottom="0dp"
+                        tools:insetTop="0dp"
                         />
 
                     <View
@@ -295,7 +295,8 @@
                         android:textSize="20sp"
                         app:icon="@drawable/baseline_stadium_24"
                         app:iconGravity="textStart"
-                        app:iconTint="@color/button_text_color" />
+                        app:iconTint="@color/button_text_color"
+                        />
 
                     <View
                         android:layout_width="match_parent"
