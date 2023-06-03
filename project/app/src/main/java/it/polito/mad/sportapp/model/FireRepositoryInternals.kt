@@ -23,7 +23,7 @@ import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult.*
 import it.polito.mad.sportapp.entities.firestore.utilities.NewReservationError
-import it.polito.mad.sportapp.entities.firestore.utilities.SaveAndSendInvitationFireError
+import it.polito.mad.sportapp.entities.firestore.utilities.SaveAndSendNotificationFireError
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType
@@ -1187,7 +1187,7 @@ internal fun FireRepository.getDynamicAllUserNotifications(
  */
 internal fun FireRepository.saveInvitation(
     notification: Notification,
-    fireCallback: (FireResult<String, SaveAndSendInvitationFireError>) -> Unit
+    fireCallback: (FireResult<String, SaveAndSendNotificationFireError>) -> Unit
 ) {
     // convert notification entity to fireNotification
     val fireNotification = FireNotification.from(notification)
@@ -1195,7 +1195,7 @@ internal fun FireRepository.saveInvitation(
     if(fireNotification == null) {
         // conversion error
         Log.e("conversion error", "Error: an error occurred converting a notification entity in a fireNotification, in FireRepository.saveInvitation()")
-        fireCallback(SaveAndSendInvitationFireError.beforeSaveAndSendPush(
+        fireCallback(SaveAndSendNotificationFireError.beforeSaveAndSendPush(
             "Error: an error occurred saving the invitation"))
         return
     }
@@ -1213,7 +1213,7 @@ internal fun FireRepository.saveInvitation(
         .addOnFailureListener {
             // generic error
             Log.e("generic error", "Error: a generic error occurred saving invitation $notification in FireRepository.saveInvitation(). Message: ${it.message}")
-            fireCallback(SaveAndSendInvitationFireError.beforeSaveAndSendPush(
+            fireCallback(SaveAndSendNotificationFireError.beforeSaveAndSendPush(
                 "Error: a generic error occurred saving the invitation"))
             return@addOnFailureListener
         }
@@ -1225,7 +1225,7 @@ internal fun createInvitationNotification(
     reservationId: String,
     notificationDescription: String,
     notificationTimestamp: String,
-    fireCallback: (FireResult<Unit,SaveAndSendInvitationFireError>) -> Unit
+    fireCallback: (FireResult<Unit,SaveAndSendNotificationFireError>) -> Unit
 ) {
     // notification variables
     val tag = "NOTIFICATION TAG"
@@ -1251,19 +1251,69 @@ internal fun createInvitationNotification(
         Log.e(tag, "createInvitationNotification function: " + e.message)
 
         Log.e("serialization error", "Error: a generic error occurred serializing notification JSON in FireRepository.createInvitationNotification()")
-        fireCallback(SaveAndSendInvitationFireError.beforeSendPush(
+        fireCallback(SaveAndSendNotificationFireError.beforeSendPush(
             "Error: an error occurred sending the notification"
         ))
         return
     }
 
     // send notification
-    sendInvitationNotification(notification, fireCallback)
+    sendPushNotification(notification, fireCallback)
 }
 
-private fun sendInvitationNotification(
+internal fun createNotificationAnswer(
+    receiverToken: String,
+    notificationType: String,
+    reservationId: String,
+    notificationDescription: String,
+    fireCallback: (FireResult<Unit, SaveAndSendNotificationFireError>) -> Unit
+) {
+    // notification variables
+    val tag = "NOTIFICATION TAG"
+    val notificationTitle = when(notificationType) {
+        "INVITATION_ACCEPTED" -> "Invitation Accepted"
+        "INVITATION_DECLINED" -> "Invitation Declined"
+        "INVITATION_REJECTED" -> "Invitation Rejected"
+        else -> ""
+    }
+
+    val notificationAction = when(notificationType) {
+        "INVITATION_ACCEPTED" -> "invitation_accepted"
+        "INVITATION_DECLINED" -> "invitation_declined"
+        "INVITATION_REJECTED" -> "invitation_rejected"
+        else -> ""
+    }
+
+    val notification = JSONObject()
+    val notificationBody = JSONObject()
+
+    try {
+        // create notification body
+        notificationBody.put("action", notificationAction)
+        notificationBody.put("title", notificationTitle)
+        notificationBody.put("message", notificationDescription)
+        notificationBody.put("reservation_id", reservationId)
+
+        // create notification
+        notification.put("to", receiverToken)
+        notification.put("data", notificationBody)
+    } catch (e: JSONException) {
+        Log.e(tag, "createNotificationAnswer function: " + e.message)
+
+        Log.e("serialization error", "Error: a generic error occurred serializing notification JSON in FireRepository.createNotificationAnswer()")
+        fireCallback(SaveAndSendNotificationFireError.beforeSendPush(
+            "Error: an error occurred sending the notification"
+        ))
+        return
+    }
+
+    // send notification
+    sendPushNotification(notification, fireCallback)
+}
+
+private fun sendPushNotification(
     notification: JSONObject,
-    fireCallback: (FireResult<Unit,SaveAndSendInvitationFireError>) -> Unit
+    fireCallback: (FireResult<Unit, SaveAndSendNotificationFireError>) -> Unit
 ) {
 
     // API variables
@@ -1284,8 +1334,8 @@ private fun sendInvitationNotification(
 
     client.newCall(request).enqueue(object : Callback {
         override fun onFailure(call: Call, e: IOException) {
-            Log.e("SEND INVITATION NOTIFICATION", "Notification sending failed! ${e.message}")
-            fireCallback(SaveAndSendInvitationFireError.beforeSendPush(
+            Log.e("SEND PUSH NOTIFICATION", "Notification sending failed! ${e.message}")
+            fireCallback(SaveAndSendNotificationFireError.beforeSendPush(
                 "Error: an error occurred sending the notification"
             ))
         }
@@ -1293,13 +1343,13 @@ private fun sendInvitationNotification(
         override fun onResponse(call: Call, response: Response) {
             // Handle request success
             if (response.isSuccessful) {
-                Log.i("SEND INVITATION NOTIFICATION", "Notification successfully sent!")
+                Log.i("SEND PUSH NOTIFICATION", "Notification successfully sent!")
                 // * push notification successfully sent *
                 fireCallback(Success(Unit))
             } else {
-                Log.e("SEND INVITATION NOTIFICATION", "Notification sending failed!")
+                Log.e("SEND PUSH NOTIFICATION", "Notification sending failed!")
                 // push notification not sent
-                fireCallback(SaveAndSendInvitationFireError.beforeSendPush(
+                fireCallback(SaveAndSendNotificationFireError.beforeSendPush(
                     "Error: an error occurred sending the notification"
                 ))
             }

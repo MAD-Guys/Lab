@@ -141,7 +141,10 @@ data class FireNotification(
 }
 
 enum class FireNotificationType(val type: String) {
-    INVITATION("invitation");
+    INVITATION("invitation"),
+    INVITATION_ACCEPTED("invitation_accepted"),
+    INVITATION_DECLINED("invitation_declined"),
+    INVITATION_REJECTED("invitation_rejected");
 
     val index = ordinal
 

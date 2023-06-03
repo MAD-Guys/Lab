@@ -90,12 +90,40 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
 
         // create notification intent and put extras
-        val notificationIntent = Intent(this, SportAppActivity::class.java).apply {
-            action = remoteMessage.data["action"]
-            putExtra("notification_id", remoteMessage.data["notification_id"])
-            putExtra("reservation_id", remoteMessage.data["reservation_id"])
-            putExtra("status", remoteMessage.data["status"])
-            putExtra("timestamp", remoteMessage.data["timestamp"])
+
+        val notificationIntent = when (val intentAction = remoteMessage.data["action"]) {
+            "invitation" -> {
+                Intent(this, SportAppActivity::class.java).apply {
+                    action = intentAction
+                    putExtra("notification_id", remoteMessage.data["notification_id"])
+                    putExtra("reservation_id", remoteMessage.data["reservation_id"])
+                    putExtra("status", remoteMessage.data["status"])
+                    putExtra("timestamp", remoteMessage.data["timestamp"])
+                }
+            }
+
+            "invitation_accepted" -> {
+                Intent(this, SportAppActivity::class.java).apply {
+                    action = intentAction
+                    putExtra("reservation_id", remoteMessage.data["reservation_id"])
+                }
+            }
+
+            "invitation_declined" -> {
+                Intent(this, SportAppActivity::class.java).apply {
+                    action = intentAction
+                    putExtra("reservation_id", remoteMessage.data["reservation_id"])
+                }
+            }
+
+            "invitation_rejected" -> {
+                Intent(this, SportAppActivity::class.java).apply {
+                    action = intentAction
+                    putExtra("reservation_id", remoteMessage.data["reservation_id"])
+                }
+            }
+
+            else -> throw RuntimeException("It does not exist a notification with action: $intentAction")
         }
 
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)

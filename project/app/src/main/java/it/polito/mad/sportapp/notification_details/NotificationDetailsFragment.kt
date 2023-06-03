@@ -130,9 +130,10 @@ class NotificationDetailsFragment : Fragment(R.layout.fragment_notification_deta
         // setup bottom bar
         setupBottomBar()
 
-        // retrieve notification from db
+        // retrieve notification and user from db
         if(notificationId != null) {
             notificationFireListener = vm.getNotificationFromDb(notificationId!!)
+            vm.getUserFromDb()
         }
 
     }

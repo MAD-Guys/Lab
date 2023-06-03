@@ -12,7 +12,7 @@ import it.polito.mad.sportapp.entities.User
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultGetFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
-import it.polito.mad.sportapp.entities.firestore.utilities.SaveAndSendInvitationFireError
+import it.polito.mad.sportapp.entities.firestore.utilities.SaveAndSendNotificationFireError
 import it.polito.mad.sportapp.model.IRepository
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -27,8 +27,8 @@ class InvitationViewModel @Inject constructor(
 
     private var _getError = MutableLiveData<DefaultGetFireError?>()
     var getError: LiveData<DefaultGetFireError?> = _getError
-    private var _invitationError = MutableLiveData<SaveAndSendInvitationFireError?>()
-    var invitationError: LiveData<SaveAndSendInvitationFireError?> = _invitationError
+    private var _invitationError = MutableLiveData<SaveAndSendNotificationFireError?>()
+    var invitationError: LiveData<SaveAndSendNotificationFireError?> = _invitationError
     private var _invitationSuccess = MutableLiveData<String?>()
     val invitationSuccess: LiveData<String?> = _invitationSuccess
 
@@ -53,7 +53,7 @@ class InvitationViewModel @Inject constructor(
     fun clearErrors() {
         _getError = MutableLiveData<DefaultGetFireError?>()
         getError = _getError
-        _invitationError = MutableLiveData<SaveAndSendInvitationFireError?>()
+        _invitationError = MutableLiveData<SaveAndSendNotificationFireError?>()
         invitationError = _invitationError
     }
 
@@ -168,11 +168,11 @@ class InvitationViewModel @Inject constructor(
                 is FireResult.Error -> {
                     Log.d(it.type.message(), it.errorMessage())
                     when(it.errorType()){
-                        SaveAndSendInvitationFireError.NO_SAVE_AND_NO_PUSH_ERROR -> {
+                        SaveAndSendNotificationFireError.NO_SAVE_AND_NO_PUSH_ERROR -> {
                             // the invitation was not saved
                             _invitationError.postValue(it.type)
                         }
-                        SaveAndSendInvitationFireError.NO_PUSH_ERROR -> {
+                        SaveAndSendNotificationFireError.NO_PUSH_ERROR -> {
                             // the invitation was saved, but something went wrong during the sending
                             // of the push notification. Anyway, the task to invite another user was
                             // succeeded, so it could be considered as success

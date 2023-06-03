@@ -16,7 +16,7 @@ import it.polito.mad.sportapp.entities.firestore.utilities.FireResult
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultGetFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultInsertFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.NewReservationError
-import it.polito.mad.sportapp.entities.firestore.utilities.SaveAndSendInvitationFireError
+import it.polito.mad.sportapp.entities.firestore.utilities.SaveAndSendNotificationFireError
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
@@ -288,7 +288,15 @@ interface IRepository {
      */
     fun saveAndSendInvitation(
         notification: Notification,
-        fireCallback: (FireResult<Unit, SaveAndSendInvitationFireError>) -> Unit
+        fireCallback: (FireResult<Unit, SaveAndSendNotificationFireError>) -> Unit
+    )
+
+    /**
+     * Send a push notification answer to the receiver
+     */
+    fun sendPushNotificationAnswer(
+        notification: Notification,
+        fireCallback: (FireResult<Unit, SaveAndSendNotificationFireError>) -> Unit
     )
 
     /**

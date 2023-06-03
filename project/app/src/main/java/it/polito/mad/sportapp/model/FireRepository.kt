@@ -33,7 +33,7 @@ import it.polito.mad.sportapp.entities.firestore.utilities.FireListener
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultGetFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.DefaultInsertFireError
 import it.polito.mad.sportapp.entities.firestore.utilities.NewReservationError
-import it.polito.mad.sportapp.entities.firestore.utilities.SaveAndSendInvitationFireError
+import it.polito.mad.sportapp.entities.firestore.utilities.SaveAndSendNotificationFireError
 import java.lang.Exception
 import java.time.Duration
 import java.time.LocalDate
@@ -2690,13 +2690,13 @@ class FireRepository : IRepository {
      */
     override fun saveAndSendInvitation(
         notification: Notification,
-        fireCallback: (FireResult<Unit, SaveAndSendInvitationFireError>) -> Unit
+        fireCallback: (FireResult<Unit, SaveAndSendNotificationFireError>) -> Unit
     ) {
         // retrieve current user
         this.getStaticUser(notification.senderUid) { fireResult ->
             if (fireResult.isError()) {
                 fireCallback(
-                    SaveAndSendInvitationFireError.beforeSaveAndSendPush(
+                    SaveAndSendNotificationFireError.beforeSaveAndSendPush(
                         "Error: an error occurred retrieving user info"
                     )
                 )
@@ -2722,7 +2722,7 @@ class FireRepository : IRepository {
                 this.getStaticUser(notification.receiverUid) getUser2@{ fireResult3 ->
                     if (fireResult3.isError()) {
                         fireCallback(
-                            SaveAndSendInvitationFireError.beforeSendPush(
+                            SaveAndSendNotificationFireError.beforeSendPush(
                                 "Error: an error occurred sending push notification"
                             )
                         )
@@ -2757,6 +2757,53 @@ class FireRepository : IRepository {
                         fireCallback(Success(Unit))
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * Send a push notification answer to the receiver
+     */
+    override fun sendPushNotificationAnswer(
+        notification: Notification,
+        fireCallback: (FireResult<Unit, SaveAndSendNotificationFireError>) -> Unit
+    ) {
+        // retrieve receiver user
+        this.getStaticUser(notification.receiverUid) { fireResult ->
+            if (fireResult.isError()) {
+                fireCallback(
+                    SaveAndSendNotificationFireError.beforeSendPush(
+                        "Error: an error occurred sending push notification"
+                    )
+                )
+                return@getStaticUser
+            }
+
+            val receiverUser = fireResult.unwrap()
+
+            if (receiverUser.notificationsToken == null) {
+                // no token -> user did not give permissions to send push notifications
+                // return without sending push notification
+                fireCallback(Success(Unit))
+                return@getStaticUser
+            }
+
+            // * send push notification to the receiver *
+
+            createNotificationAnswer(
+                receiverUser.notificationsToken,
+                notification.type,
+                notification.reservationId,
+                notification.description
+            ) { fireResult2 ->
+                if (fireResult2.isError()) {
+                    // generic error
+                    fireCallback(Error(fireResult2.errorType()))
+                    return@createNotificationAnswer
+                }
+
+                // * push notification successfully sent *
+                fireCallback(Success(Unit))
             }
         }
     }

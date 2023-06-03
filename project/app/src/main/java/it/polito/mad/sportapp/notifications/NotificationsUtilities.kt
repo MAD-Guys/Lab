@@ -13,32 +13,56 @@ internal fun manageNotification(activityIntent: Intent?, navController: NavContr
 
     // check if the activity has an intent
     if (activityIntent != null) {
-        if (activityIntent.action?.lowercase() == "invitation") {
-            // get information from intent
-            val notificationId = activityIntent.getStringExtra("notification_id")
-            val reservationId = activityIntent.getStringExtra("reservation_id")
-            val notificationStatus = activityIntent.getStringExtra("status") ?: "CANCELED"
-            val notificationTimestamp = activityIntent.getStringExtra("timestamp") ?: ""
 
-            val bundle = bundleOf(
-                "notification_id" to notificationId,
-                "reservation_id" to reservationId,
-                "status" to notificationStatus,
-                "timestamp" to notificationTimestamp
-            )
+        when (activityIntent.action?.lowercase()) {
+            "invitation" -> {
+                // get information from intent
+                val notificationId = activityIntent.getStringExtra("notification_id")
+                val reservationId = activityIntent.getStringExtra("reservation_id")
+                val notificationStatus = activityIntent.getStringExtra("status") ?: "CANCELED"
+                val notificationTimestamp = activityIntent.getStringExtra("timestamp") ?: ""
 
-            // insert fragments in navigation the back stack
-            navController.navigate(R.id.showReservationsFragment)
-            navController.navigate(R.id.notificationsFragment)
+                val bundle = bundleOf(
+                    "notification_id" to notificationId,
+                    "reservation_id" to reservationId,
+                    "status" to notificationStatus,
+                    "timestamp" to notificationTimestamp
+                )
 
-            // navigate to notificationDetails fragment
-            navController.navigate(
-                R.id.action_notificationsFragment_to_notificationDetailsFragment,
-                bundle
-            )
-        } else {
-            // navigate to showReservations fragment
-            navController.navigate(R.id.showReservationsFragment)
+                // insert fragments into the navigation the back stack
+                navController.navigate(R.id.showReservationsFragment)
+                navController.navigate(R.id.notificationsFragment)
+
+                // navigate to notificationDetails fragment
+                navController.navigate(
+                    R.id.action_notificationsFragment_to_notificationDetailsFragment,
+                    bundle
+                )
+            }
+
+            "invitation_accepted", "invitation_declined", "invitation_rejected" -> {
+
+                // get information from intent
+                val reservationId = activityIntent.getStringExtra("reservation_id")
+
+                val bundle = bundleOf(
+                    "id_event" to reservationId
+                )
+
+                // insert fragments into the navigation the back stack
+                navController.navigate(R.id.showReservationsFragment)
+
+                // navigate to reservation details fragment
+                navController.navigate(
+                    R.id.action_showReservationsFragment_to_reservationDetailsFragment,
+                    bundle
+                )
+            }
+
+            else -> {
+                // navigate to showReservations fragment
+                navController.navigate(R.id.showReservationsFragment)
+            }
         }
     } else {
         // navigate to showReservations fragment
