@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:paddingBottom="50dp">
+        android:paddingBottom="50dp"
+        android:visibility="visible">
 
         <TextView
             android:layout_width="wrap_content"
@@ -76,7 +77,7 @@
                         android:id="@+id/reservationNumber"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8sp"
+                        android:layout_marginBottom="10dp"
                         android:fontFamily="@font/poppins_medium"
                         android:gravity="center_horizontal"
                         android:includeFontPadding="false"
@@ -84,6 +85,25 @@
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                         android:textSize="24sp"
                         android:textStyle="bold" />
+
+                    <ImageButton
+                        android:id="@+id/add_to_google_wallet_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:clickable="true"
+                        android:src="@drawable/enus_add_to_google_wallet_add_wallet_badge"
+                        android:focusable="true"
+                        android:background="#00000000"
+                        android:visibility="gone"/>
+
+                    <View
+                        android:id="@+id/divider4"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="13dp"
+                        android:layout_weight="1"
+                        android:background="?android:attr/listDivider" />
 
                     <TextView
                         android:id="@+id/reservationDate"
@@ -183,6 +203,34 @@
 
                     </LinearLayout>
 
+
+                    <!-- add to google calendar event button -->
+                    <Button
+                        android:id="@+id/button_add_calendar_event"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:paddingHorizontal="17dp"
+                        android:layout_marginTop="11dp"
+                        android:backgroundTint="@color/blue_selector"
+                        android:contentDescription="Add event to calendar"
+                        android:fontFamily="@font/poppins_bold"
+                        android:includeFontPadding="false"
+                        android:text="Add to calendar"
+                        android:textAlignment="center"
+                        android:textAllCaps="false"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                        android:textColor="@color/button_text_color"
+                        android:textSize="17sp"
+                        android:visibility="gone"
+                        app:icon="@drawable/baseline_calendar_month_24_notification_details"
+                        app:iconTint="@color/button_text_color"
+                        tools:insetBottom="0dp"
+                        tools:insetTop="0dp"
+                        />
+
                     <View
                         android:id="@+id/divider2"
                         android:layout_width="match_parent"
@@ -247,7 +295,8 @@
                         android:textSize="20sp"
                         app:icon="@drawable/baseline_stadium_24"
                         app:iconGravity="textStart"
-                        app:iconTint="@color/button_text_color" />
+                        app:iconTint="@color/button_text_color"
+                        />
 
                     <View
                         android:layout_width="match_parent"
@@ -482,6 +531,8 @@
                 app:icon="@drawable/baseline_add_comment_24"
                 app:iconGravity="textStart"
                 app:iconTint="@color/button_text_color" />
+
+
         </LinearLayout>
     </ScrollView>
 

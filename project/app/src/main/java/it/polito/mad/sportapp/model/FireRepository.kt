@@ -1479,7 +1479,7 @@ class FireRepository : IRepository {
                         }
 
                         val userPlaygroundReservations = fireResult2.unwrap()
-                        val playgroundsIds = userPlaygroundReservations.map { it.playgroundId }
+                        val playgroundsIds = userPlaygroundReservations.map { it.playgroundId }.distinct()
 
                         // * now retrieve all the playground sport documents associated to those reservations *
                         this.getPlaygroundsByIds(playgroundsIds) { fireResult3 ->

@@ -1,7 +1,11 @@
 package it.polito.mad.sportapp.reservation_details
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.provider.CalendarContract
+import android.provider.CalendarContract.Events
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -23,6 +27,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.google.android.gms.pay.Pay
+import com.google.android.gms.pay.PayApiAvailabilityStatus
+import com.google.android.gms.pay.PayClient
 import dagger.hilt.android.AndroidEntryPoint
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.application_utilities.showToasty
@@ -33,6 +40,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.util.GregorianCalendar
 
 @AndroidEntryPoint
 class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_details) {
@@ -58,6 +66,10 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
     private lateinit var reservationTotalPrice: TextView
     private lateinit var deleteButton: Button
     private lateinit var leaveReviewButton: Button
+
+    private lateinit var buttonAddCalendarEvent: Button
+    private lateinit var addToGoogleWalletButton: ImageButton
+    private lateinit var walletClient: PayClient
 
     private lateinit var navController: NavController
     private lateinit var bottomNavigationBar: View
@@ -160,6 +172,22 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
 
                 progressBar.visibility = View.GONE
                 card.visibility = View.VISIBLE
+
+                // * add calendar event (if reservation is not started yet) *
+                buttonAddCalendarEvent = view.findViewById(R.id.button_add_calendar_event)
+
+                if(reservation.startLocalDateTime > LocalDateTime.now()) {
+                    buttonAddCalendarEvent.visibility = View.VISIBLE
+                    this.setupAddCalendarEventButton()
+                }
+                else {
+                    buttonAddCalendarEvent.visibility = View.GONE
+                }
+
+                // * init google wallet button *
+                if(reservation.startLocalDateTime > LocalDateTime.now()) {
+                    initWalletClient()
+                }
             }
         }
 
@@ -416,6 +444,90 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
             .setNegativeButton("NO") { d, _ -> d.cancel() }
             .create()
             .show()
+    }
+
+    // init google wallet client API and google wallet button
+    private fun initWalletClient() {
+        walletClient = Pay.getClient(requireActivity())
+        addToGoogleWalletButton = requireView().findViewById(R.id.add_to_google_wallet_button)
+
+        // check if the user has Pay API available or not
+        walletClient
+            .getPayApiAvailabilityStatus(PayClient.RequestType.SAVE_PASSES)
+            .addOnSuccessListener { status ->
+                if (status == PayApiAvailabilityStatus.AVAILABLE) {
+                    // The API is available, show the button in your UI
+                    addToGoogleWalletButton.visibility = ImageButton.VISIBLE
+
+                    // setup google wallet button click listener
+                    val addToGoogleWalletRequestCode = 1000
+
+                    addToGoogleWalletButton.setOnClickListener {
+                        // retrieve current user info
+                        viewModel.getUserFromDb { user ->
+                            // create the google wallet pass as json string
+                            val newGoogleWalletJsonPass = createJsonPass(viewModel.reservation.value!!, user)
+
+                            walletClient.savePasses(newGoogleWalletJsonPass, requireActivity(), addToGoogleWalletRequestCode)
+                        }
+                    }
+                } else {
+                    // The user or device is not eligible for using the Pay API
+                    addToGoogleWalletButton.visibility = ImageButton.GONE
+                }
+            }
+            .addOnFailureListener {
+                // Hide the button and show an error message
+                addToGoogleWalletButton.visibility = ImageButton.GONE
+                Log.e("Google Wallet error", "An error occurred verifying Google Pay API for Google Wallet")
+            }
+    }
+
+    private fun setupAddCalendarEventButton() {
+        buttonAddCalendarEvent.setOnClickListener {
+            val tempReservation = viewModel.reservation.value!!
+            val mIntent = Intent(Intent.ACTION_EDIT)
+
+            mIntent.type = "vnd.android.cursor.item/event"
+            mIntent.putExtra(
+                Events.TITLE,
+                "${tempReservation.sportEmoji} ${tempReservation.sportName} game"
+            )
+            mIntent.putExtra(Events.EVENT_LOCATION, tempReservation.address)
+            mIntent.putExtra(
+                Events.DESCRIPTION,
+                "Playground \"${tempReservation.playgroundName}\" at ${tempReservation.sportCenterName}"
+            )
+
+            val year = tempReservation.date.year
+            val month = tempReservation.date.monthValue - 1
+            val dayOfMonth = tempReservation.date.dayOfMonth
+            val startEvent = GregorianCalendar(
+                year,
+                month,
+                dayOfMonth,
+                tempReservation.startTime.hour,
+                tempReservation.startTime.minute
+            )
+            val endEvent = GregorianCalendar(
+                year,
+                month,
+                dayOfMonth,
+                tempReservation.endTime.hour,
+                tempReservation.endTime.minute
+            )
+
+            mIntent.putExtra(
+                CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+                startEvent.timeInMillis
+            )
+            mIntent.putExtra(
+                CalendarContract.EXTRA_EVENT_END_TIME,
+                endEvent.timeInMillis
+            )
+
+            startActivity(mIntent)
+        }
     }
 
 }
