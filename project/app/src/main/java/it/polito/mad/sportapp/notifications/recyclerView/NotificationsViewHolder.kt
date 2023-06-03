@@ -145,7 +145,7 @@ internal class NotificationsViewHolder(view: View) : RecyclerView.ViewHolder(vie
                 returnValue
             }
 
-            else -> throw RuntimeException("It must not exists a notification time after $currentTime")
+            else -> "Now"
         }
     }
 
