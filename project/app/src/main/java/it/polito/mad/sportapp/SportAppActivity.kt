@@ -70,15 +70,29 @@ class SportAppActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedLi
 
         // initialize fragments view models
         activityVm.isUserLoggedIn.observe(this) { isLoggedIn ->
-            if (isLoggedIn && activityVm.areVmInstancesCreated == false) {
-                profileVm = ViewModelProvider(this)[ProfileViewModel::class.java]
-                playgroundsVm = ViewModelProvider(this)[PlaygroundsViewModel::class.java]
-                showReservationVm = ViewModelProvider(this)[ShowReservationsViewModel::class.java]
+
+            if (isLoggedIn) {
+
+                if (!activityVm.areVmInstancesCreated) {
+                    profileVm = ViewModelProvider(this)[ProfileViewModel::class.java]
+                    playgroundsVm = ViewModelProvider(this)[PlaygroundsViewModel::class.java]
+                    showReservationVm =
+                        ViewModelProvider(this)[ShowReservationsViewModel::class.java]
+
+                    activityVm.setVmInstancesCreated()
+                }
+
+                // get events from db
+                showReservationVm!!.loadEventsFromDb()
+
+                // get playgrounds from db
+                playgroundsVm!!.loadPlaygroundsFromDb()
+
+                // get user profile from db
+                profileVm!!.initializeProfile()
 
                 // initialize notification list
                 activityVm.getUserNotifications()
-
-                activityVm.setVmInstancesCreated()
             }
         }
 

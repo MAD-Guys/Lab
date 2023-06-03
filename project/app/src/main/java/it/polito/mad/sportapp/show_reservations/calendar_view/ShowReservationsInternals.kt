@@ -22,7 +22,6 @@ import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.view.MonthDayBinder
 import it.polito.mad.sportapp.R
 import it.polito.mad.sportapp.application_utilities.hideProgressBar
-import it.polito.mad.sportapp.application_utilities.showProgressBar
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -191,7 +190,9 @@ internal fun ShowReservationsFragment.calendarInit() {
 
     // initialize current month live data variable
     vm.currentMonth.observe(viewLifecycleOwner) {
-        val monthString = it.format(DateTimeFormatter.ofPattern("MMMM yyyy"))
+
+        // change month label
+        val monthString = it.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH))
         monthLabel.text = capitalizeFirstLetter(monthString)
 
         //update calendar

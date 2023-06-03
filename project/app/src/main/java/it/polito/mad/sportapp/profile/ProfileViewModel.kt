@@ -43,7 +43,7 @@ class ProfileViewModel @Inject constructor(
 
     /* user information */
 
-    val userId = FirebaseAuth.getInstance().currentUser?.uid
+    var userId = FirebaseAuth.getInstance().currentUser?.uid
 
     private val _usernameAlreadyExists = MutableLiveData<Boolean>().also { it.value = false }
     val usernameAlreadyExists: LiveData<Boolean> = _usernameAlreadyExists
@@ -56,7 +56,7 @@ class ProfileViewModel @Inject constructor(
 
     private val _userUsername = MutableLiveData<String>().also { it.value = "johndoe" }
     val userUsername: LiveData<String> = _userUsername
-    lateinit var originalUsername: String
+    private lateinit var originalUsername: String
 
     private val _userGender = MutableLiveData<String>().also { it.value = "Male" }
     val userGender: LiveData<String> = _userGender
@@ -77,16 +77,10 @@ class ProfileViewModel @Inject constructor(
     private var userImageUrl: String? = null
 
     // user profile pictures
-    private val _userProfilePicture =
-        MutableLiveData<Bitmap>().also {
-            this.loadProfilePictureFromFirebaseStorage("profile_picture.jpeg")
-        }
+    private val _userProfilePicture = MutableLiveData<Bitmap>()
     val userProfilePicture: LiveData<Bitmap> = _userProfilePicture
 
-    private val _userBackgroundProfilePicture =
-        MutableLiveData<Bitmap>().also {
-            this.loadProfilePictureFromFirebaseStorage("background_profile_picture.jpeg")
-        }
+    private val _userBackgroundProfilePicture = MutableLiveData<Bitmap>()
     val userBackgroundProfilePicture: LiveData<Bitmap> = _userBackgroundProfilePicture
 
     private val _userAchievements =
@@ -97,25 +91,7 @@ class ProfileViewModel @Inject constructor(
     val userSports: LiveData<List<SportLevel>> = _userSports
 
     /* sports information */
-    private val _sportsList = MutableLiveData<List<Sport>>().also { list ->
-        repository.getAllSports { newSportsResult ->
-            when (newSportsResult) {
-                is FireResult.Success -> {
-                    list.postValue(newSportsResult.value)
-
-                    Log.d("ProfileViewModel", "Sports list successfully loaded!")
-
-                    // update db flag
-                    sportsListLoaded = true
-                }
-
-                is FireResult.Error -> {
-                    Log.e("ProfileViewModel", "Error while loading sports list!")
-                    _getUserError.postValue(newSportsResult.type)
-                }
-            }
-        }
-    }
+    private val _sportsList = MutableLiveData<List<Sport>>()
     val sportsList: LiveData<List<Sport>> = _sportsList
 
     /* error/success management */
@@ -139,10 +115,21 @@ class ProfileViewModel @Inject constructor(
         updateUserSuccess = _updateUserSuccess
     }
 
-    // init block
-    init {
+    fun initializeProfile() {
+
+        // update user id
+        val newUserId = FirebaseAuth.getInstance().currentUser?.uid
+        userId = newUserId
+
+        // load user profile pictures from firebase storage
+        loadProfilePictureFromFirebaseStorage("profile_picture.jpeg")
+        loadProfilePictureFromFirebaseStorage("background_profile_picture.jpeg")
+
+        // load sports from db
+        loadSportsFromDb()
+
         // load user information from firestore db
-        userId?.let { uid ->
+        newUserId?.let { uid ->
             userFireListener = loadUserInformationFromDb(uid)
         }
     }
@@ -158,9 +145,9 @@ class ProfileViewModel @Inject constructor(
 
                 // set new profile picture bitmap
                 when (pictureLabel) {
-                    "profile_picture.jpeg" -> _userProfilePicture.postValue(pictureBitmap)
+                    "profile_picture.jpeg" -> _userProfilePicture.postValue(it)
                     "background_profile_picture.jpeg" -> _userBackgroundProfilePicture.postValue(
-                        pictureBitmap
+                        it
                     )
                 }
 
@@ -218,6 +205,28 @@ class ProfileViewModel @Inject constructor(
             }.addOnFailureListener {
                 // load of user profile picture failed
                 Log.e("ProfileViewModel", "Load of user profile picture failed!")
+            }
+        }
+    }
+
+    private fun loadSportsFromDb() {
+        repository.getAllSports { newSportsResult ->
+            when (newSportsResult) {
+                is FireResult.Success -> {
+                    val result = newSportsResult.value
+
+                    _sportsList.postValue(result)
+
+                    Log.d("ProfileViewModel", "Sports list successfully loaded!")
+
+                    // update db flag
+                    sportsListLoaded = true
+                }
+
+                is FireResult.Error -> {
+                    Log.e("ProfileViewModel", "Error while loading sports list!")
+                    _getUserError.postValue(newSportsResult.type)
+                }
             }
         }
     }

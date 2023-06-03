@@ -24,20 +24,25 @@ class PlaygroundsViewModel @Inject constructor(
         getError = _getError
     }
 
-    private val _playgrounds = MutableLiveData<List<PlaygroundInfo>>(listOf()).also {
+    private val _playgrounds = MutableLiveData<List<PlaygroundInfo>>(listOf())
+    val playgrounds: LiveData<List<PlaygroundInfo>> = _playgrounds
+
+    fun loadPlaygroundsFromDb() {
         repository.getAllPlaygroundsInfo { fireResult ->
             when (fireResult) {
                 is FireResult.Error -> {
                     Log.e(fireResult.type.message(), fireResult.errorMessage())
                     _getError.postValue(fireResult.type)
                 }
+
                 is FireResult.Success -> {
-                    it.postValue(fireResult.value)
+                    val result = fireResult.value
+
+                    _playgrounds.postValue(result)
                 }
             }
         }
     }
-    val playgrounds: LiveData<List<PlaygroundInfo>> = _playgrounds
 
     enum class PlaygroundOrderKey {
         SPORT, CENTER

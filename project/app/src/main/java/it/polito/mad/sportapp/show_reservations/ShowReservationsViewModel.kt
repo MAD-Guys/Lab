@@ -26,18 +26,7 @@ class ShowReservationsViewModel @Inject constructor(
     private var userReservationsFireListener: FireListener = FireListener()
 
     // mutable live data for the user events
-    private var _userEvents =
-        MutableLiveData<Map<LocalDate, List<DetailedReservation>>>().also {
-
-            // get user id
-            val userId = FirebaseAuth.getInstance().currentUser?.uid
-
-            userId?.let {
-                // load user events from database
-                userReservationsFireListener = loadEventsFromDb(userId)
-            }
-        }
-
+    private var _userEvents = MutableLiveData<Map<LocalDate, List<DetailedReservation>>>()
     val userEvents: LiveData<Map<LocalDate, List<DetailedReservation>>> = _userEvents
 
     // mutable live data for the current month, the selected date and the previous selected date
@@ -58,22 +47,30 @@ class ShowReservationsViewModel @Inject constructor(
         _getReservationsError = MutableLiveData<DefaultGetFireError?>()
     }
 
-    private fun loadEventsFromDb(uid: String): FireListener {
+    fun loadEventsFromDb() {
 
-        // get user events from database
-        return repository.getReservationsPerDateByUserId(uid) {
-            when (it) {
-                is FireResult.Error -> {
-                    Log.e("ShowReservationsViewModel", it.errorMessage())
-                    _getReservationsError.postValue(it.type)
-                }
+        // get user id
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
 
-                is FireResult.Success -> {
-                    // update user events
-                    _userEvents.postValue(it.value)
-                    Log.d("ShowReservationsViewModel", "User events updated successfully!")
+        userId?.let { uid ->
+            // load user events from database
+            userReservationsFireListener =
+                repository.getReservationsPerDateByUserId(uid) { result ->
+                    when (result) {
+                        is FireResult.Error -> {
+                            Log.e("ShowReservationsViewModel", result.errorMessage())
+                            _getReservationsError.postValue(result.type)
+                        }
+
+                        is FireResult.Success -> {
+                            val usersResult = result.value
+
+                            // update user events
+                            _userEvents.postValue(usersResult)
+                            Log.d("ShowReservationsViewModel", "User events updated successfully!")
+                        }
+                    }
                 }
-            }
         }
     }
 
