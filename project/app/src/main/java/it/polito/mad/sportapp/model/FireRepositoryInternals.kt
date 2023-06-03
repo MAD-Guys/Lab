@@ -1136,6 +1136,8 @@ internal fun FireRepository.getDynamicAllUserNotifications(
 
     val notificationListener = db.collection("notifications")
         .whereEqualTo("receiverId", userId)
+        .orderBy("timestamp")
+        .limitToLast(30)
         .addSnapshotListener { notificationsDocuments, error ->
             if (error != null || notificationsDocuments == null) {
                 // firebase error
