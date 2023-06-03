@@ -94,6 +94,39 @@ internal fun createJsonPass(reservation: DetailedReservation, user: User): Strin
     // (so if the reservation changes, its hash changes and the google pass too)
     val passReservationInfo = PassReservationInfo(reservationId, userId!!, playgroundId, startTime, endTime)
 
+    val sportPictureUrl = when(reservation.sportId) {
+        // minigolf
+        "4nFO9rfxo6iIJVTluCcn" -> "https://firebasestorage.googleapis.com/v0/b/sportapp-project.appspot.com/o/sport_pictures%2Fminigolf.png?alt=media&token=fab7d2c6-09dc-418e-bb52-a43b509c06ef"
+        // 5-a-side soccer
+        "7AIqD0iwHOW6FIycvlwo" -> "https://firebasestorage.googleapis.com/v0/b/sportapp-project.appspot.com/o/sport_pictures%2Ffootball5.png?alt=media&token=87b65882-410d-4c9c-a32a-2751a2de9484"
+        // table tennis
+        "RQgUy37JaJcE8uRmLanb" -> "https://firebasestorage.googleapis.com/v0/b/sportapp-project.appspot.com/o/sport_pictures%2FtableTennis.png?alt=media&token=00910834-198c-420c-a8cf-768ffc37dd47"
+        // basketball
+        "ZoasHiiaJ3CoNWMEr3RF" -> "https://firebasestorage.googleapis.com/v0/b/sportapp-project.appspot.com/o/sport_pictures%2Fbasketball.png?alt=media&token=c809096f-7c22-4102-9332-08125a4d6630"
+        // volleyball
+        "dU8Nvc3SfXfYaQKYzRbr" -> "https://firebasestorage.googleapis.com/v0/b/sportapp-project.appspot.com/o/sport_pictures%2Fvolleyball.png?alt=media&token=4351ff7b-b690-434f-9970-d398e5515cb6"
+        // padel
+        "fpkrSYDrMUDdqZ4kPfOc" -> "https://firebasestorage.googleapis.com/v0/b/sportapp-project.appspot.com/o/sport_pictures%2Fpadel.png?alt=media&token=1012cd8a-de0a-4171-ace5-249c246a6932"
+        // beach volley
+        "plGE1kMDKhqE17Azvdw8" -> "https://firebasestorage.googleapis.com/v0/b/sportapp-project.appspot.com/o/sport_pictures%2FbeachVolley.png?alt=media&token=e0b3329a-cd58-4878-ad57-03c6e3e8c1fd"
+        // 8-a-side soccer
+        "qrwiJsMOa3eCiq6fwOW2" -> "https://firebasestorage.googleapis.com/v0/b/sportapp-project.appspot.com/o/sport_pictures%2Ffootball8.png?alt=media&token=a2a1b1a2-3814-4cdf-a96f-dbbc5e320e60"
+        // 11-a-side soccer
+        "te2BgJjzIJbC9qTgLrT4" -> "https://firebasestorage.googleapis.com/v0/b/sportapp-project.appspot.com/o/sport_pictures%2Ffootball11.png?alt=media&token=b9d244d4-00a3-4c51-a3cb-203376eb4e06"
+        // tennis
+        "x7f9jrM9BTiMoIFoyVFq" -> "https://firebasestorage.googleapis.com/v0/b/sportapp-project.appspot.com/o/sport_pictures%2Ftennis.png?alt=media&token=40b9b6a7-532c-46d5-a29b-faee1d5b4a82"
+
+        else -> throw Exception("Sport not found")
+    }
+
+    val heroImageField = """
+        "heroImage": {
+            "sourceUri": {
+                "uri": "$sportPictureUrl"
+            }
+        },
+    """.trimIndent()
+
     val pass = """
             {
                 "iss":"mariomastrandrea.mate@gmail.com",
@@ -102,10 +135,65 @@ internal fun createJsonPass(reservation: DetailedReservation, user: User): Strin
                 "iat":${Date().time / 1000L},
                 "origins":[],
                 "payload":{
+                    "genericClasses": [
+                        {
+                            "id": "3388000000022238618.GenericReservationWithInfo",
+                            "classTemplateInfo": {
+                                "cardTemplateOverride": {
+                                    "cardRowTemplateInfos": [
+                                        {
+                                            "twoItems": {
+                                                "startItem": {
+                                                    "firstValue": {
+                                                        "fields": [
+                                                            {
+                                                                "fieldPath": "object.textModulesData['playground']"
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "endItem": {
+                                                    "firstValue": {
+                                                        "fields": [
+                                                            {
+                                                                "fieldPath": "object.textModulesData['sport_center']"
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "twoItems": {
+                                                "startItem": {
+                                                    "firstValue": {
+                                                        "fields": [
+                                                            {
+                                                                "fieldPath": "object.textModulesData['date']"
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "endItem": {
+                                                    "firstValue": {
+                                                        "fields": [
+                                                            {
+                                                                "fieldPath": "object.textModulesData['time']"
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ],
                     "genericObjects":[
                         {
                             "id":"3388000000022238618.${reservation.id}.${passReservationInfo.hash}",
-                            "classId":"3388000000022238618.GenericReservation",
+                            "classId":"3388000000022238618.GenericReservationWithInfo",
                             "genericType":"GENERIC_TYPE_UNSPECIFIED",
                             "cardTitle":{
                                 "defaultValue":{
@@ -119,10 +207,10 @@ internal fun createJsonPass(reservation: DetailedReservation, user: User): Strin
                                     "value":"${user.firstName} ${user.lastName}"
                                 }
                             },
-                            "subHeader": {
+                            "subheader": {
                                 "defaultValue":{
                                     "language":"en",
-                                    "value":"${user.username}"
+                                    "value":"${if (user.id == reservation.userId) "Organizer" else "Participant" }"
                                 }
                             },
                             "barcode": {
@@ -138,12 +226,20 @@ internal fun createJsonPass(reservation: DetailedReservation, user: User): Strin
                                     "uri":"https://firebasestorage.googleapis.com/v0/b/sportapp-project.appspot.com/o/ic_launcher-playstore.png?alt=media&token=89aa35a6-3bbb-41a0-b104-f86f1f730ff6"
                                 }
                             },
+                            "hexBackgroundColor": "#e25842",
+                            "heroImage": {
+                                "sourceUri": {
+                                    "uri": "$sportPictureUrl"
+                                }
+                            },
                             "textModulesData": [
                                 {
+                                    "id": "sport_center",
                                     "header": "Sport Center",
                                     "body": "${reservation.sportCenterName}"
                                 },
                                 {
+                                    "id": "playground",
                                     "header": "Playground",
                                     "body": "${reservation.playgroundName}"
                                 },
@@ -152,15 +248,17 @@ internal fun createJsonPass(reservation: DetailedReservation, user: User): Strin
                                     "body": "${reservation.sportName} ${reservation.sportEmoji}"
                                 },
                                 {
+                                    "id": "date",
                                     "header": "Date",
                                     "body": "${reservation.date.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
                                 },
                                 {
+                                    "id": "time",
                                     "header": "Time",
                                     "body": "${reservation.startTime}-${reservation.endTime}"
                                 },
                                 {
-                                    "header": "${if(reservation.userId == user.id) "Owner" else "Invited by"}",
+                                    "header": "Organizer",
                                     "body": "${reservation.username}"
                                 }
                             ]
