@@ -449,6 +449,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
     // init google wallet client API and google wallet button
     private fun initWalletClient() {
         walletClient = Pay.getClient(requireActivity())
+        addToGoogleWalletButton = requireView().findViewById(R.id.add_to_google_wallet_button)
 
         // check if the user has Pay API available or not
         walletClient
@@ -461,7 +462,6 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                     // setup google wallet button click listener
                     val addToGoogleWalletRequestCode = 1000
 
-                    addToGoogleWalletButton = requireView().findViewById(R.id.add_to_google_wallet_button)
                     addToGoogleWalletButton.setOnClickListener {
                         // retrieve current user info
                         viewModel.getUserFromDb { user ->
