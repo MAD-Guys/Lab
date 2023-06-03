@@ -259,7 +259,7 @@ internal fun createJsonPass(reservation: DetailedReservation, user: User): Strin
                                 },
                                 {
                                     "header": "Organizer",
-                                    "body": "${reservation.username}"
+                                    "body": "@${reservation.username}"
                                 }
                             ]
                         }  
