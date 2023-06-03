@@ -163,7 +163,7 @@ class ReservationDetailsFragment : Fragment(R.layout.fragment_reservation_detail
                 if (currentDateTime.isBefore(reservation.startLocalDateTime) && reservation.userId == viewModel.userId) {
                     deleteButton.visibility = Button.VISIBLE
                     inviteButton.visibility = Button.VISIBLE
-                }else if(currentDateTime.isAfter(reservation.endLocalDateTime) && reservation.userId == viewModel.userId){
+                }else if(currentDateTime.isAfter(reservation.endLocalDateTime)){
                     leaveReviewButton.visibility = Button.VISIBLE
                 }
 
