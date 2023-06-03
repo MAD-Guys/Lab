@@ -49,6 +49,7 @@ class InvitationViewModel @Inject constructor(
     //private var sportId = -1
     private var sportId = "x7f9jrM9BTiMoIFoyVFq"
     private var sportName = ""
+    private var sportEmoji = ""
 
     fun clearErrors() {
         _getError = MutableLiveData<DefaultGetFireError?>()
@@ -57,7 +58,7 @@ class InvitationViewModel @Inject constructor(
         invitationError = _invitationError
     }
 
-    fun getUsersFromDb(reservationId: String, sportId: String, sportName: String): FireListener {
+    fun getUsersFromDb(reservationId: String, sportId: String, sportName: String, sportEmoji: String): FireListener {
 
         // set current user
         if (userId != null) {
@@ -77,6 +78,7 @@ class InvitationViewModel @Inject constructor(
         //set sportId and sportName
         this.sportId = sportId
         this.sportName = sportName
+        this.sportEmoji = sportEmoji
 
         return repository.getAllUsersToSendInvitationTo(
             userId!!,
@@ -160,7 +162,7 @@ class InvitationViewModel @Inject constructor(
                 receiverId,
                 null,
                 NotificationStatus.PENDING,
-                "@${_loggedUser?.username} has invited you to play a $sportName match!",
+                "@${_loggedUser?.username} has invited you to play a $sportName $sportEmoji match!",
                 LocalDateTime.now().toString()
             )
         ) {

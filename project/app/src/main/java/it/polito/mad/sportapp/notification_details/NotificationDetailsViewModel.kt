@@ -161,15 +161,15 @@ class NotificationDetailsViewModel @Inject constructor(
         loggedUser?.let {user ->
             val notificationDescription = when(type) {
                 "INVITATION_ACCEPTED" -> {
-                    "@${user.username} has accepted your invitation!"
+                    "@${user.username} has accepted to play a ${reservation.value!!.sportName} ${reservation.value!!.sportEmoji} match with you!"
                 }
 
                 "INVITATION_DECLINED" -> {
-                    "@${user.username} has declined your invitation!"
+                    "@${user.username} has declined to play a ${reservation.value!!.sportName} ${reservation.value!!.sportEmoji} match with you!"
                 }
 
                 "INVITATION_REJECTED" -> {
-                    "@${user.username} has rejected your invitation!"
+                    "@${user.username} has rejected to play a ${reservation.value!!.sportName} ${reservation.value!!.sportEmoji} match with you!"
                 }
 
                 else -> ""

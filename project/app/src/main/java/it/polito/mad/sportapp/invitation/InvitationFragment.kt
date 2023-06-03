@@ -27,6 +27,7 @@ class InvitationFragment : Fragment(R.layout.fragment_invitation) {
     internal var reservationId: String = ""
     private var reservationSportId: String = ""
     private var reservationSportName: String = ""
+    internal var reservationSportEmoji: String = ""
 
     private lateinit var sportLabel: TextView
 
@@ -69,11 +70,11 @@ class InvitationFragment : Fragment(R.layout.fragment_invitation) {
         reservationSportId = arguments?.getString("id_sport") ?: ""
         reservationSportName = arguments?.getString("sport_name") ?: ""
 
-        val reservationSportEmoji = arguments?.getString("sport_emoji") ?: ""
+        reservationSportEmoji = arguments?.getString("sport_emoji") ?: ""
         sportLabel.text = "$reservationSportName  $reservationSportEmoji"
 
         // Initialize fireListener
-        fireListener = viewModel.getUsersFromDb(reservationId, reservationSportId, reservationSportName)
+        fireListener = viewModel.getUsersFromDb(reservationId, reservationSportId, reservationSportName, reservationSportEmoji)
 
         // Retrieve views
         usernameSearch = requireView().findViewById(R.id.search_username)
