@@ -1,7 +1,7 @@
 package it.polito.mad.sportapp.playground_details
 
 import android.content.Intent
-import android.graphics. drawable.Drawable
+import android.graphics.Paint
 import android.net.Uri
 import android.view.Menu
 import android.view.MenuInflater
@@ -63,8 +63,14 @@ internal fun PlaygroundDetailsFragment.initViews() {
     addReservationButton.setOnClickListener { handleAddReservationButton() }
     directionsButton.setOnClickListener { handleDirectionsButton() }
 
+    // playground phone number dialing
+    playgroundPhoneNumber.setOnClickListener {
+        val dialIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${viewModel.playground.value?.sportCenterPhoneNumber}"))
+        startActivity(dialIntent)
+    }
+    playgroundPhoneNumber.paintFlags = playgroundPhoneNumber.paintFlags or Paint.UNDERLINE_TEXT_FLAG
 
-    //hide the rating bars when no evaluation are available
+    // hide the rating bars when no evaluation are available
     if(viewModel.playground.value?.overallRating == 0f){
         overallRatingBar.visibility = RatingBar.GONE
     } else {

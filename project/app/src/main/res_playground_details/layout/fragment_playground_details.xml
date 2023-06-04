@@ -13,7 +13,6 @@
         android:id="@+id/progressBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:paddingBottom="50dp">
 
         <TextView
@@ -31,7 +30,8 @@
             android:layout_width="360dp"
             android:layout_height="280dp"
             android:layout_marginStart="80dp"
-            android:indeterminateDrawable="@drawable/steph_curry_gif" />
+            android:indeterminateDrawable="@drawable/steph_curry_gif"
+            tools:ignore="VisualLintBounds" />
     </FrameLayout>
 
     <ScrollView
@@ -51,7 +51,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="256dp"
                 tools:src="@tools:sample/backgrounds/scenic"
-                android:contentDescription="playground_image" />
+                android:contentDescription="playground_image"
+                tools:ignore="HardcodedText" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -87,7 +88,8 @@
                         android:textColor="@color/black"
                         android:textSize="32sp"
                         android:textStyle="bold"
-                        android:paddingTop="8dp" />
+                        android:paddingTop="8dp"
+                        tools:ignore="HardcodedText" />
 
                     <TextView
                         android:id="@+id/sportCenterName"
@@ -98,7 +100,8 @@
                         android:text="Awesome Sport Center"
                         android:textColor="@color/light_grey"
                         android:textSize="24sp"
-                        android:paddingBottom="8dp" />
+                        android:paddingBottom="8dp"
+                        tools:ignore="HardcodedText" />
 
                     <!-- FireSport -->
                     <LinearLayout
@@ -125,7 +128,7 @@
                             android:text="🏀"
                             android:textColor="@color/black"
                             android:textSize="18sp"
-                            />
+                            tools:ignore="HardcodedText,TextContrastCheck" />
 
                         <TextView
                             android:id="@+id/playgroundSport"
@@ -146,7 +149,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4sp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        tools:ignore="UseCompoundDrawables">
 
                         <!-- icon -->
                         <ImageView
@@ -176,7 +180,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4sp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        tools:ignore="UseCompoundDrawables">
 
                         <!-- icon -->
                         <ImageView
@@ -193,12 +198,14 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="4sp"
+                            android:clickable="true"
+                            android:focusable="true"
                             android:fontFamily="@font/poppins_medium"
                             android:includeFontPadding="false"
                             android:text="123456789"
                             android:textColor="@color/black"
                             android:textSize="@dimen/default_text_size"
-                            tools:ignore="HardcodedText" />
+                            tools:ignore="HardcodedText,TouchTargetSizeCheck" />
                     </LinearLayout>
 
                     <!-- Opening time -->
@@ -270,7 +277,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
-                            app:srcCompat="@drawable/baseline_attach_money_24" />
+                            app:srcCompat="@drawable/baseline_attach_money_24"
+                            android:contentDescription="price per hour icon"
+                            tools:ignore="HardcodedText" />
 
                         <TextView
                             android:id="@+id/playgroundPrice"
@@ -328,7 +337,8 @@
                             app:iconTint="@color/button_text_color"
                             android:clickable="true"
                             android:focusable="true"
-                            style="?android:attr/buttonBarButtonStyle" />
+                            style="?android:attr/buttonBarButtonStyle"
+                            tools:ignore="HardcodedText,VisualLintButtonSize" />
 
                         <!-- Directions Button -->
                         <Button
@@ -355,7 +365,8 @@
                             app:iconTint="@color/button_text_color"
                             android:clickable="true"
                             android:focusable="true"
-                            style="?android:attr/buttonBarButtonStyle" />
+                            style="?android:attr/buttonBarButtonStyle"
+                            tools:ignore="HardcodedText,VisualLintButtonSize" />
                     </LinearLayout>
 
                     <View
@@ -379,7 +390,7 @@
                         android:layout_marginBottom="8sp"
                         android:fontFamily="@font/poppins_semibold"
                         android:includeFontPadding="false"
-                        android:text="Available Equipments"
+                        android:text="@string/playground_details_available_equipments_title"
                         android:textColor="@color/black"
                         android:textSize="@dimen/section_title_text_size" />
 
@@ -410,7 +421,7 @@
                         android:layout_marginBottom="8sp"
                         android:fontFamily="@font/poppins_semibold"
                         android:includeFontPadding="false"
-                        android:text="Reviews"
+                        android:text="@string/reviews_title"
                         android:textColor="@color/black"
                         android:textSize="@dimen/section_title_text_size" />
 
