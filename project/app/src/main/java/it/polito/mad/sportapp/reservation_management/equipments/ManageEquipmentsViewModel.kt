@@ -36,6 +36,9 @@ class ManageEquipmentsViewModel @Inject constructor(
     private var _toastErrorMessage = MutableLiveData<String>()
     internal var toastErrorMessage: LiveData<String> = _toastErrorMessage
 
+    private val _equipmentsDataLoaded = MutableLiveData(false)
+    internal val equipmentsDataLoaded: LiveData<Boolean> = _equipmentsDataLoaded
+
     fun clearToastErrorMessage() {
         _toastErrorMessage = MutableLiveData<String>()
         toastErrorMessage = _toastErrorMessage
@@ -171,5 +174,9 @@ class ManageEquipmentsViewModel @Inject constructor(
         selectedEquipments: MutableMap<String, DetailedEquipmentReservation>
     ) {
         this._selectedEquipments.value = selectedEquipments
+    }
+
+    fun setEquipmentsDataLoaded() {
+        this._equipmentsDataLoaded.value = true
     }
 }

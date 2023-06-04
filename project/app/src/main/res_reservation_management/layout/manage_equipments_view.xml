@@ -6,11 +6,40 @@
     android:layout_height="match_parent"
     tools:context=".reservation_management.equipments.ManageEquipmentsFragment">
 
+    <!-- progress bar -->
+    <FrameLayout
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/poppins_medium"
+            android:includeFontPadding="false"
+            android:text="@string/loading_text"
+            android:textSize="18sp"
+            tools:ignore="VisualLintOverlap" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyle"
+            android:layout_width="360dp"
+            android:layout_height="210dp"
+            android:layout_marginStart="80dp"
+            android:indeterminateDrawable="@drawable/steph_curry_gif" />
+    </FrameLayout>
+
     <ScrollView
+        android:id="@+id/manage_equipments_main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:background="@color/background_orange">
+        android:background="@color/background_orange"
+        android:visibility="gone">
         <LinearLayout
             android:id="@+id/main_container"
             android:layout_width="match_parent"

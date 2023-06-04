@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -16,6 +17,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import es.dmoral.toasty.Toasty
 import it.polito.mad.sportapp.R
+import it.polito.mad.sportapp.application_utilities.hideProgressBar
+import it.polito.mad.sportapp.application_utilities.showProgressBar
 import it.polito.mad.sportapp.application_utilities.showToasty
 import it.polito.mad.sportapp.entities.DetailedEquipmentReservation
 import it.polito.mad.sportapp.entities.Equipment
@@ -191,6 +194,8 @@ internal fun ManageEquipmentsFragment.initEquipmentsObservers() {
             viewModel.availableEquipmentsIndexesById!!.map { (id, index) ->
                 Pair(index, id)
             }.toMap()
+
+        viewModel.setEquipmentsDataLoaded()
     }
 
     // selected equipments observer
@@ -327,6 +332,21 @@ internal fun ManageEquipmentsFragment.initEquipmentsObservers() {
 
         // check if any available equipment exist
         this.checkAtLeastOneAvailableEquipment(availableEquipments, newSelectedEquipments)
+    }
+
+    // loading/progress bar observer
+    viewModel.equipmentsDataLoaded.observe(viewLifecycleOwner) { isLoaded ->
+        val mainContentContainer = requireView().findViewById<View>(R.id.manage_equipments_main_content)
+        val progressBar = requireView().findViewById<View>(R.id.progressBar)
+
+        if(isLoaded) {
+            // hide progress bar and show view content
+            hideProgressBar(progressBar, mainContentContainer)
+        }
+        else {
+            // show progress bar and hide view content
+            showProgressBar(progressBar, mainContentContainer)
+        }
     }
 }
 
