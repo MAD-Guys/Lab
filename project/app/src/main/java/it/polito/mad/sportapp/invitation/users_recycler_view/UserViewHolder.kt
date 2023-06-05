@@ -27,6 +27,12 @@ class UserViewHolder(private val view: View, val sportId: String) : RecyclerView
                 .load(user.imageURL)
                 .into(profilePicture)
         }
+        else {
+            // set notification icon with default url
+            Picasso.get()
+                .load(R.drawable.user_profile_picture_noalpha)
+                .into(profilePicture)
+        }
 
         profilePicture.clipToOutline = true
         fullName.text = "${user.firstName} ${user.lastName}"
